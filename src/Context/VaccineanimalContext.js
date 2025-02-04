@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const VaccineanimalContext = React.createContext();
 
-async function getallVaccineanimal(filters = {}) {
+async function getallVaccineanimal(page, limit, filters = {}) {
     const Authorization = localStorage.getItem('Authorization');
     
     if (!Authorization) {
@@ -17,7 +17,11 @@ async function getallVaccineanimal(filters = {}) {
     try {
         const response = await axios.get('https://farm-project-bbzj.onrender.com/api/vaccine/GetAllVaccine', {
             headers,
-            params: filters
+             params: {
+            page,
+            limit,
+            ...filters 
+        },
         });
         return response.data;
     } catch (err) {

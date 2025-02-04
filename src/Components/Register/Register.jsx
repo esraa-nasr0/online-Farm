@@ -37,20 +37,20 @@ export default function Register() {
     let validation = Yup.object({
       name: Yup.string()
         .min(3, 'name minlength is 3')
-        .max(10, 'name maxlength is 10') // Updated to 'maxlength is 10' for consistency
+        .max(10, 'name maxlength is 10') 
         .required('name is required'),
         
       email: Yup.string()
         .email('email is invalid')
         .required('email is required'),
         
-      phone: Yup.string() // Changed to string for phone validation
+      phone: Yup.string() 
         .matches(phoneRegExp, 'Phone number is not valid')
         .required('phone is required'),
         
       country: Yup.string()
         .min(3, 'country minlength is 3')
-        .max(50, 'country maxlength is 50') // Updated to 'maxlength is 50' for consistency
+        .max(50, 'country maxlength is 50')
         .required('country is required'),
         
       password: Yup.string()
@@ -71,7 +71,7 @@ export default function Register() {
         phone: '',
         password: '',
         confirmpassword: '',
-        usertype: '',  // Ensure 'usertype' is correctly initialized
+        usertype: '', 
         country: '',
       },
       validationSchema: validation,

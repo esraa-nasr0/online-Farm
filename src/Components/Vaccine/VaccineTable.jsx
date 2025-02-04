@@ -13,9 +13,10 @@ function VaccineTable() {
     const [vaccines, setVaccines] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [searchCriteria, setSearchCriteria] = useState({ tagId: '', animalType: '', vaccineName: '' });
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(0);
-    const animalsPerPage = 10;
+   const [currentPage, setCurrentPage] = useState(1); // الصفحة الحالية
+    const [animalsPerPage] = useState(10); // عدد العناصر في كل صفحة
+    const [totalPages, setTotalPages] = useState(1); // إجمالي عدد الصفحات
+    const [pagination, setPagination] = useState({ totalPages: 1 });
 
     async function getItem() {
         setIsLoading(true);
@@ -25,13 +26,17 @@ function VaccineTable() {
                 tagId: searchCriteria.tagId,
                 locationShed: searchCriteria.locationShed
             };
-
+ 
             let { data } = await getallVaccineanimal(currentPage, animalsPerPage, filters);
             console.log(data);
-            if (data && data.vaccine) {
+            if (data && data?.vaccine) {
                 const uniqueVaccines = Array.from(new Set(data.vaccine.map(vaccine => vaccine._id))).map(id => data.vaccine.find(vaccine => vaccine._id === id));
                 setVaccines(uniqueVaccines);
-                setTotalPages(Math.ceil(data?.data?.total / animalsPerPage));
+                setTotalPages(data?.pagination?.totalPages || 1);
+                setPagination(data.pagination);
+setTotalPages(data.pagination.totalPages);
+
+
             } else {
                 console.error("Unexpected data structure:", data);
                 setVaccines([]);
@@ -53,9 +58,7 @@ function VaccineTable() {
         getItem();
     }, [currentPage]);
 
-    const paginate = (pageNumber) => {
-        setCurrentPage(pageNumber);
-    };
+   
 
     async function deleteItem(id) {
         try {
@@ -88,6 +91,25 @@ function VaccineTable() {
     function editVaccine(id) {
         navigate(`/editVaccine/${id}`);
     }
+    const paginate = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
+    const renderPaginationButtons = () => {
+        const buttons = [];
+        const total = pagination.totalPages; // استخدام القيمة من حالة الصفحات
+        for (let i = 1; i <= total; i++) { // استخدام total بدلاً من totalPages
+            buttons.push(
+                <li key={i} className={`page-item ${i === currentPage ? 'active' : ''}`}>
+                    <button className="page-link" onClick={() => paginate(i)}>
+                        {i}
+                    </button>
+                </li>
+            );
+        }
+        return buttons;
+    };
+
 
     return (
         <>
@@ -142,10 +164,10 @@ function VaccineTable() {
                         </div>
 
                     </div>
-
-                    <div className="full-width-table">
-                        <table className="table table-striped full-width-table mt-6">
-                            <thead>
+   <div className="table-responsive">
+   <div className="full-width-table"  >
+                        <table className="table table-striped mt-4">
+                        <thead>
                                 <tr>
                                     <th scope="col">#</th>
                                     <th scope="col">Vaccine Name</th>
@@ -184,34 +206,11 @@ function VaccineTable() {
                             </tbody>
                         </table>
                     </div>
-
-                    <div className="d-flex justify-content-center mt-4">
+</div>
+                    <div className="d-flex flex-wap justify-content-center mt-4">
                         <nav>
                             <ul className="pagination">
-                                <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                                    <button className="page-link" onClick={() => paginate(1)}>First</button>
-                                </li>
-                                <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                                    <button className="page-link" onClick={() => paginate(currentPage - 1)}>Previous</button>
-                                </li>
-
-                                {Array.from({ length: totalPages }, (_, index) => {
-                                    const pageNumber = index + 1;
-                                    if (pageNumber >= currentPage - 2 && pageNumber <= currentPage + 2) {
-                                        return (
-                                            <li key={index} className={`page-item ${pageNumber === currentPage ? 'active' : ''}`}>
-                                                <button className="page-link" onClick={() => paginate(pageNumber)}>
-                                                    {pageNumber}
-                                                </button>
-                                            </li>
-                                        );
-                                    }
-                                    return null;
-                                })}
-
-                                <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-                                    <button className="page-link" onClick={() => paginate(currentPage + 1)}>Next</button>
-                                </li>
+                                {renderPaginationButtons()}
                             </ul>
                         </nav>
                     </div>
@@ -222,3 +221,4 @@ function VaccineTable() {
 }
 
 export default VaccineTable;
+

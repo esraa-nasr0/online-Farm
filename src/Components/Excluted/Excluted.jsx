@@ -2,8 +2,10 @@ import axios from 'axios';
 import { useFormik } from 'formik';
 import React, { useState } from 'react';
 import { IoIosSave } from "react-icons/io";
-
+import Swal from 'sweetalert2';
+import { useNavigate } from "react-router-dom";
 function Excluted() {
+     const navigate = useNavigate();
     const [showAlert, setShowAlert] = useState(false);
     const [error, setError] = useState(null);
     const [isLoading, setisLoading] = useState(false);
@@ -25,17 +27,22 @@ function Excluted() {
             console.log('Submitting form with values:', value);
             console.log('Headers:', headers);
             console.log('Response:', data);
-
-            if (data.status === "success") {
-                setisLoading(false);
-                setMatingData(data.data.excluded
-);  
-                setShowAlert(true);  
+   if (data.status === "success") {
+                Swal.fire({
+                    title: "Success!",
+                    text: "Data has been submitted successfully!",
+                    icon: "success",
+                    confirmButtonText: "OK",
+                }).then(() => navigate('/exclutedtable'));
             }
         } catch (err) {
-            const errorMessage = err.response?.data?.message || "An error occurred while processing your request";
-            setError(errorMessage);
-            console.log(err.response?.data);
+            Swal.fire({
+                title: "Error!",
+                text: err.response?.data?.message || "An error occurred while submitting data.",
+                icon: "error",
+                confirmButtonText: "OK",
+            });
+        
         } finally {
             setisLoading(false);
         }
@@ -48,6 +55,8 @@ function Excluted() {
             weight: '',
             excludedType: '',
             price: '',
+            reasoneOfDeath: ''
+            
         },
         onSubmit: submitMating
     });
@@ -55,7 +64,7 @@ function Excluted() {
     return (
         <>
             <div className="container">
-                <div style={{marginTop:"140px" ,color:"#88522e" ,  fontSize: "28px", fontWeight:"bold"}}>Excluted</div>
+       
                 <p className="text-danger">{error}</p>
                 
                 {showAlert && matingData && matingData.expectedDeliveryDate && (
@@ -65,16 +74,28 @@ function Excluted() {
                 )}
                 
                 <form onSubmit={formik.handleSubmit} className="mt-5">
-                    {isLoading ? (
-                        <button type="submit" className="btn button2" disabled>
-                            <i className="fas fa-spinner fa-spin"></i>
-                        </button>
-                    ) : (
-                        <button type="submit"      className=" btn-lg active button2 rounded" 
-                        style={{ background: "#88522e", color: "white", borderColor: "#3a7d44" ,paddingLeft:"10px" ,paddingRight:"10px" ,paddingBottom:"5px" ,paddingTop:"5px" }}   >
-                            <IoIosSave /> Save
-                        </button>
-                    )}
+                            
+                              {isLoading ? (
+                                  
+                                  <div className=' d-flex vaccine align-items-center justify-content-between'>
+                                  <div className="title-v">Add Excluted</div>
+                                
+                                  <button type="submit" className="btn button2">
+                                              <i className="fas fa-spinner fa-spin"></i>
+                                          </button>
+                  
+                                  </div>
+                                  
+                                      ) : (
+                                                 <div className=' d-flex vaccine align-items-center justify-content-between'>
+                                                        <div className="title-v">Add Excluted</div>
+                                                        <button type="submit" className="btn  button2" disabled={isLoading}>
+                                                            {isLoading ? <i className="fas fa-spinner fa-spin"></i> : <IoIosSave />} Save
+                                                        </button>
+                                        
+                                                        </div>
+                                                
+                                      )}
 
                     <div className="animaldata">
                  
@@ -124,37 +145,72 @@ function Excluted() {
                         <div className="input-box">
                             <label className="label" htmlFor="excludedType">Excluded Type</label>
                             <select
-                                onBlur={formik.handleBlur}
-                                onChange={formik.handleChange}
-                                value={formik.values.excludedType}
-                                id="excludedType"
-                                className="input2"
-                                name="excludedType"
-                            >
-                                <option value="sale">Sale</option>
-                                <option value="death">Death</option>
-                                <option value="sweep">Sweep</option>
-                            </select>
+    onBlur={formik.handleBlur}
+    onChange={formik.handleChange}
+    value={formik.values.excludedType}
+    id="excludedType"
+    className="input2"
+    name="excludedType"
+>
+    <option value="" disabled hidden> Choose excluded Type  </option>
+    <option value="sale">Sale</option>
+    <option value="death">Death</option>
+    <option value="sweep">Sweep</option>
+</select>
+
+                            {formik.values.excludedType === 'sale' && (
+<div className="input-box">
+<label className="label" htmlFor="price">Price</label>
+<input
+    onBlur={formik.handleBlur}
+    onChange={formik.handleChange}
+    value={formik.values.price}
+    placeholder="Enter Price"
+    id="price"
+    type="text"
+    className="input2"
+    name="price"
+/>
+
+{formik.errors.price && formik.touched.price ? <p className="text-danger">{formik.errors.price}</p> : ""}
+</div>
+)}
+
+{formik.values.excludedType === 'death' && (
+   <div className="input-box">
+   <label className="label" htmlFor="reasoneOfDeath">reasoneOfDeath</label>
+   <input
+       onBlur={formik.handleBlur}
+       onChange={formik.handleChange}
+       value={formik.values.reasoneOfDeath}
+       id="reasoneOfDeath"
+       type="text"
+       className="input2  "
+       name="reasoneOfDeath"
+   />
+   {formik.errors.Date && formik.touched.Date ? <p className="text-danger">{formik.errors.Date}</p> : ""}
+</div>
+)}
+{formik.values.excludedType === 'sweep' && (
+   <div className="input-box">
+   <label className="label" htmlFor="reasoneOfDeath">reasoneOfsweep</label>
+   <input
+       onBlur={formik.handleBlur}
+       onChange={formik.handleChange}
+       value={formik.values.reasoneOfDeath}
+       id="reasoneOfDeath"
+       type="text"
+       className="input2  "
+       name="reasoneOfDeath"
+   />
+   {formik.errors.Date && formik.touched.Date ? <p className="text-danger">{formik.errors.Date}</p> : ""}
+</div>
+)}
+                           
                             {formik.errors.excludedType && formik.touched.excludedType ? <p className="text-danger">{formik.errors.excludedType}</p> : ""}
                         </div>
-
-                        {formik.values.excludedType === 'sale' && (
-                            <div className="input-box">
-                                <label className="label" htmlFor="price">Price</label>
-                                <input
-                                    onBlur={formik.handleBlur}
-                                    onChange={formik.handleChange}
-                                    value={formik.values.price}
-                                    placeholder="Enter Price"
-                                    id="price"
-                                    type="text"
-                                    className="input2"
-                                    name="price"
-                                />
-                                {formik.errors.price && formik.touched.price ? <p className="text-danger">{formik.errors.price}</p> : ""}
-                            </div>
-                        )}
-
+                     
+                
                     </div>
                 </form>
             </div>
@@ -163,3 +219,6 @@ function Excluted() {
 }
 
 export default Excluted;
+
+
+

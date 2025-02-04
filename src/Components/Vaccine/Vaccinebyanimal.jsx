@@ -3,7 +3,8 @@ import { useFormik } from 'formik';
 import { IoIosSave } from "react-icons/io";
 import axios from 'axios';
 import { UserContext } from "../../Context/UserContext";
-import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import { useNavigate } from "react-router-dom";
 
 function Vaccinebyanimal() {
     const { Authorization } = useContext(UserContext);
@@ -43,16 +44,28 @@ function Vaccinebyanimal() {
                     }
                 );
 
-                if (response.data.status === "success") {
-                    setIsLoading(false);
-                    console.log(response.data);
-                    navigate('/vaccineTable');
-                }
-            } catch (error) {
-                setError(error.response?.data || error.message);
-                console.error('Error submitting data:', error.response?.data || error.message);
-                setIsLoading(false);  // Stop loading if error occurs
-            }
+              if (response.data.status === "success") {
+                                          Swal.fire({
+                                              title: "Success!",
+                                              text: "Data has been submitted successfully!",
+                                              icon: "success",
+                                              confirmButtonText: "OK",
+                                          }).then(() => navigate('/vaccineTable'));
+                                console.log('API Response:', response.data);
+                         
+                            }}
+                            catch (err) {
+                              
+                                      Swal.fire({
+                                          title: "Error!",
+                                          text: err.response?.data?.message || "An error occurred while submitting data.",
+                                          icon: "error",
+                                          confirmButtonText: "OK",
+                                      });
+                                  
+                                  } finally {
+                                      setIsLoading(false);
+                                  }
         },
     });
 

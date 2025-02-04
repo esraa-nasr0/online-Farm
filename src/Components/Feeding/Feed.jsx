@@ -5,11 +5,13 @@ import axios from "axios";
 import { UserContext } from "../../Context/UserContext";
 import { IoIosSave } from "react-icons/io";
 import Swal from 'sweetalert2';
+import { useNavigate } from "react-router-dom";
 
 export default function Feed() {
     const [isLoading, setIsLoading] = useState(false);
     const { Authorization } = useContext(UserContext);
-
+       const [showAlert, setShowAlert] = useState(false);
+  const navigate = useNavigate()
     async function handleSubmit(values) {
         try {
             setIsLoading(true);
@@ -32,20 +34,29 @@ export default function Feed() {
 
             console.log("Response:", data);
 
-            if (data.status === "Success") {
-                console.log("SweetAlert should appear now!");
-                Swal.fire({
-                    title: "Success!",
-                    text: "Data has been submitted successfully!",
-                    icon: "success",
-                    confirmButtonText: "OK",
-                });
-            }
-        } catch (err) {
-            console.error(err.response?.data || "Error occurred");
-        } finally {
-            setIsLoading(false);
-        }
+            if (data.status === "success") {
+                setIsLoading(false);
+              
+                setShowAlert(true); 
+        if (data.status === "success") {
+                      Swal.fire({
+                          title: "Success!",
+                          text: "Data has been submitted successfully!",
+                          icon: "success",
+                          confirmButtonText: "OK",
+                      }).then(() => navigate('/feedingTable'));
+                  }}
+              } catch (err) {
+                  Swal.fire({
+                      title: "Error!",
+                      text: err.response?.data?.message || "An error occurred while submitting data.",
+                      icon: "error",
+                      confirmButtonText: "OK",
+                  });
+              
+              } finally {
+                  setIsLoading(false);
+              }
     }
 
     const validationSchema = Yup.object({
@@ -71,25 +82,24 @@ export default function Feed() {
 
     return (
         <div className="container">
-            <div
-                style={{
-                    marginTop: "140px",
-                    color: "#88522e",
-                    fontSize: "28px",
-                    fontWeight: "bold",
-                }}
-            >
-                Feeding
-            </div>
+      
             <form onSubmit={formik.handleSubmit} className="mt-5">
                 {isLoading ? (
-                    <button type="submit" className="btn button2">
-                        <i className="fas fa-spinner fa-spin"></i>
-                    </button>
+                      <div className="d-flex vaccine align-items-center justify-content-between">
+                      <div className="title-v">Add Feed</div>
+                      <button type="submit" className="btn button2" disabled={isLoading}>
+                          {isLoading ? <i className="fas fa-spinner fa-spin"></i> : <IoIosSave />} Save
+                      </button>
+                  </div>
                 ) : (
-                    <button type="submit" className="btn button2">
-                        <IoIosSave /> Save
-                    </button>
+                    
+                    <div className="d-flex vaccine align-items-center justify-content-between">
+                                      <div className="title-v">Add Feed</div>
+                                      <button type="submit" className="btn button2" disabled={isLoading}>
+                                          {isLoading ? <i className="fas fa-spinner fa-spin"></i> : <IoIosSave />} Save
+                                      </button>
+                                  </div>
+                  
                 )}
                 <div className="animaldata">
                     <div className="input-box">

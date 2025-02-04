@@ -14,56 +14,47 @@ function FeedingTable() {
   const [feedData, setFeedData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [searchCriteria, setSearchCriteria] = useState({ name: "", type: "" });
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
-  const animalsPerPage = 10;
+  const [currentPage, setCurrentPage] = useState(1); 
+  const animalsPerPage = 10; 
+  
+  const [totalPages, setTotalPages] = useState(1); 
 
   const fetchFeedData = async () => {
     setIsLoading(true);
     try {
-      const { data } = await getAllFeed();
-      if (data && data.feeds) {
-        // فلترة البيانات بناءً على معايير البحث
-        const filteredData = data.feeds.filter((feed) => {
-          const nameMatch = feed.name.toLowerCase().includes(searchCriteria.name.toLowerCase());
-          const typeMatch = feed.type.toLowerCase().includes(searchCriteria.type.toLowerCase());
-          return nameMatch && typeMatch;
-        });
+        const filters = {
+            type: searchCriteria.type,
+            name: searchCriteria.name,
+        };
 
-        // حساب عدد الصفحات
-        const totalItems = filteredData.length;
-        setTotalPages(Math.ceil(totalItems / animalsPerPage));
+        const response = await getAllFeed(currentPage, animalsPerPage, filters);
+        console.log("Full API Response:", response);
 
-        // تحديد البيانات المعروضة للصفحة الحالية
-        const startIndex = (currentPage - 1) * animalsPerPage;
-        const paginatedData = filteredData.slice(startIndex, startIndex + animalsPerPage);
-        
-        setFeedData(paginatedData);
-      } else {
-        console.error("Unexpected data structure:", data);
-        setFeedData([]);
-      }
+        if (response?.data?.feeds) {
+          console.log(response.pagination.total);
+          
+            const totalAnimals = response.pagination.total?? response.data.feeds.length; 
+            setTotalPages(Math.ceil(totalAnimals / animalsPerPage)); 
+        } else {
+            setTotalPages(1);
+        }
+
+        setFeedData(response.data.feeds || []);
     } catch (error) {
-      console.error("Error fetching feed data:", error);
-      setFeedData([]);
+        console.error("Error fetching feed data:", error);
+        setFeedData([]);
     } finally {
-      setIsLoading(false);
+        setIsLoading(false);
     }
-  };
+};
+
 
   useEffect(() => {
     fetchFeedData();
-  }, [currentPage, searchCriteria]);
-
-  const paginate = (pageNumber) => {
-    if (pageNumber >= 1 && pageNumber <= totalPages) {
-      setCurrentPage(pageNumber);
-    }
-  };
+  }, [currentPage]);
 
   const handleSearch = () => {
-    setCurrentPage(1); // عند تغيير معايير البحث، نعيد الصفحة إلى 1
+    setCurrentPage(1); 
     fetchFeedData();
   };
 
@@ -95,93 +86,68 @@ function FeedingTable() {
     navigate(`/editfeed/${id}`);
   };
 
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+};
+
+
+  
   return (
     <>
       {isLoading ? (
         <div className="animal">
-          <Rings
-            visible={true}
-            height="100"
-            width="100"
-            color="#2f5e97"
-            ariaLabel="rings-loading"
-          />
+          <Rings visible={true} height="100" width="100" color="#2f5e97" ariaLabel="rings-loading" />
         </div>
       ) : (
-        <div className="container">
-          <div
-            className="d-flex justify-content-between align-items-center mb-4"
-            style={{ marginTop: "140px" }}
-          >
-            <h2 style={{ color: "#88522e" }}>Feed Records</h2>
-            <Link to="/feed">
-              <button
-                type="button"
-                className="btn btn-lg active"
-                style={{
-                  background: "#88522e",
-                  color: "white",
-                  borderColor: "#3a7d44",
-                }}
-              >
+        <div className="">
+             <div className="d-flex container flex-column flex-md-row justify-content-between align-items-center mb-4" style={{ marginTop: "140px" }}>
+             <h2 style={{ color: "#88522e" }}>Feed Records</h2>
+                                      <div className='d-flex flex-column flex-sm-row gap-2'>
+                <Link to="/feed">
+              <button type="button" className="btn btn-lg active" style={{ background: "#88522e", color: "white", borderColor: "#3a7d44" }}>
                 <MdOutlineAddToPhotos /> Add New Feed
               </button>
-            </Link>
-            <Link to="/feedlocationtable">
-              <button
-                type="button"
-                className="btn btn-lg active "
-                style={{
-                  background: "#88522e",
-                  color: "white",
-                  borderColor: "#3a7d44",
-                }}
-              >
-                <MdOutlineAddToPhotos />  Feeding By Location
+            </Link> <Link to="/feedlocationtable">
+              <button type="button" className="btn btn-lg active" style={{ background: "#88522e", color: "white", borderColor: "#3a7d44" }}>
+                <MdOutlineAddToPhotos /> +Feed for shed
               </button>
             </Link>
-          </div>
-          <div className="d-flex align-items-center gap-2 mt-4">
-            <input
-              type="text"
-              className="form-control"
-              value={searchCriteria.name}
-              placeholder="Search by name"
-              onChange={(e) =>
-                setSearchCriteria((prev) => ({ ...prev, name: e.target.value }))
-              }
-            />
+                                        </div>
+         
+                                  </div>
+         
+
+          <div className="d-flex container flex-column flex-md-row align-items-center gap-2 mt-4" style={{ flexWrap: 'nowrap' }}>
             <input
               type="text"
               className="form-control"
               value={searchCriteria.type}
-              placeholder="Search by type"
-              onChange={(e) =>
-                setSearchCriteria((prev) => ({ ...prev, type: e.target.value }))
-              }
+              placeholder="Search type"
+              onChange={(e) => setSearchCriteria(prev => ({ ...prev, type: e.target.value }))}
             />
-            <button
-              className="btn"
-              onClick={handleSearch}
-              style={{
-                backgroundColor: "#88522e",
-                borderColor: "#88522e",
-                color: "white",
-              }}
-            >
+            <input
+              type="text"
+              className="form-control"
+              value={searchCriteria.name}
+              placeholder="Search name"
+              onChange={(e) => setSearchCriteria(prev => ({ ...prev, name: e.target.value }))}
+            />
+            <button className="btn" onClick={handleSearch} style={{ backgroundColor: '#88522e', borderColor: '#88522e', color: 'white' }}>
               <i className="fas fa-search" style={{ background: "#88522e" }}></i>
             </button>
           </div>
+          <div className="full-width-table"  >
           <table className="table table-striped text-center mt-4">
+            
             <thead>
               <tr>
                 <th scope="col">Feed Name</th>
                 <th scope="col">Type</th>
                 <th scope="col">Price</th>
                 <th scope="col">Concentration of Dry Matter</th>
-                <th scope="col">Quantity</th>
-                <th scope="col">Delete</th>
                 <th scope="col">Edit</th>
+                <th scope="col">Delete</th>
+         
               </tr>
             </thead>
             <tbody>
@@ -192,20 +158,13 @@ function FeedingTable() {
                     <td>{item.type}</td>
                     <td>{item.price}</td>
                     <td>{item.concentrationOfDryMatter}</td>
-                    <td>{item.quantity}</td>
-                    <td
-                      onClick={() => handleDelete(item._id)}
-                      className="text-danger"
-                      style={{ cursor: "pointer" }}
-                    >
-                      <RiDeleteBin6Line /> Remove
-                    </td>
-                    <td
-                      style={{ cursor: "pointer", color: "#88522e" }}
-                      onClick={() => Editfeed(item._id)}
-                    >
+                    <td style={{ cursor: "pointer", color: "#198754" }} onClick={() => Editfeed(item._id)}>
                       <FaRegEdit /> Edit
                     </td>
+                    <td onClick={() => handleDelete(item._id)} className="text-danger" style={{ cursor: "pointer" }}>
+                      <RiDeleteBin6Line /> Remove
+                    </td>
+                    
                   </tr>
                 ))
               ) : (
@@ -215,60 +174,21 @@ function FeedingTable() {
               )}
             </tbody>
           </table>
-
-          <div className="d-flex justify-content-center mt-4">
-            <nav>
-              <ul className="pagination">
-                <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
-                  <button className="page-link" onClick={() => paginate(1)}>
-                    First
-                  </button>
-                </li>
-                <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
-                  <button
-                    className="page-link"
-                    onClick={() => paginate(currentPage - 1)}
-                  >
-                    Previous
-                  </button>
-                </li>
-
-                {/* Add page number navigation */}
-                {[...Array(totalPages)].map((_, index) => (
-                  <li
-                    key={index}
-                    className={`page-item ${
-                      currentPage === index + 1 ? "active" : ""
-                    }`}
-                  >
-                    <button
-                      className="page-link"
-                      onClick={() => paginate(index + 1)}
-                    >
-                      {index + 1}
-                    </button>
-                  </li>
-                ))}
-
-                <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
-                  <button
-                    className="page-link"
-                    onClick={() => paginate(currentPage + 1)}
-                  >
-                    Next
-                  </button>
-                </li>
-                <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
-                  <button
-                    className="page-link"
-                    onClick={() => paginate(totalPages)}
-                  >
-                    Last
-                  </button>
-                </li>
-              </ul>
-            </nav>
           </div>
+          <div className="d-flex justify-content-center mt-4">
+    <nav>
+        <ul className="pagination">
+            {Array.from({ length: totalPages }, (_, i) => (
+                <li key={i + 1} className={`page-item ${i + 1 === currentPage ? 'active' : ''}`}>
+                    <button className="page-link" onClick={() => handlePageChange(i + 1)}>
+                        {i + 1}
+                    </button>
+                </li>
+            ))}
+        </ul>
+    </nav>
+</div>
+
         </div>
       )}
     </>

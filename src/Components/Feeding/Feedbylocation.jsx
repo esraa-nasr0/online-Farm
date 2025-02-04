@@ -4,15 +4,17 @@ import { IoIosSave } from 'react-icons/io';
 import { UserContext } from "../../Context/UserContext";
 import axios from 'axios';
 import { Feedcontext } from '../../Context/FeedContext';
-
+import Swal from 'sweetalert2';
+import { useNavigate } from "react-router-dom";
 export default function Feedbylocation() {
   const [error, setError] = useState(null);
+       const [showAlert, setShowAlert] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { Authorization } = useContext(UserContext);
   const [feeds, setFeeds] = useState([]);
   const { getFodderMenue } = useContext(Feedcontext);
+  const navigate = useNavigate()
 
-  // Fetch the available feeds from the API
   const fetchFeeds = async () => {
     try {
       const { data } = await getFodderMenue();
@@ -41,12 +43,28 @@ export default function Feedbylocation() {
           }
         }
       );
-      console.log("Response:", response.data);
-    } catch (error) {
-      console.error("Error during post:", error);
-    } finally {
-      setIsLoading(false);
-    }
+      console.log(response.data);
+      if (response.data.status === "SUCCESS") {
+        Swal.fire({
+          title: "Success!",
+          text: `Data has been submitted successfully!\nTotal Feed Cost: ${response.data.totalFeedCost}\nPer Animal Feed Cost: ${response.data.perAnimalFeedCost}`,
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then(() => navigate('/feedlocationtable'));
+      }
+      
+      }  catch (err) {
+                      
+                              Swal.fire({
+                                  title: "Error!",
+                                  text: err.response?.data?.message || "An error occurred while submitting data.",
+                                  icon: "error",
+                                  confirmButtonText: "OK",
+                              });
+                          
+                          } finally {
+                              setIsLoading(false);
+                          }
   }
 
   const formik = useFormik({
@@ -60,7 +78,7 @@ export default function Feedbylocation() {
     onSubmit: (values) => {
       post(values);
     },
-    // Form validation if necessary
+   
     validate: (values) => {
       const errors = {};
       if (!values.locationShed) {
@@ -69,7 +87,7 @@ export default function Feedbylocation() {
       if (!values.date) {
         errors.date = 'Date is required';
       }
-      // Validate feeds
+     
       values.feeds.forEach((feed, index) => {
         if (!feed.feedId) {
           if (!errors.feeds) errors.feeds = [];
@@ -97,16 +115,22 @@ export default function Feedbylocation() {
 
   return (
     <div className="container">
-      <div className="title2">Feed By Location</div>
+    
       <form onSubmit={formik.handleSubmit} className="mt-5">
         {isLoading ? (
-          <button type="submit" className="btn button2" disabled>
-            <i className="fas fa-spinner fa-spin"></i>
-          </button>
+           <div className="d-flex vaccine align-items-center justify-content-between">
+                                               <div className="title-v">Add Feed for locationshed</div>
+                                               <button type="submit" className="btn button2" disabled={isLoading}>
+                                                   {isLoading ? <i className="fas fa-spinner fa-spin"></i> : <IoIosSave />} Save
+                                               </button>
+                                           </div>
         ) : (
-          <button type="submit" className="btn button2">
-            <IoIosSave /> Save
-          </button>
+            <div className="d-flex vaccine align-items-center justify-content-between">
+                                                <div className="title-v">Add Feed for locationshed</div>
+                                                <button type="submit" className="btn button2" disabled={isLoading}>
+                                                    {isLoading ? <i className="fas fa-spinner fa-spin"></i> : <IoIosSave />} Save
+                                                </button>
+                                            </div>
         )}
 
         <div className="animaldata">

@@ -4,12 +4,15 @@ import { IoIosSave } from "react-icons/io";
 import axios from 'axios';
 import { UserContext } from "../../Context/UserContext";
 import { VaccineanimalContext } from '../../Context/VaccineanimalContext';
+import { useNavigate } from 'react-router-dom'; 
+import Swal from 'sweetalert2';
 
 function Vaccinebylocationshed() {
     const { Authorization } = useContext(UserContext);
     const { getallVaccineanimal } = useContext(VaccineanimalContext); 
     const [isLoading, setIsLoading] = useState(false);
-    
+    const navigate = useNavigate()
+
     const formik = useFormik({
         initialValues: {
             vaccineName: '',
@@ -23,11 +26,10 @@ function Vaccinebylocationshed() {
                 return response.data.vaccine.some(vaccine => vaccine.vaccineName === vaccineName);
             };
 
-            if (await isVaccineExists(values.vaccineName)) {
-                alert('هذا اللقاح موجود بالفعل!');
-                return;
-            }
             
+            
+           
+
             const dataToSend = {
                 vaccineName: values.vaccineName,
                 givenEvery: values.givenEvery,  
@@ -39,7 +41,7 @@ function Vaccinebylocationshed() {
                 ],
             };
 
-            setIsLoading(true); // set loading state to true when starting the request
+            setIsLoading(true); 
 
             try {
                 const response = await axios.post(
@@ -47,18 +49,33 @@ function Vaccinebylocationshed() {
                     dataToSend,
                     {
                         headers: {
-                            Authorization: `Bearer ${Authorization}`,  // Corrected Authorization header formatting
+                            Authorization: `Bearer ${Authorization}`,
                         },
                     }
                 );
 
-                console.log('API Response:', response.data);
-                // You can add any post-submit action, like resetting the form or showing success message
-            } catch (error) {
-                console.error('Error submitting data:', error.response?.data || error.message);
-            } finally {
-                setIsLoading(false); // set loading state to false once the request completes
-            }
+                if (response.data.status === "success") {
+                              Swal.fire({
+                                  title: "Success!",
+                                  text: "Data has been submitted successfully!",
+                                  icon: "success",
+                                  confirmButtonText: "OK",
+                              }).then(() => navigate('/vaccineTable'));
+                    console.log('API Response:', response.data);
+           
+                }}
+                catch (err) {
+                  
+                          Swal.fire({
+                              title: "Error!",
+                              text: err.response?.data?.message || "An error occurred while submitting data.",
+                              icon: "error",
+                              confirmButtonText: "OK",
+                          });
+                      
+                      } finally {
+                          setIsLoading(false);
+                      }
         },
     });
 

@@ -15,7 +15,7 @@ export default function EditBreeding() {
     const { Authorization } = useContext(UserContext); // Get Authorization from context
 
     const headers = {
-        Authorization: `Bearer ${Authorization}`,
+        Authorization: `Bearer ${Authorization}`
     };
 
     async function fetchBreedingData() {

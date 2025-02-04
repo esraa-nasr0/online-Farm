@@ -84,7 +84,7 @@ function HomeServices() {
             <li className='card'>
                 <Link className='Link' to="/exclutedtable">
                 <img  src={Img16} alt='goat7'/>
-                <h3>Excluted</h3>
+                <h3>Excluded</h3>
                 <p>Enter The Animal's  Excluted Data</p>
                 <button className='btn mb-2 me-2' style={{ backgroundColor: '#88522e', borderColor: '#88522e', color: 'white' }}>Go to  Excluted</button>
                 </Link>
