@@ -75,12 +75,14 @@ setTotalPages(data.pagination.totalPages);
 
     function handleClick(id) {
         Swal.fire({
-            title: "هل تريد الاستمرار؟",
-            icon: "question",
-            confirmButtonText: "نعم",
-            cancelButtonText: "لا",
-            showCancelButton: true,
-            showCloseButton: true
+            title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "Cancel",
         }).then((result) => {
             if (result.isConfirmed) {
                 deleteItem(id);

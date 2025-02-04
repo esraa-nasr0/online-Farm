@@ -74,10 +74,17 @@ function BreadingTable() {
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             confirmButtonText: 'Yes, delete it!',
-        }).then((result) => {
-            if (result.isConfirmed) {
-                deleteItem(id);
-            }
+        }).then(async (result) => {
+              if (result.isConfirmed) {
+                   try {
+                     await deleteBreeding(id);
+                     setBreading(breading.filter((breeding) => breeding._id !== id));
+                     Swal.fire("Deleted!", "Your breeding has been deleted.", "success");
+                   } catch (error) {
+                     console.error("Error deleting breeding:", error);
+                     Swal.fire("Error!", "Failed to delete the breeding. Please try again.", "error");
+                   }
+                 }
         });
     };
 
@@ -97,7 +104,7 @@ function BreadingTable() {
         const buttons = [];
         const total = pagination.totalPages;
     
-        // إذا كانت totalPages أكبر من 1، سيتم عرض الأزرار
+  
         for (let i = 1; i <= total; i++) {
             buttons.push(
                 <li key={i} className={`page-item ${i === currentPage ? 'active' : ''}`}>
@@ -212,15 +219,9 @@ function BreadingTable() {
                                             >
                                                 <FaRegEdit /> Edit
                                             </td>
-                                            <td>
-                                                <button
-                                                    onClick={() => handleClick(breeding._id)}
-                                                    className="btn"
-                                                    style={{ cursor: 'pointer', color: "#ff0000" }}
-                                                >
-                                                    <RiDeleteBin6Line /> Delete
-                                                </button>
-                                            </td>
+                                           <td onClick={() => handleClick(breeding._id)} className="text-danger" style={{ cursor: "pointer" }}>
+                                                             <RiDeleteBin6Line /> Remove
+                                                           </td>
                                         </tr>
                                     ))}
                                 </tbody>

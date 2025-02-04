@@ -65,21 +65,17 @@ function FeedingTable() {
       cancelButtonColor: '#d33',
       confirmButtonText: 'Yes, delete it!',
     }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await Deletfeed(id); // استدعاء دالة الحذف
-          setFeedData(feedData.filter((feed) => feed._id !== id));
-          Swal.fire("تم الحذف!", "تم حذف السجل بنجاح.", "success");
-          setIsLoading(true); // تشغيل حالة التحميل أثناء جلب البيانات
-          await fetchFeedData(); // إعادة جلب البيانات
-        } catch (error) {
-          console.error("خطأ أثناء حذف السجل:", error);
-          Swal.fire("خطأ!", "فشل في حذف السجل. يرجى المحاولة مرة أخرى.", "error");
-        } finally {
-          setIsLoading(false); // إيقاف حالة التحميل
-        }
-      }
-    });
+          if (result.isConfirmed) {
+            try {
+              await Deletfeed(id);
+              setFeedData(feedData.filter((feedShed) => feedShed._id !== id));
+              Swal.fire("Deleted!", "Your feedShed has been deleted.", "success");
+            } catch (error) {
+              console.error("Error deleting feedShed:", error);
+              Swal.fire("Error!", "Failed to delete the feedShed. Please try again.", "error");
+            }
+          }
+        });
   };
 
   const Editfeed = (id) => {
@@ -166,13 +162,9 @@ function FeedingTable() {
                                         >
                                           <FaRegEdit/> Edit
                                         </td> */}
-                    <td
-                      onClick={() => handleDelete(item._id)}
-                      className="text-danger"
-                      style={{ cursor: "pointer" }}
-                    >
-                      <RiDeleteBin6Line /> Remove
-                    </td>
+                      <td onClick={() => handleDelete(item._id)} className="text-danger" style={{ cursor: "pointer" }}>
+                                        <RiDeleteBin6Line /> Remove
+                                      </td>
                        
                   </tr>
                 ))
