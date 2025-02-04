@@ -65,18 +65,23 @@ function FeedingTable() {
       cancelButtonColor: '#d33',
       confirmButtonText: 'Yes, delete it!',
     }).then(async (result) => {
-          if (result.isConfirmed) {
-            try {
-              await Deletfeed(id);
-              setFeedData(feedData.filter((feedShed) => feedShed._id !== id));
-              Swal.fire("Deleted!", "Your feedShed has been deleted.", "success");
-            } catch (error) {
-              console.error("Error deleting feedShed:", error);
-              Swal.fire("Error!", "Failed to delete the feedShed. Please try again.", "error");
-            }
-          }
-        });
+      if (result.isConfirmed) {
+        try {
+          // محاولة حذف السجل من الخادم
+          await Deletfeed(id);
+  
+          // إعادة جلب البيانات بعد الحذف
+          await fetchFeedData();  // جلب البيانات المحدثة بعد الحذف
+  
+          Swal.fire("Deleted!", "Your feedShed has been deleted.", "success");
+        } catch (error) {
+          console.error("Error deleting feedShed:", error);
+          Swal.fire("Error!", "Failed to delete the feedShed. Please try again.", "error");
+        }
+      }
+    });
   };
+  
 
   const Editfeed = (id) => {
     navigate(`/editfeedbylocation/${id}`);

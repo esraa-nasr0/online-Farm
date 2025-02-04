@@ -113,7 +113,7 @@ export default function FodderTable() {
                     </div>
                     <div className='container mt-4'>
                         <div className="d-flex flex-column flex-md-row align-items-center gap-2" style={{ flexWrap: 'nowrap' }}>
-                            <input type="text" className="form-control" placeholder="Search by Tag ID" value={searchName} onChange={(e) => setSearchName(e.target.value)} style={{ flex: 1 }} />
+                            <input type="text" className="form-control" placeholder="Search by Name" value={searchName} onChange={(e) => setSearchName(e.target.value)} style={{ flex: 1 }} />
                             <button className="btn mb-2 me-2" onClick={handleSearch} style={{ backgroundColor: '#88522e', borderColor: '#88522e', color: 'white' }}>
                                 <i className="fas fa-search"></i>
                             </button>
