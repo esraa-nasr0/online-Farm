@@ -107,15 +107,11 @@ function FeedingTable() {
              <div className="d-flex container flex-column flex-md-row justify-content-between align-items-center mb-4" style={{ marginTop: "140px" }}>
                        <h2 style={{ color: "#88522e" }} className="bottom-line pb-2">Feed Records for sheds</h2>
                                                 <div className='d-flex flex-column flex-sm-row gap-2'>
-                          <Link to="/feed">
+                          <Link to="/feedbylocation">
                         <button type="button " className="btn btn-lg active" style={{ background: "#88522e", color: "white", borderColor: "#3a7d44" }}>
                           <MdOutlineAddToPhotos /> Add New Feed
                         </button>
-                      </Link> <Link to="/feedlocationtable">
-                        <button type="button" className="btn btn-lg active" style={{ background: "#88522e", color: "white", borderColor: "#3a7d44" }}>
-                          <MdOutlineAddToPhotos /> Add New Feed
-                        </button>
-                      </Link>
+                      </Link> 
                                                   </div>
                    
                                             </div>
