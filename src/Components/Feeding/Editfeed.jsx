@@ -2,9 +2,11 @@ import axios from 'axios';
 import { useFormik } from 'formik';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-
+import { useNavigate } from 'react-router-dom'; 
+import Swal from 'sweetalert2';
 export default function Editfeed() {
   let { id } = useParams();
+      const navigate = useNavigate()
   const Authorization = localStorage.getItem('Authorization');
   const headers = {
     Authorization: `Bearer ${Authorization}`,
@@ -25,18 +27,34 @@ concentrationOfDryMatter: '',
     onSubmit: async (values) => {
       try {
         setIsLoading(true);
-        const req = await axios.patch(
+        const response = await axios.patch(
           `https://farm-project-bbzj.onrender.com/api/feed/updatefeed/${id}`,
           values,
           { headers }
         );
-        console.log(req);
-      } catch (err) {
-        setError('Failed to update the feed');
-        console.error(err);
-      } finally {
-        setIsLoading(false);
-      }
+        console.log(response);
+       if (response.data.status === "success") {
+                                   Swal.fire({
+                                       title: "Success!",
+                                       text: "Data has been submitted successfully!",
+                                       icon: "success",
+                                       confirmButtonText: "OK",
+                                   }).then(() => navigate('/feedingTable'));
+                         console.log('API Response:', response.data);
+                
+                     }}
+                     catch (err) {
+                       
+                               Swal.fire({
+                                   title: "Error!",
+                                   text: err.response?.data?.message || "An error occurred while submitting data.",
+                                   icon: "error",
+                                   confirmButtonText: "OK",
+                               });
+                           
+                           } finally {
+                               setIsLoading(false);
+                           }
     },
   });
 
@@ -47,6 +65,8 @@ concentrationOfDryMatter: '',
           `https://farm-project-bbzj.onrender.com/api/feed/getsinglefeed/${id}`,
           { headers }
         );
+        // console.log(data);
+        
         if (data.data.feed) {
           const feed = data.data.feed;
           formik.setValues({

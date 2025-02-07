@@ -125,16 +125,17 @@ setTotalPages(data.pagination.totalPages);
                         <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4" style={{ marginTop: "140px" }}>
                             <h2 className="bottom-line pb-2" style={{ color: "#88522e" }}>Vaccine Records</h2>
                             <div className='d-flex flex-column flex-sm-row gap-2'>
-                                <Link to='/vaccinebylocationshed'>
-                                    <button type="button" className="btn btn-lg active button2" style={{ background: "#88522e", color: "white", borderColor: "#3a7d44" }}>
-                                        <MdOutlineAddToPhotos /> Add New Vaccine by Location Shed
-                                    </button>
-                                </Link>
-                                <Link to='/vaccinebyanimal'>
+                            <Link to='/vaccinebyanimal'>
                                     <button type="button" className="btn btn-lg d-flex align-items-center justify-content-center active button2" style={{ background: "#88522e", color: "white", borderColor: "#3a7d44" }}>
                                         <MdOutlineAddToPhotos /> Add New Vaccine by Animal
                                     </button>
                                 </Link>
+                                <Link to='/vaccinebylocationshed'>
+                                    <button type="button" className="btn btn-lg active button2" style={{ background: "#88522e", color: "white", borderColor: "#3a7d44" }}>
+                                        <MdOutlineAddToPhotos />+ by Location Shed
+                                    </button>
+                                </Link>
+                              
                             </div>
                         </div>
 

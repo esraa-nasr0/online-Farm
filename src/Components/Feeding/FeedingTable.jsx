@@ -96,12 +96,12 @@ function FeedingTable() {
     <>
       {isLoading ? (
         <div className="animal">
-          <Rings visible={true} height="100" width="100" color="#2f5e97" ariaLabel="rings-loading" />
+          <Rings visible={true} height="100" width="100" color="#3f5c40" ariaLabel="rings-loading" />
         </div>
       ) : (
         <div className="">
              <div className="d-flex container flex-column flex-md-row justify-content-between align-items-center mb-4" style={{ marginTop: "140px" }}>
-             <h2 style={{ color: "#88522e" }}>Feed Records</h2>
+             <h2 style={{ color: "#88522e" }} className="bottom-line pb-2">Feed Records</h2>
                                       <div className='d-flex flex-column flex-sm-row gap-2'>
                 <Link to="/feed">
               <button type="button" className="btn btn-lg active" style={{ background: "#88522e", color: "white", borderColor: "#3a7d44" }}>
@@ -137,10 +137,12 @@ function FeedingTable() {
             </button>
           </div>
           <div className="full-width-table"  >
+
+
+        
           <table className="table table-striped text-center mt-4">
-            
             <thead>
-              <tr>
+            <tr>
                 <th scope="col">Feed Name</th>
                 <th scope="col">Type</th>
                 <th scope="col">Price</th>
@@ -196,3 +198,11 @@ function FeedingTable() {
 }
 
 export default FeedingTable;
+
+
+
+
+
+
+
+

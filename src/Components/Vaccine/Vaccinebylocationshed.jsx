@@ -106,19 +106,18 @@ function Vaccinebylocationshed() {
 
                     <div className="input-box">
                         <label className="label" htmlFor="givenEvery">Given Every</label>
-                        <select
+                       
+                        <input
                             id="givenEvery"
                             name="givenEvery"
+                            type="text"
                             className="input2"
+                            placeholder="Enter vaccine name"
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             value={formik.values.givenEvery}
-                        >
-                            <option value="">Select interval</option>
-                            <option value="90">3 months (90 days)</option>
-                            <option value="180">6 months (180 days)</option>
-                            <option value="365">12 months (365 days)</option>
-                        </select>
+                        />
+                    
                     </div>
 
                     <div className="input-box">

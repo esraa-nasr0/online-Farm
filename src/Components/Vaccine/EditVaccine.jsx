@@ -3,12 +3,13 @@ import React, { useEffect, useState } from 'react';
 import { IoIosSave } from "react-icons/io";
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-
+import { useNavigate } from 'react-router-dom'; 
+import Swal from 'sweetalert2';
 function EditVaccine() {
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const { id } = useParams();
-
+  const navigate = useNavigate()
     const Authorization = localStorage.getItem('Authorization');
     const headers = {
         Authorization: `Bearer ${Authorization}`,  // Fixed Authorization header
@@ -42,34 +43,34 @@ function EditVaccine() {
     useEffect(() => {
         async function fetchVaccine() {
             try {
-                const { data } = await axios.get(
+                const response = await axios.get(
                     `https://farm-project-bbzj.onrender.com/api/vaccine/GetSingleVaccine/${id}`,  // Fixed URL string
                     { headers }
                 );
-                console.log("API response:", data);
+              
     
-                if (data && data.data && data.data.vaccine) {
-                    const vaccine = data.data.vaccine;
-                    
-                    const vaccinationLog = vaccine.vaccinationLog && vaccine.vaccinationLog.length > 0 
-                        ? vaccine.vaccinationLog[0] 
-                        : {};
-    
-                    formik.setValues({
-                        vaccineName: vaccine.vaccineName || '',
-                        givenEvery: vaccine.givenEvery || '',
-                        tagId: vaccinationLog.tagId || '',
-                        DateGiven: vaccinationLog.DateGiven 
-                            ? new Date(vaccinationLog.DateGiven).toISOString().split('T')[0] 
-                            : '',
-                    });
-                } else {
-                    throw new Error("Unexpected API response structure");
-                }
-            } catch (error) {
-                console.error("فشل في جلب بيانات اللقاح:", error);
-                setError("فشل في جلب تفاصيل اللقاح.");
-            }
+             if (response.data.status === "success") {
+                                        Swal.fire({
+                                            title: "Success!",
+                                            text: "Data has been submitted successfully!",
+                                            icon: "success",
+                                            confirmButtonText: "OK",
+                                        }).then(() => navigate('/vaccineTable'));
+                              console.log('API Response:', response.data);
+                     
+                          }}
+                          catch (err) {
+                            
+                                    Swal.fire({
+                                        title: "Error!",
+                                        text: err.response?.data?.message || "An error occurred while submitting data.",
+                                        icon: "error",
+                                        confirmButtonText: "OK",
+                                    });
+                                
+                                } finally {
+                                    setIsLoading(false);
+                                }
         }
         fetchVaccine();
     }, [id]);
@@ -112,19 +113,16 @@ function EditVaccine() {
 
                     <div className="input-box">
                         <label className="label" htmlFor="givenEvery">Given Every</label>
-                        <select
+                        <input
                             id="givenEvery"
                             name="givenEvery"
+                            type="text"
                             className="input2"
+                            placeholder="Enter givenEvery"
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             value={formik.values.givenEvery}
-                        >
-                            <option value="">Select interval</option>
-                            <option value="90">3 months (90 days)</option>
-                            <option value="180">6 months (180 days)</option>
-                            <option value="365">12 months (365 days)</option>
-                        </select>
+                        />
                     </div>
 
                     <div className="input-box">
