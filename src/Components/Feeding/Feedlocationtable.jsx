@@ -26,10 +26,12 @@ function FeedingTable() {
   const fetchFeedData = async () => {
     try {
       const filters = { locationShed: searchCriteria.locationShed, date: searchCriteria.date };
-      console.log("Filters:", filters);  // إضافة log للتأكد من أن التاريخ يتم إرساله بشكل صحيح
+      console.log("Filters:", filters);  
       setIsLoading(true);
     
       const { data } = await getAllfeeds(currentPage, animalsPerPage, filters);
+      console.log(data);
+      
       setFeedData(data.data.feedShed || []);
       setTotalPages(data.pagination?.totalPages ?? 1);
     } catch (error) {
@@ -43,11 +45,11 @@ function FeedingTable() {
 
   const handleSearch = () => {
     setCurrentPage(1);
-    fetchFeedData(); // استدعاء البيانات بناءً على معايير البحث
+    fetchFeedData();
   };
 
   useEffect(() => {
-    fetchFeedData(); // جلب البيانات عند تحميل الصفحة
+    fetchFeedData(); 
   }, [currentPage]);
 
 
@@ -67,11 +69,11 @@ function FeedingTable() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          // محاولة حذف السجل من الخادم
+         
           await Deletfeed(id);
   
-          // إعادة جلب البيانات بعد الحذف
-          await fetchFeedData();  // جلب البيانات المحدثة بعد الحذف
+          
+          await fetchFeedData();  
   
           Swal.fire("Deleted!", "Your feedShed has been deleted.", "success");
         } catch (error) {
@@ -149,6 +151,7 @@ function FeedingTable() {
                 <th scope="col">Quantity</th>
                 <th scope="col">Date</th>
                 <th scope="col">Feed Name</th>
+                <th scope="col">Feed Price</th>
                     {/* <th>Edit</th> */}
                     <th>Remove</th>
               </tr>
@@ -160,7 +163,8 @@ function FeedingTable() {
                     <td>{item.locationShed}</td>
                     <td>{item?.feeds?.[0]?.quantity || "N/A"}</td>
                     <td>{item.date ? item.date.split("T")[0] : "N/A"}</td>
-                    <td>{item.feedName}</td>
+                    <td>{item?.feeds?.[0]?.feedName}</td>
+                    <td>{item?.feeds?.[0]?.feedPrice}</td>
                     {/* <td
                                           style={{ cursor: "pointer", color: "#198754" }}
                                           onClick={() => Editfeed(item._id)}
