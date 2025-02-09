@@ -66,7 +66,7 @@ export default function AnimalsDetails() {
         traderName: '',
         purchaseDate: '',
         purchasePrice: '',
-        Teething: '',
+        Teething: null,
         },
         // validationSchema,
         onSubmit:submitAnimals
