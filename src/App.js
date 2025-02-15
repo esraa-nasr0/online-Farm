@@ -60,7 +60,7 @@ import Feed from "./Components/Feeding/Feed.jsx";
 import Fodder from "./Components/Feeding/Fodder.jsx";
 import FodderTable from "./Components/Feeding/FodderTable.jsx";
 import ViewDetailsofAnimal from "./Components/Animals/ViewDetailsofAnimal.jsx";
-
+import EditFodder from "./Components/Feeding/EditFodder.jsx";
 
 
 
@@ -117,6 +117,7 @@ let routers = createBrowserRouter([
       { path: "feedlocationtable", element: <ProtectedRoute><Feedlocationtable/></ProtectedRoute> },
       { path: "fodder", element: <ProtectedRoute><Fodder/></ProtectedRoute> },
       { path: "fodderTable", element: <ProtectedRoute><FodderTable/></ProtectedRoute> },
+      { path: "editFodder/:id", element: <ProtectedRoute><EditFodder/></ProtectedRoute> },
 
 
     ],

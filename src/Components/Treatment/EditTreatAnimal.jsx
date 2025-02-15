@@ -1,205 +1,258 @@
-import axios from 'axios';
-import { useFormik } from 'formik';
-import React, { useEffect, useState } from 'react';
-import Swal from 'sweetalert2';
+import axios from "axios";
+import { useFormik } from "formik";
+import React, { useContext, useEffect, useState } from "react";
+import Swal from "sweetalert2";
 import { IoIosSave } from "react-icons/io";
-import * as Yup from 'yup';
-import { useParams } from 'react-router-dom';
+import * as Yup from "yup";
+import { useParams } from "react-router-dom";
+import { TreatmentContext } from "../../Context/TreatmentContext";
 
 function EditTreatAnimal() {
-    const [error, setError] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
-    const { id } = useParams();
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const { id } = useParams();
+  const { getTreatmentMenue } = useContext(TreatmentContext);
+  const [treatmentData, setTreatmentData] = useState([]);
 
-    const Authorization = localStorage.getItem('Authorization');
-    const headers = { Authorization: `Bearer ${Authorization}` };
+  const Authorization = localStorage.getItem("Authorization");
+  const headers = { Authorization: `Bearer ${Authorization}` };
 
-    // تحويل التاريخ من ISO إلى YYYY-MM-DD
-    const formatDate = (isoString) => {
-        if (!isoString) return "";
-        return isoString.split("T")[0]; // استخراج الجزء الأول فقط YYYY-MM-DD
+  // Fetch treatment menu options
+  useEffect(() => {
+    const fetchTreatments = async () => {
+      try {
+        const { data } = await getTreatmentMenue();
+        if (data.status === "success" && Array.isArray(data.data)) {
+          setTreatmentData(data.data);
+        } else {
+          setTreatmentData([]);
+        }
+      } catch (err) {
+        setError("Failed to load treatment data");
+        setTreatmentData([]);
+      }
     };
+    fetchTreatments();
+  }, [getTreatmentMenue]);
 
-    // Submit the updated treatment data
-    async function submitTreatment(values) {
-        setIsLoading(true);
-        setError(null);
-        try {
-            const { data } = await axios.patch(
-                `https://farm-project-bbzj.onrender.com/api/treatment/updatetreatmentforAnimals/${id}`,
-                values,
-                { headers }
-            );
+  // Format date from ISO to YYYY-MM-DD
+  const formatDate = (isoString) => (isoString ? isoString.split("T")[0] : "");
 
-            if (data.status === "success") {
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'Treatment updated successfully!',
-                    icon: 'success',
-                    confirmButtonText: 'OK',
-                });
-            }
-        } catch (err) {
-            setError(err.response?.data?.message || 'An error occurred');
-        } finally {
-            setIsLoading(false);
+  // Validation schema
+  const validationSchema = Yup.object({
+    tagId: Yup.string().required("Tag ID is required"),
+    locationShed: Yup.string().required("Location Shed is required"),
+    date: Yup.date().required("Date is required"),
+    treatments: Yup.array()
+      .of(
+        Yup.object({
+          treatmentId: Yup.string().required("Treatment ID is required"),
+          volume: Yup.number()
+            .required("Volume is required")
+            .positive("Volume must be positive")
+            .typeError("Volume must be a valid number"),
+        })
+      )
+      .min(1, "At least one treatment must be selected"),
+  });
+
+  // Formik initialization
+  const formik = useFormik({
+    initialValues: {
+      tagId: "",
+      locationShed: "",
+      date: "",
+      treatments: [{ treatmentId: "", volume: "" }],
+    },
+    validationSchema,
+    onSubmit: async (values) => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const { data } = await axios.patch(
+          `https://farm-project-bbzj.onrender.com/api/treatment/updatetreatmentforAnimals/${id}`,
+          values,
+          { headers }
+        );
+
+        if (data.status === "success") {
+          Swal.fire({
+            title: "Success!",
+            text: "Treatment updated successfully!",
+            icon: "success",
+            confirmButtonText: "OK",
+          });
         }
-    }
+      } catch (err) {
+        setError(err.response?.data?.message || "An error occurred");
+      } finally {
+        setIsLoading(false);
+      }
+    },
+  });
 
-    // Fetch the treatment data
-    useEffect(() => {
-        async function fetchTreatment() {
-            setError(null);
-            try {
-                const { data } = await axios.get(
-                    `https://farm-project-bbzj.onrender.com/api/treatment/getsingletreatmentforAnimals/${id}`,
-                    { headers }
-                );
-                console.log("API response:", data);
+  // Fetch the treatment data
+  useEffect(() => {
+    const fetchTreatment = async () => {
+      setError(null);
+      try {
+        const { data } = await axios.get(
+          `https://farm-project-bbzj.onrender.com/api/treatment/getsingletreatmentforAnimals/${id}`,
+          { headers }
+        );
 
-                if (data && data.data && data.data.treatmentShed) {
-                    const treatment = data.data.treatmentShed;
-
-                    // Populate Formik with the fetched data
-                    formik.setValues({
-                        tagId: treatment.tagId || '',
-                        locationShed: treatment.locationShed || '',
-                        treatmentName: treatment.treatments[0]?.treatmentName || '',
-                        volume: treatment.treatments[0]?.volume || '',
-                        date: formatDate(treatment.date) || '', // تحويل التاريخ هنا
-                    });
-                } else {
-                    throw new Error("Unexpected API response structure");
-                }
-            } catch (error) {
-                console.error("Failed to fetch treatment data:", error);
-                setError("Failed to fetch treatment details.");
-            }
+        if (data?.data?.treatmentShed) {
+          const treatment = data.data.treatmentShed;
+          formik.setValues({
+            tagId: treatment.tagId || "",
+            locationShed: treatment.locationShed || "",
+            date: formatDate(treatment.date) || "",
+            treatments:
+              treatment.treatments?.map((comp) => ({
+                treatmentId: comp.treatmentId || "",
+                volume: comp.volume || "",
+              })) || [{ treatmentId: "", volume: "" }],
+          });
+        } else {
+          throw new Error("Unexpected API response structure");
         }
-        fetchTreatment();
-    }, [id]);
+      } catch (error) {
+        console.error("Failed to fetch treatment data:", error);
+        setError("Failed to fetch treatment details.");
+      }
+    };
+    fetchTreatment();
+  }, [id]);
 
-    // Validation schema for Formik
-    const validationSchema = Yup.object({
-        tagId: Yup.string().required('Tag ID is required'),
-        locationShed: Yup.string().required('Location Shed is required'),
-        treatmentName: Yup.string().required('Treatment Name is required'),
-        volume: Yup.number().required('Volume is required').positive('Volume must be positive'),
-        date: Yup.date().required('Date is required'),
-    });
+  // Add new treatment row
+  const addTreat = () => {
+    formik.setFieldValue("treatments", [
+      ...formik.values.treatments,
+      { treatmentId: "", volume: "" },
+    ]);
+  };
 
-    // Initialize Formik
-    const formik = useFormik({
-        initialValues: {
-            tagId: "",
-            locationShed: "",
-            date: "",
-            treatmentName: "",
-            volume: "",
-        },
-        validationSchema,
-        onSubmit: submitTreatment,
-    });
+  // Handle treatment change
+  const handleTreatmentChange = (e, index) => {
+    const { name, value } = e.target;
+    const treatments = [...formik.values.treatments];
+    treatments[index][name] = value;
+    formik.setFieldValue("treatments", treatments);
+  };
 
-    return (
-        <div className='container'>
-            <div className="title2">Edit Treatment</div>
-            {error && <p className="text-danger">{error}</p>}
-            <form onSubmit={formik.handleSubmit} className='mt-5'>
-                {isLoading ? (
-                    <button type="submit" className="btn button2" disabled>
-                        <i className="fas fa-spinner fa-spin"></i>
-                    </button>
-                ) : (
-                    <button type="submit" className="btn button2">
-                        <IoIosSave /> Save
-                    </button>
-                )}
+  return (
+    <div className="container">
+      <div className="title2">Edit Treatment</div>
+      {error && <p className="text-danger">{error}</p>}
+      <form onSubmit={formik.handleSubmit} className="mt-5">
+        {isLoading ? (
+          <button type="submit" className="btn button2" disabled>
+            <i className="fas fa-spinner fa-spin"></i>
+          </button>
+        ) : (
+          <button type="submit" className="btn button2">
+            <IoIosSave /> Save
+          </button>
+        )}
 
-                <div className='animaldata'>
-                    <div className="input-box">
-                        <label className="label" htmlFor="tagId">Tag ID</label>
-                        <input
-                            autoComplete="off"
-                            onBlur={formik.handleBlur}
-                            onChange={formik.handleChange}
-                            value={formik.values.tagId}
-                            id="tagId"
-                            type="text"
-                            className="input2"
-                            name="tagId"
-                            aria-label="Tag ID"
-                        />
-                        {formik.errors.tagId && formik.touched.tagId && <p className="text-danger">{formik.errors.tagId}</p>}
-                    </div>
+        <div className="animaldata">
+          <div className="input-box">
+            <label className="label" htmlFor="tagId">
+              Tag ID
+            </label>
+            <input
+              autoComplete="off"
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              value={formik.values.tagId}
+              id="tagId"
+              type="text"
+              className="input2"
+              name="tagId"
+              aria-label="Tag ID"
+            />
+          </div>
 
-                    <div className="input-box">
-                        <label className="label" htmlFor="locationShed">Location Shed</label>
-                        <input
-                            autoComplete="off"
-                            onBlur={formik.handleBlur}
-                            onChange={formik.handleChange}
-                            value={formik.values.locationShed}
-                            id="locationShed"
-                            type="text"
-                            className="input2"
-                            name="locationShed"
-                            aria-label="Location Shed"
-                        />
-                        {formik.errors.locationShed && formik.touched.locationShed && <p className="text-danger">{formik.errors.locationShed}</p>}
-                    </div>
+          <div className="input-box">
+            <label className="label" htmlFor="locationShed">
+              Location Shed
+            </label>
+            <input
+              autoComplete="off"
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              value={formik.values.locationShed}
+              id="locationShed"
+              type="text"
+              className="input2"
+              name="locationShed"
+              aria-label="Location Shed"
+            />
+          </div>
 
-                    <div className="input-box">
-                        <label className="label" htmlFor="treatmentName">Treatment Name</label>
-                        <input
-                            autoComplete="off"
-                            onBlur={formik.handleBlur}
-                            onChange={formik.handleChange}
-                            value={formik.values.treatmentName}
-                            id="treatmentName"
-                            type="text"
-                            className="input2"
-                            name="treatmentName"
-                            aria-label="Treatment Name"
-                        />
-                        {formik.errors.treatmentName && formik.touched.treatmentName && <p className="text-danger">{formik.errors.treatmentName}</p>}
-                    </div>
+          <div className="input-box">
+            <label className="label" htmlFor="date">
+              Date
+            </label>
+            <input
+              autoComplete="off"
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              value={formik.values.date}
+              id="date"
+              type="date"
+              className="input2"
+              name="date"
+              aria-label="Date of Treatment"
+            />
+          </div>
 
-                    <div className="input-box">
-                        <label className="label" htmlFor="volume">Volume</label>
-                        <input
-                            autoComplete="off"
-                            onBlur={formik.handleBlur}
-                            onChange={formik.handleChange}
-                            value={formik.values.volume}
-                            id="volume"
-                            type="number"
-                            className="input2"
-                            name="volume"
-                            aria-label="Treatment Volume"
-                        />
-                        {formik.errors.volume && formik.touched.volume && <p className="text-danger">{formik.errors.volume}</p>}
-                    </div>
+          {formik.values.treatments.map((treatment, index) => (
+            <div key={index} className="input-box">
+              <label className="label" htmlFor={`treatmentId-${index}`}>
+                Treatment Name
+              </label>
+              <select
+                id={`treatmentId-${index}`}
+                name="treatmentId"
+                className="input2"
+                value={treatment.treatmentId}
+                onChange={(e) => handleTreatmentChange(e, index)}
+                onBlur={formik.handleBlur}
+                aria-label="Treatment Name"
+              >
+                <option value="">Select Treatment</option>
+                {treatmentData.map((option) => (
+                  <option key={option._id} value={option._id}>
+                    {option.name}
+                  </option>
+                ))}
+              </select>
 
-                    <div className="input-box">
-                        <label className="label" htmlFor="date">Date</label>
-                        <input
-                            autoComplete="off"
-                            onBlur={formik.handleBlur}
-                            onChange={formik.handleChange}
-                            value={formik.values.date} 
-                            id="date"
-                            type="date"
-                            className="input2"
-                            name="date"
-                            aria-label="Date of Treatment"
-                        />
-                        {formik.errors.date && formik.touched.date && <p className="text-danger">{formik.errors.date}</p>}
-                    </div>
-                </div>
-            </form>
+              <label className="label" htmlFor={`volume-${index}`}>
+                Volume
+              </label>
+              <input
+                autoComplete="off"
+                onBlur={formik.handleBlur}
+                onChange={(e) => handleTreatmentChange(e, index)}
+                value={treatment.volume}
+                id={`volume-${index}`}
+                type="number"
+                className="input2"
+                name="volume"
+                aria-label="Treatment Volume"
+            />
+            </div>
+          ))}
         </div>
-    );
+        
+        <button type="button" onClick={addTreat} className="btn button2">
+            + 
+        </button>
+      </form>
+    </div>
+  );
 }
 
 export default EditTreatAnimal;

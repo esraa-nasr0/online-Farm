@@ -4,7 +4,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { FaRegEdit } from "react-icons/fa";
 import { Feedcontext } from '../../Context/FeedContext';
 import Swal from 'sweetalert2';
-import { Link } from 'react-router-dom';
+import { Link , useNavigate } from 'react-router-dom';
 import { MdOutlineAddToPhotos } from "react-icons/md";
 
 
@@ -14,6 +14,7 @@ export default function FodderTable() {
     const [fodder, setFodder] = useState([]);
     const [error, setError] = useState(null);
     const [searchName, setSearchName] = useState('');
+    const navigate = useNavigate();
 
     const [currentPage, setCurrentPage] = useState(1);
     const [FodderPerPage] = useState(10);
@@ -92,6 +93,9 @@ export default function FodderTable() {
             );
         }
         return buttons;
+    }
+    const editFodder = (id) => {
+        navigate(`/editFodder/${id}`);
     };
 
     return (
@@ -142,6 +146,7 @@ export default function FodderTable() {
                                         <td>{item.totalQuantity}</td>
                                         <td>{item.totalPrice}</td>
                                         <td 
+                                        onClick={() => editFodder(item._id)}
                                             className="text-success"
                                             style={{ cursor: 'pointer' }}>
                                             <FaRegEdit /> Edit Fodder
