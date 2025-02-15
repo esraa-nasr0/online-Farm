@@ -14,6 +14,12 @@ function EditTreatAnimal() {
     const Authorization = localStorage.getItem('Authorization');
     const headers = { Authorization: `Bearer ${Authorization}` };
 
+    // تحويل التاريخ من ISO إلى YYYY-MM-DD
+    const formatDate = (isoString) => {
+        if (!isoString) return "";
+        return isoString.split("T")[0]; // استخراج الجزء الأول فقط YYYY-MM-DD
+    };
+
     // Submit the updated treatment data
     async function submitTreatment(values) {
         setIsLoading(true);
@@ -58,9 +64,9 @@ function EditTreatAnimal() {
                     formik.setValues({
                         tagId: treatment.tagId || '',
                         locationShed: treatment.locationShed || '',
-                        treatmentName: treatment.treatmentName || '',
-                        volume: treatment.volume || '',
-                        date: treatment.date || '',
+                        treatmentName: treatment.treatments[0]?.treatmentName || '',
+                        volume: treatment.treatments[0]?.volume || '',
+                        date: formatDate(treatment.date) || '', // تحويل التاريخ هنا
                     });
                 } else {
                     throw new Error("Unexpected API response structure");
@@ -81,21 +87,19 @@ function EditTreatAnimal() {
         volume: Yup.number().required('Volume is required').positive('Volume must be positive'),
         date: Yup.date().required('Date is required'),
     });
-    
 
     // Initialize Formik
     const formik = useFormik({
         initialValues: {
             tagId: "",
             locationShed: "",
+            date: "",
             treatmentName: "",
             volume: "",
-            date: "",
         },
         validationSchema,
         onSubmit: submitTreatment,
     });
-    
 
     return (
         <div className='container'>
@@ -183,12 +187,12 @@ function EditTreatAnimal() {
                             autoComplete="off"
                             onBlur={formik.handleBlur}
                             onChange={formik.handleChange}
-                            value={formik.values.price}
+                            value={formik.values.date} 
                             id="date"
                             type="date"
                             className="input2"
                             name="date"
-                            aria-label="Date of Treatment "
+                            aria-label="Date of Treatment"
                         />
                         {formik.errors.date && formik.touched.date && <p className="text-danger">{formik.errors.date}</p>}
                     </div>

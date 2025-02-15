@@ -151,7 +151,7 @@ function TreatAnimalTable() {
                                 <th scope="col">Treatment Name</th>
                                 <th scope="col">Volume</th>
                                 <th scope="col">Date</th>
-                                {/* <th scope="col">Edit Treatment</th> */}
+                                <th scope="col">Edit Treatment</th>
                                 <th scope="col">Remove Treatment</th>
                             </tr>
                         </thead>
@@ -165,9 +165,9 @@ function TreatAnimalTable() {
                                         <td>{item.treatments && item.treatments[0] ? item.treatments[0].treatmentName : "No Treatment"}</td>
                                         <td>{item.treatments && item.treatments[0] ? item.treatments[0].volume : "N/A"}</td>
                                         <td>{new Date(item.date).toLocaleDateString()}</td>
-                                        {/* <td onClick={() => editTreatment(item._id)} className="text-success" style={{ cursor: 'pointer' }}>
+                                        <td onClick={() => editTreatment(item._id)} className="text-success" style={{ cursor: 'pointer' }}>
                                             <FaRegEdit /> Edit Treatment
-                                        </td> */}
+                                        </td>
                                         <td onClick={() => confirmDelete(item._id)} className="text-danger" style={{ cursor: 'pointer' }}>
                                             <RiDeleteBin6Line /> Remove Treatment
                                         </td>

@@ -3,6 +3,7 @@ import { createContext } from "react";
 
 export let TreatmentContext = createContext();
 
+
 let Authorization = localStorage.getItem('Authorization');
 let headers = {
     Authorization: `Bearer ${Authorization}`
