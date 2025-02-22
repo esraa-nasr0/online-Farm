@@ -4,12 +4,20 @@ import { createContext } from "react";
 export let TreatmentContext = createContext();
 
 
-let Authorization = localStorage.getItem('Authorization');
-let headers = {
-    Authorization: `Bearer ${Authorization}`
-};
+// Helper function to generate headers with the latest token
+const getHeaders = () => {
+    const Authorization = localStorage.getItem('Authorization');
+  
+    // Ensure the token has only one "Bearer" prefix
+    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+  
+    return {
+        Authorization: formattedToken
+    };
+  };
 
 function getTreatment(page, limit, filters = {}) {
+    const headers = getHeaders(); // Get the latest headers
     return axios
         .get(`https://farm-project-bbzj.onrender.com/api/treatment/getalltreatmentes`, {
             params: {
@@ -22,6 +30,7 @@ function getTreatment(page, limit, filters = {}) {
 }
 
 function deleteTreatment(id) {
+    const headers = getHeaders(); // Get the latest headers
     return axios
         .delete(`https://farm-project-bbzj.onrender.com/api/treatment/deletetreatment/${id}`, { headers })
         .then((response) => response)
@@ -29,6 +38,7 @@ function deleteTreatment(id) {
 }
 
 function getTreatmentByAnimal(page, limit, filters = {}) {
+    const headers = getHeaders(); // Get the latest headers
     return axios
         .get(`https://farm-project-bbzj.onrender.com/api/treatment/getAlltreatmentforAnimals`, {
             params: {
@@ -42,6 +52,7 @@ function getTreatmentByAnimal(page, limit, filters = {}) {
 }
 
 function deleteTreatmentByAnimal(id) {
+    const headers = getHeaders(); // Get the latest headers
     return axios
         .delete(`https://farm-project-bbzj.onrender.com/api/treatment/deletetreatmentforAnimals/${id}`, { headers })
         .then((response) => response)
@@ -50,6 +61,7 @@ function deleteTreatmentByAnimal(id) {
 
 
 function getTreatmentMenue() {
+    const headers = getHeaders(); // Get the latest headers
     return axios
         .get(`https://farm-project-bbzj.onrender.com/api/treatment/gettreatments`, { headers })
         .then((response) => response)

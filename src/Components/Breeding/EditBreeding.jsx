@@ -4,7 +4,6 @@ import * as Yup from 'yup';
 import axios from 'axios';
 import { IoIosSave } from 'react-icons/io';
 import { useParams } from 'react-router-dom';
-import { UserContext } from "../../Context/UserContext";
 
 export default function EditBreeding() {
     const { id } = useParams(); // Get the ID from URL parameters
@@ -12,13 +11,21 @@ export default function EditBreeding() {
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [birthEntries, setBirthEntries] = useState([{ tagId: '', gender: '', birthweight: '', expectedWeaningDate: '' }]);
-    const { Authorization } = useContext(UserContext); // Get Authorization from context
-
-    const headers = {
-        Authorization: `Bearer ${Authorization}`
+    
+// Helper function to generate headers with the latest token
+const getHeaders = () => {
+    const Authorization = localStorage.getItem('Authorization');
+  
+    // Ensure the token has only one "Bearer" prefix
+    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+  
+    return {
+        Authorization: formattedToken
     };
+  };
 
     async function fetchBreedingData() {
+        const headers = getHeaders(); // Get the latest headers
         setIsLoading(true);
         try {
             const response = await axios.get(
@@ -55,13 +62,13 @@ export default function EditBreeding() {
     }, [id]);
 
     const editBreeding = async (values) => {
+        const headers = getHeaders(); // Get the latest headers
         setIsLoading(true);
         try {
             const dataToSubmit = {
                 ...values,
                 birthEntries,
             };
-
             const { data } = await axios.patch(
                 `https://farm-project-bbzj.onrender.com/api/breeding/UpdateBreeding/${id}`,
                 dataToSubmit,

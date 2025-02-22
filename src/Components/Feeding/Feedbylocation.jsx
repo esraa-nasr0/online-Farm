@@ -1,19 +1,31 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { useFormik } from 'formik';
 import { IoIosSave } from 'react-icons/io';
-import { UserContext } from "../../Context/UserContext";
 import axios from 'axios';
 import { Feedcontext } from '../../Context/FeedContext';
 import Swal from 'sweetalert2';
 import { useNavigate } from "react-router-dom";
+
 export default function Feedbylocation() {
   const [error, setError] = useState(null);
-       const [showAlert, setShowAlert] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { Authorization } = useContext(UserContext);
   const [feeds, setFeeds] = useState([]);
   const { getFodderMenue } = useContext(Feedcontext);
   const navigate = useNavigate()
+
+  
+// Helper function to generate headers with the latest token
+const getHeaders = () => {
+  const Authorization = localStorage.getItem('Authorization');
+
+  // Ensure the token has only one "Bearer" prefix
+  const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+
+  return {
+      Authorization: formattedToken
+  };
+};
 
   const fetchFeeds = async () => {
     try {
@@ -31,6 +43,8 @@ export default function Feedbylocation() {
   }, [getFodderMenue]);
 
   async function post(values) {
+    const headers = getHeaders(); // Get the latest headers
+
     try {
       setIsLoading(true);
       setError(null);
@@ -38,9 +52,7 @@ export default function Feedbylocation() {
         "https://farm-project-bbzj.onrender.com/api/feed/addfeedbylocationshed", 
         values,
         {
-          headers: {
-            Authorization: `Bearer ${Authorization}`,
-          }
+          headers
         }
       );
       console.log(response.data);

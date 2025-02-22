@@ -14,9 +14,18 @@ function EditTreatAnimal() {
   const { getTreatmentMenue } = useContext(TreatmentContext);
   const [treatmentData, setTreatmentData] = useState([]);
 
-  const Authorization = localStorage.getItem("Authorization");
-  const headers = { Authorization: `Bearer ${Authorization}` };
+  
+// Helper function to generate headers with the latest token
+const getHeaders = () => {
+  const Authorization = localStorage.getItem('Authorization');
 
+  // Ensure the token has only one "Bearer" prefix
+  const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+
+  return {
+      Authorization: formattedToken
+  };
+};
   // Fetch treatment menu options
   useEffect(() => {
     const fetchTreatments = async () => {
@@ -66,6 +75,7 @@ function EditTreatAnimal() {
     },
     validationSchema,
     onSubmit: async (values) => {
+      const headers = getHeaders(); // Get the latest headers
       setIsLoading(true);
       setError(null);
       try {
@@ -94,6 +104,7 @@ function EditTreatAnimal() {
   // Fetch the treatment data
   useEffect(() => {
     const fetchTreatment = async () => {
+      const headers = getHeaders(); // Get the latest headers
       setError(null);
       try {
         const { data } = await axios.get(

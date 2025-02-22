@@ -11,11 +11,21 @@ function EditTreatment() {
     const [isLoading, setIsLoading] = useState(false);
     const { id } = useParams();
 
+    
+// Helper function to generate headers with the latest token
+const getHeaders = () => {
     const Authorization = localStorage.getItem('Authorization');
-    const headers = { Authorization: `Bearer ${Authorization}` };
-
+  
+    // Ensure the token has only one "Bearer" prefix
+    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+  
+    return {
+        Authorization: formattedToken
+    };
+  };
     // Submit the updated treatment data
     async function submitTreatment(values) {
+        const headers = getHeaders(); // Get the latest headers
         setIsLoading(true);
         setError(null);
         try {
@@ -43,6 +53,7 @@ function EditTreatment() {
     // Fetch the treatment data
     useEffect(() => {
         async function fetchTreatment() {
+            const headers = getHeaders(); // Get the latest headers
             setError(null);
             try {
                 const { data } = await axios.get(

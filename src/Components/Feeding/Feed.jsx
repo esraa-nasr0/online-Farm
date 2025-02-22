@@ -2,33 +2,43 @@ import React, { useState, useContext } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
-import { UserContext } from "../../Context/UserContext";
 import { IoIosSave } from "react-icons/io";
 import Swal from 'sweetalert2';
 import { useNavigate } from "react-router-dom";
 
 export default function Feed() {
     const [isLoading, setIsLoading] = useState(false);
-    const { Authorization } = useContext(UserContext);
        const [showAlert, setShowAlert] = useState(false);
   const navigate = useNavigate()
+
+// Helper function to generate headers with the latest token
+const getHeaders = () => {
+    const Authorization = localStorage.getItem('Authorization');
+  
+    // Ensure the token has only one "Bearer" prefix
+    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+  
+    return {
+        Authorization: formattedToken
+    };
+  };
+
     async function handleSubmit(values) {
+        const headers = getHeaders(); // Get the latest headers
+
         try {
             setIsLoading(true);
             const dataToSubmit = {
                 ...values,
             };
 
-            console.log("Authorization:", Authorization);
             console.log("Submitting form with values:", dataToSubmit);
 
             const { data } = await axios.post(
                 "https://farm-project-bbzj.onrender.com/api/feed/addfeed",
                 dataToSubmit,
                 {
-                    headers: {
-                        Authorization: `Bearer ${Authorization}`,
-                    },
+                    headers
                 }
             );
 

@@ -52,6 +52,7 @@ export default function Animals() {
 
             const { data } = await getAnimals(currentPage, animalsPerPage, filters);
             setAnimals(data.data.animals);
+          
             setPagination(data.pagination); // تحديث حالة الصفحات
             const total = data.pagination.totalPages;
             setTotalPages(total); // تحديث عدد الصفحات
@@ -65,7 +66,7 @@ export default function Animals() {
     // جلب البيانات عند تغيير الصفحة أو عوامل البحث
     useEffect(() => {
         fetchAnimals();
-    }, [currentPage]);
+    }, [ currentPage]);
 
     // تأكيد الحذف
     const handleClick = (id) => {

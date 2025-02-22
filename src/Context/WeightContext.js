@@ -4,12 +4,19 @@ import { createContext } from "react";
 export let WeightContext = createContext();
 
 
-let Authorization = localStorage.getItem('Authorization')
-let headers = {
-    Authorization: `Bearer ${Authorization}`
-    }
-
+// Helper function to generate headers with the latest token
+const getHeaders = () => {
+    const Authorization = localStorage.getItem('Authorization');
+  
+    // Ensure the token has only one "Bearer" prefix
+    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+  
+    return {
+        Authorization: formattedToken
+    };
+  };
     function getWeight(page, limit, filters = {}) {
+        const headers = getHeaders(); // Get the latest headers
         return axios.get(`https://farm-project-bbzj.onrender.com/api/weight/GetAllWeight` , {
             params: {
                 page,
@@ -22,6 +29,7 @@ let headers = {
 
     
     function deleteWeight(id) {
+        const headers = getHeaders(); // Get the latest headers
         return axios.delete(`https://farm-project-bbzj.onrender.com/api/weight/DeleteWeight/${id}` , {headers})
         .then((response)=>response)
         .catch((err)=>err)

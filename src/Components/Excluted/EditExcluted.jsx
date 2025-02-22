@@ -4,7 +4,6 @@ import * as Yup from 'yup';
 import axios from 'axios';
 import { IoIosSave } from 'react-icons/io';
 import { useParams } from 'react-router-dom';
-import { UserContext } from "../../Context/UserContext";
 
 export default function EditExcluted() {
     const { id } = useParams(); // Get the ID from URL parameters
@@ -12,21 +11,28 @@ export default function EditExcluted() {
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
-    const headers = {
-        Authorization: `Bearer ${localStorage.getItem('Authorization')}`
+    
+// Helper function to generate headers with the latest token
+const getHeaders = () => {
+    const Authorization = localStorage.getItem('Authorization');
+  
+    // Ensure the token has only one "Bearer" prefix
+    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+  
+    return {
+        Authorization: formattedToken
     };
-
+  };
     // Function to fetch excluded data from the API
     async function fetchExclutedData() {
+        const headers = getHeaders(); // Get the latest headers
         setIsLoading(true);
         try {
             const response = await axios.get(
                 `https://farm-project-bbzj.onrender.com/api/excluded/getSingleExcludeds/${id}`,
                 { headers }
             );
-
             const exclutedData = response.data.data.excluded;
-
             if (exclutedData) {
                 formik.setValues({
                     tagId: exclutedData.tagId || '',
@@ -50,6 +56,7 @@ export default function EditExcluted() {
 
     // Function to edit the excluded data
     const editExcluted = async (values) => {
+        const headers = getHeaders(); // Get the latest headers
         setIsLoading(true);
         try {
             const dataToSubmit = {
@@ -59,7 +66,6 @@ export default function EditExcluted() {
                 weight: values.weight,
                 Date: values.Date,
             };
-
             const { data } = await axios.patch(
                 ` https://farm-project-bbzj.onrender.com/api/excluded/updateexcluded/${id}`,
                 dataToSubmit,

@@ -105,7 +105,7 @@ export default function ViewAnimalBreed({animalId}) {
                             </div>
                         ))
                     ) : (
-                        <p>No mating records found for this animal.</p>
+                        <p>No Breed records found for this animal.</p>
                     )}
                 </div>
             </div>

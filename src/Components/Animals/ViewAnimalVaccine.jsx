@@ -107,7 +107,7 @@ export default function ViewAnimalVaccine({animalId}) {
                             </div>
                         ))
                     ) : (
-                        <p>No mating records found for this animal.</p>
+                        <p>No Vaccine records found for this animal.</p>
                     )}
                 </div>
             </div>

@@ -16,12 +16,20 @@ export default function AnimalsDetails() {
     const [animalData, setAnimalData] = useState(null);
 
     
-    let Authorization = localStorage.getItem('Authorization')
-    let headers = {
-    Authorization:` Bearer ${Authorization}`
-    }
+// Helper function to generate headers with the latest token
+const getHeaders = () => {
+    const Authorization = localStorage.getItem('Authorization');
+
+    // Ensure the token has only one "Bearer" prefix
+    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+
+    return {
+        Authorization: formattedToken
+    };
+};
     
     async function submitAnimals(value) {
+        const headers = getHeaders(); // Get the latest headers
         setisLoading(true);
         setError(null);
         try {

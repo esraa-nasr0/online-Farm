@@ -1,13 +1,23 @@
 import axios from "axios";
 import { createContext } from "react";
 
-let Authorization = localStorage.getItem('Authorization');
-let headers = {
-    Authorization:` Bearer ${Authorization}`
-};
+// Helper function to generate headers with the latest token
+const getHeaders = () => {
+    const Authorization = localStorage.getItem('Authorization');
+  
+    // Ensure the token has only one "Bearer" prefix
+    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+  
+    return {
+        Authorization: formattedToken
+    };
+  };
 
 export let Feedbylocationcontext=createContext()
+
 function getAllfeeds(page, limit, filters = {}) {
+    const headers = getHeaders(); // Get the latest headers
+
     return axios.get('https://farm-project-bbzj.onrender.com/api/feed/getAllFeedByShed',{
         params: {
             page,
@@ -22,6 +32,7 @@ function getAllfeeds(page, limit, filters = {}) {
 
 async function Deletfeed(id){
 
+    const headers = getHeaders(); // Get the latest headers
 
     try {
         const response = await axios.delete(`https://farm-project-bbzj.onrender.com/api/feed/deletefeedByShed/${id}`, { headers });

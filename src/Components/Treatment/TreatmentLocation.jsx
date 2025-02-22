@@ -12,9 +12,18 @@ function TreatmentLocation() {
     const [treatmentData, setTreatmentData] = useState([]);
     const { getTreatmentMenue } = useContext(TreatmentContext);
 
+    
+// Helper function to generate headers with the latest token
+const getHeaders = () => {
     const Authorization = localStorage.getItem('Authorization');
-    const headers = { Authorization: `Bearer ${Authorization}` };
-
+  
+    // Ensure the token has only one "Bearer" prefix
+    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+  
+    return {
+        Authorization: formattedToken
+    };
+  };
     // Fetch treatment menu options when the component mounts
     const fetchTreatments = async () => {
         try {
@@ -33,6 +42,7 @@ function TreatmentLocation() {
 
     // Handle treatment submission
     async function submitTreatment(values) {
+        const headers = getHeaders(); // Get the latest headers
         console.log('Form Values:', values);  // إضافة هذه السطر لتتبع القيم المرسلة
         setIsLoading(true);
         setError(null);

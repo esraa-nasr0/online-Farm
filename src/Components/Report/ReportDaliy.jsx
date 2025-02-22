@@ -7,12 +7,21 @@ function ReportDaily() {
     const [isLoading, setIsLoading] = useState(false);
     const [reportData, setReportData] = useState(null); // Holds the response data
 
+    
+// Helper function to generate headers with the latest token
+const getHeaders = () => {
     const Authorization = localStorage.getItem('Authorization');
-    const headers = {
-        Authorization: `Bearer ${Authorization}`,
+  
+    // Ensure the token has only one "Bearer" prefix
+    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+  
+    return {
+        Authorization: formattedToken
     };
+  };
 
     async function getReport(animalType) {
+        const headers = getHeaders(); // Get the latest headers
         setIsLoading(true);
         setError(null);
         try {

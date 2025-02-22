@@ -7,9 +7,16 @@ import { useParams, useNavigate } from 'react-router-dom';
 export default function EditFeedbyLocation() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const Authorization = localStorage.getItem('Authorization');
-  const headers = {
-    Authorization: `Bearer ${Authorization}`,
+  // Helper function to generate headers with the latest token
+  const getHeaders = () => {
+    const Authorization = localStorage.getItem('Authorization');
+  
+    // Ensure the token has only one "Bearer" prefix
+    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+  
+    return {
+        Authorization: formattedToken
+    };
   };
 
   const [error, setError] = useState(null);
@@ -22,6 +29,7 @@ export default function EditFeedbyLocation() {
       date: '',
     },
     onSubmit: async (values) => {
+      const headers = getHeaders(); // Get the latest headers
       try {
         setIsLoading(true);
         const req = await axios.patch(
@@ -42,6 +50,7 @@ export default function EditFeedbyLocation() {
 
   useEffect(() => {
     async function fetchFeedData() {
+      const headers = getHeaders(); // Get the latest headers
       try {
         const { data } = await axios.get(
           `https://farm-project-bbzj.onrender.com/api/feed/getsingleFeedByShed/${id}`,

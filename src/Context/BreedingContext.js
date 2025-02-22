@@ -4,45 +4,46 @@ import { createContext, useContext } from "react";
 // Create a new context
 export const BreedingContext = createContext();
 
-// Function to get the Authorization header dynamically
-const getAuthorizationHeader = () => {
+// Helper function to generate headers with the latest token
+const getHeaders = () => {
     const Authorization = localStorage.getItem('Authorization');
-    return Authorization ? { Authorization: `Bearer ${Authorization}` } : {};
-};
-
+  
+    // Ensure the token has only one "Bearer" prefix
+    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+  
+    return {
+        Authorization: formattedToken
+    };
+  };
 // Function to get all breeding entries with pagination and optional filters
 function getAllBreeding(page, limit, filters = {}) {
     return axios.get('https://farm-project-bbzj.onrender.com/api/breeding/GetAllBreeding', {
-        params: {
-            page,
-            limit,
-            ...filters,
-        },
-        headers: getAuthorizationHeader(),  // Dynamically get the Authorization header
+        params: { page, limit, ...filters },
+        headers: getHeaders(),  // Use the correct function
     })
     .then((response) => response.data)  // Return only the response data
     .catch((err) => {
-        console.error('Error fetching breeding data:', err);  // Improved error handling
-        throw err;  // Throwing the error for the component to handle
+        console.error('Error fetching breeding data:', err);
+        throw err;  
     });
 }
 
 // Function to delete a breeding entry by ID
 export function deleteBreeding(id) {
     return axios.delete(`https://farm-project-bbzj.onrender.com/api/breeding/DeleteBreeding/${id}`, { 
-        headers: getAuthorizationHeader(),  // Dynamically get the Authorization header
+        headers: getHeaders(),  // Use the correct function
     })
-        .then((response) => response.data)  // Return only the response data
-        .catch((err) => {
-            console.error(`Error deleting breeding entry with ID ${id}:`, err);  // Improved error handling
-            throw err;  // Throwing the error for the component to handle
-        });
+    .then((response) => response.data)  // Return only the response data
+    .catch((err) => {
+        console.error(`Error deleting breeding entry with ID ${id}:`, err);
+        throw err;
+    });
 }
 
-export default function BreedingContextProvider(props) {
+export default function BreedingContextProvider({ children }) {
     return (
         <BreedingContext.Provider value={{ getAllBreeding, deleteBreeding }}>
-            {props.children}
+            {children}
         </BreedingContext.Provider>
     );
 }

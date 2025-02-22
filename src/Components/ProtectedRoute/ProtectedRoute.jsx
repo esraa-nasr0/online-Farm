@@ -1,17 +1,42 @@
-import React from 'react'
-import { Navigate } from 'react-router-dom'
+import React, { useState, useEffect } from "react";
+import { Navigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
+function ProtectedRoute({ children, allowedRoles }) {
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthorized, setIsAuthorized] = useState(false);
 
+  useEffect(() => {
+    const token = localStorage.getItem("Authorization");
 
-function ProtectedRoute(props) {
+    if (token) {
+      try {
+        // Decode the token to get the user's role
+        const decodedToken = jwtDecode(token);
+        const userRole = decodedToken.role;
 
-    if(localStorage.getItem('Authorization') !== null){
-        return props.children
+        // Check if the user's role is allowed
+        if (allowedRoles && !allowedRoles.includes(userRole)) {
+          setIsAuthorized(false);
+        } else {
+          setIsAuthorized(true);
+        }
+      } catch (error) {
+        console.error("Error decoding token:", error);
+        setIsAuthorized(false);
+      }
+    } else {
+      setIsAuthorized(false);
     }
-    else{
-        return <Navigate to={'/login'}/>
-    }
 
+    setIsLoading(false);
+  }, [allowedRoles]);
+
+  if (isLoading) {
+    return <div>Loading...</div>; // Add a loading spinner or skeleton
+  }
+
+  return isAuthorized ? children : <Navigate to="/notAuthorized" replace />;
 }
 
-export default ProtectedRoute
+export default ProtectedRoute;

@@ -3,13 +3,22 @@ import { createContext } from "react";
 
 export let AnimalContext = createContext();
 
-let Authorization = localStorage.getItem('Authorization');
+// Helper function to generate headers with the latest token
+const getHeaders = () => {
+    const Authorization = localStorage.getItem('Authorization');
 
-let headers = {
-    Authorization: `Bearer ${Authorization}`
+    // Ensure the token has only one "Bearer" prefix
+    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+
+    return {
+        Authorization: formattedToken
+    };
 };
 
+// Fetch all animals
 function getAnimals(page, limit, filters = {}) {
+    const headers = getHeaders(); // Get the latest headers
+
     return axios.get('https://farm-project-bbzj.onrender.com/api/animal/getallanimals', {
         params: {
             page,
@@ -22,24 +31,36 @@ function getAnimals(page, limit, filters = {}) {
     .catch((err) => err);
 }
 
+// Remove an animal by ID
 function removeAnimals(id) {
+    const headers = getHeaders(); // Get the latest headers
+
     return axios.delete(`https://farm-project-bbzj.onrender.com/api/animal/deleteanimal/${id}`, { headers })
         .then((response) => response)
         .catch((error) => error);
 }
 
+// Fetch animal costs
 function costAnimal(page, limit, filters = {}) {
-    return axios.get(`https://farm-project-bbzj.onrender.com/api/animal/getanimalCost` , { params: {
-        page,
-        limit,
-        ...filters // Pass additional filters like tagId, breed, etc.
-    },headers})
+    const headers = getHeaders(); // Get the latest headers
+
+    return axios.get(`https://farm-project-bbzj.onrender.com/api/animal/getanimalCost`, {
+        params: {
+            page,
+            limit,
+            ...filters // Pass additional filters like tagId, breed, etc.
+        },
+        headers
+    })
     .then((response) => response)
     .catch((error) => error);
-    
 }
+
+// Context Provider
 export default function AnimalContextProvider(props) {
-    return <AnimalContext.Provider value={{ removeAnimals, getAnimals , costAnimal }}>
-        {props.children}
-    </AnimalContext.Provider>;
+    return (
+        <AnimalContext.Provider value={{ removeAnimals, getAnimals, costAnimal }}>
+            {props.children}
+        </AnimalContext.Provider>
+    );
 }

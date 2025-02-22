@@ -7,10 +7,18 @@ import Swal from 'sweetalert2';
 export default function Editfeed() {
   let { id } = useParams();
       const navigate = useNavigate()
+      
+// Helper function to generate headers with the latest token
+const getHeaders = () => {
   const Authorization = localStorage.getItem('Authorization');
-  const headers = {
-    Authorization: `Bearer ${Authorization}`,
+
+  // Ensure the token has only one "Bearer" prefix
+  const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+
+  return {
+      Authorization: formattedToken
   };
+};
 
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -25,6 +33,7 @@ type: '',
 concentrationOfDryMatter: '',
     },
     onSubmit: async (values) => {
+      const headers = getHeaders(); // Get the latest headers
       try {
         setIsLoading(true);
         const response = await axios.patch(
@@ -60,6 +69,7 @@ concentrationOfDryMatter: '',
 
   useEffect(() => {
     async function fetchfeed() {
+      const headers = getHeaders(); // Get the latest headers
       try {
         const { data } = await axios.get(
           `https://farm-project-bbzj.onrender.com/api/feed/getsinglefeed/${id}`,

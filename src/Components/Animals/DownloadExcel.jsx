@@ -2,12 +2,21 @@ import axios from 'axios';
 import React from 'react';
 
 function DownloadExcel() {
+    
+// Helper function to generate headers with the latest token
+const getHeaders = () => {
     const Authorization = localStorage.getItem('Authorization');
-    const headers = {  
-        Authorization: `Bearer ${Authorization}`
+
+    // Ensure the token has only one "Bearer" prefix
+    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+
+    return {
+        Authorization: formattedToken
     };
+};
 
     const handleDownload = async () => {
+        const headers = getHeaders(); // Get the latest headers
         try {
             const response = await axios.get(
                 'https://farm-project-bbzj.onrender.com/api/animal/exportAnimalsToExcel', 

@@ -11,12 +11,20 @@ let navigate = useNavigate();
 const [error, setError] = useState(null);
 const [isLoading, setIsLoading] = useState(false);
 
-let Authorization = localStorage.getItem('Authorization');
-let headers = {
-    Authorization: `Bearer ${Authorization}`,
+
+// Helper function to generate headers with the latest token
+const getHeaders = () => {
+    const Authorization = localStorage.getItem('Authorization');
+    // Ensure the token has only one "Bearer" prefix
+    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+    return {
+        Authorization: formattedToken
+    };
 };
 
+
 async function submitWeight(value) {
+    const headers = getHeaders(); // Get the latest headers
     setIsLoading(true);
     setError(null);
     try {

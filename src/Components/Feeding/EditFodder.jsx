@@ -13,9 +13,17 @@ export default function EditFodder() {
   const { getFodderMenue } = useContext(Feedcontext);
   const { id } = useParams();
 
+// Helper function to generate headers with the latest token
+const getHeaders = () => {
   const Authorization = localStorage.getItem('Authorization');
-  const headers = { Authorization: `Bearer ${Authorization}` };
 
+  // Ensure the token has only one "Bearer" prefix
+  const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+
+  return {
+      Authorization: formattedToken
+  };
+};
   // Fetch available feeds
   useEffect(() => {
     const fetchFeeds = async () => {
@@ -34,6 +42,7 @@ export default function EditFodder() {
   // Fetch existing fodder data
   useEffect(() => {
     const fetchFodder = async () => {
+      const headers = getHeaders(); // Get the latest headers
       setError(null);
       try {
         const { data } = await axios.get(
@@ -64,6 +73,7 @@ export default function EditFodder() {
 
   // Handle form submission
   const submitFodder = async (values) => {
+    const headers = getHeaders(); // Get the latest headers
     setIsLoading(true);
     setError(null);
     try {

@@ -2,16 +2,24 @@ import React, { useContext, useState } from 'react';
 import { useFormik } from 'formik';
 import { IoIosSave } from "react-icons/io";
 import axios from 'axios';
-import { UserContext } from "../../Context/UserContext";
 import { VaccineanimalContext } from '../../Context/VaccineanimalContext';
 import { useNavigate } from 'react-router-dom'; 
 import Swal from 'sweetalert2';
 
 function Vaccinebylocationshed() {
-    const { Authorization } = useContext(UserContext);
     const { getallVaccineanimal } = useContext(VaccineanimalContext); 
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate()
+    
+// Helper function to generate headers with the latest token
+const getHeaders = () => {
+    const Authorization = localStorage.getItem('Authorization');
+    // Ensure the token has only one "Bearer" prefix
+    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+    return {
+        Authorization: formattedToken
+    };
+};
 
     const formik = useFormik({
         initialValues: {
@@ -21,15 +29,11 @@ function Vaccinebylocationshed() {
             DateGiven: '',
         },
         onSubmit: async (values) => {
+            const headers = getHeaders(); // Get the latest headers
             const isVaccineExists = async (vaccineName) => {
                 const response = await getallVaccineanimal();
                 return response.data.vaccine.some(vaccine => vaccine.vaccineName === vaccineName);
             };
-
-            
-            
-           
-
             const dataToSend = {
                 vaccineName: values.vaccineName,
                 givenEvery: values.givenEvery,  
@@ -40,17 +44,13 @@ function Vaccinebylocationshed() {
                     },
                 ],
             };
-
             setIsLoading(true); 
-
             try {
                 const response = await axios.post(
                     'https://farm-project-bbzj.onrender.com/api/vaccine/AddVaccine',
                     dataToSend,
                     {
-                        headers: {
-                            Authorization: `Bearer ${Authorization}`,
-                        },
+                        headers
                     }
                 );
 

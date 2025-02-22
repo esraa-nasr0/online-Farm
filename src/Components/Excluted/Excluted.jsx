@@ -11,12 +11,21 @@ function Excluted() {
     const [isLoading, setisLoading] = useState(false);
     const [matingData, setMatingData] = useState(null);
 
-    let Authorization = localStorage.getItem('Authorization');
-    let headers = {
-        Authorization: `Bearer ${Authorization}`
+    
+// Helper function to generate headers with the latest token
+const getHeaders = () => {
+    const Authorization = localStorage.getItem('Authorization');
+  
+    // Ensure the token has only one "Bearer" prefix
+    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+  
+    return {
+        Authorization: formattedToken
     };
+  };
 
     async function submitMating(value) {
+        const headers = getHeaders(); // Get the latest headers
         setisLoading(true); 
         try {
             let { data } = await axios.post(

@@ -12,10 +12,18 @@ export default function Fodder() {
   const [feeds, setFeeds] = useState([]);
   const { getFodderMenue } = useContext(Feedcontext);
 
+  
+// Helper function to generate headers with the latest token
+const getHeaders = () => {
   const Authorization = localStorage.getItem('Authorization');
-  const headers = {
-    Authorization: `Bearer ${Authorization}`,
+
+  // Ensure the token has only one "Bearer" prefix
+  const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+
+  return {
+      Authorization: formattedToken
   };
+};
 
   // Fetch the available feeds from the API
   const fetchFeeds = async () => {
@@ -34,6 +42,7 @@ export default function Fodder() {
   }, [getFodderMenue]);
 
   async function submitFodder(value) {
+    const headers = getHeaders(); // Get the latest headers
     setIsLoading(true);
     setError(null);
     try {

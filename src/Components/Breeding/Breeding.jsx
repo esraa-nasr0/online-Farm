@@ -14,7 +14,21 @@ export default function Breeding() {
     const { Authorization } = useContext(UserContext);
     const navigate = useNavigate();
 
+    
+// Helper function to generate headers with the latest token
+const getHeaders = () => {
+    const Authorization = localStorage.getItem('Authorization');
+  
+    // Ensure the token has only one "Bearer" prefix
+    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+  
+    return {
+        Authorization: formattedToken
+    };
+  };
+
     async function handleSubmit(values) {
+        const headers = getHeaders(); // Get the latest headers
         try {
             setIsLoading(true);
             const dataToSubmit = { ...values, birthEntries };
@@ -22,7 +36,7 @@ export default function Breeding() {
             const { data } = await axios.post(
                 "https://farm-project-bbzj.onrender.com/api/breeding/AddBreeding",
                 dataToSubmit,
-                { headers: { Authorization: `Bearer ${Authorization}` } }
+                { headers}
             );
 
             if (data.status === "success") {

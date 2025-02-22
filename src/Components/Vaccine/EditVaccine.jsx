@@ -2,78 +2,43 @@ import { useFormik } from 'formik';
 import React, { useEffect, useState } from 'react';
 import { IoIosSave } from "react-icons/io";
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom'; 
+import { useParams, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
+
 function EditVaccine() {
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const { id } = useParams();
-  const navigate = useNavigate()
-    const Authorization = localStorage.getItem('Authorization');
-    const headers = {
-        Authorization: `Bearer ${Authorization}`,  // Fixed Authorization header
+    const navigate = useNavigate();
+
+    // Helper function to generate headers with the latest token
+    const getHeaders = () => {
+        const Authorization = localStorage.getItem('Authorization');
+        return {
+            Authorization: Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`
+        };
     };
 
     async function editVaccine(values) {
         setIsLoading(true);
         try {
-            const updatedValues = {
-                ...values,
-            };
-
             const { data } = await axios.patch(
-                `https://farm-project-bbzj.onrender.com/api/vaccine/UpdateVaccine/${id}`,  // Fixed URL string
-                updatedValues,
-                { headers }
+                `https://farm-project-bbzj.onrender.com/api/vaccine/UpdateVaccine/${id}`,
+                values,
+                { headers: getHeaders() }
             );
-            console.log('Submitting form with values:', updatedValues);
-
+            console.log('Submitting form with values:', values);
             if (data.status === "success") {
-                setIsLoading(false);
+                Swal.fire('Success', 'Vaccine updated successfully', 'success');
+                navigate('/vaccines');
             }
         } catch (err) {
-            const errorMessage = err.response?.data?.message || "حدث خطأ أثناء معالجة طلبك";  // Error fallback message
-            setError(errorMessage);
-            console.log(err.response?.data);
+            setError(err.response?.data?.message || "حدث خطأ أثناء معالجة طلبك");
+            console.error(err.response?.data);
+        } finally {
             setIsLoading(false);
         }
     }
-
-    useEffect(() => {
-        async function fetchVaccine() {
-            try {
-                const response = await axios.get(
-                    `https://farm-project-bbzj.onrender.com/api/vaccine/GetSingleVaccine/${id}`,  // Fixed URL string
-                    { headers }
-                );
-              
-    
-             if (response.data.status === "success") {
-                                        Swal.fire({
-                                            title: "Success!",
-                                            text: "Data has been submitted successfully!",
-                                            icon: "success",
-                                            confirmButtonText: "OK",
-                                        }).then(() => navigate('/vaccineTable'));
-                              console.log('API Response:', response.data);
-                     
-                          }}
-                          catch (err) {
-                            
-                                    Swal.fire({
-                                        title: "Error!",
-                                        text: err.response?.data?.message || "An error occurred while submitting data.",
-                                        icon: "error",
-                                        confirmButtonText: "OK",
-                                    });
-                                
-                                } finally {
-                                    setIsLoading(false);
-                                }
-        }
-        fetchVaccine();
-    }, [id]);
 
     const formik = useFormik({  
         initialValues: {
@@ -82,8 +47,30 @@ function EditVaccine() {
             tagId: '',
             DateGiven: '',
         },
-        onSubmit: (values) => editVaccine(values),
+        onSubmit: editVaccine,
     });
+
+    useEffect(() => {
+        async function fetchVaccine() {
+            try {
+                const response = await axios.get(
+                    `https://farm-project-bbzj.onrender.com/api/vaccine/GetSingleVaccine/${id}`,
+                    { headers: getHeaders() }
+                );
+                const vaccine = response.data.data;
+                formik.setValues({
+                    tagId: vaccine?.tagId || '',
+                    vaccineName: vaccine?.vaccineName || '',
+                    givenEvery: vaccine?.givenEvery || '',
+                    DateGiven: vaccine?.DateGiven || '',
+                });
+            } catch (error) {
+                console.error("Failed to fetch vaccine data:", error);
+                setError("Failed to fetch vaccine details.");
+            }
+        }
+        fetchVaccine();
+    }, [id, formik]);
 
     return (
         <div className="container">
@@ -95,7 +82,6 @@ function EditVaccine() {
                         {isLoading ? <i className="fas fa-spinner fa-spin"></i> : <IoIosSave />} Save
                     </button>
                 </div>
-        
                 <div className="animaldata">
                     <div className="input-box">
                         <label className="label" htmlFor="vaccineName">Vaccine Name</label>
@@ -105,12 +91,9 @@ function EditVaccine() {
                             type="text"
                             className="input2"
                             placeholder="Enter vaccine name"
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            value={formik.values.vaccineName}
+                            {...formik.getFieldProps('vaccineName')}
                         />
                     </div>
-
                     <div className="input-box">
                         <label className="label" htmlFor="givenEvery">Given Every</label>
                         <input
@@ -119,12 +102,9 @@ function EditVaccine() {
                             type="text"
                             className="input2"
                             placeholder="Enter givenEvery"
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            value={formik.values.givenEvery}
+                            {...formik.getFieldProps('givenEvery')}
                         />
                     </div>
-
                     <div className="input-box">
                         <label className="label" htmlFor="tagId">Tag ID</label>
                         <input
@@ -133,12 +113,9 @@ function EditVaccine() {
                             type="text"
                             className="input2"
                             placeholder="Enter tag ID"
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            value={formik.values.tagId}
+                            {...formik.getFieldProps('tagId')}
                         />
                     </div>
-
                     <div className="input-box">
                         <label className="label" htmlFor="DateGiven">Date Given</label>
                         <input
@@ -146,9 +123,7 @@ function EditVaccine() {
                             name="DateGiven"
                             type="date"
                             className="input2"
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            value={formik.values.DateGiven}
+                            {...formik.getFieldProps('DateGiven')}
                         />
                     </div>
                 </div>

@@ -2,13 +2,20 @@ import React, { useContext, useState } from 'react';
 import { useFormik } from 'formik';
 import { IoIosSave } from "react-icons/io";
 import axios from 'axios';
-import { UserContext } from "../../Context/UserContext";
 import Swal from 'sweetalert2';
 import { useNavigate } from "react-router-dom";
 
 function Vaccinebyanimal() {
-    const { Authorization } = useContext(UserContext);
 
+// Helper function to generate headers with the latest token
+const getHeaders = () => {
+    const Authorization = localStorage.getItem('Authorization');
+    // Ensure the token has only one "Bearer" prefix
+    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+    return {
+        Authorization: formattedToken
+    };
+};
     let navigate = useNavigate();
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -21,6 +28,7 @@ function Vaccinebyanimal() {
             DateGiven: '',
         },
         onSubmit: async (values) => {
+            const headers = getHeaders(); // Get the latest headers
             setIsLoading(true);  // Start loading
             const dataToSend = {
                 vaccineName: values.vaccineName,
@@ -32,40 +40,34 @@ function Vaccinebyanimal() {
                     },
                 ],
             };
-
             try {
                 const response = await axios.post(
                     'https://farm-project-bbzj.onrender.com/api/vaccine/AddVaccineForAnimal',
                     dataToSend,
                     {
-                        headers: {
-                            Authorization: `Bearer ${Authorization}`,
-                        },
+                        headers
                     }
                 );
-
-              if (response.data.status === "success") {
-                                          Swal.fire({
-                                              title: "Success!",
-                                              text: "Data has been submitted successfully!",
-                                              icon: "success",
-                                              confirmButtonText: "OK",
-                                          }).then(() => navigate('/vaccineTable'));
-                                console.log('API Response:', response.data);
-                         
+            if (response.data.status === "success") {
+                Swal.fire({
+                title: "Success!",
+                text: "Data has been submitted successfully!",
+                icon: "success",
+                confirmButtonText: "OK",
+                }).then(() => navigate('/vaccineTable'));
+                    console.log('API Response:', response.data);
+                        
                             }}
-                            catch (err) {
-                              
-                                      Swal.fire({
-                                          title: "Error!",
-                                          text: err.response?.data?.message || "An error occurred while submitting data.",
-                                          icon: "error",
-                                          confirmButtonText: "OK",
-                                      });
-                                  
-                                  } finally {
-                                      setIsLoading(false);
-                                  }
+                        catch (err) {
+                        Swal.fire({
+                        title: "Error!",
+                        text: err.response?.data?.message || "An error occurred while submitting data.",
+                        icon: "error",
+                        confirmButtonText: "OK",
+                        });
+                        } finally {
+                        setIsLoading(false);
+                        }
         },
     });
 

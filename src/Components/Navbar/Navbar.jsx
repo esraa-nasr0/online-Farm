@@ -2,12 +2,19 @@ import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { UserContext } from "../../Context/UserContext";
 import { useTranslation } from 'react-i18next';
+import { jwtDecode } from 'jwt-decode';
+
 
 export default function Navbar() {
   let { Authorization, setAuthorization } = useContext(UserContext);
   let navigate = useNavigate();
   const { i18n } = useTranslation();
   const [language, setLanguage] = useState(i18n.language);
+
+  // Decode the token to get the user's role
+  const userRole = Authorization ? jwtDecode(Authorization).role : null;
+const isAdmin = localStorage.getItem("isAdmin") === "true"; // التأكد إذا كان أدمن
+
 
   function LogOut() {
     localStorage.removeItem("Authorization");
@@ -54,16 +61,21 @@ export default function Navbar() {
                 Home
               </Link>
             </li>
-            <li className="nav-item">
-              <Link
-                className="nav-link"
-                to="homeServices"
-                style={{ color: "#E9E6E2" }}
-              >
-                Home Services
-              </Link>
-            </li>
             
+            <li className="nav-item">
+                <Link className="nav-link" to="/homeServices" style={{ color: "#E9E6E2" }}>
+                    Home Services
+                </Link>
+            </li>
+
+            {/* عرض Dashboard فقط للأدمن الأصلي حتى لو سجل كيوزر */}
+            {(userRole === "admin" || isAdmin) && (
+                <li className="nav-item">
+                    <Link className="nav-link" to="/dashboard" style={{ color: "#E9E6E2" }}>
+                        Dashboard
+                    </Link>
+                </li>
+            )}
           </>
         ) : (
           ""

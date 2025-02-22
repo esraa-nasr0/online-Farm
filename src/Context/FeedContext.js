@@ -2,13 +2,21 @@ import axios from "axios";
 import { createContext } from "react";
 export const Feedcontext = createContext();
 
-let Authorization = localStorage.getItem('Authorization') ;
-let headers = {
-    Authorization: `Bearer ${Authorization}`
-};
-
+// Helper function to generate headers with the latest token
+const getHeaders = () => {
+    const Authorization = localStorage.getItem('Authorization');
+  
+    // Ensure the token has only one "Bearer" prefix
+    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+  
+    return {
+        Authorization: formattedToken
+    };
+  };
 
 function getAllFeed(page, limit, filters = {}) {
+    const headers = getHeaders(); // Get the latest headers
+
     return axios
         .get('https://farm-project-bbzj.onrender.com/api/feed/getallfeeds', {
             params: {
@@ -27,6 +35,7 @@ function getAllFeed(page, limit, filters = {}) {
 
  async function Deletfeed(id){
 
+    const headers = getHeaders(); // Get the latest headers
 
     try {
         const response = await axios.delete(`https://farm-project-bbzj.onrender.com/api/feed/DeleteFeed/${id}`, { headers });
@@ -39,6 +48,8 @@ function getAllFeed(page, limit, filters = {}) {
 }
 
 function getFodder(page, limit, filters = {}) {
+    const headers = getHeaders(); // Get the latest headers
+
     return axios
         .get(`https://farm-project-bbzj.onrender.com/api/fodder/getallfodder`, {
             params: {
@@ -53,6 +64,8 @@ function getFodder(page, limit, filters = {}) {
 
 
 function deleteFodder(id) {
+    const headers = getHeaders(); // Get the latest headers
+
     return axios
         .delete(`hhttps://farm-project-bbzj.onrender.com/api/fodder/deletefodder/${id}`, { headers })
         .then((response) => response)
@@ -60,6 +73,8 @@ function deleteFodder(id) {
 }
 
 function getFodderMenue() {
+    const headers = getHeaders(); // Get the latest headers
+
     return axios
         .get(`https://farm-project-bbzj.onrender.com/api/feed/getfeeds`, { headers })
         .then((response) => response)

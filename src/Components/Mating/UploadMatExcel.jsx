@@ -6,10 +6,18 @@ import DownloadMatExcel from './DownloadMatExcel';
 function UploadMatExcel({ addMatingData }) {  
     const [data, setData] = useState([]);  
 
-    const Authorization = localStorage.getItem('Authorization');  
-    const headers = {  
-        Authorization: `Bearer ${Authorization}`
-    };  
+    
+// Helper function to generate headers with the latest token
+const getHeaders = () => {
+    const Authorization = localStorage.getItem('Authorization');
+  
+    // Ensure the token has only one "Bearer" prefix
+    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+  
+    return {
+        Authorization: formattedToken
+    };
+  };
     
     const handleFileChange = (e) => {  
         const file = e.target.files[0];  
@@ -38,6 +46,7 @@ function UploadMatExcel({ addMatingData }) {
     };  
 
     async function uploadSheet(dataToUpload) {
+        const headers = getHeaders(); // Get the latest headers
         const successfulUploads = [];
     
         for (let item of dataToUpload) {

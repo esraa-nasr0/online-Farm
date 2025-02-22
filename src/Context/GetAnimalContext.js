@@ -1,12 +1,23 @@
 import axios from "axios";
 import { createContext } from "react";
 export let GetAnimalContext = createContext();
-let Authorization = localStorage.getItem('Authorization')
-let headers = {
-    Authorization:` Bearer ${Authorization}`
-    }
+
+
+// Helper function to generate headers with the latest token
+const getHeaders = () => {
+  const Authorization = localStorage.getItem('Authorization');
+
+  // Ensure the token has only one "Bearer" prefix
+  const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+
+  return {
+      Authorization: formattedToken
+  };
+};
 
     function getAnimalVaccine(animalid) {
+      const headers = getHeaders(); // Get the latest headers
+
         return axios
           .get(
             `https://farm-project-bbzj.onrender.com/api/vaccine/GetSingleAnimalGaccine/${animalid}`,
@@ -21,17 +32,23 @@ let headers = {
             throw err; 
           });
     }
+
     function getAnimalMating(animalid) {
+      const headers = getHeaders(); // Get the latest headers
         return axios.get(`https://farm-project-bbzj.onrender.com/api/mating/GetSingleAnimalMating/${animalid}` , {headers})
         .then((response)=>response)
         .catch((err)=>err)
     }
+
     function getAnimalBreeding(animalid) {
+      const headers = getHeaders(); // Get the latest headers
       return axios.get(`https://farm-project-bbzj.onrender.com/api/breeding/GetSingleAnimalBreeding/${animalid}` , {headers})
       .then((response)=>response)
       .catch((err)=>err)
   }
+  
     function getAnimalWeight(animalid) {
+      const headers = getHeaders(); // Get the latest headers
         return axios.get(`https://farm-project-bbzj.onrender.com/api/weight/GetSingleAnimalWeight/${animalid}` , {headers})
         .then((response)=>response)
         .catch((err)=>err)

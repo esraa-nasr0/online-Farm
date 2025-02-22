@@ -11,12 +11,21 @@ function EditMating() {
     const [matingData, setMatingData] = useState(null);
     const { id } = useParams();
 
+// Helper function to generate headers with the latest token
+const getHeaders = () => {
     const Authorization = localStorage.getItem('Authorization');
-    const headers = {
-        Authorization: `Bearer ${Authorization}`
+  
+    // Ensure the token has only one "Bearer" prefix
+    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+  
+    return {
+        Authorization: formattedToken
     };
+  };
     
     async function editMating(values) {
+        const headers = getHeaders(); // Get the latest headers
+
         setisLoading(true); 
         try {
             const convertToISO = (dateString) => {
@@ -55,6 +64,7 @@ function EditMating() {
 
     useEffect(() => {
         async function fetchAnimal() {
+            const headers = getHeaders(); // Get the latest headers
             try {
                 let { data } = await axios.get(
                     `https://farm-project-bbzj.onrender.com/api/mating/GetSingleMating/${id}`, 

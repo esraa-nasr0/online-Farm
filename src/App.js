@@ -61,6 +61,9 @@ import Fodder from "./Components/Feeding/Fodder.jsx";
 import FodderTable from "./Components/Feeding/FodderTable.jsx";
 import ViewDetailsofAnimal from "./Components/Animals/ViewDetailsofAnimal.jsx";
 import EditFodder from "./Components/Feeding/EditFodder.jsx";
+import Dashboard from "./Components/Dashboard/Dashboard.jsx";
+import NotAuthorized from "./Components/Dashboard/NotAuthorized.jsx";
+import DashboardContextProvider from "./Context/DashboardContext.js";
 
 
 
@@ -70,12 +73,13 @@ let routers = createBrowserRouter([
     element: <Layout />, 
     children: [
       { index: true, element: <ProtectedRoute><Home/></ProtectedRoute> },
-      { path: "homeServices", element: <ProtectedRoute><HomeServices/></ProtectedRoute> },
+      { path: "homeServices", element: <ProtectedRoute ><HomeServices/></ProtectedRoute> },
       { path: "report", element: <ProtectedRoute><Report/></ProtectedRoute> },
       { path: "reportDaliy", element: <ProtectedRoute><ReportDaliy/></ProtectedRoute> },
       { path: "excluted", element: <ProtectedRoute><Excluted/></ProtectedRoute> },
       { path: "exclutedtable", element: <ProtectedRoute><Exclutedtable/></ProtectedRoute> },
       { path: "editExcluted/:id", element: <ProtectedRoute><EditExcluted/></ProtectedRoute> },
+      { path: "notAuthorized", element: <NotAuthorized /> },
 
       { path: "login", element: <Login /> },
       { path: "verifyotp", element: <Verifyotp /> },
@@ -118,6 +122,7 @@ let routers = createBrowserRouter([
       { path: "fodder", element: <ProtectedRoute><Fodder/></ProtectedRoute> },
       { path: "fodderTable", element: <ProtectedRoute><FodderTable/></ProtectedRoute> },
       { path: "editFodder/:id", element: <ProtectedRoute><EditFodder/></ProtectedRoute> },
+      { path: "dashboard", element: <ProtectedRoute  allowedRoles={['admin']}><Dashboard/></ProtectedRoute> },
 
 
     ],
@@ -140,6 +145,7 @@ export default function App() {
   },[]);
 
   return <>
+  <DashboardContextProvider>
   <FeedbyLocationContextProvider>
   <FeedContextProvider>
   <TreatmentContextProvider>
@@ -163,6 +169,7 @@ export default function App() {
   </TreatmentContextProvider>
   </FeedContextProvider>
   </FeedbyLocationContextProvider>
+  </DashboardContextProvider>
   </>
 }
 

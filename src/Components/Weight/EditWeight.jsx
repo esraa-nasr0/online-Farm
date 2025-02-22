@@ -12,12 +12,20 @@ function EditWeight() {
     const { id } = useParams(); // Get the animal ID from the URL params
     let navigate = useNavigate();
 
+
+// Helper function to generate headers with the latest token
+const getHeaders = () => {
     const Authorization = localStorage.getItem('Authorization');
-    const headers = {
-    Authorization: `Bearer ${Authorization}`,
+    // Ensure the token has only one "Bearer" prefix
+    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+    return {
+        Authorization: formattedToken
     };
+};
+
 
     async function editWeight(values) {
+        const headers = getHeaders(); // Get the latest headers
         setIsLoading(true); 
         try {
             // Convert 'yyyy-MM-dd' to ISO format if needed, or keep it empty if no valid date is provided
@@ -27,12 +35,10 @@ function EditWeight() {
                 }
                 return null;  // Ensure you're not sending invalid data to the server
             };
-    
             const updatedValues = {
                 ...values,
                 Date: convertToISO(values.Date),
             };
-    
             let { data } = await axios.patch(
                 `https://farm-project-bbzj.onrender.com/api/weight/updateweight/${id}`,
                 updatedValues,
@@ -54,19 +60,18 @@ function EditWeight() {
     
     useEffect(() => {
         async function fetchAnimal() {
+            const headers = getHeaders(); // Get the latest headers
             try {
                 let { data } = await axios.get(
                     `https://farm-project-bbzj.onrender.com/api/weight/GetSingleWeight/${id}`, 
                     { headers }
                 );
                 console.log("API response:", data); // Log the entire response
-    
                 // Check if the structure matches your expectation
                 if (data && data.data && data.data.weight) {
                     const weight = data.data.weight;
                     // Convert ISO date strings to yyyy-MM-dd format
                     const formatDate = (dateString) => dateString ? new Date(dateString).toISOString().split('T')[0] : '';
-    
                     formik.setValues({
                         tagId: weight.tagId || '',
                         weightType: weight.weightType || '',

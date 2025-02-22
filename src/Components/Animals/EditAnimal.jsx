@@ -14,13 +14,21 @@ function EditAnimal() {
 
     const { id } = useParams();
 
-    let Authorization = localStorage.getItem('Authorization');
+// Helper function to generate headers with the latest token
+const getHeaders = () => {
+    const Authorization = localStorage.getItem('Authorization');
 
-    let headers = {
-        Authorization:` Bearer ${Authorization}`
+    // Ensure the token has only one "Bearer" prefix
+    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+
+    return {
+        Authorization: formattedToken
     };
+};
 
     async function editAnimals(values) {
+        const headers = getHeaders(); // Get the latest headers
+
         setIsLoading(true);
         try {
             let { data } = await axios.patch(
@@ -70,6 +78,7 @@ function EditAnimal() {
 
     useEffect(() => {
         async function fetchAnimal() {
+            const headers = getHeaders(); // Get the latest headers
             try {
                 let { data } = await axios.get(
                     `https://farm-project-bbzj.onrender.com/api/animal/getsinglanimals/${id}`, 
