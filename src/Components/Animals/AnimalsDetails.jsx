@@ -83,9 +83,7 @@ const getHeaders = () => {
 
     return <>
         <div className="container">
-     
         <p className="text-danger">{error}</p>
-        
     {showAlert && animalData && (  
     <div className="alert mt-5 p-4 alert-success">  
     {t('animal_age_in_days')} {animalData.ageInDays} 
@@ -93,26 +91,20 @@ const getHeaders = () => {
     )}  
         <form onSubmit={formik.handleSubmit} className='mt-5'>
     {isLoading ? (
-                 
-                 <div className=' d-flex vaccine align-items-center justify-content-between'>
-                 <div className="title-v">Add Animal</div>
-               
-                 <button type="submit" className="btn button2">
-                             <i className="fas fa-spinner fa-spin"></i>
-                         </button>
- 
-                 </div>
-                 
-                     ) : (
-                                <div className=' d-flex vaccine align-items-center justify-content-between'>
-                                       <div className="title-v">Add Animal</div>
-                                       <button type="submit" className="btn  button2" disabled={isLoading}>
-                                           {isLoading ? <i className="fas fa-spinner fa-spin"></i> : <IoIosSave />} Save
-                                       </button>
-                       
-                                       </div>
-                               
-                     )}
+                <div className=' d-flex vaccine align-items-center justify-content-between'>
+                <div className="title-v">Add Animal</div>
+                <button type="submit" className="btn button2">
+                <i className="fas fa-spinner fa-spin"></i>
+                </button>
+                </div>
+                    ) : (
+                    <div className=' d-flex vaccine align-items-center justify-content-between'>
+                    <div className="title-v">Add Animal</div>
+                    <button type="submit" className="btn  button2" disabled={isLoading}>
+                    {isLoading ? <i className="fas fa-spinner fa-spin"></i> : <IoIosSave />} {t('save')}
+                    </button>
+                    </div>
+                    )}
         <div className="animaldata">
         <div className="input-box">
             <label className="label" htmlFor="tagId">{t('tag_id')}</label>

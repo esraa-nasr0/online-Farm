@@ -4,8 +4,11 @@ import axios from 'axios';
 import { IoIosSave } from "react-icons/io";
 import { useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import { useTranslation } from 'react-i18next';
+
 
 function EditAnimal() {
+    const { t } = useTranslation();
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [isDataLoaded, setIsDataLoaded] = useState(false);
@@ -128,22 +131,17 @@ const getHeaders = () => {
 
     return (
         <div className="container">
-       
             <p className="text-danger">{error}</p>
-            
     <form onSubmit={formik.handleSubmit} className='mt-5'>
-                            <div className=' d-flex vaccine align-items-center justify-content-between'>
-                                             <div className="title-v">Edit Animal</div>
-                                             <button type="submit" className="btn  button2" disabled={isLoading}>
-                                                 {isLoading ? <i className="fas fa-spinner fa-spin"></i> : <IoIosSave />} Save
-                                             </button>
-                             
-                                             </div>
-                                     
-
+                <div className=' d-flex vaccine align-items-center justify-content-between'>
+                <div className="title-v">Edit Animal</div>
+                <button type="submit" className="btn  button2" disabled={isLoading}>
+                {isLoading ? <i className="fas fa-spinner fa-spin"></i> : <IoIosSave />} {t('save')}
+                </button>
+                </div>
                 <div className="animaldata">
                     <div className="input-box">
-                        <label className="label" htmlFor="tagId">Tag ID</label>
+                        <label className="label" htmlFor="tagId">{t('tag_id')}</label>
                         <input 
                             onBlur={formik.handleBlur} 
                             onChange={formik.handleChange} 
@@ -160,7 +158,7 @@ const getHeaders = () => {
                     </div>
 
                     <div className="input-box">
-                        <label className="label" htmlFor="breed">Breed</label>
+                        <label className="label" htmlFor="breed">{t('breed')}</label>
                         <input 
                             onBlur={formik.handleBlur} 
                             onChange={formik.handleChange} 
@@ -177,7 +175,7 @@ const getHeaders = () => {
                     </div>
 
                     <div className="input-box">
-                        <label className="label" htmlFor="animalType">Animal Type</label>
+                        <label className="label" htmlFor="animalType">{t('animal_type')}</label>
                         <select
                             value={formik.values.animalType}
                             onChange={formik.handleChange}
@@ -186,16 +184,16 @@ const getHeaders = () => {
                             name="animalType"
                             id="animalType"
                         >
-                            <option value="">Animal Type</option>
-                            <option value="goat">Goat</option>
-                            <option value="sheep">Sheep</option>
+                            <option value="">{t('animal_type')}</option>
+                            <option value="goat">{t('goat')}</option>
+                            <option value="sheep">{t('sheep')}</option>
                         </select>
                         {formik.errors.animalType && formik.touched.animalType && (
                             <p className="text-danger">{formik.errors.animalType}</p>
                         )}
                     </div>
                     <div className="input-box">
-                        <label className="label" htmlFor="gender">Gender</label>
+                        <label className="label" htmlFor="gender">{t('gender')}</label>
                         <select
                             value={formik.values.gender}
                             onChange={formik.handleChange}
@@ -204,9 +202,9 @@ const getHeaders = () => {
                             name="gender"
                             id="gender"
                         >
-                            <option value="">Gender</option>
-                            <option value="female">Female</option>  
-                            <option value="male">Male</option>
+                            <option value="">{t('gender')}</option>
+                            <option value="female">{t('female')}</option>  
+                            <option value="male">{t('male')}</option>
                         </select>
                         {formik.errors.gender && formik.touched.gender && (
                             <p className="text-danger">{formik.errors.gender}</p>
@@ -215,7 +213,7 @@ const getHeaders = () => {
 
                     {formik.values.gender === 'female' && (
                         <div className="input-box">
-                            <label className="label" htmlFor="female_Condition">Female Condition</label>
+                            <label className="label" htmlFor="female_Condition">{t('female_condition')}</label>
                             <input 
                                 onBlur={formik.handleBlur} 
                                 onChange={formik.handleChange} 
@@ -233,7 +231,7 @@ const getHeaders = () => {
                     )}
                     
         <div className="input-box">
-        <label className="label" htmlFor="animaleCondation">Animal Condition</label>
+        <label className="label" htmlFor="animaleCondation">{t('animal_condition')}</label>
         <select
             value={formik.values.animaleCondation}
             onChange={formik.handleChange}
@@ -241,16 +239,16 @@ const getHeaders = () => {
             className="input2"
             name="animaleCondation"
             id="animaleCondation">
-        <option value="">Animal Condition</option>
-        <option value="purchase">Purchase</option>
-        <option value="born at farm">Born at Farm</option>
+        <option value="">{t('animal_condition')}</option>
+        <option value="purchase">{t('purchase')}</option>
+        <option value="born at farm">{t('born_at_farm')}</option>
         </select>
         {formik.errors.animaleCondation && formik.touched.animaleCondation && (<p className="text-danger">{formik.errors.animaleCondation}</p>)}
         </div>
 
         {formik.values.animaleCondation === 'purchase' && (<>
         <div className="input-box">
-        <label className="label" htmlFor="traderName">Trader Name</label>
+        <label className="label" htmlFor="traderName">{t('trader_name')}</label>
         <input
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
@@ -264,7 +262,7 @@ const getHeaders = () => {
         </div>
 
         <div className="input-box">
-        <label className="label" htmlFor="purchaseDate">Purchase Date</label>
+        <label className="label" htmlFor="purchaseDate">{t('purchase_date')}</label>
         <input
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
@@ -277,7 +275,7 @@ const getHeaders = () => {
         </div>
 
         <div className="input-box">
-        <label className="label" htmlFor="purchasePrice">Purchase Price</label>
+        <label className="label" htmlFor="purchasePrice">{t('purchase_price')}</label>
         <input
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
@@ -292,42 +290,40 @@ const getHeaders = () => {
         </div>
                             
         <div className="input-box">
-        <label className="label" htmlFor="teething">Teething</label>
+        <label className="label" htmlFor="teething">{t('teething')}</label>
         <select
             value={formik.values.teething}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur} className="input2" name="teething" id="teething">
-            <option value="">Teething</option>
-            <option value="two">Two</option>
-            <option value="four">Four</option>
-            <option value="six">Six</option>
+            <option value="">{t('teething')}</option>
+            <option value="two">{t('two')}</option>
+            <option value="four">{t('four')}</option>
+            <option value="six">{t('six')}</option>
             </select>
             {formik.errors.teething && formik.touched.teething && (<p className="text-danger">{formik.errors.teething}</p>)}
             </div></>)}
 
         {formik.values.animaleCondation === 'born at farm' && (<>
         <div className="input-box">
-            <label className="label" htmlFor="motherId">Mother ID</label>
+            <label className="label" htmlFor="motherId">{t('mother_id')}</label>
             <input onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.motherId} placeholder="Enter your Mother ID" id="motherId" type="text" className="input2" name="motherId"/>
             {formik.errors.motherId && formik.touched.motherId?<p className="text-danger">{formik.errors.motherId}</p>:""}
         </div>
 
         <div className="input-box">
-            <label className="label" htmlFor="fatherId">Father ID</label>
+            <label className="label" htmlFor="fatherId">{t('father_id')}</label>
             <input onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.fatherId} placeholder="Enter your Father ID" id="fatherId" type="text" className="input2" name="fatherId"/>
             {formik.errors.fatherId && formik.touched.fatherId?<p className="text-danger">{formik.errors.fatherId}</p>:""}
         </div>
 
         <div className="input-box">
-            <label className="label" htmlFor="birthDate">Birth Date</label>
+            <label className="label" htmlFor="birthDate">{t('birth_date')}</label>
             <input onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.birthDate}  id="birthDate" type="date" className="input2" name="birthDate"/>
             {formik.errors.birthDate && formik.touched.birthDate?<p className="text-danger">{formik.errors.birthDate}</p>:""}
         </div> 
-                    </>)}
-                    
-
+            </>)}
             <div className="input-box">  
-            <label className="label" htmlFor="locationShed">Location Shed</label>
+            <label className="label" htmlFor="locationShed">{t('location_shed')}</label>
             <input onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.locationShed} placeholder="Enter your Location Shed" id="locationShed" type="text" className="input2" name="locationShed"/>
             {formik.errors.locationShed && formik.touched.locationShed?<p className="text-danger">{formik.errors.locationShed}</p>:""}
             </div>

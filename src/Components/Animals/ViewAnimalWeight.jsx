@@ -4,6 +4,8 @@ import { FaEdit, FaTrashAlt, FaPlusCircle } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2'; 
 import { WeightContext } from '../../Context/WeightContext';
+import { useTranslation } from 'react-i18next';
+
 
 function ordinalSuffix(i) {
     let j = i % 10,
@@ -15,6 +17,7 @@ function ordinalSuffix(i) {
 }
 
 function ViewAnimalWeight({ animalId }) {
+    const { t } = useTranslation();
     let navigate = useNavigate();
     let { getAnimalWeight } = useContext(GetAnimalContext);
     const [animalWeight, setAnimalWeight] = useState([]);
@@ -35,22 +38,22 @@ function ViewAnimalWeight({ animalId }) {
                 try {
                     await deleteWeight(id);
                     setAnimalWeight((prevWeights) => prevWeights.filter((weight) => weight._id !== id));
-                    Swal.fire('Deleted!', 'Weight has been deleted.', 'success');
+                    Swal.fire(t('deleted'), t('weight_deleted_success'), 'success');
                 } catch (error) {
-                console.error('Failed to delete Weight:', error);
-                Swal.fire('Error', 'Failed to delete Weight.', 'error');
+                    console.error(t('delete_failed_weigh'), error);
+                    Swal.fire(t('error'), t('weight_deleted_failed'), 'error');
                 }
             };
         
             const handleClick = (id) => {
                 Swal.fire({
-                    title: "Are you sure?",
-                    text: "You won't be able to revert this!",
+                    title:  t('confirm_delete'),
+                    text: t('delete_warning'),
                     icon: "warning",
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!',
+                    confirmButtonText: t('yes_delete'),
                 }).then((result) => {
                     if (result.isConfirmed) deleteItem(id);
                 });
@@ -74,9 +77,9 @@ function ViewAnimalWeight({ animalId }) {
     return (
         <div className="mating-record-wrapper">
             <div className="mating-record-header">
-                <h2>WEIGHT RECORD</h2>
+                <h2>{t('weight_record')}</h2>
                 <button onClick={() => WeightAnimal()} className="add-record-btn">
-                    <FaPlusCircle /> Add New Record
+                    <FaPlusCircle /> {t('add_new_record')}
                 </button>
             </div>
 
@@ -85,12 +88,12 @@ function ViewAnimalWeight({ animalId }) {
                     animalWeight.map((weight, index) => (
                         <div key={weight._id} className="mating-record-item">
                             <div className="mating-record-info">
-                                <span>{ordinalSuffix(index + 1)} Weight</span>
+                                <span>{ordinalSuffix(index + 1)}  {t('weight')}</span>
                                 <ul>
-                                    <li><strong>Date:</strong> {formatDate(weight.Date)}</li>
-                                    <li><strong>Weight:</strong> {weight.weight} kg</li>
-                                    <li><strong>Height:</strong> {weight.height} cm</li>
-                                    <li><strong>Weight Type:</strong> {weight.weightType}</li>
+                                    <li><strong>{t('date')}:</strong> {formatDate(weight.Date)}</li>
+                                    <li><strong>{t('weight')}:</strong> {weight.weight} kg</li>
+                                    <li><strong>{t('height')}:</strong> {weight.height} cm</li>
+                                    <li><strong>{t('weight_type')}:</strong> {weight.weightType}</li>
                                 </ul>
                             </div>
                             <div className="mating-record-actions">
@@ -100,7 +103,7 @@ function ViewAnimalWeight({ animalId }) {
                         </div>
                     ))
                 ) : (
-                    <p>No weight records found for this animal.</p>
+                    <p>{t('no_weight_records')}</p>
                 )}
             </div>
         </div>

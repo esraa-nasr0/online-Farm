@@ -4,6 +4,7 @@ import { FaEdit, FaTrashAlt, FaPlusCircle } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { MatingContext } from '../../Context/MatingContext';
 import Swal from 'sweetalert2';
+import { useTranslation } from 'react-i18next';
 
 function ordinalSuffix(i) {
     let j = i % 10,
@@ -15,6 +16,7 @@ function ordinalSuffix(i) {
 }
 
 function ViewAnimalMating({ animalId }) {
+    const { t } = useTranslation();
     let navigate = useNavigate();
     let { getAnimalMating } = useContext(GetAnimalContext);
     let { deleteMating } = useContext(MatingContext);
@@ -31,32 +33,30 @@ function ViewAnimalMating({ animalId }) {
         }
     }, [animalId]);
 
-    
-        const deleteItem = async (id) => {
-            try {
-                await deleteMating(id);
-                setAnimalMating((prevMatings) => prevMatings.filter((mating) => mating._id !== id));
-                Swal.fire('Deleted!', 'Mating has been deleted.', 'success');
-            } catch (error) {
-            console.error('Failed to delete Mating:', error);
-            Swal.fire('Error', 'Failed to delete Mating.', 'error');
-            }
-        };
-    
-        const handleClick = (id) => {
-            Swal.fire({
-                title: "Are you sure?",
-                text: "You won't be able to revert this!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!',
-            }).then((result) => {
-                if (result.isConfirmed) deleteItem(id);
-            });
-        };
-    
+    const deleteItem = async (id) => {
+        try {
+            await deleteMating(id);
+            setAnimalMating((prevMatings) => prevMatings.filter((mating) => mating._id !== id));
+            Swal.fire(t('deleted'), t('mating_deleted_success'), 'success');
+        } catch (error) {
+            console.error(t('delete_failed_mating'), error);
+            Swal.fire(t('error'), t('mating_deleted_failed'), 'error');
+        }
+    };
+
+    const handleClick = (id) => {
+        Swal.fire({
+            title: t('confirm_delete'),
+            text: t('delete_warning'),
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: t('yes_delete'),
+        }).then((result) => {
+            if (result.isConfirmed) deleteItem(id);
+        });
+    };
 
     function editMating(id) {
         navigate(`/editMating/${id}`);
@@ -66,7 +66,6 @@ function ViewAnimalMating({ animalId }) {
         navigate(`/mating`);
     }
 
-    // Helper function to format date
     function formatDate(date) {
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
         return new Date(date).toLocaleDateString(undefined, options);
@@ -75,9 +74,9 @@ function ViewAnimalMating({ animalId }) {
     return (
         <div className="mating-record-wrapper">
             <div className="mating-record-header">
-                <h2>MATING RECORD</h2>
+                <h2>{t('mating_record')}</h2>
                 <button onClick={() => MatingAnimal()} className="add-record-btn">
-                    <FaPlusCircle /> Add New Record
+                    <FaPlusCircle /> {t('add_new_record')}
                 </button>
             </div>
 
@@ -86,23 +85,23 @@ function ViewAnimalMating({ animalId }) {
                     animalMating.map((mating, index) => (
                         <div key={mating._id} className="mating-record-item">
                             <div className="mating-record-info">
-                                <span>{ordinalSuffix(index + 1)} Mating</span>
+                                <span>{ordinalSuffix(index + 1)} {t('mating')}</span>
                                 <ul>
-                                    <li><strong>Mating Type:</strong> {mating.matingType}</li>
-                                    <li><strong>Mating Date:</strong> {formatDate(mating.matingDate)}</li>
-                                    <li><strong>Sonar Date:</strong> {formatDate(mating.sonarDate)}</li>
-                                    <li><strong>Sonar Result:</strong> {mating.sonarRsult}</li>
-                                    <li><strong>Expected Delivery Date:</strong> {formatDate(mating.expectedDeliveryDate)}</li>
+                                    <li><strong>{t('mating_type')}:</strong> {mating.matingType}</li>
+                                    <li><strong>{t('mating_date')}:</strong> {formatDate(mating.matingDate)}</li>
+                                    <li><strong>{t('sonar_date')}:</strong> {formatDate(mating.sonarDate)}</li>
+                                    <li><strong>{t('sonar_result')}:</strong> {mating.sonarRsult}</li>
+                                    <li><strong>{t('expected_delivery_date')}:</strong> {formatDate(mating.expectedDeliveryDate)}</li>
                                 </ul>
                             </div>
                             <div className="mating-record-actions">
-                                <FaEdit onClick={() => editMating(mating._id)} className="edit-icon" title="Edit" />
-                                <FaTrashAlt onClick={() => handleClick(mating._id)} className="delete-icon" title="Delete" />
+                                <FaEdit onClick={() => editMating(mating._id)} className="edit-icon" title={t('edit')} />
+                                <FaTrashAlt onClick={() => handleClick(mating._id)} className="delete-icon" title={t('delete')} />
                             </div>
                         </div>
                     ))
                 ) : (
-                    <p>No mating records found for this animal.</p>
+                    <p>{t('no_mating_records')}</p>
                 )}
             </div>
         </div>

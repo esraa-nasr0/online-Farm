@@ -8,31 +8,25 @@ import ViewAnimalMating from './ViewAnimalMating';
 import ViewAnimalWeight from './ViewAnimalWeight';
 import ViewAnimalBreed from './ViewAnimalBreed';
 import ViewAnimalVaccine from './ViewAnimalVaccine';
+import { useTranslation } from 'react-i18next';
 
 export default function ViewDetailsofAnimal() {
-    const { id } = useParams();  // Get the animal id from the URL
+    const { t } = useTranslation();
+    const { id } = useParams();  
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [animalData, setAnimalData] = useState(null);
     const navigate = useNavigate();
     const { removeAnimals } = useContext(AnimalContext);
 
-   
-// Helper function to generate headers with the latest token
-const getHeaders = () => {
-    const Authorization = localStorage.getItem('Authorization');
-  
-    // Ensure the token has only one "Bearer" prefix
-    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-  
-    return {
-        Authorization: formattedToken
+    const getHeaders = () => {
+        const Authorization = localStorage.getItem('Authorization');
+        const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+        return { Authorization: formattedToken };
     };
-  };
 
-    // Fetch animal data based on the animal id
     async function submitAnimals() {
-        const headers = getHeaders(); // Get the latest headers
+        const headers = getHeaders();
         setIsLoading(true);
         setError(null);
         try {
@@ -40,10 +34,9 @@ const getHeaders = () => {
                 `https://farm-project-bbzj.onrender.com/api/animal/getsinglanimals/${id}`,
                 { headers }
             );
-
             if (data.status === 'success') {
                 setIsLoading(false);
-                setAnimalData(data.data.animal);  // Set the animal data to state
+                setAnimalData(data.data.animal);
             }
         } catch (err) {
             setIsLoading(false);
@@ -52,22 +45,22 @@ const getHeaders = () => {
     }
 
     useEffect(() => {
-        if (id) {  // Ensure the id is available before calling the API
+        if (id) {
             submitAnimals();
         }
     }, []);
 
     const removeItem = async (id) => {
         await removeAnimals(id);
-        navigate('/animals');  // After deletion, navigate back to the animals list page
+        navigate('/animals');
     };
 
     const handleClick = (id) => {
         Swal.fire({
-            title: "هل تريد الاستمرار؟",
+            title: t("are_you_sure"),
             icon: "question",
-            confirmButtonText: "نعم",
-            cancelButtonText: "لا",
+            confirmButtonText: t("yes_delete_it"),
+            cancelButtonText: t("cancel"),
             showCancelButton: true
         }).then((result) => {
             if (result.isConfirmed) {
@@ -80,49 +73,47 @@ const getHeaders = () => {
         navigate(`/editAnimal/${id}`);
     };
 
-    // Navigate to add new animal page
     const addNewAnimal = () => {
         navigate('/animalsDetails');
     };
 
     return (
         <div className="container">
-            <div className="title2">View Details of Animal</div>
+            <div className="title2">{t("view_details")}</div>
             <div className='mating-record-wrapper'>
                 <div className="mating-record-header">
-                    <h2>Animal RECORD</h2>
+                    <h2>{t("animals")}</h2>
                     <button onClick={addNewAnimal} className="add-record-btn">
-                        <FaPlusCircle /> Add New Record
+                        <FaPlusCircle /> {t("add_new_animal")}
                     </button>
                 </div>
 
                 {isLoading ? (
-                    <div>Loading...</div>
+                    <div>{t("loading")}</div>
                 ) : error ? (
-                    <div>{error}</div>
+                    <div>{t("error_message")}</div>
                 ) : animalData ? (
                     <div className="animal-details">
                         <div className="mating-record-list">
                             <div className="mating-record-item">
                                 <div className="mating-record-info">
                                     <ul>
-                                        <li><strong>Tag ID:</strong> {animalData.tagId}</li>
-                                        <li><strong>Animal Type:</strong> {animalData.animalType}</li>
-                                        <li><strong>Breed:</strong> {animalData.breed}</li>
-                                        <li><strong>Gender:</strong> {animalData.gender}</li>
-                                        <li><strong>Location Shed:</strong> {animalData.locationShed}</li>
+                                        <li><strong>{t("tag_id")}:</strong> {animalData.tagId}</li>
+                                        <li><strong>{t("animal_type")}:</strong> {t(animalData.animalType)}</li>
+                                        <li><strong>{t("breed")}:</strong> {animalData.breed}</li>
+                                        <li><strong>{t("gender")}:</strong> {t(animalData.gender)}</li>
+                                        <li><strong>{t("location_shed")}:</strong> {animalData.locationShed}</li>
                                     </ul>
                                 </div>
                                 <div className="mating-record-actions">
-                                    {/* Add edit and delete icons */}
-                                    <FaEdit onClick={() => editAnimal(animalData._id)} className="edit-icon" title="Edit" />
-                                    <FaTrashAlt onClick={() => handleClick(animalData._id)} className="delete-icon" title="Delete" />
+                                    <FaEdit onClick={() => editAnimal(animalData._id)} className="edit-icon" title={t("edit")} />
+                                    <FaTrashAlt onClick={() => handleClick(animalData._id)} className="delete-icon" title={t("delete")} />
                                 </div>
                             </div>
                         </div>
                     </div>
                 ) : (
-                    <div>No animal data available</div>
+                    <div>{t("error_message")}</div>
                 )}
             </div>
             

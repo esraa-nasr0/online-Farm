@@ -8,37 +8,36 @@ import { AnimalContext } from '../../Context/AnimalContext';
 import Swal from 'sweetalert2';
 import { useNavigate } from "react-router-dom";
 import { GrView } from "react-icons/gr";
+import { useTranslation } from 'react-i18next';
 
 export default function Animals() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { removeAnimals, getAnimals } = useContext(AnimalContext);
 
     const [animals, setAnimals] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [currentPage, setCurrentPage] = useState(1); // الصفحة الحالية
-    const [animalsPerPage] = useState(10); // عدد العناصر في كل صفحة
-    const [totalPages, setTotalPages] = useState(1); // إجمالي عدد الصفحات
+    const [currentPage, setCurrentPage] = useState(1);
+    const [animalsPerPage] = useState(10);
+    const [totalPages, setTotalPages] = useState(1);
 
     const [searchTagId, setSearchTagId] = useState('');
     const [searchAnimalType, setSearchAnimalType] = useState('');
     const [searchLocationShed, setSearchLocationShed] = useState('');
     const [searchBreed, setSearchBreed] = useState('');
     const [searchGender, setSearchGender] = useState('');
-    const [pagination, setPagination] = useState({ totalPages: 1 }); // حالة جديدة لتخزين معلومات الصفحات
+    const [pagination, setPagination] = useState({ totalPages: 1 });
 
-    // حذف عنصر
     const removeItem = async (id) => {
         try {
             await removeAnimals(id);
             setAnimals(prevAnimals => prevAnimals.filter(animal => animal._id !== id));
-            Swal.fire('Deleted!', 'Animal has been deleted.', 'success');
+            Swal.fire(t('deleted'), t('animal_deleted'), 'success');
         } catch (error) {
-            console.error('Failed to delete Animal:', error);
-            Swal.fire('Error', 'Failed to delete Animal.', 'error');
+            Swal.fire(t('error'), t('failed_to_delete_animal'), 'error');
         }
     };
 
-    // جلب البيانات من الـ API
     const fetchAnimals = async () => {
         setIsLoading(true);
         try {
@@ -52,32 +51,29 @@ export default function Animals() {
 
             const { data } = await getAnimals(currentPage, animalsPerPage, filters);
             setAnimals(data.data.animals);
-          
-            setPagination(data.pagination); // تحديث حالة الصفحات
+            setPagination(data.pagination);
             const total = data.pagination.totalPages;
-            setTotalPages(total); // تحديث عدد الصفحات
+            setTotalPages(total);
         } catch (error) {
-            Swal.fire('Error', 'Failed to fetch data', 'error');
+            Swal.fire(t('error'), t('failed_to_fetch_data'), 'error');
         } finally {
             setIsLoading(false);
         }
     };
 
-    // جلب البيانات عند تغيير الصفحة أو عوامل البحث
     useEffect(() => {
         fetchAnimals();
-    }, [ currentPage]);
+    }, [currentPage]);
 
-    // تأكيد الحذف
     const handleClick = (id) => {
         Swal.fire({
-            title: "Are you sure?",
-            text: "You won't be able to revert this!",
+            title: t('are_you_sure'),
+            text: t('you_wont_be_able_to_revert_this'),
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!',
+            confirmButtonText: t('yes_delete_it'),
         }).then((result) => {
             if (result.isConfirmed) {
                 removeItem(id);
@@ -85,32 +81,27 @@ export default function Animals() {
         });
     };
 
-    // تحرير عنصر
     const editAnimal = (id) => {
         navigate(`/editAnimal/${id}`);
     };
 
-    // عرض تفاصيل العنصر
     const viewAnimal = (id) => {
         navigate(`/viewDetailsofAnimal/${id}`);
     };
 
-    // البحث
     const handleSearch = () => {
-        setCurrentPage(1); // العودة إلى الصفحة الأولى عند البحث
+        setCurrentPage(1);
         fetchAnimals();
     };
 
-    // تغيير الصفحة
     const paginate = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
 
-    // عرض أزرار الصفحات
     const renderPaginationButtons = () => {
         const buttons = [];
-        const total = pagination.totalPages; // استخدام القيمة من حالة الصفحات
-        for (let i = 1; i <= total; i++) { // استخدام `total` بدلاً من `totalPages`
+        const total = pagination.totalPages;
+        for (let i = 1; i <= total; i++) {
             buttons.push(
                 <li key={i} className={`page-item ${i === currentPage ? 'active' : ''}`}>
                     <button className="page-link" onClick={() => paginate(i)}>
@@ -130,22 +121,22 @@ export default function Animals() {
                 </div>
             ) : (
                 <div className="container">
-                    <div className="title2">Animals</div>
+                    <div className="title2">{t('animals')}</div>
                     <div className="flex-column flex-md-row mb-3">
                         <Link to='/AnimalsDetails'>
                             <button type="button" className="btn btn-lg btn-secondary active button2">
-                                <MdOutlineAddToPhotos /> Add New Animal
+                                <MdOutlineAddToPhotos /> {t('add_new_animal')}
                             </button>
                         </Link>
                     </div>
 
                     <div className='container mt-5'>
                         <div className="d-flex flex-column flex-md-row align-items-center gap-2" style={{ flexWrap: 'nowrap' }}>
-                            <input type="text" className="form-control" placeholder="Search by Tag ID" value={searchTagId} onChange={(e) => setSearchTagId(e.target.value)} style={{ flex: 1 }} />
-                            <input type="text" className="form-control" placeholder="Search by Animal Type" value={searchAnimalType} onChange={(e) => setSearchAnimalType(e.target.value)} style={{ flex: 1 }} />
-                            <input type="text" className="form-control" placeholder="Search by Location Shed" value={searchLocationShed} onChange={(e) => setSearchLocationShed(e.target.value)} style={{ flex: 1 }} />
-                            <input type="text" className="form-control" placeholder="Search by Breed" value={searchBreed} onChange={(e) => setSearchBreed(e.target.value)} style={{ flex: 1 }} />
-                            <input type="text" className="form-control" placeholder="Search by Gender" value={searchGender} onChange={(e) => setSearchGender(e.target.value)} style={{ flex: 1 }} />
+                            <input type="text" className="form-control" placeholder={t('search_by_tag_id')} value={searchTagId} onChange={(e) => setSearchTagId(e.target.value)} style={{ flex: 1 }} />
+                            <input type="text" className="form-control" placeholder={t('search_by_animal_type')} value={searchAnimalType} onChange={(e) => setSearchAnimalType(e.target.value)} style={{ flex: 1 }} />
+                            <input type="text" className="form-control" placeholder={t('search_by_location_shed')} value={searchLocationShed} onChange={(e) => setSearchLocationShed(e.target.value)} style={{ flex: 1 }} />
+                            <input type="text" className="form-control" placeholder={t('search_by_breed')} value={searchBreed} onChange={(e) => setSearchBreed(e.target.value)} style={{ flex: 1 }} />
+                            <input type="text" className="form-control" placeholder={t('search_by_gender')} value={searchGender} onChange={(e) => setSearchGender(e.target.value)} style={{ flex: 1 }} />
                             <button className="btn mb-2 me-2" onClick={handleSearch} style={{ backgroundColor: '#88522e', borderColor: '#88522e', color: 'white' }}>
                                 <i className="fas fa-search"></i>
                             </button>
@@ -156,13 +147,13 @@ export default function Animals() {
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Tag ID</th>
-                                <th scope="col">Animal Type</th>
-                                <th scope="col">Breed</th>
-                                <th scope="col">Gender</th>
-                                <th scope="col">View Details</th>
-                                <th scope="col">Edit Animal</th>
-                                <th scope="col">Remove Animal</th>
+                                <th scope="col">{t('tag_id')}</th>
+                                <th scope="col">{t('animal_type')}</th>
+                                <th scope="col">{t('breed')}</th>
+                                <th scope="col">{t('gender')}</th>
+                                <th scope="col">{t('view_details')}</th>
+                                <th scope="col">{t('edit_animal')}</th>
+                                <th scope="col">{t('remove_animal')}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -174,20 +165,19 @@ export default function Animals() {
                                     <td>{animal.breed}</td>
                                     <td>{animal.gender}</td>
                                     <td onClick={() => viewAnimal(animal._id)} style={{ cursor: 'pointer' }} className='text-primary'>
-                                        <GrView /> View Details
+                                        <GrView /> {t('view_details')}
                                     </td>
                                     <td onClick={() => editAnimal(animal._id)} style={{ cursor: 'pointer' }} className='text-success'>
-                                        <FaRegEdit /> Edit Animal
+                                        <FaRegEdit /> {t('edit_animal')}
                                     </td>
                                     <td onClick={() => handleClick(animal.id || animal._id)} className='text-danger' style={{ cursor: 'pointer' }}>
-                                        <RiDeleteBin6Line /> Remove Animal
+                                        <RiDeleteBin6Line /> {t('remove_animal')}
                                     </td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
 
-                    {/* أزرار الصفحات */}
                     <div className="d-flex justify-content-center mt-4">
                         <nav>
                             <ul className="pagination">

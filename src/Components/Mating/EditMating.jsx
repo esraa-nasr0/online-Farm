@@ -3,8 +3,11 @@ import React, { useEffect, useState } from 'react';
 import { IoIosSave } from "react-icons/io";
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+
 
 function EditMating() {
+    const { t } = useTranslation();
     const [showAlert, setShowAlert] = useState(false);
     const [error, setError] = useState(null);
     const [isLoading, setisLoading] = useState(false);
@@ -14,18 +17,15 @@ function EditMating() {
 // Helper function to generate headers with the latest token
 const getHeaders = () => {
     const Authorization = localStorage.getItem('Authorization');
-  
     // Ensure the token has only one "Bearer" prefix
     const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-  
     return {
         Authorization: formattedToken
     };
-  };
+};
     
     async function editMating(values) {
         const headers = getHeaders(); // Get the latest headers
-
         setisLoading(true); 
         try {
             const convertToISO = (dateString) => {
@@ -117,18 +117,18 @@ const getHeaders = () => {
                 {/* Expected Delivery Date Alert */}
                 {showAlert && matingData && matingData.expectedDeliveryDate && (
     <div className="alert mt-5 p-4  alert-success">
-        Expected Delivery Date: {new Date(matingData.expectedDeliveryDate).toLocaleDateString()}
+        {t('expected_delivery_date')}: {new Date(matingData.expectedDeliveryDate).toLocaleDateString()}
     </div>
 )}
             <form onSubmit={formik.handleSubmit} className="mt-5">
                 <button type="submit" className="btn  button2" disabled={isLoading}>
-                    {isLoading ? <i className="fas fa-spinner fa-spin"></i> : <IoIosSave />} Save
+                    {isLoading ? <i className="fas fa-spinner fa-spin"></i> : <IoIosSave />} {t('save')}
                 </button>
 
                 <div className="animaldata">
 
                 <div className="input-box">
-<label className="label" htmlFor="tagId">Tag ID</label>
+<label className="label" htmlFor="tagId">{t('tag_id')}</label>
 <input
     onBlur={formik.handleBlur}
     onChange={formik.handleChange}
@@ -143,7 +143,7 @@ const getHeaders = () => {
 </div>
 
 <div className="input-box">
-<label className="label" htmlFor="matingType">Mating Type</label>
+<label className="label" htmlFor="matingType">{t('mating_type')}</label>
 <select
     value={formik.values.matingType}
     onChange={formik.handleChange}
@@ -152,14 +152,14 @@ const getHeaders = () => {
     name="matingType"
     id="matingType"
 >
-    <option value="">Mating Type</option>
-    <option value="Natural">Natural</option>
+    <option value="">{t('mating_type')}</option>
+    <option value="Natural">{t('natural')}</option>
 </select>
 {formik.errors.matingType && formik.touched.matingType && <p className="text-danger">{formik.errors.matingType}</p>}
 </div>
 
 <div className="input-box">
-<label className="label" htmlFor="maleTag_id">Male Tag ID</label>
+<label className="label" htmlFor="maleTag_id">{t('male_tag_id')}</label>
 <input
     onBlur={formik.handleBlur}
     onChange={formik.handleChange}
@@ -174,7 +174,7 @@ const getHeaders = () => {
 </div>
 
 <div className="input-box">
-<label className="label" htmlFor="matingDate">Mating Date</label>
+<label className="label" htmlFor="matingDate">{t('mating_date')}</label>
 <input
     onBlur={formik.handleBlur}
     onChange={formik.handleChange}
@@ -188,7 +188,7 @@ const getHeaders = () => {
 </div>
 
 <div className="input-box">
-<label className="label" htmlFor="sonarDate">Sonar Date</label>
+<label className="label" htmlFor="sonarDate">{t('sonar_date')}</label>
 <input
     onBlur={formik.handleBlur}
     onChange={formik.handleChange}
@@ -202,7 +202,7 @@ const getHeaders = () => {
 </div>
 
 <div className="input-box">
-<label className="label" htmlFor="sonarRsult">Sonar Result</label>
+<label className="label" htmlFor="sonarRsult">{t('sonar_result')}</label>
 <select
     onBlur={formik.handleBlur}
     onChange={formik.handleChange}
@@ -211,14 +211,14 @@ const getHeaders = () => {
     className="input2"
     name="sonarRsult"
 >
-    <option value="" disabled>Select Sonar Result</option>
-    <option value="positive">Positive</option>
-    <option value="negative">Negative</option>
+    <option value="" disabled>{t('select_sonar_result')}</option>
+    <option value="positive">{t('positive')}</option>
+    <option value="negative">{t('negative')}</option>
 </select>
 {formik.errors.sonarRsult && formik.touched.sonarRsult && <p className="text-danger">{formik.errors.sonarRsult}</p>}
 </div>
                     <div className="input-box">
-                        <label className="label" htmlFor="expectedDeliveryDate">Expected Delivery Date</label>
+                        <label className="label" htmlFor="expectedDeliveryDate">{t('expected_delivery_date')}</label>
                         <input
                             onBlur={formik.handleBlur}
                             onChange={formik.handleChange}
