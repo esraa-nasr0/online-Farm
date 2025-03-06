@@ -70,6 +70,7 @@ function Mating() {
                 </div>
             )}
             <form onSubmit={formik.handleSubmit} className="mt-5">
+                
                 {isLoading ? (
                     <button type="submit" className="btn button2" disabled>
                         <i className="fas fa-spinner fa-spin"></i>
