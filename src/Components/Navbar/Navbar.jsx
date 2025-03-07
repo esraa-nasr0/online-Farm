@@ -19,7 +19,7 @@ const isAdmin = localStorage.getItem("isAdmin") === "true"; // التأكد إذ
   function LogOut() {
     localStorage.removeItem("Authorization");
     setAuthorization(null);
-    navigate("/home");
+    navigate("/");
   }
 
   // دالة لتبديل اللغة

@@ -72,7 +72,7 @@ let routers = createBrowserRouter([
     path: "", 
     element: <Layout />, 
     children: [
-      { index: true, element: <ProtectedRoute><Home/></ProtectedRoute> },
+      { index: true, element: <Home/> },
       { path: "homeServices", element: <ProtectedRoute ><HomeServices/></ProtectedRoute> },
       { path: "report", element: <ProtectedRoute><Report/></ProtectedRoute> },
       { path: "reportDaliy", element: <ProtectedRoute><ReportDaliy/></ProtectedRoute> },
