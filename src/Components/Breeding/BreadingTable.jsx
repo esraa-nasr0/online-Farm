@@ -33,7 +33,7 @@ function BreadingTable() {
                 setBreading(data.breeding);
         
                 if (data?.pagination) {
-                    setPagination(data.pagination);
+     setPagination(data.pagination);
                     setTotalPages(data.pagination.totalPages || 1); // تحديث عدد الصفحات
                 }
             } else {
