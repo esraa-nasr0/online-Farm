@@ -122,26 +122,13 @@ function BreadingTable() {
         <>
             {isLoading ? (
                 <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
-                    <Rings visible={true} height="100" width="100" color="#3F5C40" ariaLabel="rings-loading" />
+                    <Rings visible={true} height="100" width="100" color="#9cbd81" ariaLabel="rings-loading" />
                 </div>
             ) : (
                 <div>
-                    <div className="d-flex flex-column flex-md-row container justify-content-between align-items-center mb-4" style={{marginTop:"140px"}}>
-                        <h2 className="bottom-line pb-2" style={{color:"#88522e"}}>Breeding Records</h2>
-                        <div className='d-flex flex-column flex-sm-row gap-2'>
-                            <Link to='/breeding'>
-                                <button 
-                                    type="button" 
-                                    className="btn btn-lg active button2"  
-                                    style={{ background: "#88522e", color: "white", borderColor: "#3a7d44" }}
-                                >  
-                                    <MdOutlineAddToPhotos /> Add New Breeding
-                                </button>
-                            </Link> 
-                        </div> 
-                    </div>  
-
                     <div className='container'>
+                    <div className="title2">Breeding</div>
+
                         <div className="d-flex flex-column flex-md-row align-items-center gap-2 mt-4" style={{ flexWrap: 'nowrap' }}>
                             <input
                                 type="text"
@@ -170,7 +157,7 @@ function BreadingTable() {
                             <button
                                 className="btn"
                                 onClick={handleSearch}
-                                style={{ backgroundColor: '#88522e', borderColor: '#88522e', color: 'white' }}
+                                style={{ backgroundColor: '#FAA96C', color: 'white' }}
                             >
                                 <i className="fas fa-search"></i>
                             </button>
@@ -179,7 +166,7 @@ function BreadingTable() {
 
                     <div className="table-responsive">
                         <div className="full-width-table">
-                            <table className="table table-striped full-width-table mt-6">
+                            <table className="table table-hover mt-3 p-2">
                                 <thead>
                                     <tr>
                                         <th scope="col">#</th>
@@ -219,9 +206,9 @@ function BreadingTable() {
                                             >
                                                 <FaRegEdit /> Edit
                                             </td>
-                                           <td onClick={() => handleClick(breeding._id)} className="text-danger" style={{ cursor: "pointer" }}>
-                                                             <RiDeleteBin6Line /> Remove
-                                                           </td>
+                                            <td onClick={() => handleClick(breeding._id)} className="text-danger" style={{ cursor: "pointer" }}>
+                                                <RiDeleteBin6Line /> Remove
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>

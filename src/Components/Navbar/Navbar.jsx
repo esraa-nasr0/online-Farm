@@ -34,13 +34,14 @@ const isAdmin = localStorage.getItem("isAdmin") === "true"; // التأكد إذ
     <>
       <nav
   className="navbar p-3 mb-2 fixed-top navbar-dark navbar-expand-lg"
-  style={{ backgroundColor: "#3f5c40" }}
+  style={{ backgroundColor: "#F3F3F3" }}
 >
   <div className="container-fluid">
-    <Link className="navbar-brand" to="#" style={{ color: "#E9E6E2" }}>
+    <Link className="navbar-brand" to="#" style={{ color: "#0C0D0E" }}>
       Online Farm
     </Link>
     <button
+      style={{ backgroundColor: "#9cbd81" }}
       className="navbar-toggler"
       type="button"
       data-bs-toggle="collapse"
@@ -57,13 +58,13 @@ const isAdmin = localStorage.getItem("isAdmin") === "true"; // التأكد إذ
         {Authorization !== null ? (
           <>
             <li className="nav-item">
-              <Link className="nav-link" to="/" style={{ color: "#E9E6E2" }}>
+              <Link className="nav-link" to="/" style={{ color: "#0C0D0E" }}>
                 Home
               </Link>
             </li>
             
             <li className="nav-item">
-                <Link className="nav-link" to="/homeServices" style={{ color: "#E9E6E2" }}>
+                <Link className="nav-link" to="/homeServices" style={{ color: "#0C0D0E" }}>
                     Home Services
                 </Link>
             </li>
@@ -71,7 +72,7 @@ const isAdmin = localStorage.getItem("isAdmin") === "true"; // التأكد إذ
             {/* عرض Dashboard فقط للأدمن الأصلي حتى لو سجل كيوزر */}
             {(userRole === "admin" || isAdmin) && (
                 <li className="nav-item">
-                    <Link className="nav-link" to="/dashboard" style={{ color: "#E9E6E2" }}>
+                    <Link className="nav-link" to="/dashboard" style={{ color: "#0C0D0E" }}>
                         Dashboard
                     </Link>
                 </li>
@@ -84,7 +85,7 @@ const isAdmin = localStorage.getItem("isAdmin") === "true"; // التأكد إذ
       <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
               {/* زر تبديل اللغة */}
               <li className="nav-item">
-                <button className="btn btn-link nav-link" onClick={toggleLanguage} style={{ color: "#E9E6E2" }}>
+                <button className="btn btn-lg btn-link nav-link" onClick={toggleLanguage} style={{backgroundColor: "#9cbd81", color: "#ffffff" }}>
                   {language === "en" ? "العربية" : "English"}
                 </button>
               </li>
@@ -93,7 +94,7 @@ const isAdmin = localStorage.getItem("isAdmin") === "true"; // التأكد إذ
             <Link
               onClick={() => LogOut()}
               className="nav-link active"
-              style={{ color: "#E9E6E2" }}
+              style={{ color: "#0C0D0E" }}
             >
               LogOut
             </Link>
@@ -105,7 +106,7 @@ const isAdmin = localStorage.getItem("isAdmin") === "true"; // التأكد إذ
                 className="nav-link active"
                 aria-current="page"
                 to="Register"
-                style={{ color: "#E9E6E2" }}
+                style={{ color: "#0C0D0E" }}
               >
                 Register
               </Link>
@@ -115,7 +116,7 @@ const isAdmin = localStorage.getItem("isAdmin") === "true"; // التأكد إذ
                 className="nav-link active"
                 aria-current="page"
                 to="Login"
-                style={{ color: "#E9E6E2" }}
+                style={{ color: "#0C0D0E" }}
               >
                 Login
               </Link>

@@ -117,20 +117,13 @@ function WeightTable() {
                     visible={true}
                     height="100"
                     width="100"
-                    color="#3f5c40"
+                    color="#9cbd81"
                     ariaLabel="rings-loading"
                 />
             </div>
         ) : (
             <div className="container">
                 <div className="title2">Weight</div>
-                <div className="flex-column flex-md-row mb-3 me-3">
-                    <Link to='/weight'>
-                        <button type="button" className="btn btn-lg btn-secondary active button2">
-                            <MdOutlineAddToPhotos /> Add New Weight
-                        </button>
-                    </Link>
-                </div>
 
                 {/* Inputs للبحث */}
                 <div className="container mt-5">
@@ -162,13 +155,15 @@ function WeightTable() {
                         <button
                             className="btn mb-2 me-2"
                             onClick={handleSearch}
-                            style={{ backgroundColor: '#88522e', borderColor: '#88522e', color: '#E9E6E2' }}
+                            style={{ backgroundColor: '#FAA96C',  color: '#E9E6E2' }}
                         >
                             <i className="fas fa-search"></i>
                         </button>
                     </div>
                 </div>
 
+                <div className="table-responsive">
+                <div className="full-width-table">
                 <table className="table table-hover mt-6">
                     <thead>
                         <tr>
@@ -201,6 +196,8 @@ function WeightTable() {
                         ))}
                     </tbody>
                 </table>
+                    </div>
+                    </div>
 
                 {/* أزرار الصفحات */}
                 <div className="d-flex justify-content-center mt-4">
