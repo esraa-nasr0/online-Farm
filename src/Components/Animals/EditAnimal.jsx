@@ -131,14 +131,13 @@ const getHeaders = () => {
 
     return (
         <div className="container">
+            <div className="title2">Edit Animal</div>
             <p className="text-danger">{error}</p>
-    <form onSubmit={formik.handleSubmit} className='mt-5'>
-                <div className=' d-flex vaccine align-items-center justify-content-between'>
-                <div className="title-v">Edit Animal</div>
-                <button type="submit" className="btn  button2" disabled={isLoading}>
-                {isLoading ? <i className="fas fa-spinner fa-spin"></i> : <IoIosSave />} {t('save')}
-                </button>
-                </div>
+        <form onSubmit={formik.handleSubmit} className='mt-5'>
+                    <button type="submit" className="btn  button2" disabled={isLoading}>
+                        {isLoading ? <i className="fas fa-spinner fa-spin"></i> : <IoIosSave />} {t('save')}
+                    </button>
+
                 <div className="animaldata">
                     <div className="input-box">
                         <label className="label" htmlFor="tagId">{t('tag_id')}</label>

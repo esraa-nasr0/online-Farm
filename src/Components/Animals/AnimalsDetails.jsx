@@ -83,6 +83,7 @@ const getHeaders = () => {
 
     return <>
         <div className="container">
+        <div className="title2">Add Animal</div>
         <p className="text-danger">{error}</p>
     {showAlert && animalData && (  
     <div className="alert mt-5 p-4 alert-success">  
@@ -90,20 +91,14 @@ const getHeaders = () => {
     </div>  
     )}  
         <form onSubmit={formik.handleSubmit} className='mt-5'>
-    {isLoading ? (
-                <div className=' d-flex vaccine align-items-center justify-content-between'>
-                <div className="title-v">Add Animal</div>
-                <button type="submit" className="btn button2">
-                <i className="fas fa-spinner fa-spin"></i>
-                </button>
-                </div>
+        {isLoading ? (
+                        <button type="submit" className="btn button2" disabled>
+                            <i className="fas fa-spinner fa-spin"></i>
+                        </button>
                     ) : (
-                    <div className=' d-flex vaccine align-items-center justify-content-between'>
-                    <div className="title-v">Add Animal</div>
-                    <button type="submit" className="btn  button2" disabled={isLoading}>
-                    {isLoading ? <i className="fas fa-spinner fa-spin"></i> : <IoIosSave />} {t('save')}
-                    </button>
-                    </div>
+                        <button type="submit" className="btn button2">
+                            <IoIosSave /> {t('save')}
+                        </button>
                     )}
         <div className="animaldata">
         <div className="input-box">

@@ -36,10 +36,10 @@ import VaccineanimalContextProvider from "./Context/VaccineanimalContext.js";
 import VaccineTable from "./Components/Vaccine/VaccineTable.jsx";
 import EditVaccine from "./Components/Vaccine/EditVaccine.jsx";
 import HomeServices from "./Components/Home/HomeServices.jsx";
-import ExclutedContextProvider from "./Context/ExclutedContext.js";
-import Excluted from "./Components/Excluted/Excluted.jsx";
-import Exclutedtable from "./Components/Excluted/ExclutedTable.jsx";
-import EditExcluted from "./Components/Excluted/EditExcluted.jsx";
+import ExcludedContextProvider from "./Context/ExcludedContext.js";
+import Excluded from "./Components/Excluded/Excluded.jsx";
+import Excludedtable from "./Components/Excluded/Excludedtable.jsx";
+import EditExcluded from "./Components/Excluded/EditExcluded.jsx";
 import Treatment from "./Components/Treatment/Treatment.jsx";
 import TreatmentContextProvider from "./Context/TreatmentContext.js";
 import TreatmentTable from "./Components/Treatment/TreatmentTable.jsx";
@@ -64,7 +64,15 @@ import EditFodder from "./Components/Feeding/EditFodder.jsx";
 import Dashboard from "./Components/Dashboard/Dashboard.jsx";
 import NotAuthorized from "./Components/Dashboard/NotAuthorized.jsx";
 import DashboardContextProvider from "./Context/DashboardContext.js";
-
+import AnimalServices from "./Components/Services/AnimalServices.jsx";
+import MatingServices from "./Components/Services/MatingServices.jsx";
+import WeightServices from "./Components/Services/WeightServices.jsx";
+import BreedingServices from "./Components/Services/BreedingServices.jsx";
+import VaccineServices from "./Components/Services/VaccineServices.jsx";
+import ExcludedServices from "./Components/Services/ExcludedServices.jsx";
+import TreetmentServices from "./Components/Services/TreetmentSerivces.jsx";
+import FeedingServices from "./Components/Services/FeedingServices.jsx";
+import FodderServices from "./Components/Services/FodderServices.jsx";
 
 
 let routers = createBrowserRouter([
@@ -76,9 +84,9 @@ let routers = createBrowserRouter([
       { path: "homeServices", element: <ProtectedRoute ><HomeServices/></ProtectedRoute> },
       { path: "report", element: <ProtectedRoute><Report/></ProtectedRoute> },
       { path: "reportDaliy", element: <ProtectedRoute><ReportDaliy/></ProtectedRoute> },
-      { path: "excluted", element: <ProtectedRoute><Excluted/></ProtectedRoute> },
-      { path: "exclutedtable", element: <ProtectedRoute><Exclutedtable/></ProtectedRoute> },
-      { path: "editExcluted/:id", element: <ProtectedRoute><EditExcluted/></ProtectedRoute> },
+      { path: "excluded", element: <ProtectedRoute><Excluded/></ProtectedRoute> },
+      { path: "excludedtable", element: <ProtectedRoute><Excludedtable/></ProtectedRoute> },
+      { path: "editExcluded/:id", element: <ProtectedRoute><EditExcluded/></ProtectedRoute> },
       { path: "notAuthorized", element: <NotAuthorized /> },
 
       { path: "login", element: <Login /> },
@@ -123,6 +131,15 @@ let routers = createBrowserRouter([
       { path: "fodderTable", element: <ProtectedRoute><FodderTable/></ProtectedRoute> },
       { path: "editFodder/:id", element: <ProtectedRoute><EditFodder/></ProtectedRoute> },
       { path: "dashboard", element: <ProtectedRoute  allowedRoles={['admin']}><Dashboard/></ProtectedRoute> },
+      { path: "animalServices", element: <ProtectedRoute><AnimalServices/></ProtectedRoute> },
+      { path: "matingServices", element: <ProtectedRoute><MatingServices/></ProtectedRoute> },
+      { path: "weightServices", element: <ProtectedRoute><WeightServices/></ProtectedRoute> },
+      { path: "breedingServices", element: <ProtectedRoute><BreedingServices/></ProtectedRoute> },
+      { path: "vaccineServices", element: <ProtectedRoute><VaccineServices/></ProtectedRoute> },
+      { path: "excludedServices", element: <ProtectedRoute><ExcludedServices/></ProtectedRoute> },
+      { path: "treetmentServices", element: <ProtectedRoute><TreetmentServices/></ProtectedRoute> },
+      { path: "feedingServices", element: <ProtectedRoute><FeedingServices/></ProtectedRoute> },
+      { path: "fodderServices", element: <ProtectedRoute><FodderServices/></ProtectedRoute> },
 
 
     ],
@@ -149,7 +166,7 @@ export default function App() {
   <FeedbyLocationContextProvider>
   <FeedContextProvider>
   <TreatmentContextProvider>
-  <ExclutedContextProvider>
+  <ExcludedContextProvider>
   <VaccineanimalContextProvider>
   <GetAnimalContextProvider>
   <BreedingcontextProvider>
@@ -165,7 +182,7 @@ export default function App() {
   </BreedingcontextProvider>
   </GetAnimalContextProvider>
   </VaccineanimalContextProvider>
-  </ExclutedContextProvider>
+  </ExcludedContextProvider>
   </TreatmentContextProvider>
   </FeedContextProvider>
   </FeedbyLocationContextProvider>
