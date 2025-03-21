@@ -667,6 +667,15 @@ code {
   border-radius: 5px;
   box-shadow: 0 5px 10px rgba(0,0,0,0.15);
 }
+.Linkside {
+  color: #0e0e0e;
+}
+
+.Linkside:hover,
+.Linkside:focus,
+.Linkside:active {
+  text-decoration: none !important; /* يضمن عدم ظهوره عند التفاعل */
+}
 
 .body{
   margin-top: 55px;

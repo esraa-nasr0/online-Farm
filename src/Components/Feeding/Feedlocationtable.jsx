@@ -6,7 +6,8 @@ import { Rings } from "react-loader-spinner";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { RiDeleteBin6Line } from "react-icons/ri";
-// import { FaRegEdit } from "react-icons/fa";
+import { FaRegEdit } from "react-icons/fa";
+
 
 function FeedingTable() {
   const navigate = useNavigate();
@@ -85,9 +86,9 @@ function FeedingTable() {
   };
   
 
-  // const Editfeed = (id) => {
-  //   navigate(`/editfeedbylocation/${id}`);
-  // };
+  const Editfeed = (id) => {
+    navigate(`/editfeedbylocation/${id}`);
+  };
 
   return (
     <>
@@ -118,7 +119,7 @@ function FeedingTable() {
       
           <div className="d-flex flex-column flex-md-row align-items-center gap-2 mt-4">
                         <input type="text" className="form-control" value={searchCriteria.locationShed} placeholder="Search locationShed" onChange={(e) => setSearchCriteria(prev => ({ ...prev, locationShed: e.target.value }))} />
-                        {/* <input
+                        <input
   type="text"
   className="form-control"
   value={searchCriteria.date}
@@ -126,11 +127,11 @@ function FeedingTable() {
   onChange={(e) => {
     setSearchCriteria((prev) => {
       const newSearchCriteria = { ...prev, date: e.target.value };
-      console.log("New Date:", newSearchCriteria.date);  // إضافة log للتأكد من أن القيمة تتغير
+      console.log("New Date:", newSearchCriteria.date);  
       return newSearchCriteria;
     });
   }}
-/> */}
+/>
 
                         <button className="btn" onClick={handleSearch} style={{ backgroundColor: '#88522e', color: 'white' }}>
     <i className="fas fa-search"></i>
@@ -146,7 +147,7 @@ function FeedingTable() {
                 <th scope="col">Date</th>
                 <th scope="col">Feed Name</th>
                 <th scope="col">Feed Price</th>
-                    {/* <th>Edit</th> */}
+                    <th>Edit</th>
                     <th>Remove</th>
               </tr>
             </thead>
@@ -159,12 +160,12 @@ function FeedingTable() {
                     <td>{item.date ? item.date.split("T")[0] : "N/A"}</td>
                     <td>{item?.feeds?.[0]?.feedName}</td>
                     <td>{item?.feeds?.[0]?.feedPrice}</td>
-                    {/* <td
+                    <td
                                           style={{ cursor: "pointer", color: "#198754" }}
                                           onClick={() => Editfeed(item._id)}
                                         >
                                           <FaRegEdit/> Edit
-                                        </td> */}
+                                        </td>
                       <td onClick={() => handleDelete(item._id)} className="text-danger" style={{ cursor: "pointer" }}>
                                         <RiDeleteBin6Line /> Remove
                                       </td>

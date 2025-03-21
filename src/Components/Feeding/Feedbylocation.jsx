@@ -15,11 +15,10 @@ export default function Feedbylocation() {
   const navigate = useNavigate()
 
   
-// Helper function to generate headers with the latest token
+
 const getHeaders = () => {
   const Authorization = localStorage.getItem('Authorization');
 
-  // Ensure the token has only one "Bearer" prefix
   const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
 
   return {
@@ -43,7 +42,7 @@ const getHeaders = () => {
   }, [getFodderMenue]);
 
   async function post(values) {
-    const headers = getHeaders(); // Get the latest headers
+    const headers = getHeaders(); 
 
     try {
       setIsLoading(true);
@@ -180,7 +179,7 @@ const getHeaders = () => {
           </div>
         </div>
 
-        {/* Loop through the feeds array to create a dynamic dropdown for each feed */}
+     
         {formik.values.feeds.map((feed, index) => (
           <div key={index} >
             <div className="input-box">
