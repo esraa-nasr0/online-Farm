@@ -5,7 +5,7 @@ import axios from 'axios';
 import { IoIosSave } from 'react-icons/io';
 import { useParams } from 'react-router-dom';
 
-export default function EditExcluted() {
+export default function EditExcluded() {
     const { id } = useParams(); // Get the ID from URL parameters
     const [showAlert, setShowAlert] = useState(false);
     const [error, setError] = useState(null);
@@ -106,21 +106,20 @@ const getHeaders = () => {
 
     return (
         <div className="container">
-            <div style={{marginTop:"140px" ,color:"#88522e" ,  fontSize: "28px", fontWeight:"bold"}}>Edit Excluded</div>
+            <div className="title2">Edit Excluded</div>
             {error && <p className="text-danger">{error}</p>}
             {showAlert && <div className="alert alert-success mt-3">Excluded information updated successfully!</div>}
 
             <form onSubmit={formik.handleSubmit} className="mt-5">
             {isLoading ? (
-                        <button type="submit" className="btn button2" disabled>
-                            <i className="fas fa-spinner fa-spin"></i>
-                        </button>
-                    ) : (
-                        <button type="submit"      className=" btn-lg active button2 rounded" 
-                        style={{ background: "#88522e", color: "white", borderColor: "#3a7d44" ,paddingLeft:"10px" ,paddingRight:"10px" ,paddingBottom:"5px" ,paddingTop:"5px" }}   >
-                            <IoIosSave /> Save
-                        </button>
-                    )}
+                                    <button type="submit" className="btn button2" disabled>
+                                        <i className="fas fa-spinner fa-spin"></i>
+                                    </button>
+                                ) : (
+                                    <button type="submit" className="btn button2">
+                                        <IoIosSave /> Save
+                                    </button>
+                                )}
 
                 <div className="animaldata">
                     <div className="input-box">

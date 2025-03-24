@@ -104,27 +104,13 @@ function TreatmentTable() {
         <>
             {isLoading ? (
                 <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
-                    <Rings visible={true} height="100" width="100" color="#3f5c40" ariaLabel="rings-loading" />
+                    <Rings visible={true} height="100" width="100" color="#9cbd81" ariaLabel="rings-loading" />
                 </div>
             ) : (
                 <div className="container">
                     <div className="title2">Treatment</div>
-                    <div className="flex-column flex-md-row mb-4 mt-3">
-                        <div className="d-flex flex-column flex-sm-row gap-3 justify-content-end">
-                            <Link to="/treatment">
-                                <button type="button" className="btn btn-lg btn-secondary active button2">
-                                    <MdOutlineAddToPhotos /> Add New Treatment
-                                </button>
-                            </Link>
-                            <Link to="/treatAnimalTable">
-                                <button type="button" className="btn btn-lg btn-secondary active button2">
-                                    <MdOutlineAddToPhotos /> Treatment by Animal
-                                </button>
-                            </Link>
-                        </div>
-                    </div>
 
-                    <div className="container mt-2">
+                    <div className="container mt-5">
                         <div className="d-flex flex-column flex-md-row align-items-center gap-2" style={{ flexWrap: 'nowrap' }}>
                             <input
                                 type="text"
@@ -145,7 +131,7 @@ function TreatmentTable() {
                             <button
                                 className="btn mb-2 me-2"
                                 onClick={handleSearch}
-                                style={{ backgroundColor: '#88522e', borderColor: '#88522e', color: 'white' }}
+                                style={{ backgroundColor: '#FAA96C',  color: 'white' }}
                             >
                                 <i className="fas fa-search"></i>
                             </button>
@@ -154,6 +140,8 @@ function TreatmentTable() {
 
                     {error && <p className="text-danger mt-3">{error}</p>}
 
+                    <div className="table-responsive">
+                    <div className="full-width-table">
                     <table className="table table-hover mt-4" aria-label="Treatment Table">
                         <thead>
                             <tr>
@@ -198,6 +186,8 @@ function TreatmentTable() {
                             )}
                         </tbody>
                     </table>
+                    </div>
+                    </div>
 
                     <div className="d-flex justify-content-center mt-4">
                         <nav>

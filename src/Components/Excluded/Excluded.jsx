@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { IoIosSave } from "react-icons/io";
 import Swal from 'sweetalert2';
 import { useNavigate } from "react-router-dom";
-function Excluted() {
+function Excluded() {
      const navigate = useNavigate();
     const [showAlert, setShowAlert] = useState(false);
     const [error, setError] = useState(null);
@@ -73,7 +73,7 @@ const getHeaders = () => {
     return (
         <>
             <div className="container">
-       
+            <div className="title2">Add Excluted</div>
                 <p className="text-danger">{error}</p>
                 
                 {showAlert && matingData && matingData.expectedDeliveryDate && (
@@ -83,31 +83,17 @@ const getHeaders = () => {
                 )}
                 
                 <form onSubmit={formik.handleSubmit} className="mt-5">
-                            
-                              {isLoading ? (
-                                  
-                                  <div className=' d-flex vaccine align-items-center justify-content-between'>
-                                  <div className="title-v">Add Excluted</div>
-                                
-                                  <button type="submit" className="btn button2">
-                                              <i className="fas fa-spinner fa-spin"></i>
-                                          </button>
-                  
-                                  </div>
-                                  
-                                      ) : (
-                                                 <div className=' d-flex vaccine align-items-center justify-content-between'>
-                                                        <div className="title-v">Add Excluted</div>
-                                                        <button type="submit" className="btn  button2" disabled={isLoading}>
-                                                            {isLoading ? <i className="fas fa-spinner fa-spin"></i> : <IoIosSave />} Save
-                                                        </button>
-                                        
-                                                        </div>
-                                                
-                                      )}
+                            {isLoading ? (
+                            <button type="submit" className="btn button2" disabled>
+                            <i className="fas fa-spinner fa-spin"></i>
+                            </button>
+                            ) : (
+                            <button type="submit" className="btn button2">
+                            <IoIosSave /> Save
+                            </button>
+                            )}
 
                     <div className="animaldata">
-                 
                         <div className="input-box">
                             <label className="label" htmlFor="weight">Weight</label>
                             <input
@@ -227,7 +213,7 @@ const getHeaders = () => {
     );
 }
 
-export default Excluted;
+export default Excluded;
 
 
 

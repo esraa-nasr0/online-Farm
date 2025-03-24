@@ -2,7 +2,7 @@ import axios from "axios";
 import { createContext } from "react";
 
 // Creating the ExclutedContext
-export let ExclutedContext = createContext();
+export let ExcludedContext = createContext();
 
 // Helper function to generate headers with the latest token
 const getHeaders = () => {
@@ -48,10 +48,10 @@ export function deleteExcluted(id) {
 }
 
 // Context provider component to wrap the app and provide context values
-export default function ExclutedContextProvider(props) {
+export default function ExcludedContextProvider(props) {
     return (
-        <ExclutedContext.Provider value={{ getExcluted, deleteExcluted }}>
+        <ExcludedContext.Provider value={{ getExcluted, deleteExcluted }}>
             {props.children}
-        </ExclutedContext.Provider>
+        </ExcludedContext.Provider>
     );
 }
