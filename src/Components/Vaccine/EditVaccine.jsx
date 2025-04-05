@@ -11,30 +11,45 @@ function EditVaccine() {
     const { id } = useParams();
     const navigate = useNavigate();
 
-    // Helper function to generate headers with the latest token
     const getHeaders = () => {
-        const Authorization = localStorage.getItem('Authorization');
+        const token = localStorage.getItem('Authorization');
         return {
-            Authorization: Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`
+            'Authorization': token?.startsWith("Bearer ") ? token : `Bearer ${token}`,
+            'Content-Type': 'application/json'
         };
     };
 
     async function editVaccine(values) {
         setIsLoading(true);
         try {
-            const { data } = await axios.patch(
+            console.log('Submitting form with values:', values);
+            
+            const response = await axios.patch(
                 `https://farm-project-bbzj.onrender.com/api/vaccine/UpdateVaccine/${id}`,
-                values,
+                {
+                    vaccineName: values.vaccineName,
+                    BoosterDose: values.BoosterDose,
+                    AnnualDose: values.AnnualDose,
+                    stock: {
+                        bottles: values.bottles,
+                        dosesPerBottle: values.dosesPerBottle
+                    },
+                    pricing: {
+                        bottlePrice: values.bottlePrice
+                    }
+                },
                 { headers: getHeaders() }
             );
-            console.log('Submitting form with values:', values);
-            if (data.status === "success") {
+            
+            console.log('Vaccine data:', response.data.data);
+            
+            if (response.data.status === "success") {
                 Swal.fire('Success', 'Vaccine updated successfully', 'success');
-                navigate('/vaccines');
+                navigate('/vaccineTable');
             }
         } catch (err) {
-            setError(err.response?.data?.message || "حدث خطأ أثناء معالجة طلبك");
-            console.error(err.response?.data);
+            console.error('Error details:', err.response?.data);
+            setError(err.response?.data?.message || "An error occurred while processing your request");
         } finally {
             setIsLoading(false);
         }
@@ -43,9 +58,11 @@ function EditVaccine() {
     const formik = useFormik({  
         initialValues: {
             vaccineName: '',
-            givenEvery: '',
-            tagId: '',
-            DateGiven: '',
+            BoosterDose: '',
+            AnnualDose: '',
+            bottles: '',
+            dosesPerBottle: '',
+            bottlePrice: '',
         },
         onSubmit: editVaccine,
     });
@@ -57,73 +74,112 @@ function EditVaccine() {
                     `https://farm-project-bbzj.onrender.com/api/vaccine/GetSingleVaccine/${id}`,
                     { headers: getHeaders() }
                 );
+                
                 const vaccine = response.data.data;
+                console.log('Vaccine object:', vaccine);
+                
                 formik.setValues({
-                    tagId: vaccine?.tagId || '',
-                    vaccineName: vaccine?.vaccineName || '',
-                    givenEvery: vaccine?.givenEvery || '',
-                    DateGiven: vaccine?.DateGiven || '',
+                    vaccineName: vaccine?.vaccine.vaccineName || '',
+                    BoosterDose: vaccine?.vaccine.BoosterDose || '',
+                    AnnualDose: vaccine?.vaccine.AnnualDose || '',
+                    bottles: vaccine?.vaccine.stock?.bottles?.toString() || '',
+                    dosesPerBottle: vaccine?.vaccine.stock?.dosesPerBottle?.toString() || '',
+                    bottlePrice: vaccine?.vaccine.pricing?.bottlePrice?.toString() || '',
                 });
             } catch (error) {
-                console.error("Failed to fetch vaccine data:", error);
+                console.error("Error fetching vaccine:", error.response?.data);
                 setError("Failed to fetch vaccine details.");
             }
         }
         fetchVaccine();
-    }, [id, formik]);
+    }, [id]);
 
     return (
         <div className="container">
-            {error && <p className="text-danger">{error}</p>}
+            {error && <div className="alert alert-danger">{error}</div>}
             <form onSubmit={formik.handleSubmit} className="mt-5">
                 <div className='d-flex vaccine align-items-center justify-content-between'>
-                    <div className="title-v">Edit Vaccine</div>
-                    <button type="submit" className="btn button2" disabled={isLoading}>
-                        {isLoading ? <i className="fas fa-spinner fa-spin"></i> : <IoIosSave />} Save
+                    <h2 className="title-v">Edit Vaccine</h2>
+                    <button type="submit" className="btn btn-primary" disabled={isLoading}>
+                        {isLoading ? <span className="spinner-border spinner-border-sm"></span> : <><IoIosSave /> Save</>}
                     </button>
                 </div>
                 <div className="animaldata">
-                    <div className="input-box">
-                        <label className="label" htmlFor="vaccineName">Vaccine Name</label>
+                    <div className="mb-3 input-box ">
+                        <label htmlFor="vaccineName" className="label">Vaccine Name</label>
                         <input
                             id="vaccineName"
                             name="vaccineName"
                             type="text"
-                            className="input2"
+                            className="form-control"
                             placeholder="Enter vaccine name"
-                            {...formik.getFieldProps('vaccineName')}
+                            value={formik.values.vaccineName}
+                            onChange={formik.handleChange}
                         />
                     </div>
-                    <div className="input-box">
-                        <label className="label" htmlFor="givenEvery">Given Every</label>
+                    
+                    <div className="mb-3 input-box">
+                        <label htmlFor="BoosterDose" className="label">Booster Dose (days)</label>
                         <input
-                            id="givenEvery"
-                            name="givenEvery"
-                            type="text"
-                            className="input2"
-                            placeholder="Enter givenEvery"
-                            {...formik.getFieldProps('givenEvery')}
+                            id="BoosterDose"
+                            name="BoosterDose"
+                            type="number"
+                            className="form-control"
+                            placeholder="Enter booster dose interval"
+                            value={formik.values.BoosterDose}
+                            onChange={formik.handleChange}
                         />
                     </div>
-                    <div className="input-box">
-                        <label className="label" htmlFor="tagId">Tag ID</label>
+                    
+                    <div className="mb-3 input-box">
+                        <label htmlFor="AnnualDose" className="label">Annual Dose (days)</label>
                         <input
-                            id="tagId"
-                            name="tagId"
-                            type="text"
-                            className="input2"
-                            placeholder="Enter tag ID"
-                            {...formik.getFieldProps('tagId')}
+                            id="AnnualDose"
+                            name="AnnualDose"
+                            type="number"
+                            className="form-control"
+                            placeholder="Enter annual dose interval"
+                            value={formik.values.AnnualDose}
+                            onChange={formik.handleChange}
                         />
                     </div>
-                    <div className="input-box">
-                        <label className="label" htmlFor="DateGiven">Date Given</label>
+                    
+                    <div className="mb-3 input-box">
+                        <label htmlFor="bottles" className="label">Number of Bottles</label>
                         <input
-                            id="DateGiven"
-                            name="DateGiven"
-                            type="date"
-                            className="input2"
-                            {...formik.getFieldProps('DateGiven')}
+                            id="bottles"
+                            name="bottles"
+                            type="number"
+                            className="form-control"
+                            placeholder="Enter number of bottles"
+                            value={formik.values.bottles}
+                            onChange={formik.handleChange}
+                        />
+                    </div>
+                    
+                    <div className="mb-3 input-box">
+                        <label htmlFor="dosesPerBottle" className="label">Doses per Bottle</label>
+                        <input
+                            id="dosesPerBottle"
+                            name="dosesPerBottle"
+                            type="number"
+                            className="label"
+                            placeholder="Enter doses per bottle"
+                            value={formik.values.dosesPerBottle}
+                            onChange={formik.handleChange}
+                        />
+                    </div>
+                    
+                    <div className="mb-3 input-box">
+                        <label htmlFor="bottlePrice" className="label">Bottle Price</label>
+                        <input
+                            id="bottlePrice"
+                            name="bottlePrice"
+                            type="number"
+                            className="form-control"
+                            placeholder="Enter price per bottle"
+                            value={formik.values.bottlePrice}
+                            onChange={formik.handleChange}
                         />
                     </div>
                 </div>

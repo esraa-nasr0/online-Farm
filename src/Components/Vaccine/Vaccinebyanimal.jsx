@@ -7,10 +7,10 @@ import { useNavigate } from "react-router-dom";
 
 function Vaccinebyanimal() {
 
-// Helper function to generate headers with the latest token
+
 const getHeaders = () => {
     const Authorization = localStorage.getItem('Authorization');
-    // Ensure the token has only one "Bearer" prefix
+  
     const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
     return {
         Authorization: formattedToken
@@ -23,31 +23,35 @@ const getHeaders = () => {
     const formik = useFormik({
         initialValues: {
             vaccineName: '',
-            givenEvery: '',
-            tagId: '',
-            DateGiven: '',
+            BoosterDose: '',
+            AnnualDose: '',
+            bottles: '',
+            dosesPerBottle: '',
+            bottlePrice: '',
         },
         onSubmit: async (values) => {
-            const headers = getHeaders(); // Get the latest headers
-            setIsLoading(true);  // Start loading
+            const headers = getHeaders(); 
+            setIsLoading(true);  
             const dataToSend = {
                 vaccineName: values.vaccineName,
-                givenEvery: values.givenEvery,
-                vaccinationLog: [
-                    {
-                        tagId: values.tagId,
-                        DateGiven: values.DateGiven,
-                    },
-                ],
+                BoosterDose: values.BoosterDose,
+                AnnualDose: values.AnnualDose,
+                bottles: values.bottles,
+                dosesPerBottle: values.dosesPerBottle,
+                bottlePrice: values.bottlePrice,
+               
             };
             try {
+               
                 const response = await axios.post(
-                    'https://farm-project-bbzj.onrender.com/api/vaccine/AddVaccineForAnimal',
+                    'https://farm-project-bbzj.onrender.com/api/vaccine/AddVaccine',
                     dataToSend,
                     {
                         headers
                     }
+                    
                 );
+                
             if (response.data.status === "success") {
                 Swal.fire({
                 title: "Success!",
@@ -68,6 +72,8 @@ const getHeaders = () => {
                         } finally {
                         setIsLoading(false);
                         }
+                        
+                        
         },
     });
 
@@ -99,45 +105,75 @@ const getHeaders = () => {
                         </div>
 
                         <div className="input-box">
-                            <label className="label" htmlFor="givenEvery">Given Every</label>
+                            <label className="label" htmlFor="BoosterDose">Booster Dose</label>
                             <input
-                                id="givenEvery"
-                                name="givenEvery"
+                                id="BoosterDose"
+                                name="BoosterDose"
                                 type="text"
                                 className="input2"
                                 placeholder="Given Every"
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                value={formik.values.givenEvery}
+                                value={formik.values.BoosterDose}
                             />
                         </div>
 
                         <div className="input-box">
-                            <label className="label" htmlFor="tagId">Tag ID</label>
+                            <label className="label" htmlFor="locationShed">Annual Dose</label>
                             <input
-                                id="tagId"
-                                name="tagId"
+                                id="AnnualDose"
+                                name="AnnualDose"
                                 type="text"
                                 className="input2"
                                 placeholder="Enter tag ID"
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                value={formik.values.tagId}
+                                value={formik.values.AnnualDose}
                             />
                         </div>
 
                         <div className="input-box">
-                            <label className="label" htmlFor="DateGiven">Date Given</label>
+                            <label className="label" htmlFor="bottles">bottles</label>
                             <input
-                                id="DateGiven"
-                                name="DateGiven"
-                                type="date"
+                                id="bottles"
+                                name="bottles"
+                             type="text"
                                 className="input2"
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                value={formik.values.DateGiven}
+                                value={formik.values.bottles}
                             />
                         </div>
+
+                        
+                        <div className="input-box">
+                            <label className="label" htmlFor="dosesPerBottle">doses Per Bottle</label>
+                            <input
+                                id="dosesPerBottle"
+                                name="dosesPerBottle"
+                             type="text"
+                                className="input2"
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                value={formik.values.dosesPerBottle}
+                            />
+                        </div>
+
+                        
+                        <div className="input-box">
+                            <label className="label" htmlFor="bottlePrice">bottle Price</label>
+                            <input
+                                id="bottlePrice"
+                                name="bottlePrice"
+                             type="text"
+                                className="input2"
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                value={formik.values.bottlePrice}
+                            />
+                        </div>
+                        
+                       
                     </div>
                 </form>
             </div>

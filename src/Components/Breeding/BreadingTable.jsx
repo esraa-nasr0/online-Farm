@@ -148,7 +148,8 @@ function BreadingTable() {
                                 type="text"
                                 className="form-control"
                                 value={searchCriteria.tagId}
-                                placeholder="Search Tag ID"
+                                placeholder=
+                                {t('Search Tag ID')}
                                 onChange={(e) => setSearchCriteria((prev) => ({ ...prev, tagId: e.target.value }))}
                                 style={{ flex: '1' }}
                             />
@@ -156,7 +157,8 @@ function BreadingTable() {
                                 type="text"
                                 className="form-control"
                                 value={searchCriteria.animalType}
-                                placeholder="Search Animal Type"
+                                placeholder=
+                                {t("Search Animal Type")}
                                 onChange={(e) => setSearchCriteria((prev) => ({ ...prev, animalType: e.target.value }))}
                                 style={{ flex: '1' }}
                             />
@@ -164,7 +166,8 @@ function BreadingTable() {
                                 type="text"
                                 className="form-control"
                                 value={searchCriteria.deliveryDate}
-                                placeholder="Search Delivery Date"
+                                placeholder=
+                                {t("Search Delivery Date")}
                                 onChange={(e) => setSearchCriteria((prev) => ({ ...prev, deliveryDate: e.target.value }))}
                                 style={{ flex: '1' }}
                             />
@@ -228,10 +231,10 @@ function BreadingTable() {
                                                 onClick={() => editMating(breeding._id)}
                                                 style={{ cursor: 'pointer', color: "#198754" }}
                                             >
-                                                <FaRegEdit /> Edit
+                                                <FaRegEdit />  {t('Edit')}
                                             </td>
                                            <td onClick={() => handleClick(breeding._id)} className="text-danger" style={{ cursor: "pointer" }}>
-                                                             <RiDeleteBin6Line /> Remove
+                                                             <RiDeleteBin6Line />  {t('Remove')}
                                                            </td>
                                         </tr>
                                     ))}

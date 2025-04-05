@@ -31,6 +31,7 @@ import GetAnimalContextProvider from "./Context/GetAnimalContext.js";
 import Report from "./Components/Report/Report.jsx";
 import ReportDaliy from "./Components/Report/ReportDaliy.jsx";
 import Vaccinebyanimal from "./Components/Vaccine/Vaccinebyanimal.jsx";
+import Vaccinebyanimalsstable from "./Components/Vaccine/Vaccinebyanimalstable.js";
 import Vaccinebylocationshed from "./Components/Vaccine/Vaccinebylocationshed.jsx";
 import VaccineanimalContextProvider from "./Context/VaccineanimalContext.js";
 import VaccineTable from "./Components/Vaccine/VaccineTable.jsx";
@@ -64,9 +65,10 @@ import EditFodder from "./Components/Feeding/EditFodder.jsx";
 import Dashboard from "./Components/Dashboard/Dashboard.jsx";
 import NotAuthorized from "./Components/Dashboard/NotAuthorized.jsx";
 import DashboardContextProvider from "./Context/DashboardContext.js";
-
-
-
+import LocationContextProvider from "./Context/Locationshedcontext.js";
+import VaccinetableentriescontextProvider from "./Context/Vaccinetableentriescontext.jsx";
+import EditVaccineanimals from "./Components/Vaccine/EditVaccineanimals.jsx";
+import Vaccinebytagid from "./Components/Vaccine/Vaccinebytagid.jsx";
 let routers = createBrowserRouter([
   {
     path: "", 
@@ -104,6 +106,7 @@ let routers = createBrowserRouter([
       { path: "editWeight/:id", element: <ProtectedRoute><EditWeight /></ProtectedRoute> },
       { path: "vaccinebyanimal", element: <ProtectedRoute><Vaccinebyanimal/></ProtectedRoute> },
       { path: "vaccinebylocationshed", element: <ProtectedRoute><Vaccinebylocationshed/></ProtectedRoute> },
+      { path: "Vaccinebyanimalsstable", element: <ProtectedRoute><Vaccinebyanimalsstable/></ProtectedRoute> },
       { path: "vaccineTable", element: <ProtectedRoute><VaccineTable/></ProtectedRoute> },
       { path: "editVaccine/:id", element: <ProtectedRoute><EditVaccine/></ProtectedRoute> },
       { path: "treatment", element: <ProtectedRoute><Treatment/></ProtectedRoute> },
@@ -123,8 +126,8 @@ let routers = createBrowserRouter([
       { path: "fodderTable", element: <ProtectedRoute><FodderTable/></ProtectedRoute> },
       { path: "editFodder/:id", element: <ProtectedRoute><EditFodder/></ProtectedRoute> },
       { path: "dashboard", element: <ProtectedRoute  allowedRoles={['admin']}><Dashboard/></ProtectedRoute> },
-
-
+      { path: "editVaccineanimals/:id", element: <ProtectedRoute><EditVaccineanimals/></ProtectedRoute> },
+      { path: "vaccinebytagid", element: <ProtectedRoute><Vaccinebytagid/></ProtectedRoute> },
     ],
   },
 ]);
@@ -145,6 +148,8 @@ export default function App() {
   },[]);
 
   return <>
+   <VaccinetableentriescontextProvider>
+   <LocationContextProvider>
   <DashboardContextProvider>
   <FeedbyLocationContextProvider>
   <FeedContextProvider>
@@ -170,6 +175,8 @@ export default function App() {
   </FeedContextProvider>
   </FeedbyLocationContextProvider>
   </DashboardContextProvider>
+  </LocationContextProvider>
+  </VaccinetableentriescontextProvider>
   </>
 }
 

@@ -13,18 +13,17 @@ function TreatmentLocation() {
     const { getTreatmentMenue } = useContext(TreatmentContext);
 
     
-// Helper function to generate headers with the latest token
+
 const getHeaders = () => {
     const Authorization = localStorage.getItem('Authorization');
   
-    // Ensure the token has only one "Bearer" prefix
     const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
   
     return {
         Authorization: formattedToken
     };
   };
-    // Fetch treatment menu options when the component mounts
+  
     const fetchTreatments = async () => {
         try {
             const { data } = await getTreatmentMenue();
@@ -40,10 +39,10 @@ const getHeaders = () => {
         fetchTreatments();
     }, [getTreatmentMenue]);
 
-    // Handle treatment submission
+
     async function submitTreatment(values) {
-        const headers = getHeaders(); // Get the latest headers
-        console.log('Form Values:', values);  // إضافة هذه السطر لتتبع القيم المرسلة
+        const headers = getHeaders();
+        console.log('Form Values:', values);  
         setIsLoading(true);
         setError(null);
         try {
@@ -54,8 +53,8 @@ const getHeaders = () => {
             );
             if (data.status === "SUCCESS") {
                 setIsLoading(false);
-                setTreatmentData(data.data.treatments);  // Check if this is setting data correctly
-                  // Log the received treatments data
+                setTreatmentData(data.data.treatments);  
+                
                 Swal.fire({
                   title: 'Success!',
                   text: 'Treatment data added successfully!',
@@ -68,7 +67,7 @@ const getHeaders = () => {
               }
               
         } catch (err) {
-            console.log('Error occurred:', err);  // لتتبع تفاصيل الخطأ
+            console.log('Error occurred:', err);  
             setIsLoading(false);
             
         }
@@ -107,7 +106,7 @@ const getHeaders = () => {
         ]);
     };
 
-    // Handling treatment change 
+    
     const handleTreatmentChange = (e, index) => {
     const { name, value } = e.target;
     const updatedTreatments = [...formik.values.treatments];
@@ -132,7 +131,7 @@ const getHeaders = () => {
                 )}
 
                 <div className='animaldata'>
-                    {/* Location Shed Input */}
+                   
                     <div className="input-box">
                         <label className="label" htmlFor="locationShed">Location Shed</label>
                         <input
@@ -152,7 +151,7 @@ const getHeaders = () => {
                         )}
                     </div>
 
-                    {/* Date Input */}
+                
                     <div className="input-box">
                         <label className="label" htmlFor="date">Date</label>
                         <input
@@ -172,15 +171,15 @@ const getHeaders = () => {
                         )}
                     </div>
 
-                    {/* Loop through treatments and render form fields */}
+                  
 {formik.values.treatments.map((treatment, index) => (
   <div key={index} className="input-box">
-    {/* Treatment Name - Dropdown */}
+
     <div >
       <label className="label" htmlFor={`treatmentName-${index}`}>Treatment Name</label>
       <select
         id={`treatmentName-${index}`}
-        name="treatmentId" // Use 'treatmentId' for name here as it's inside the treatment object
+        name="treatmentId" 
         className="input2"
         value={treatment.treatmentId}
         onChange={(e) => handleTreatmentChange(e, index)}
@@ -199,7 +198,7 @@ const getHeaders = () => {
       )}
     </div>
 
-    {/* Volume Input */}
+ 
     <div >
       <label className="label" htmlFor={`volume-${index}`}>Volume</label>
       <input

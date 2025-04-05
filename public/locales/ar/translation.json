@@ -107,7 +107,8 @@
     "Delete":"حذف",
     "Gender":"الجنس",
     "Birthweight":"وزن المولود",
-    "No Birth Entries":"لا إدخالات الميلاد"
-
-
+    "No Birth Entries":"لا إدخالات الميلاد",
+    "Search Tag ID":"البحث حسب معرف العلامة",
+    "Search Animal Type":"البحث حسب نوع الحيوان",
+    "Search Delivery Date":""
 }
