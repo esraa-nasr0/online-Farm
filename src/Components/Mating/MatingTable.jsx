@@ -126,19 +126,13 @@ function MatingTable() {
         <>
             {isLoading ? (
                 <div className='animal'>
-                    <Rings visible={true} height="100" width="100" color="#3f5c40" ariaLabel="rings-loading" />
+                    <Rings visible={true} height="100" width="100" color="#9cbd81" ariaLabel="rings-loading" />
                 </div>
             ) : (
                 <div className="container">
                     
                     <div className="title2">{t('mating')}</div>
-                    <div className="flex-column flex-md-row mb-3">
-                        <Link to='/mating'>
-                            <button type="button" className="btn btn-lg btn-secondary active button2">
-                                <MdOutlineAddToPhotos /> {t('add_mating')}
-                            </button>
-                        </Link>
-                    </div>
+                    
                     {/* <UploadMatExcel addMatingData={addMatingData} /> */}
 
                     <div className="container mt-5">
@@ -183,19 +177,19 @@ function MatingTable() {
         <button
             className="btn mb-2 me-2"
             onClick={handleSearch}
-            style={{ backgroundColor: '#88522e', color: 'white' }}
+            style={{ backgroundColor: '#FAA96C', color: 'white' }}
         >
             <i className="fas fa-search"></i>
         </button>
     </div>
 </div>
-
-
+                    <div className="table-responsive">
+                    <div className="full-width-table">
                     <table className="table table-hover mt-4">
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>{t('tag_id')}</th>
+                                <th>{t('female_tag_id')}</th>
                                 <th>{t('male_tag_id')}</th>
                                 <th>{t('mating_type')}</th>
                                 <th>{t('mating_date')}</th>
@@ -226,7 +220,9 @@ function MatingTable() {
                                 </tr>
                             ))}
                         </tbody>
-                    </table>
+                    </table> 
+                    </div>
+                    </div>
 
                     {/* أزرار الصفحات */}
                     <div className="d-flex justify-content-center mt-4">

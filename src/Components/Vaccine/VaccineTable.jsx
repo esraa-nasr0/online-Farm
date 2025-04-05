@@ -137,11 +137,12 @@ function VaccineTable() {
         <>
             {isLoading ? (
                 <div className='animal'>
-                    <Rings visible={true} height="100" width="100" color="#3f5c40" ariaLabel="rings-loading" />
+                    <Rings visible={true} height="100" width="100" color="#9cbd81" ariaLabel="rings-loading" />
                 </div>
             ) : (
                 <div className="">
                     <div className='container'>
+<<<<<<< HEAD
                         <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4" style={{ marginTop: "140px" }}>
                             <h2 className="bottom-line pb-2" style={{ color: "#88522e" }}>Vaccine Records</h2>
                             <div className='d-flex flex-column flex-sm-row gap-2'>
@@ -164,6 +165,10 @@ function VaccineTable() {
                             </div>
                         </div>
 
+=======
+                    <div className="title2">Vaccine Records</div>
+                        
+>>>>>>> 9d81abff3bba8c72b21884c7a64cef955f0e8355
                         <div className="d-flex flex-column flex-md-row align-items-center gap-2 mt-4" style={{ flexWrap: 'nowrap' }}>
                             <input
                                 type="text"
@@ -186,12 +191,17 @@ function VaccineTable() {
                                 placeholder="Search Location Shed"
                                 onChange={(e) => setSearchCriteria(prev => ({ ...prev, locationShed: e.target.value }))}
                             />
+<<<<<<< HEAD
                             <button className="btn" onClick={handleSearch} style={{ backgroundColor: '#88522e', borderColor: '#88522e', color: 'white' }}>
+=======
+                            <button className="btn" onClick={handleSearch} style={{ backgroundColor: '#FAA96C', color: 'white' }}>
+>>>>>>> 9d81abff3bba8c72b21884c7a64cef955f0e8355
                                 <i className="fas fa-search"></i>
                             </button>
                         </div>
                     </div>
 
+<<<<<<< HEAD
                     <div className="table-responsive">
                         <div className="full-width-table">
                             <table className="table table-striped mt-4">
@@ -208,6 +218,46 @@ function VaccineTable() {
                                         <th scope="col">Annual Dose</th>
                                         <th scope="col">Edit</th>
                                         <th scope="col">Remove</th>
+=======
+                    </div>
+                    <div className="table-responsive">
+                    <div className="full-width-table"  >
+                        <table className="table table-hover mt-3 p-2">
+                        <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Vaccine Name</th>
+                                    <th scope="col">Every (Days)</th>
+                                    <th scope="col">Vaccination Log</th>
+                                    <th scope="col">Edit</th>
+                                    <th scope="col">Remove</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {vaccines.map((vaccine, index) => (
+                                    <tr key={`${vaccine._id}-${index}`}>
+                                        <td>{index + 1}</td>
+                                        <th scope="row">{vaccine.vaccineName}</th>
+                                        <td>{vaccine.givenEvery}</td>
+                                        <td>
+                                            {vaccine.vaccinationLog && vaccine.vaccinationLog.length > 0
+                                                ? vaccine.vaccinationLog.map((log, i) => (
+                                                    <div key={i}>
+                                                        <strong>Date Given:</strong> {log.DateGiven ? log.DateGiven.split('T')[0] : 'No Date'}<br />
+                                                        <strong>Valid Until:</strong> {log.vallidTell ? log.vallidTell.split('T')[0] : 'No Date'}<br />
+                                                        <strong>Location Shed:</strong> {log.locationShed ? log.locationShed : 'No Location'}<br />
+                                                        <strong>Tag ID:</strong> {log.tagId ? log.tagId : 'No Tag ID'}
+                                                    </div>
+                                                ))
+                                                : 'No Vaccination Log'}
+                                        </td>
+                                        <td onClick={() => editVaccine(vaccine._id)} style={{ cursor: 'pointer', color: "#198754" }}>
+                                            <FaRegEdit /> Edit
+                                        </td>
+                                        <td onClick={() => handleClick(vaccine._id)} className="text-danger" style={{ cursor: 'pointer' }}>
+                                            <RiDeleteBin6Line /> Remove
+                                        </td>
+>>>>>>> 9d81abff3bba8c72b21884c7a64cef955f0e8355
                                     </tr>
                                 </thead>
                                 <tbody>

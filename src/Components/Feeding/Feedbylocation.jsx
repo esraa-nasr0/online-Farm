@@ -126,23 +126,17 @@ const getHeaders = () => {
 
   return (
     <div className="container">
-    
+    <div className="title2">Feed by location shed</div>
       <form onSubmit={formik.handleSubmit} className="mt-5">
         {isLoading ? (
-           <div className="d-flex vaccine align-items-center justify-content-between">
-                                               <div className="title-v">Add Feed for locationshed</div>
-                                               <button type="submit" className="btn button2" disabled={isLoading}>
-                                                   {isLoading ? <i className="fas fa-spinner fa-spin"></i> : <IoIosSave />} Save
-                                               </button>
-                                           </div>
-        ) : (
-            <div className="d-flex vaccine align-items-center justify-content-between">
-                                                <div className="title-v">Add Feed for locationshed</div>
-                                                <button type="submit" className="btn button2" disabled={isLoading}>
-                                                    {isLoading ? <i className="fas fa-spinner fa-spin"></i> : <IoIosSave />} Save
-                                                </button>
-                                            </div>
-        )}
+                <button type="submit" className="btn button2">
+                    <i className="fas fa-spinner fa-spin"></i>
+                </button>
+                ) : (
+                <button type="submit" className="btn button2">
+                    <IoIosSave /> Save
+                </button>
+                )}
 
         <div className="animaldata">
           <div className="input-box">
@@ -221,7 +215,7 @@ const getHeaders = () => {
           </div>
         ))}
 
-        <button type="button" onClick={addFeed} className="btn button2">Add Feed</button>
+        <button type="button" onClick={addFeed} className="btn button2">+</button>
       </form>
     </div>
   );

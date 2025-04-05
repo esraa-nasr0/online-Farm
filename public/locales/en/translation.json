@@ -53,6 +53,7 @@
         "failed_to_delete_animal": "Failed to delete Animal.",
         "failed_to_fetch_data": "Failed to fetch data",
         "mating": "Mating",
+        "female_tag_id":"Female Tag ID",
     "success": "Success!",
     "mating_success_message": "Mating data added successfully!",
     "ok": "OK",

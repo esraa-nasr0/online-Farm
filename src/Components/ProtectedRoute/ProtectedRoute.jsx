@@ -36,7 +36,7 @@ function ProtectedRoute({ children, allowedRoles }) {
     return <div>Loading...</div>; // Add a loading spinner or skeleton
   }
 
-  return isAuthorized ? children : <Navigate to="/notAuthorized" replace />;
+  return isAuthorized ? children : <Navigate to="/" replace />;
 }
 
 export default ProtectedRoute;

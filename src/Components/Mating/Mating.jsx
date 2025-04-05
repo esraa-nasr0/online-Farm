@@ -82,7 +82,7 @@ function Mating() {
                 )}
                 <div className="animaldata">
                     <div className="input-box">
-                        <label className="label" htmlFor="tagId">{t('tag_id')}</label>
+                        <label className="label" htmlFor="tagId">{t('female_tag_id')}</label>
                         <input onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.tagId} placeholder={t('enter_tag_id')} id="tagId" type="text" className="input2" name="tagId" />
                     </div>
                     <div className="input-box">
