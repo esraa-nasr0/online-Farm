@@ -7,10 +7,9 @@ export let LocationContext = createContext();
 
 const getHeaders = () => {
     const Authorization = localStorage.getItem('Authorization');
-  
-   
+
     const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-  
+
     return {
         Authorization: formattedToken
     };
