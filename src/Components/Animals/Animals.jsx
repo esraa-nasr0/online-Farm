@@ -145,6 +145,7 @@ export default function Animals() {
                                 <th scope="col">{t('tag_id')}</th>
                                 <th scope="col">{t('animal_type')}</th>
                                 <th scope="col">{t('breed')}</th>
+                                <th scope="col">{t('location_shed')}</th>
                                 <th scope="col">{t('gender')}</th>
                                 <th scope="col">{t('view_details')}</th>
                                 <th scope="col">{t('edit_animal')}</th>
@@ -157,7 +158,8 @@ export default function Animals() {
                                     <th scope="row">{(currentPage - 1) * animalsPerPage + index + 1}</th>
                                     <td>{animal.tagId}</td>
                                     <td>{animal.animalType}</td>
-                                    <td>{animal.breed}</td>
+                                    <td>{animal.breed?.breedName || animal.breed || '-'}</td>
+                                    <td>{animal.locationShed?.locationShedName || animal.locationShed || '-'}</td>
                                     <td>{animal.gender}</td>
                                     <td onClick={() => viewAnimal(animal._id)} style={{ cursor: 'pointer' }} className='text-primary'>
                                         <GrView /> {t('view_details')}

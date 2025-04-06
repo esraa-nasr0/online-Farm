@@ -144,7 +144,7 @@ function FeedingTable() {
               {feedData.length > 0 ? (
                 feedData.map((item) => (
                   <tr key={item._id}>
-                    <td>{item.locationShed}</td>
+                    <td>{item.locationShed?.locationShedName || item.locationShed || '-'}</td>
                     <td>{item?.feeds?.[0]?.quantity || "N/A"}</td>
                     <td>{item.date ? item.date.split("T")[0] : "N/A"}</td>
                     <td>{item?.feeds?.[0]?.feedName}</td>
@@ -158,7 +158,6 @@ function FeedingTable() {
                       <td onClick={() => handleDelete(item._id)} className="text-danger" style={{ cursor: "pointer" }}>
                                         <RiDeleteBin6Line /> Remove
                                       </td>
-                       
                   </tr>
                 ))
               ) : (

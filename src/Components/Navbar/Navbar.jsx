@@ -65,7 +65,7 @@ const isAdmin = localStorage.getItem("isAdmin") === "true"; // التأكد إذ
             
             <li className="nav-item">
                 <Link className="nav-link" to="/homeServices" style={{ color: "#0C0D0E" }}>
-                    Home Services
+                    Services
                 </Link>
             </li>
 
