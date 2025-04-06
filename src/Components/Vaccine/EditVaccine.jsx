@@ -96,25 +96,29 @@ function EditVaccine() {
 
     return (
         <div className="container">
-<<<<<<< HEAD
-            {error && <div className="alert alert-danger">{error}</div>}
-            <form onSubmit={formik.handleSubmit} className="mt-5">
-                <div className='d-flex vaccine align-items-center justify-content-between'>
-                    <h2 className="title-v">Edit Vaccine</h2>
-                    <button type="submit" className="btn btn-primary" disabled={isLoading}>
-                        {isLoading ? <span className="spinner-border spinner-border-sm"></span> : <><IoIosSave /> Save</>}
-=======
-            <div className="title2">Edit Vaccine</div>
+            <div className='d-flex vaccine align-items-center justify-content-between'>
+                <h2 className="title-v">Edit Vaccine</h2>
+                <button 
+                    type="submit" 
+                    className="btn btn-primary" 
+                    disabled={isLoading}
+                    onClick={formik.handleSubmit}
+                >
+                    {isLoading ? (
+                        <span className="spinner-border spinner-border-sm"></span>
+                    ) : (
+                        <>
+                            <IoIosSave /> Save
+                        </>
+                    )}
+                </button>
+            </div>
             
-            {error && <p className="text-danger">{error}</p>}
+            {error && <div className="alert alert-danger">{error}</div>}
+            
             <form onSubmit={formik.handleSubmit} className="mt-5">
-                    <button type="submit" className="btn button2" disabled={isLoading}>
-                        {isLoading ? <i className="fas fa-spinner fa-spin"></i> : <IoIosSave />} Save
->>>>>>> 9d81abff3bba8c72b21884c7a64cef955f0e8355
-                    </button>
-
                 <div className="animaldata">
-                    <div className="mb-3 input-box ">
+                    <div className="mb-3 input-box">
                         <label htmlFor="vaccineName" className="label">Vaccine Name</label>
                         <input
                             id="vaccineName"
@@ -172,7 +176,7 @@ function EditVaccine() {
                             id="dosesPerBottle"
                             name="dosesPerBottle"
                             type="number"
-                            className="label"
+                            className="form-control"
                             placeholder="Enter doses per bottle"
                             value={formik.values.dosesPerBottle}
                             onChange={formik.handleChange}

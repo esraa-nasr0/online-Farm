@@ -220,15 +220,15 @@ function BreadingTable() {
                                             >
                                                 <FaRegEdit />  {t('Edit')}
                                             </td>
-<<<<<<< HEAD
+
                                            <td onClick={() => handleClick(breeding._id)} className="text-danger" style={{ cursor: "pointer" }}>
                                                              <RiDeleteBin6Line />  {t('Remove')}
                                                            </td>
-=======
+
                                             <td onClick={() => handleClick(breeding._id)} className="text-danger" style={{ cursor: "pointer" }}>
                                                 <RiDeleteBin6Line /> Remove
                                             </td>
->>>>>>> 9d81abff3bba8c72b21884c7a64cef955f0e8355
+
                                         </tr>
                                     ))}
                                 </tbody>
