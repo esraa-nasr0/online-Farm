@@ -6,8 +6,9 @@ import { FaRegEdit } from "react-icons/fa";
 import { BreedingContext } from '../../Context/BreedingContext';
 import { Rings } from 'react-loader-spinner';
 import Swal from 'sweetalert2';
-
+import { useTranslation } from 'react-i18next';
 function BreadingTable() {
+        const { t } = useTranslation();
     const navigate = useNavigate();
     const { getAllBreeding, deleteBreeding } = useContext(BreedingContext);
     const [breading, setBreading] = useState([]);
@@ -134,7 +135,8 @@ function BreadingTable() {
                                 type="text"
                                 className="form-control"
                                 value={searchCriteria.tagId}
-                                placeholder="Search Tag ID"
+                                placeholder=
+                                {t('Search Tag ID')}
                                 onChange={(e) => setSearchCriteria((prev) => ({ ...prev, tagId: e.target.value }))}
                                 style={{ flex: '1' }}
                             />
@@ -142,7 +144,8 @@ function BreadingTable() {
                                 type="text"
                                 className="form-control"
                                 value={searchCriteria.animalType}
-                                placeholder="Search Animal Type"
+                                placeholder=
+                                {t("Search Animal Type")}
                                 onChange={(e) => setSearchCriteria((prev) => ({ ...prev, animalType: e.target.value }))}
                                 style={{ flex: '1' }}
                             />
@@ -150,7 +153,8 @@ function BreadingTable() {
                                 type="text"
                                 className="form-control"
                                 value={searchCriteria.deliveryDate}
-                                placeholder="Search Delivery Date"
+                                placeholder=
+                                {t("Search Delivery Date")}
                                 onChange={(e) => setSearchCriteria((prev) => ({ ...prev, deliveryDate: e.target.value }))}
                                 style={{ flex: '1' }}
                             />
@@ -170,12 +174,22 @@ function BreadingTable() {
                                 <thead>
                                     <tr>
                                         <th scope="col">#</th>
-                                        <th scope="col">Tag ID</th>
-                                        <th scope="col">Delivery State</th>
-                                        <th scope="col">Delivery Date</th>
-                                        <th scope="col">Birth Entries</th>
-                                        <th scope="col">Edit</th>
-                                        <th scope="col">Delete</th>
+                                        <th scope="col"> {t('Tag ID')} </th>
+                                        <th scope="col">
+                                        {t('Delivery State')}
+                                        </th>
+                                        <th scope="col">
+                                        {t('Delivery Date')}
+                                        </th>
+                                        <th scope="col">
+                                        {t('Birth Entries')}
+                                        </th>
+                                        <th scope="col">
+                                        {t('Edit')}
+                                        </th>
+                                        <th scope="col">
+                                        {t('Delete')}
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -190,9 +204,9 @@ function BreadingTable() {
                                                     <ul className="list-group">
                                                         {breeding.birthEntries.map((entry, idx) => (
                                                             <li key={idx} className="list-group-item">
-                                                                <strong>Tag ID:</strong> {entry.tagId}, 
-                                                                <strong> Gender:</strong> {entry.gender}, 
-                                                                <strong> Birthweight:</strong> {entry.birthweight} kg
+                                                                <strong>{t('Tag ID')} :</strong> {entry.tagId}, 
+                                                                <strong>  {t('Gender')} :</strong> {entry.gender}, 
+                                                                <strong>  {t('Birthweight')}:</strong> {entry.birthweight} kg
                                                             </li>
                                                         ))}
                                                     </ul>
@@ -204,11 +218,17 @@ function BreadingTable() {
                                                 onClick={() => editMating(breeding._id)}
                                                 style={{ cursor: 'pointer', color: "#198754" }}
                                             >
-                                                <FaRegEdit /> Edit
+                                                <FaRegEdit />  {t('Edit')}
                                             </td>
+
+                                           <td onClick={() => handleClick(breeding._id)} className="text-danger" style={{ cursor: "pointer" }}>
+                                                             <RiDeleteBin6Line />  {t('Remove')}
+                                                           </td>
+
                                             <td onClick={() => handleClick(breeding._id)} className="text-danger" style={{ cursor: "pointer" }}>
                                                 <RiDeleteBin6Line /> Remove
                                             </td>
+
                                         </tr>
                                     ))}
                                 </tbody>

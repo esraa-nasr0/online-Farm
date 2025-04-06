@@ -96,5 +96,21 @@
     "weight_deleted_success": "تم حذف الوزن بنجاح.",
     "weight_deleted_failed": "فشل في حذف الوزن.",
     "no_weight_records": "لم يتم العثور على سجلات وزن لهذا الحيوان.",
-    "delete_failed_weight": "فشل في حذف الوزن:"
+    "delete_failed_weight": "فشل في حذف الوزن:",
+
+
+
+
+    "Tag ID":"رقم الحيوان",
+    "Delivery State":"حالة الوالده",
+    "Delivery Date":"تاريخ الوالده",
+    "Birth Entries":"عدد المواليد",
+    "Edit":"تعديل",
+    "Delete":"حذف",
+    "Gender":"الجنس",
+    "Birthweight":"وزن المولود",
+    "No Birth Entries":"لا إدخالات الميلاد",
+    "Search Tag ID":"البحث حسب معرف العلامة",
+    "Search Animal Type":"البحث حسب نوع الحيوان",
+    "Search Delivery Date":""
 }

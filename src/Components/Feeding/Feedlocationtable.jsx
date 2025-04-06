@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FaRegEdit } from "react-icons/fa";
 
+
 function FeedingTable() {
   const navigate = useNavigate();
   const { getAllfeeds, Deletfeed } = useContext(Feedbylocationcontext);
@@ -108,7 +109,7 @@ function FeedingTable() {
       
           <div className="d-flex flex-column flex-md-row align-items-center gap-2 mt-4">
                         <input type="text" className="form-control" value={searchCriteria.locationShed} placeholder="Search locationShed" onChange={(e) => setSearchCriteria(prev => ({ ...prev, locationShed: e.target.value }))} />
-                        {/* <input
+                        <input
   type="text"
   className="form-control"
   value={searchCriteria.date}
@@ -116,11 +117,11 @@ function FeedingTable() {
   onChange={(e) => {
     setSearchCriteria((prev) => {
       const newSearchCriteria = { ...prev, date: e.target.value };
-      console.log("New Date:", newSearchCriteria.date);  // إضافة log للتأكد من أن القيمة تتغير
+      console.log("New Date:", newSearchCriteria.date);  
       return newSearchCriteria;
     });
   }}
-/> */}
+/>
 
                         <button className="btn" onClick={handleSearch} style={{ backgroundColor: '#FAA96C', color: 'white' }}>
     <i className="fas fa-search"></i>

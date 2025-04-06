@@ -8,7 +8,7 @@ import Swal from 'sweetalert2';
 import { LocationContext } from '../../Context/Locationshedcontext';
 import { number } from 'yup';
 
-function Vaccinebylocationshed() {
+function VaccinebytagId() {
     const { getallVaccineanimal } = useContext(VaccineanimalContext); 
     const { getLocationtMenue,getVaccineMenue } = useContext(LocationContext); 
     const [isLoading, setIsLoading] = useState(false);
@@ -26,7 +26,7 @@ function Vaccinebylocationshed() {
                 
                 if (data.status === 'success') {
                 
-                    const locationsData = data.data.locationSheds || data.data;
+                    const locationsData = data.data.tagIds || data.data;
                     // console.log("Locations Data:", locationsData);
                     setLocations(Array.isArray(locationsData) ? locationsData : []);
                 }
@@ -81,7 +81,7 @@ function Vaccinebylocationshed() {
         initialValues: {
             vaccineId:'',
             date:'',
-            locationShed:'', 
+            tagId:'', 
             entryType:'',
         },
         onSubmit: async (values) => {
@@ -91,14 +91,14 @@ function Vaccinebylocationshed() {
                 const dataToSend = {
                     vaccineId: values.vaccineId,
                     date: values.date,
-                    locationShed: values.locationShed,
+                    tagId: values.tagId,
                     entryType: values.entryType,
                 };
         
                 console.log("🚀 Data to send:", dataToSend);
         
                 const {data} = await axios.post(
-                    'https://farm-project-bbzj.onrender.com/api/vaccine/AddVaccineForAnimals',
+                    'https://farm-project-bbzj.onrender.com/api/vaccine/AddVaccineForAnimal',
                     dataToSend,
                     { headers }
                 );
@@ -132,20 +132,17 @@ function Vaccinebylocationshed() {
 
     return (
         <div className="container">
-                    <div className="title2">Add  by Location Shed</div>
             <form onSubmit={formik.handleSubmit} className="mt-5">
-                        {isLoading ? (
-                                        <button type="submit" className="btn button2" disabled>
-                                            <i className="fas fa-spinner fa-spin"></i>
-                                        </button>
-                                    ) : (
-                                        <button type="submit" className="btn button2">
-                                            <IoIosSave /> Save
-                                        </button>
-                                    )}
+                <div className='d-flex vaccine align-items-center justify-content-between'>
+                    <div className="title-v">Add Vaccine by Location Shed</div>
+                    <button type="submit" className="btn button2" disabled={isLoading}>
+                        {isLoading ? <i className="fas fa-spinner fa-spin"></i> : <IoIosSave />} Save
+                    </button>
+                </div>
+
                 <div className="animaldata">
                 <div className="input-box">
-                        <label className="label" htmlFor="locationShed">Vaccine Name</label>
+                        <label className="label" htmlFor="tagId">Vaccine Name</label>
                         <select
                             id="vaccineId"
                             name="vaccineId"
@@ -183,29 +180,6 @@ function Vaccinebylocationshed() {
                     </div>
 
                     <div className="input-box">
-                        <label className="label" htmlFor="locationShed">Location Shed</label>
-                        <select
-                            id="locationShed"
-                            name="locationShed"
-                            className="input2"
-                            onChange={formik.handleChange}
-                            value={formik.values.locationShed}
-                            required
-                             type="number"
-                        >
-                            <option value="">Select Location Shed</option>
-                            {isLoadingLocations ? (
-                                <option disabled>Loading locations...</option>
-                            ) : (
-                                locations.map((location) => (
-                                    <option key={location._id} value={location._id}>
-                                        {location.locationShedName}
-                                    </option>
-                                ))
-                            )}
-                        </select>
-                    </div>
-                    <div className="input-box">
     <label className="label" htmlFor="entryType">Entry Type</label>
     <select
         id="entryType"
@@ -221,10 +195,22 @@ function Vaccinebylocationshed() {
         <option value="First Dose">First Dose</option>
     </select>
 </div>
+                    <div className="input-box">
+                        <label className="label" htmlFor="tagId">Tag Id</label>
+                        <input
+                            id="tagId"
+                            name="tagId"
+                            type="text"
+                            className="input2"
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            value={formik.values.tagId}
+                        />
+                    </div>
                 </div>
             </form>
         </div>
     );
 }
 
-export default Vaccinebylocationshed;
+export default VaccinebytagId;

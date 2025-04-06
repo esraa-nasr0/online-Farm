@@ -1,17 +1,23 @@
-import React from 'react';
-import Navbar from '../Navbar/Navbar';
-import { Outlet } from 'react-router-dom';
-
+import React, { useState } from "react";
+import Navbar from "../Navbar/Navbar";
+import { Outlet } from "react-router-dom";
+import Sidebare from "../Sidebare/Sidebare";
 
 export default function Layout() {
-    
-    return <>
-    <Navbar/>
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-    <Outlet>
-    </Outlet>
-    
-    
-    </>
+    const toggleSidebar = () => {
+        setIsSidebarOpen(!isSidebarOpen);
+    };
 
+    return (
+        <>
+            <Navbar toggleSidebar={toggleSidebar} />
+            {isSidebarOpen && <div className="sidebar-backdrop" onClick={toggleSidebar}></div>}
+            <Sidebare isOpen={isSidebarOpen} />
+            <div className="w-100">
+                <Outlet />
+            </div>
+        </>
+    );
 }

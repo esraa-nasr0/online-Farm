@@ -31,6 +31,7 @@ import GetAnimalContextProvider from "./Context/GetAnimalContext.js";
 import Report from "./Components/Report/Report.jsx";
 import ReportDaliy from "./Components/Report/ReportDaliy.jsx";
 import Vaccinebyanimal from "./Components/Vaccine/Vaccinebyanimal.jsx";
+import Vaccinebyanimalsstable from "./Components/Vaccine/Vaccinebyanimalstable.js";
 import Vaccinebylocationshed from "./Components/Vaccine/Vaccinebylocationshed.jsx";
 import VaccineanimalContextProvider from "./Context/VaccineanimalContext.js";
 import VaccineTable from "./Components/Vaccine/VaccineTable.jsx";
@@ -64,6 +65,11 @@ import EditFodder from "./Components/Feeding/EditFodder.jsx";
 import Dashboard from "./Components/Dashboard/Dashboard.jsx";
 import NotAuthorized from "./Components/Dashboard/NotAuthorized.jsx";
 import DashboardContextProvider from "./Context/DashboardContext.js";
+
+import LocationContextProvider from "./Context/Locationshedcontext.js";
+import VaccinetableentriescontextProvider from "./Context/Vaccinetableentriescontext.jsx";
+import EditVaccineanimals from "./Components/Vaccine/EditVaccineanimals.jsx";
+import Vaccinebytagid from "./Components/Vaccine/Vaccinebytagid.jsx";
 import AnimalServices from "./Components/Services/AnimalServices.jsx";
 import MatingServices from "./Components/Services/MatingServices.jsx";
 import WeightServices from "./Components/Services/WeightServices.jsx";
@@ -75,7 +81,7 @@ import FeedingServices from "./Components/Services/FeedingServices.jsx";
 import FodderServices from "./Components/Services/FodderServices.jsx";
 import MatingLocation from "./Components/Mating/MatingLocation.jsx";
 import LocationPost from "./Components/LocationShed/LocationPost.jsx";
-import LocationContextProvider from "./Context/LocationContext.js";
+import LocationContextshedProvider from "./Context/LocationContext.js";
 import LocationTable from "./Components/LocationShed/LocationTable.jsx";
 import EditLocation from "./Components/LocationShed/EditLocation.jsx";
 import BreedPost from "./Components/Breed/BreedPost.jsx";
@@ -84,6 +90,7 @@ import BreedTable from "./Components/Breed/BreedTable.jsx";
 import EditBreed from "./Components/Breed/EditBreed.jsx";
 import LocationServices from "./Components/Services/LocationServices.jsx";
 import BreedServices from "./Components/Services/BreedServices.jsx";
+
 
 
 
@@ -124,6 +131,7 @@ let routers = createBrowserRouter([
       { path: "editWeight/:id", element: <ProtectedRoute><EditWeight /></ProtectedRoute> },
       { path: "vaccinebyanimal", element: <ProtectedRoute><Vaccinebyanimal/></ProtectedRoute> },
       { path: "vaccinebylocationshed", element: <ProtectedRoute><Vaccinebylocationshed/></ProtectedRoute> },
+      { path: "Vaccinebyanimalsstable", element: <ProtectedRoute><Vaccinebyanimalsstable/></ProtectedRoute> },
       { path: "vaccineTable", element: <ProtectedRoute><VaccineTable/></ProtectedRoute> },
       { path: "editVaccine/:id", element: <ProtectedRoute><EditVaccine/></ProtectedRoute> },
       { path: "treatment", element: <ProtectedRoute><Treatment/></ProtectedRoute> },
@@ -143,6 +151,10 @@ let routers = createBrowserRouter([
       { path: "fodderTable", element: <ProtectedRoute><FodderTable/></ProtectedRoute> },
       { path: "editFodder/:id", element: <ProtectedRoute><EditFodder/></ProtectedRoute> },
       { path: "dashboard", element: <ProtectedRoute  allowedRoles={['admin']}><Dashboard/></ProtectedRoute> },
+
+      { path: "editVaccineanimals/:id", element: <ProtectedRoute><EditVaccineanimals/></ProtectedRoute> },
+      { path: "vaccinebytagid", element: <ProtectedRoute><Vaccinebytagid/></ProtectedRoute> },
+
       { path: "animalServices", element: <ProtectedRoute><AnimalServices/></ProtectedRoute> },
       { path: "matingServices", element: <ProtectedRoute><MatingServices/></ProtectedRoute> },
       { path: "weightServices", element: <ProtectedRoute><WeightServices/></ProtectedRoute> },
@@ -161,6 +173,7 @@ let routers = createBrowserRouter([
       { path: "editBreed/:id", element: <ProtectedRoute><EditBreed/></ProtectedRoute> },
       { path: "locationServices", element: <ProtectedRoute><LocationServices/></ProtectedRoute> },
       { path: "breedServices", element: <ProtectedRoute><BreedServices/></ProtectedRoute> },
+
 
 
     ],
@@ -183,7 +196,9 @@ export default function App() {
   },[]);
 
   return <>
+    <VaccinetableentriescontextProvider>
   <BreedContextProvider>
+  <LocationContextshedProvider>
   <LocationContextProvider>
   <DashboardContextProvider>
   <FeedbyLocationContextProvider>
@@ -212,7 +227,9 @@ export default function App() {
   </FeedbyLocationContextProvider>
   </DashboardContextProvider>
   </LocationContextProvider>
+  </LocationContextshedProvider>
   </BreedContextProvider>
+  </VaccinetableentriescontextProvider>
   </>
 }
 

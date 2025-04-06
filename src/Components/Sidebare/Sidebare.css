@@ -1,0 +1,93 @@
+/* Sidebar Container */
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  width: 250px;
+  background: #9cbd81; 
+  color: white;
+  transition: transform 0.3s ease-in-out;
+  padding: 15px;
+  overflow-y: auto; 
+  overflow-x: hidden;
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.2);
+  z-index: 1000; /* جعل السايدبار يظهر فوق العناصر الأخرى */
+  transform: translateX(-100%); /* إخفاء السايدبار افتراضيًا */
+}
+
+/* عند فتح السايدبار */
+.sidebar.open {
+  transform: translateX(0);
+}
+
+/* تحسين شريط التمرير */
+.sidebar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: #2D4A27; 
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: #ffffff; 
+  border-radius: 4px;
+}
+
+/* ستايل القائمة داخل السايدبار */
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-menu li {
+  margin-bottom: 10px;
+}
+
+.sidebar-menu a {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  text-decoration: none;
+  color: white;
+  font-size: 18px;
+  font-weight: 500;
+  border-radius: 8px;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.sidebar-menu a:hover {
+  background: #1f1f1f;
+  transform: scale(1.05);
+}
+
+/* تأثير زجاجي عند فتح السايدبار */
+.sidebar-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: none;
+}
+
+/* عند فتح السايدبار، يظهر الـ backdrop */
+.sidebar.open + .sidebar-backdrop {
+  display: block;
+}
+
+/* Responsive */
+@media (min-width: 768px) {
+  .sidebar {
+      transform: translateX(0);
+      width: 250px;
+  }
+
+  .sidebar.closed {
+      transform: translateX(-100%);
+  }
+}

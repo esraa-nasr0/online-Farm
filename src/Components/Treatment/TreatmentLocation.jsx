@@ -63,7 +63,7 @@ const getHeaders = () => {
         fetchTreatments();
     }, [getTreatmentMenue]);
 
-    // Handle treatment submission
+
     async function submitTreatment(values) {
         const headers = getHeaders();
         console.log('Form Values:', values);
@@ -152,7 +152,7 @@ const getHeaders = () => {
                 )}
 
                 <div className='animaldata'>
-                    {/* Location Shed Input */}
+                   
                     <div className="input-box">
                         <label className="label" htmlFor="locationShed">{t('location_shed')}</label>
                         <select
