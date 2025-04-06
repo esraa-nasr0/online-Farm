@@ -1,29 +1,51 @@
 import axios from 'axios';
 import { useFormik } from 'formik';
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { IoIosSave } from "react-icons/io";
 import Swal from 'sweetalert2';
 import { useTranslation } from 'react-i18next';
+import { LocationContext } from '../../Context/LocationContext';
 
-function Mating() {
+
+function MatingLocation() {
     const [showAlert, setShowAlert] = useState(false);
     const [error, setError] = useState(null);
     const [isLoading, setisLoading] = useState(false);
     const [matingData, setMatingData] = useState(null);
     const { t } = useTranslation();
+    const {LocationMenue} = useContext(LocationContext)
+    
 
     const getHeaders = () => {
         const Authorization = localStorage.getItem('Authorization');
         const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
         return { Authorization: formattedToken };
     };
+    const fetchLocation = async () => {
+                try {
+                    const { data } = await LocationMenue();
+                    if (data.status === 'success' && Array.isArray(data.data.locationSheds)) {
+                        setMatingData(data.data.locationSheds);
+                    } else {
+                        setMatingData([]); 
+                    }
+                } catch (err) {
+                    setError('Failed to load treatment data');
+                    setMatingData([]); 
+                }
+            };
+        
+            useEffect(() => {
+                fetchLocation();
+            }, [LocationMenue]);
+        
 
     async function submitMating(value) {
         const headers = getHeaders();
         setisLoading(true); 
         try {
             let { data } = await axios.post(
-                `https://farm-project-bbzj.onrender.com/api/mating/addmating`,
+                `https://farm-project-bbzj.onrender.com/api/mating/AddMatingByLocation`,
                 value,
                 { headers }
             );
@@ -50,12 +72,11 @@ function Mating() {
 
     let formik = useFormik({
         initialValues: {
-            tagId: '',
+            locationShed: '',
             matingType: '',
             maleTag_id: '',
             matingDate: '',
             sonarDate: '',
-            sonarRsult: '',
         },
         onSubmit: submitMating
     });
@@ -81,10 +102,24 @@ function Mating() {
                     </button>
                 )}
                 <div className="animaldata">
-                    <div className="input-box">
-                        <label className="label" htmlFor="tagId">{t('female_tag_id')}</label>
-                        <input onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.tagId} placeholder={t('enter_tag_id')} id="tagId" type="text" className="input2" name="tagId" />
-                    </div>
+                    
+                <div className="input-box">
+    <label className="label" htmlFor="locationShed">{t('location_shed')}</label>
+    <select
+        id="locationShed"
+        name="locationShed"
+        className="input2"
+        value={formik.values.locationShed}
+        onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
+    >
+        <option value="">{t('select_location_shed')}</option>
+        {matingData && matingData.map((shed) => (
+            <option key={shed._id} value={shed._id}>{shed.locationShedName}</option>
+        ))}
+    </select>
+    {formik.errors.locationShed && formik.touched.locationShed && <p className="text-danger">{formik.errors.locationShed}</p>}
+</div>
                     <div className="input-box">
                         <label className="label" htmlFor="matingType">{t('mating_type')}</label>
                         <select value={formik.values.matingType} onChange={formik.handleChange} onBlur={formik.handleBlur} className="input2" name="matingType" id="matingType">
@@ -104,18 +139,10 @@ function Mating() {
                         <label className="label" htmlFor="sonarDate">{t('sonar_date')}</label>
                         <input onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.sonarDate} id="sonarDate" type="date" className="input2" name="sonarDate" />
                     </div>
-                    <div className="input-box">
-                        <label className="label" htmlFor="sonarRsult">{t('sonar_result')}</label>
-                        <select onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.sonarRsult} id="sonarRsult" className="input2" name="sonarRsult">
-                            <option value="" disabled>{t('select_sonar_result')}</option>
-                            <option value="positive">{t('positive')}</option>
-                            <option value="negative">{t('negative')}</option>
-                        </select>
-                    </div>
                 </div>
             </form>
         </div>
     );
 }
 
-export default Mating;
+export default MatingLocation;

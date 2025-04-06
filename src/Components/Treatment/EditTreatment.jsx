@@ -10,6 +10,7 @@ function EditTreatment() {
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const { id } = useParams();
+    
 
     
 // Helper function to generate headers with the latest token

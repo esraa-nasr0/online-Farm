@@ -5,27 +5,45 @@ import axios from 'axios';
 import { Feedcontext } from '../../Context/FeedContext';
 import Swal from 'sweetalert2';
 import { useNavigate } from "react-router-dom";
+import { LocationContext } from '../../Context/LocationContext';
+
 
 export default function Feedbylocation() {
   const [error, setError] = useState(null);
-  const [showAlert, setShowAlert] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [feeds, setFeeds] = useState([]);
   const { getFodderMenue } = useContext(Feedcontext);
   const navigate = useNavigate()
+  const {LocationMenue} = useContext(LocationContext)
+  
 
   
 // Helper function to generate headers with the latest token
 const getHeaders = () => {
   const Authorization = localStorage.getItem('Authorization');
-
-  // Ensure the token has only one "Bearer" prefix
   const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-
   return {
       Authorization: formattedToken
   };
 };
+
+const fetchLocation = async () => {
+            try {
+                const { data } = await LocationMenue();
+                if (data.status === 'success' && Array.isArray(data.data.locationSheds)) {
+                  setFeeds(data.data.locationSheds);
+                } else {
+                  setFeeds([]); 
+                }
+            } catch (err) {
+                setError('Failed to load treatment data');
+                setFeeds([]); 
+            }
+        };
+    
+        useEffect(() => {
+            fetchLocation();
+        }, [LocationMenue]);
 
   const fetchFeeds = async () => {
     try {
@@ -127,41 +145,36 @@ const getHeaders = () => {
 
   return (
     <div className="container">
-    
+    <div className="title2">Feed by location shed</div>
       <form onSubmit={formik.handleSubmit} className="mt-5">
         {isLoading ? (
-           <div className="d-flex vaccine align-items-center justify-content-between">
-                                               <div className="title-v">Add Feed for locationshed</div>
-                                               <button type="submit" className="btn button2" disabled={isLoading}>
-                                                   {isLoading ? <i className="fas fa-spinner fa-spin"></i> : <IoIosSave />} Save
-                                               </button>
-                                           </div>
-        ) : (
-            <div className="d-flex vaccine align-items-center justify-content-between">
-                                                <div className="title-v">Add Feed for locationshed</div>
-                                                <button type="submit" className="btn button2" disabled={isLoading}>
-                                                    {isLoading ? <i className="fas fa-spinner fa-spin"></i> : <IoIosSave />} Save
-                                                </button>
-                                            </div>
-        )}
+                <button type="submit" className="btn button2">
+                    <i className="fas fa-spinner fa-spin"></i>
+                </button>
+                ) : (
+                <button type="submit" className="btn button2">
+                    <IoIosSave /> Save
+                </button>
+                )}
 
         <div className="animaldata">
-          <div className="input-box">
-            <label className="label" htmlFor="locationShed">Location Shed</label>
-            <input
-              id="locationShed"
-              name="locationShed"
-              type="text"
-              className="input2"
-              placeholder="Enter location shed"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.locationShed}
-            />
-            {formik.errors.locationShed && formik.touched.locationShed && (
-              <p className="text-danger">{formik.errors.locationShed}</p>
-            )}
-          </div>
+        <div className="input-box">
+    <label className="label" htmlFor="locationShed">Location Shed</label>
+    <select
+        id="locationShed"
+        name="locationShed"
+        className="input2"
+        value={formik.values.locationShed}
+        onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
+    >
+        <option value="">select location shed</option>
+        {feeds && feeds.map((shed) => (
+            <option key={shed._id} value={shed._id}>{shed.locationShedName}</option>
+        ))}
+    </select>
+    {formik.errors.locationShed && formik.touched.locationShed && <p className="text-danger">{formik.errors.locationShed}</p>}
+</div>
 
           <div className="input-box">
             <label className="label" htmlFor="date">Date</label>
@@ -222,7 +235,7 @@ const getHeaders = () => {
           </div>
         ))}
 
-        <button type="button" onClick={addFeed} className="btn button2">Add Feed</button>
+        <button type="button" onClick={addFeed} className="btn button2">+</button>
       </form>
     </div>
   );

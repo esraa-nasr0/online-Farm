@@ -102,23 +102,17 @@ export default function FodderTable() {
         <>
             {isLoading ? (
                 <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
-                    <Rings visible={true} height="100" width="100" color="#3f5c40" ariaLabel="rings-loading" />
+                    <Rings visible={true} height="100" width="100" color="#9cbd81" ariaLabel="rings-loading" />
                 </div>
             ) : (
                 <div className="container">
                     <div className="title2">Fodder</div>
                     {error && <p className="text-danger mt-3">{error}</p>}
-                    <div className="flex-column flex-md-row mt-2 mb-2 me-2">
-                   <Link to="/fodder">
-                    <button type="button" className="btn btn-secondary button2 btn-lg active mt-3">
-                    <MdOutlineAddToPhotos /> Add Fodder
-                       </button>
-                    </Link>
-                    </div>
+                    
                     <div className='container mt-4'>
                         <div className="d-flex flex-column flex-md-row align-items-center gap-2" style={{ flexWrap: 'nowrap' }}>
                             <input type="text" className="form-control" placeholder="Search by Name" value={searchName} onChange={(e) => setSearchName(e.target.value)} style={{ flex: 1 }} />
-                            <button className="btn mb-2 me-2" onClick={handleSearch} style={{ backgroundColor: '#88522e', borderColor: '#88522e', color: 'white' }}>
+                            <button className="btn mb-2 me-2" onClick={handleSearch} style={{ backgroundColor: '#FAA96C',  color: 'white' }}>
                                 <i className="fas fa-search"></i>
                             </button>
                         </div>

@@ -74,14 +74,14 @@ function EditVaccine() {
 
     return (
         <div className="container">
+            <div className="title2">Edit Vaccine</div>
+            
             {error && <p className="text-danger">{error}</p>}
             <form onSubmit={formik.handleSubmit} className="mt-5">
-                <div className='d-flex vaccine align-items-center justify-content-between'>
-                    <div className="title-v">Edit Vaccine</div>
                     <button type="submit" className="btn button2" disabled={isLoading}>
                         {isLoading ? <i className="fas fa-spinner fa-spin"></i> : <IoIosSave />} Save
                     </button>
-                </div>
+
                 <div className="animaldata">
                     <div className="input-box">
                         <label className="label" htmlFor="vaccineName">Vaccine Name</label>

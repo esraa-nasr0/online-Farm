@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FaRegEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { MdOutlineAddToPhotos } from "react-icons/md";
-import { ExclutedContext } from '../../Context/ExclutedContext';
+import { ExcludedContext } from '../../Context/ExcludedContext';
 import { Rings } from 'react-loader-spinner';
 import Swal from 'sweetalert2';
 
@@ -18,9 +18,9 @@ function formatDate(date) {
     }
 }
 
-function Exclutedtable() {
+function Excludedtable() {
     const navigate = useNavigate();
-    const { getExcluted, deleteExcluted } = useContext(ExclutedContext);
+    const { getExcluted, deleteExcluted } = useContext(ExcludedContext);
 
     const [isLoading, setIsLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
@@ -48,7 +48,7 @@ function Exclutedtable() {
     }, [currentPage]);
 
     function editMating(id) {
-        navigate(`/editExcluted/${id}`);
+        navigate(`/editExcluded/${id}`);
     }
 
     async function deleteItem(id) {
@@ -84,33 +84,21 @@ function Exclutedtable() {
         <>
             {isLoading ? (
                 <div className='animal'>
-                    <Rings visible={true} height="100" width="100" color="#198754" ariaLabel="rings-loading" />
+                    <Rings visible={true} height="100" width="100" color="#9cbd81" ariaLabel="rings-loading" />
                 </div>
             ) : (
-                <div className="container" style={{ marginTop: "140px" }}>
-                    
-<div className="d-flex flex-column flex-md-row container justify-content-between align-items-center   mb-4" style={{marginTop:"140px"}}>  
-<h2 className="bottom-line pb-2" style={{ color: "#88522e" }}>Excluted Records</h2>
-                                            <div className='d-flex flex-column flex-sm-row gap-2'>
-                                    
-                                            <Link to='/excluted'>
-        <button type="button" className="btn btn-secondary button2 btn-lg active mt-3" style={{ background: "#88522e", color: "white", borderColor: "#3a7d44" }}>
-            <MdOutlineAddToPhotos /> Add New Excluted
-        </button>
-    </Link>
-                                       
-                                                </div> 
-                                       
-                                        </div>  
+                <div className="container" >
+                <div className="title2">Excluted Records</div>
+
                     <div className="d-flex flex-column flex-md-row align-items-center gap-2 mt-4">
                         <input type="text" className="form-control" value={searchCriteria.tagId} placeholder="Search Tag ID" onChange={(e) => setSearchCriteria(prev => ({ ...prev, tagId: e.target.value }))} />
                         <input type="text" className="form-control" value={searchCriteria.animalType}z placeholder="Search animalType" onChange={(e) => setSearchCriteria(prev => ({ ...prev, animalType: e.target.value }))} />
-                        <button className="btn" onClick={fetchExcluted} style={{ backgroundColor: '#88522e', color: 'white' }}>
+                        <button className="btn" onClick={fetchExcluted} style={{ backgroundColor: '#FAA96C', color: 'white' }}>
                             <i className="fas fa-search"></i>
                         </button>
                     </div>
                     <div className="table-responsive">
-                        <table className="table table-striped mt-4">
+                        <table className="table table-hover mt-3 p-2">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -121,7 +109,7 @@ function Exclutedtable() {
                                     <th>Reason</th>
                                     <th>Price</th>
                                     <th>Weight</th>
-                                    {/* <th>Edit</th> */}
+                                    <th>Edit</th>
                                     <th>Remove</th>
                                 </tr>
                             </thead>
@@ -137,11 +125,11 @@ function Exclutedtable() {
                                         <td>{item.reasoneOfDeath?item.reasoneOfDeath:"_"}</td>
                                         <td>{item.price?item.price:"_"}</td>
                                         <td>{item.weight}</td>
-                                        {/* <td>
+                                        <td>
                                             <button className="btn" style={{ color: "#198754" }} onClick={() => editMating(item._id)}>
                                                 <FaRegEdit /> Edit
                                             </button>
-                                        </td> */}
+                                        </td>
                                         <td>
                                             <button className="btn" style={{ color: "#ff0000" }} onClick={() => handleClick(item._id)}>
                                                 <RiDeleteBin6Line /> Remove
@@ -169,7 +157,7 @@ function Exclutedtable() {
     );
 }
 
-export default Exclutedtable;
+export default Excludedtable;
 
 
 

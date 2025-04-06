@@ -1,10 +1,12 @@
 import { useFormik } from 'formik';
-import React, {  useState } from 'react';
+import React, {  useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 // import * as Yup from 'yup';
 import { IoIosSave } from "react-icons/io";
 import { useTranslation } from 'react-i18next';
 import Swal from 'sweetalert2';
+import { LocationContext } from '../../Context/LocationContext';
+import { BreedContext } from '../../Context/BreedContext';
 
 
 
@@ -14,19 +16,54 @@ export default function AnimalsDetails() {
     const [error ,setError] = useState(null);
     const [isLoading , setisLoading] = useState(false);
     const [animalData, setAnimalData] = useState(null);
+    const {LocationMenue} = useContext(LocationContext)
+    const {BreedMenue} = useContext(BreedContext)
 
     
 // Helper function to generate headers with the latest token
 const getHeaders = () => {
     const Authorization = localStorage.getItem('Authorization');
-
-    // Ensure the token has only one "Bearer" prefix
     const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-
     return {
         Authorization: formattedToken
     };
 };
+
+    const fetchLocation = async () => {
+            try {
+                const { data } = await LocationMenue();
+                if (data.status === 'success' && Array.isArray(data.data.locationSheds)) {
+                    setAnimalData(data.data.locationSheds);
+                } else {
+                    setAnimalData([]); 
+                }
+            } catch (err) {
+                setError('Failed to load location data');
+                setAnimalData([]); 
+            }
+        };
+    
+        useEffect(() => {
+            fetchLocation();
+        }, [LocationMenue]);
+
+        const fetchBreed = async () => {
+            try {
+                const { data } = await BreedMenue();
+                if (data.status === 'success' && Array.isArray(data.data.breeds)) {
+                    setAnimalData(data.data.breeds);
+                } else {
+                    setAnimalData([]); 
+                }
+            } catch (err) {
+                setError('Failed to load breeds data');
+                setAnimalData([]); 
+            }
+        };
+    
+        useEffect(() => {
+            fetchBreed();
+        }, [BreedMenue]);
     
     async function submitAnimals(value) {
         const headers = getHeaders(); // Get the latest headers
@@ -83,6 +120,7 @@ const getHeaders = () => {
 
     return <>
         <div className="container">
+        <div className="title2">Add Animal</div>
         <p className="text-danger">{error}</p>
     {showAlert && animalData && (  
     <div className="alert mt-5 p-4 alert-success">  
@@ -90,20 +128,14 @@ const getHeaders = () => {
     </div>  
     )}  
         <form onSubmit={formik.handleSubmit} className='mt-5'>
-    {isLoading ? (
-                <div className=' d-flex vaccine align-items-center justify-content-between'>
-                <div className="title-v">Add Animal</div>
-                <button type="submit" className="btn button2">
-                <i className="fas fa-spinner fa-spin"></i>
-                </button>
-                </div>
+        {isLoading ? (
+                        <button type="submit" className="btn button2" disabled>
+                            <i className="fas fa-spinner fa-spin"></i>
+                        </button>
                     ) : (
-                    <div className=' d-flex vaccine align-items-center justify-content-between'>
-                    <div className="title-v">Add Animal</div>
-                    <button type="submit" className="btn  button2" disabled={isLoading}>
-                    {isLoading ? <i className="fas fa-spinner fa-spin"></i> : <IoIosSave />} {t('save')}
-                    </button>
-                    </div>
+                        <button type="submit" className="btn button2">
+                            <IoIosSave /> {t('save')}
+                        </button>
                     )}
         <div className="animaldata">
         <div className="input-box">
@@ -111,11 +143,24 @@ const getHeaders = () => {
             <input onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.tagId} placeholder={t('enter_tag_id')} id="tagId" type="text" className="input2" name="tagId"/>
             {formik.errors.tagId && formik.touched.tagId && ( <p className="text-danger">{formik.errors.tagId}</p> )}
         </div>
+        
         <div className="input-box">
-            <label className="label" htmlFor="breed">{t('breed')}</label>
-            <input onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.breed}placeholder={t('enter_breed')} id="breed" type="text" className="input2" name="breed"/>
-            {formik.errors.breed && formik.touched.breed && ( <p className="text-danger">{formik.errors.breed}</p> )}
-        </div>
+    <label className="label" htmlFor="breed">{t('breed')}</label>
+    <select
+        id="breed"
+        name="breed"
+        className="input2"
+        value={formik.values.breed}
+        onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
+    >
+        <option value="">{t('select_breed')}</option>
+        {animalData && animalData.map((breeds) => (
+            <option key={breeds._id} value={breeds._id}>{breeds.breedName}</option>
+        ))}
+    </select>
+    {formik.errors.breed && formik.touched.breed && <p className="text-danger">{formik.errors.breed}</p>}
+</div>
 
                     <div className="input-box">
         <label className="label" htmlFor="animalType">{t('animal_type')}</label>
@@ -250,11 +295,24 @@ const getHeaders = () => {
                     </>)}
                     
 
-            <div className="input-box">  
-            <label className="label" htmlFor="locationShed">{t('location_shed')}</label>
-            <input onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.locationShed} placeholder={t('enter_location_shed')} id="locationShed" type="text" className="input2" name="locationShed"/>
-            {formik.errors.locationShed && formik.touched.locationShed?<p className="text-danger">{formik.errors.locationShed}</p>:""}
-            </div>
+                    <div className="input-box">
+    <label className="label" htmlFor="locationShed">{t('location_shed')}</label>
+    <select
+        id="locationShed"
+        name="locationShed"
+        className="input2"
+        value={formik.values.locationShed}
+        onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
+    >
+        <option value="">{t('select_location_shed')}</option>
+        {animalData && animalData.map((shed) => (
+            <option key={shed._id} value={shed._id}>{shed.locationShedName}</option>
+        ))}
+    </select>
+    {formik.errors.locationShed && formik.touched.locationShed && <p className="text-danger">{formik.errors.locationShed}</p>}
+</div>
+
 
                 </div>
             </form> 

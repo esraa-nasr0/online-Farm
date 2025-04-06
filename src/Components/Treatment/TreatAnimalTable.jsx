@@ -108,33 +108,18 @@ function TreatAnimalTable() {
         <>
             {isLoading ? (
                 <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
-                    <Rings visible={true} height="100" width="100" color="#3f5c40" ariaLabel="rings-loading" />
+                    <Rings visible={true} height="100" width="100" color="#9cbd81" ariaLabel="rings-loading" />
                 </div>
             ) : (
                 <div className="container">
                     <div className="title2">Treatment by Animal</div>
 
-                    <div className="flex-column flex-md-row mb-4 mt-3">
-                        <div className="d-flex flex-column flex-sm-row gap-3 justify-content-end">
-                            <Link to="/treatmentAnimal">
-                                <button type="button" className="btn btn-secondary button2 btn-lg active mt-3">
-                                    <MdOutlineAddToPhotos /> Add Treatment by Animal
-                                </button>
-                            </Link>
-
-                            <Link to="/treatmentLocation">
-                                <button type="button" className="btn btn-secondary button2 btn-lg active mt-3 me-3">
-                                    <MdOutlineAddToPhotos /> Add Treatment by Location
-                                </button>
-                            </Link>
-                        </div>
-                    </div>
-                    <div className="container mt-2">
+                    <div className="container mt-5">
                         <div className="d-flex flex-column flex-md-row align-items-center gap-2" style={{ flexWrap: 'nowrap' }}>
                             <input type="text" className="form-control me-2 mb-2" placeholder="Search by Tag ID" value={searchTagId} onChange={(e) => setSearchTagId(e.target.value)} style={{ flex: 1 }} />
                             <input type="text" className="form-control me-2 mb-2" placeholder="Search by Location Shed" value={searchLocationShed} onChange={(e) => setSearchLocationShed(e.target.value)} style={{ flex: 1 }} />
                             <input type="text" className="form-control me-2 mb-2" placeholder="Search by Date" value={searchDate} onChange={(e) => setSearchDate(e.target.value)} style={{ flex: 1 }} />
-                            <button className="btn mb-2 me-2" onClick={handleSearch} style={{ backgroundColor: '#88522e', borderColor: '#88522e', color: 'white' }}>
+                            <button className="btn mb-2 me-2" onClick={handleSearch} style={{ backgroundColor: '#FAA96C',  color: 'white' }}>
                                 <i className="fas fa-search"></i>
                             </button>
                         </div>
@@ -142,6 +127,8 @@ function TreatAnimalTable() {
 
                     {error && <p className="text-danger mt-3">{error}</p>}
 
+                    <div className="table-responsive">
+                    <div className="full-width-table">
                     <table className="table table-hover mt-4" aria-label="Treatment Table">
                         <thead>
                             <tr>
@@ -161,7 +148,7 @@ function TreatAnimalTable() {
                                     <tr key={item._id || index}>
                                         <th scope="row">{(currentPage - 1) * TreatAnimalPerPage + index + 1}</th>
                                         <td>{item.tagId}</td>
-                                        <td>{item.locationShed}</td>
+                                        <td>{item.locationShed?.locationShedName || item.locationShed || '-'}</td>
                                         <td>{item.treatments && item.treatments[0] ? item.treatments[0].treatmentName : "No Treatment"}</td>
                                         <td>{item.treatments && item.treatments[0] ? item.treatments[0].volume : "N/A"}</td>
                                         <td>{new Date(item.date).toLocaleDateString()}</td>
@@ -180,6 +167,8 @@ function TreatAnimalTable() {
                             )}
                         </tbody>
                     </table>
+                    </div>
+                    </div>
                     {/* Pagination */}
                     <div className="d-flex justify-content-center mt-4">
                         <nav>

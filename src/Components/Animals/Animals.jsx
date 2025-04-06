@@ -117,18 +117,11 @@ export default function Animals() {
         <>
             {isLoading ? (
                 <div className='animal'>
-                    <Rings visible={true} height="100" width="100" color="#3f5c40" ariaLabel="rings-loading" />
+                    <Rings visible={true} height="100" width="100" color="#9cbd81" ariaLabel="rings-loading" />
                 </div>
             ) : (
                 <div className="container">
                     <div className="title2">{t('animals')}</div>
-                    <div className="flex-column flex-md-row mb-3">
-                        <Link to='/AnimalsDetails'>
-                            <button type="button" className="btn btn-lg btn-secondary active button2">
-                                <MdOutlineAddToPhotos /> {t('add_new_animal')}
-                            </button>
-                        </Link>
-                    </div>
 
                     <div className='container mt-5'>
                         <div className="d-flex flex-column flex-md-row align-items-center gap-2" style={{ flexWrap: 'nowrap' }}>
@@ -137,12 +130,14 @@ export default function Animals() {
                             <input type="text" className="form-control" placeholder={t('search_by_location_shed')} value={searchLocationShed} onChange={(e) => setSearchLocationShed(e.target.value)} style={{ flex: 1 }} />
                             <input type="text" className="form-control" placeholder={t('search_by_breed')} value={searchBreed} onChange={(e) => setSearchBreed(e.target.value)} style={{ flex: 1 }} />
                             <input type="text" className="form-control" placeholder={t('search_by_gender')} value={searchGender} onChange={(e) => setSearchGender(e.target.value)} style={{ flex: 1 }} />
-                            <button className="btn mb-2 me-2" onClick={handleSearch} style={{ backgroundColor: '#88522e', borderColor: '#88522e', color: 'white' }}>
+                            <button className="btn mb-2 me-2" onClick={handleSearch} style={{ backgroundColor: '#FAA96C', color: 'white' }}>
                                 <i className="fas fa-search"></i>
                             </button>
                         </div>
                     </div>
 
+                    <div className="table-responsive">
+                    <div className="full-width-table">
                     <table className="table table-hover mt-3 p-2">
                         <thead>
                             <tr>
@@ -150,6 +145,7 @@ export default function Animals() {
                                 <th scope="col">{t('tag_id')}</th>
                                 <th scope="col">{t('animal_type')}</th>
                                 <th scope="col">{t('breed')}</th>
+                                <th scope="col">{t('location_shed')}</th>
                                 <th scope="col">{t('gender')}</th>
                                 <th scope="col">{t('view_details')}</th>
                                 <th scope="col">{t('edit_animal')}</th>
@@ -162,7 +158,8 @@ export default function Animals() {
                                     <th scope="row">{(currentPage - 1) * animalsPerPage + index + 1}</th>
                                     <td>{animal.tagId}</td>
                                     <td>{animal.animalType}</td>
-                                    <td>{animal.breed}</td>
+                                    <td>{animal.breed?.breedName || animal.breed || '-'}</td>
+                                    <td>{animal.locationShed?.locationShedName || animal.locationShed || '-'}</td>
                                     <td>{animal.gender}</td>
                                     <td onClick={() => viewAnimal(animal._id)} style={{ cursor: 'pointer' }} className='text-primary'>
                                         <GrView /> {t('view_details')}
@@ -176,8 +173,10 @@ export default function Animals() {
                                 </tr>
                             ))}
                         </tbody>
-                    </table>
-
+                    </table> 
+                    </div>
+                    </div>
+                    
                     <div className="d-flex justify-content-center mt-4">
                         <nav>
                             <ul className="pagination">

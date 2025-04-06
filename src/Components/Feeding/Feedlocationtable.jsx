@@ -6,7 +6,7 @@ import { Rings } from "react-loader-spinner";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { RiDeleteBin6Line } from "react-icons/ri";
-// import { FaRegEdit } from "react-icons/fa";
+import { FaRegEdit } from "react-icons/fa";
 
 function FeedingTable() {
   const navigate = useNavigate();
@@ -85,9 +85,9 @@ function FeedingTable() {
   };
   
 
-  // const Editfeed = (id) => {
-  //   navigate(`/editfeedbylocation/${id}`);
-  // };
+  const Editfeed = (id) => {
+    navigate(`/editfeedbylocation/${id}`);
+  };
 
   return (
     <>
@@ -97,24 +97,14 @@ function FeedingTable() {
             visible={true}
             height="100"
             width="100"
-            color="#3f5c40"
+            color="#9cbd81"
             ariaLabel="rings-loading"
           />
         </div>
       ) : (
         <div className="container">
+                    <div className="title2">Feed by location shed</div>
 
-             <div className="d-flex container flex-column flex-md-row justify-content-between align-items-center mb-4" style={{ marginTop: "140px" }}>
-                       <h2 style={{ color: "#88522e" }} className="bottom-line pb-2">Feed Records for sheds</h2>
-                                                <div className='d-flex flex-column flex-sm-row gap-2'>
-                          <Link to="/feedbylocation">
-                        <button type="button " className="btn btn-lg active" style={{ background: "#88522e", color: "white", borderColor: "#3a7d44" }}>
-                          <MdOutlineAddToPhotos /> Add New Feed
-                        </button>
-                      </Link> 
-                                                  </div>
-                   
-                                            </div>
       
           <div className="d-flex flex-column flex-md-row align-items-center gap-2 mt-4">
                         <input type="text" className="form-control" value={searchCriteria.locationShed} placeholder="Search locationShed" onChange={(e) => setSearchCriteria(prev => ({ ...prev, locationShed: e.target.value }))} />
@@ -132,7 +122,7 @@ function FeedingTable() {
   }}
 /> */}
 
-                        <button className="btn" onClick={handleSearch} style={{ backgroundColor: '#88522e', color: 'white' }}>
+                        <button className="btn" onClick={handleSearch} style={{ backgroundColor: '#FAA96C', color: 'white' }}>
     <i className="fas fa-search"></i>
 </button>
 
@@ -146,7 +136,7 @@ function FeedingTable() {
                 <th scope="col">Date</th>
                 <th scope="col">Feed Name</th>
                 <th scope="col">Feed Price</th>
-                    {/* <th>Edit</th> */}
+                    <th>Edit</th>
                     <th>Remove</th>
               </tr>
             </thead>
@@ -154,21 +144,20 @@ function FeedingTable() {
               {feedData.length > 0 ? (
                 feedData.map((item) => (
                   <tr key={item._id}>
-                    <td>{item.locationShed}</td>
+                    <td>{item.locationShed?.locationShedName || item.locationShed || '-'}</td>
                     <td>{item?.feeds?.[0]?.quantity || "N/A"}</td>
                     <td>{item.date ? item.date.split("T")[0] : "N/A"}</td>
                     <td>{item?.feeds?.[0]?.feedName}</td>
                     <td>{item?.feeds?.[0]?.feedPrice}</td>
-                    {/* <td
+                    <td
                                           style={{ cursor: "pointer", color: "#198754" }}
                                           onClick={() => Editfeed(item._id)}
                                         >
                                           <FaRegEdit/> Edit
-                                        </td> */}
+                                        </td>
                       <td onClick={() => handleDelete(item._id)} className="text-danger" style={{ cursor: "pointer" }}>
                                         <RiDeleteBin6Line /> Remove
                                       </td>
-                       
                   </tr>
                 ))
               ) : (
