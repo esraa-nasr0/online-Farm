@@ -153,34 +153,51 @@ code {
 }
 
 /* home  */
-.div{
+.hero-container {
   width: 100%;
-  height: 110vh;
+  min-height: 100vh;
   background-color: #778983;
+  display: flex;
+  align-items: center;
 }
-.secdiv{
-    padding-top: 11rem;
-    display: flex;
-    justify-content: flex-start; /* يدفع النص أكثر لليمين */
-    align-items: center;
-    gap: 85px; /* تقليل المسافة بين العنزة والنص */
-    padding-left: 50px; /* زيادة المسافة من اليسار لتحريك النص لليمين */
-  }
-  
-.gigoat {
+
+.hero-content {
+  width: 100%;
+  padding: 2rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 30px; /* تقليل المسافة بين الأيقونة والنص */
+  padding-left: 20px; /* بدلاً من 50px */
+
+}
+.hero-icon {
   float: left;
   width: 40%;
   height: 40%;
   color: white;
-  margin-top: -40px; /* حركها للأعلى */
+  margin-top: -40px;
+  padding-top: 2rem;
 }
-.position-relative {
-  margin-top: 3px; /* تحريك النص للأسفل */
-}
-.float {
-  float: right;
+.hero-text-container {
+  width: 50%; /* زيادة مساحة النص */
 }
 
+.hero-text {
+  color: white;
+}
+
+.hero-title {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+}
 
 .btn-glow {
   background: linear-gradient(45deg, #ff8c00, #faa96c);
@@ -192,6 +209,8 @@ code {
   text-transform: uppercase;
   transition: all 0.4s ease-in-out;
   box-shadow: 0 0 15px #faa96c;
+  font-size: 1rem;
+  cursor: pointer;
 }
 
 .btn-glow:hover {
@@ -200,57 +219,77 @@ code {
   background: linear-gradient(45deg, #faa96c, #ff8c00);
   color: white;
 }
-@media (max-width: 480px) {
-  .secdiv {
-    padding-top: 3rem;
-  }
 
-  .gigoat {
-    width: 90%;
-  }
-
-  .btn-glow {
-    padding: 8px 20px;
-    font-size: 12px;
-  }
-}
+/* Medium devices (tablets, 768px and down) */
 @media (max-width: 768px) {
-  .secdiv {
-    gap: 20px;
-  }
-
-  .gigoat {
-    width: 80%;
-  }
-
-  .btn-glow {
-    padding: 10px 24px;
-    font-size: 14px;
-  }
-}
-@media (max-width: 1024px) {
-  .secdiv {
-    flex-direction: column; /* Stack items vertically */
-    align-items: center;
+  .hero-content {
+    flex-direction: column;
     text-align: center;
-    gap: 30px;
-    padding-left: 0;
-    padding-top: 4rem;
+    padding-top: 6rem;
+    gap: 2rem;
   }
-.div{
-  height: 129vh;
-}
-  .gigoat {
+  
+  .hero-icon {
     width: 60%;
-    height: auto;
-    margin-top: 0;
+    margin: 0 auto;
   }
-
+  
+  .hero-text-container {
+    width: 100%;
+  }
+  
+  .hero-title {
+    font-size: 2.5rem;
+  }
+  
   .btn-glow {
     padding: 12px 28px;
   }
 }
 
+/* Small devices (phones, 480px and down) */
+@media (max-width: 480px) {
+  .hero-content {
+    padding-top: 4rem;
+  }
+  
+  .hero-icon {
+    width: 80%;
+  }
+  
+  .hero-title {
+    font-size: 2rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+  
+  .btn-glow {
+    padding: 10px 24px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Extra small devices (phones, 360px and down) */
+@media (max-width: 360px) {
+  .hero-title {
+    font-size: 1.75rem;
+  }
+  
+  .btn-glow {
+    padding: 8px 20px;
+    font-size: 0.8rem;
+  }
+}
+
+/* Large devices (desktops, 1024px and up) */
+@media (min-width: 1024px) {
+  .hero-content {
+    padding-left: 5rem;
+    padding-right: 5rem;
+  }
+}
 
 
 /* HomeServices */
