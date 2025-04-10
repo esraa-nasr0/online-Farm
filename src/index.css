@@ -172,7 +172,6 @@ code {
   padding-left: 20px; /* بدلاً من 50px */
 
 }
-
 .hero-icon {
   float: left;
   width: 40%;
@@ -181,7 +180,6 @@ code {
   margin-top: -40px;
   padding-top: 2rem;
 }
-
 .hero-text-container {
   width: 50%; /* زيادة مساحة النص */
 }
