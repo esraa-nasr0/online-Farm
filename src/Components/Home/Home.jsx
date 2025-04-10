@@ -5,7 +5,7 @@ import About from "../About/About";
 export default function Home() {
 return (<>
     <ImgSlide/>
-    {/* <About/> */}
+    <About/>
     </>
 );
 }
