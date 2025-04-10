@@ -33,9 +33,6 @@ export default function Navbar({ toggleSidebar }) {
     style={{ backgroundColor: "#F3F3F3" }}
 >
 <div className="container-fluid">
-    <button className="btn p-2 me-2" style={{ color: "#F3F3F3", backgroundColor: "#9cbd81" }} onClick={toggleSidebar}>
-                    <FaBars />
-                </button>
     <Link className="navbar-brand" to="#" style={{ color: "#0C0D0E" }}>
     Online Farm
     </Link>
@@ -50,6 +47,10 @@ export default function Navbar({ toggleSidebar }) {
     <ul className="navbar-nav me-auto mb-2 mb-lg-0">
         {Authorization !== null ? (
         <>
+        
+    <button className="btn p-2 me-2" style={{ color: "#F3F3F3", backgroundColor: "#9cbd81" }} onClick={toggleSidebar}>
+                    <FaBars />
+                </button>
             <li className="nav-item">
             <Link className="nav-link" to="/" style={{ color: "#0C0D0E" }}>
                 Home
