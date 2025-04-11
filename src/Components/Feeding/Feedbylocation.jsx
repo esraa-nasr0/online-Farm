@@ -15,9 +15,10 @@ export default function Feedbylocation() {
   const { getFodderMenue } = useContext(Feedcontext);
   const navigate = useNavigate()
   const {LocationMenue} = useContext(LocationContext)
+  const [feedName, setFeedName] = useState([]);
+  const [locationSheds, setLocationSheds] = useState([]);
   
 
-  
 
 const getHeaders = () => {
   const Authorization = localStorage.getItem('Authorization');
@@ -31,7 +32,7 @@ const fetchLocation = async () => {
             try {
                 const { data } = await LocationMenue();
                 if (data.status === 'success' && Array.isArray(data.data.locationSheds)) {
-                  setFeeds(data.data.locationSheds);
+                  setLocationSheds(data.data.locationSheds);
                 } else {
                   setFeeds([]); 
                 }
@@ -49,7 +50,7 @@ const fetchLocation = async () => {
     try {
       const { data } = await getFodderMenue();
       if (data.status === 'success') {
-        setFeeds(data.data);
+        setFeedName(data.data);
       }
     } catch (err) {
       setError('Failed to load Feed data');
@@ -169,7 +170,7 @@ const fetchLocation = async () => {
         onBlur={formik.handleBlur}
     >
         <option value="">select location shed</option>
-        {feeds && feeds.map((shed) => (
+        {locationSheds && feeds.map((shed) => (
             <option key={shed._id} value={shed._id}>{shed.locationShedName}</option>
         ))}
     </select>
@@ -207,7 +208,7 @@ const fetchLocation = async () => {
                 onBlur={formik.handleBlur}
               >
                 <option value="">Select Feed</option>
-                {feeds.map((feedOption) => (
+                {feedName.map((feedOption) => (
                   <option key={feedOption._id} value={feedOption._id}>
                     {feedOption.name}
                   </option>

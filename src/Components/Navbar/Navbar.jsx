@@ -48,9 +48,18 @@ export default function Navbar({ toggleSidebar }) {
         {Authorization !== null ? (
         <>
         
-    <button className="btn p-2 me-2" style={{ color: "#F3F3F3", backgroundColor: "#9cbd81" }} onClick={toggleSidebar}>
-                    <FaBars />
-                </button>
+        <button 
+    className="sidebar-toggle-btn me-3" 
+    onClick={toggleSidebar}
+    style={{
+        background: "none",
+        border: "none",
+        fontSize: "1.25rem",
+        color: "#9cbd81"
+    }}
+>
+    <FaBars /> {/* You're already importing FaBars */}
+</button>
             <li className="nav-item">
             <Link className="nav-link" to="/" style={{ color: "#0C0D0E" }}>
                 Home

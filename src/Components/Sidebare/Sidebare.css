@@ -1,41 +1,56 @@
-/* Sidebar Container */
 .sidebar {
+  background-color: #ffffff;
+  height: 100vh;
   position: fixed;
   left: 0;
   top: 0;
-  height: 100vh;
-  width: 250px;
-  background: #9cbd81; 
-  color: white;
-  transition: transform 0.3s ease-in-out;
-  padding: 15px;
-  overflow-y: auto; 
-  overflow-x: hidden;
-  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.2);
-  z-index: 1000; /* جعل السايدبار يظهر فوق العناصر الأخرى */
-  transform: translateX(-100%); /* إخفاء السايدبار افتراضيًا */
+  width: 280px;
+  transition: transform 0.3s ease;
+  z-index: 1000;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
 }
 
-/* عند فتح السايدبار */
-.sidebar.open {
-  transform: translateX(0);
+.sidebar.closed {
+  transform: translateX(-100%);
+  width: 0;
 }
 
-/* تحسين شريط التمرير */
-.sidebar::-webkit-scrollbar {
-  width: 8px;
+.sidebar-header {
+  padding: 24px 20px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  margin-top: 3.5rem;
 }
 
-.sidebar::-webkit-scrollbar-track {
-  background: #2D4A27; 
+.sidebar-header h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  color: #2c3e50;
+  font-weight: 600;
 }
 
-.sidebar::-webkit-scrollbar-thumb {
-  background: #ffffff; 
-  border-radius: 4px;
+.sidebar-subtitle {
+  font-size: 0.75rem;
+  color: #7f8c8d;
+  margin-top: 4px;
 }
 
-/* ستايل القائمة داخل السايدبار */
+.sidebar-section {
+  padding: 16px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.section-title {
+  padding: 0 20px 8px;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #95a5a6;
+  font-weight: 600;
+}
+
 .sidebar-menu {
   list-style: none;
   padding: 0;
@@ -43,51 +58,65 @@
 }
 
 .sidebar-menu li {
-  margin-bottom: 10px;
+  padding: 2px 12px;
 }
 
-.sidebar-menu a {
+.menu-item {
   display: flex;
   align-items: center;
-  padding: 10px 15px;
+  padding: 10px 12px;
+  color: #34495e;
   text-decoration: none;
-  color: white;
-  font-size: 18px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.menu-item:hover {
+  background-color: #f8f9fa;
+  color: #2980b9;
+}
+
+.menu-icon {
+  margin-right: 12px;
+  font-size: 1.1rem;
+  width: 24px;
+  text-align: center;
+}
+
+.menu-text {
+  font-size: 0.9rem;
   font-weight: 500;
-  border-radius: 8px;
-  transition: background 0.3s, transform 0.2s;
 }
 
-.sidebar-menu a:hover {
-  background: #1f1f1f;
-  transform: scale(1.05);
+.sidebar-footer {
+  margin-top: auto;
+  padding: 16px 20px;
+  border-top: 1px solid #f0f0f0;
 }
 
-/* تأثير زجاجي عند فتح السايدبار */
-.sidebar-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 999;
-  display: none;
+.system-info {
+  font-size: 0.75rem;
+  color: #95a5a6;
+  margin-bottom: 12px;
 }
 
-/* عند فتح السايدبار، يظهر الـ backdrop */
-.sidebar.open + .sidebar-backdrop {
-  display: block;
+.sidebar-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
-/* Responsive */
-@media (min-width: 768px) {
+.sidebar-tags span {
+  background-color: #ecf0f1;
+  color: #7f8c8d;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.65rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
   .sidebar {
-      transform: translateX(0);
-      width: 250px;
-  }
-
-  .sidebar.closed {
-      transform: translateX(-100%);
+    width: 260px;
   }
 }
