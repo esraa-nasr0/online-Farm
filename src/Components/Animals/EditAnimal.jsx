@@ -104,9 +104,7 @@ function EditAnimal() {
                 values,
                 { headers: getHeaders() }
             );
-
             console.log("Response from API:", data);
-
             if (data.status === "success") {
                 formik.setValues(values);
                 setForceUpdate(prev => !prev);
@@ -134,7 +132,7 @@ function EditAnimal() {
             motherId: '',
             fatherId: '',
             birthDate: '',
-            locationShed: '',
+            locationShedName: '',
             female_Condition: '',
             animaleCondation: '',
             traderName: '',
@@ -371,18 +369,18 @@ function EditAnimal() {
                     </>)}
 
                     <div className="input-box">
-                        <label className="label" htmlFor="locationShed">{t('location_shed')}</label>
+                        <label className="label" htmlFor="locationShedName">{t('location_shed')}</label>
                         <select
-                            id="locationShed"
-                            name="locationShed"
+                            id="locationShedName"
+                            name="locationShedName"
                             className="input2"
-                            value={formik.values.locationShed}
+                            value={formik.values.locationShedName}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                         >
                             <option value="">{t('select_location_shed')}</option>
                             {locationSheds.map((shed) => (
-                                <option key={shed._id} value={shed._id}>{shed.locationShedName}</option>
+                                <option key={shed._id} value={shed.locationShedName}>{shed.locationShedName}</option>
                             ))}
                         </select>
                     </div>

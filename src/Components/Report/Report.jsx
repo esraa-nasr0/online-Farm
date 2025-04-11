@@ -22,14 +22,12 @@ function Report() {
 // Helper function to generate headers with the latest token
 const getHeaders = () => {
     const Authorization = localStorage.getItem('Authorization');
-  
     // Ensure the token has only one "Bearer" prefix
     const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-  
     return {
         Authorization: formattedToken
     };
-  };
+};
 
     async function getReport() {
         const headers = getHeaders(); // Get the latest headers

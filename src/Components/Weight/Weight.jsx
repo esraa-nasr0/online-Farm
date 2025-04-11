@@ -82,15 +82,14 @@ return (
 
     <form onSubmit={formik.handleSubmit} className="mt-5">
         {isLoading ? (
-        <button type="submit" className="btn button2">
-            <i className="fas fa-spinner fa-spin"></i>
-        </button>
-        ) : (
-        <button type="submit" className="btn button2">
-            <IoIosSave /> Save
-        </button>
-        )}
-
+                            <button type="submit" className="btn button2" disabled>
+                                <i className="fas fa-spinner fa-spin"></i>
+                            </button>
+                        ) : (
+                            <button type="submit" className="btn button2">
+                                <IoIosSave /> Save
+                            </button>
+                        )}
         <div className="animaldata">
         <div className="input-box">
             <label className="label" htmlFor="tagId">Tag ID</label>
@@ -121,7 +120,7 @@ return (
             >
             <option value="">Select Weight Type</option>
             <option value="birth">Birth</option>
-            <option value="weaning">Weaning</option>
+            <option value="Weaning">Weaning</option>
             <option value="regular">Regular</option>
             </select>
             {formik.errors.weightType && formik.touched.weightType && (

@@ -67,7 +67,7 @@ function AnimalCost() {
                         visible={true}
                         height="100"
                         width="100"
-                        color="#3f5c40"
+                        color="#9cbd81"
                         ariaLabel="rings-loading"
                     />
                 </div>
@@ -86,7 +86,7 @@ function AnimalCost() {
                         <button
                             className="btn mb-2 me-2"
                             onClick={handleSearch}
-                            style={{ backgroundColor: '#88522e', borderColor: '#88522e', color: 'white' }}
+                            style={{ backgroundColor: '#FAA96C', color: 'white' }}
                         >
                             <i className="fas fa-search"></i>
                         </button>
