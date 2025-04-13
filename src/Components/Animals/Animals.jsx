@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 import { useNavigate } from "react-router-dom";
 import { GrView } from "react-icons/gr";
 import { useTranslation } from 'react-i18next';
+import AnimalStatistics from './AnimalStatistics';
 
 export default function Animals() {
     const { t } = useTranslation();
@@ -115,6 +116,7 @@ export default function Animals() {
 
     return (
         <>
+
             {isLoading ? (
                 <div className='animal'>
                     <Rings visible={true} height="100" width="100" color="#9cbd81" ariaLabel="rings-loading" />
@@ -122,6 +124,8 @@ export default function Animals() {
             ) : (
                 <div className="container">
                     <div className="title2">{t('animals')}</div>
+                    <AnimalStatistics className='mt-3'/>
+
 
                     <div className='container mt-5'>
                         <div className="d-flex flex-column flex-md-row align-items-center gap-2" style={{ flexWrap: 'nowrap' }}>

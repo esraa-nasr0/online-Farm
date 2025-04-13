@@ -176,7 +176,7 @@ code {
   float: left;
   width: 40%;
   height: 40%;
-  color: white;
+  color: #F3F3F3;
   margin-top: -40px;
   padding-top: 2rem;
 }
@@ -185,7 +185,7 @@ code {
 }
 
 .hero-text {
-  color: white;
+  color: #F3F3F3;
 }
 
 .hero-title {
