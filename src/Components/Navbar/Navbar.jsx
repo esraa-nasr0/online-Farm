@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { jwtDecode } from 'jwt-decode';
 import { FaBars, FaTimes } from "react-icons/fa";
 
-export default function Navbar({ toggleSidebar }) {
+export default function Navbar({ toggleSidebar, isSidebarOpen }) {
     let { Authorization, setAuthorization } = useContext(UserContext);
     let navigate = useNavigate();
     const { i18n } = useTranslation();
@@ -58,7 +58,7 @@ export default function Navbar({ toggleSidebar }) {
         color: "#9cbd81"
     }}
 >
-    <FaBars /> {/* You're already importing FaBars */}
+    {Authorization !== null && (isSidebarOpen ? <FaTimes /> : <FaBars />)}
 </button>
             <li className="nav-item">
             <Link className="nav-link" to="/" style={{ color: "#0C0D0E" }}>

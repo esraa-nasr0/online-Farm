@@ -49,8 +49,9 @@
     .sidebar {
         transform: translateX(-100%);
     }
-    
+
     .sidebar.open {
         transform: translateX(0);
+        width: 240px !important;
     }
 }
