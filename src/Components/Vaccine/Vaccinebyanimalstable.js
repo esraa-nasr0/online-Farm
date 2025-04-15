@@ -133,31 +133,18 @@ function VaccineTable() {
   return (
     <div className="p-4">
       {isLoading ? (
-        <div className="d-flex justify-content-center align-items-center" style={{ 
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(255, 255, 255, 0.8)',
-          zIndex: 9999
-        }}>
-          <Rings 
-            height="100"
-            width="100"
-            color="#88522e"
-            ariaLabel="loading-indicator"
-          />
-        </div>
+          <div className='d-flex justify-content-center align-items-center' style={{ height: '100vh' }}>
+                          <Rings visible={true} height="100" width="100" color="#9cbd81" ariaLabel="rings-loading" />
+                      </div>
       ) : (
         <>
           <div className='container'>
             <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4" style={{ marginTop: "140px" }}>
               <h2 className="bottom-line pb-2" style={{ color: "#88522e" }}>Vaccine Records</h2>
               <div className='d-flex flex-column flex-sm-row gap-2'>
-                <Link to='/vaccinebyanimal'>
+                <Link to='/vaccinebytagid'>
                   <button type="button" className="btn btn-lg d-flex align-items-center justify-content-center active button2" style={{ background: "#88522e", color: "white", borderColor: "#3a7d44" }}>
-                    <MdOutlineAddToPhotos /> Add New Vaccine by Animal
+                    <MdOutlineAddToPhotos /> Add New Vaccine by Tag Id
                   </button>
                 </Link>
                 <Link to='/vaccinebylocationshed'>
@@ -207,8 +194,8 @@ function VaccineTable() {
                     <th scope="col">Entry Type</th>
                     <th scope="col">Date</th>
                     <th scope="col">Location Shed</th>
-                    <th scope="col">Edit</th>
-                    <th scope="col">Remove</th>
+                    <th scope="col">Actions</th>
+                
                   </tr>
                 </thead>
                 <tbody>
@@ -221,21 +208,24 @@ function VaccineTable() {
                         <td>{vaccine.entryType}</td>
                         <td>{new Date(vaccine.date).toLocaleDateString()}</td>
                         <td>{vaccine.locationShed?.locationShedName || '--'}</td>
-                        <td
-                          onClick={() => editVaccine(vaccine._id)}
-                          style={{ cursor: "pointer", color: "#198754" }}
-                          title="Edit Vaccine"
-                        >
-                          <FaRegEdit className="me-1" /> Edit
-                        </td>
-                        <td
-                          onClick={() => handleClick(vaccine._id)}
-                          className="text-danger"
-                          style={{ cursor: "pointer" }}
-                          title="Remove Vaccine"
-                        >
-                          <RiDeleteBin6Line className="me-1" /> Remove
-                        </td>
+                           <td>
+                                                                      <div className="d-flex gap-2">
+                                                                          <button 
+                                                                              className="btn btn-sm btn-outline-primary"
+                                                                              onClick={() => editVaccine(vaccine._id)}
+                                                                              title="Edit"
+                                                                          >
+                                                                              <FaRegEdit />
+                                                                          </button>
+                                                                          <button 
+                                                                              className="btn btn-sm btn-outline-danger"
+                                                                              onClick={() => handleClick(vaccine._id)}
+                                                                              title="Delete"
+                                                                          >
+                                                                              <RiDeleteBin6Line />
+                                                                          </button>
+                                                                      </div>
+                                                                  </td>
                       </tr>
                     ))
                   ) : (

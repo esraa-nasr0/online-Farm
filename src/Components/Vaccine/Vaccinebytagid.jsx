@@ -134,7 +134,7 @@ function VaccinebytagId() {
         <div className="container">
             <form onSubmit={formik.handleSubmit} className="mt-5">
                 <div className='d-flex vaccine align-items-center justify-content-between'>
-                    <div className="title-v">Add Vaccine by Location Shed</div>
+                    <div className="title-v">Add Vaccine by Tag Id</div>
                     <button type="submit" className="btn button2" disabled={isLoading}>
                         {isLoading ? <i className="fas fa-spinner fa-spin"></i> : <IoIosSave />} Save
                     </button>
@@ -152,7 +152,7 @@ function VaccinebytagId() {
                             required
                             type="number"
                         >
-                            <option value="">Select Location Shed</option>
+                            <option value="">Select Vaccine Name</option>
                             {isLoadingLocations ? (
                                 <option disabled>Loading locations...</option>
                             ) : (
@@ -202,6 +202,7 @@ function VaccinebytagId() {
                             name="tagId"
                             type="text"
                             className="input2"
+                            placeholder="Enter Tag Id"
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             value={formik.values.tagId}

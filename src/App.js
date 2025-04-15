@@ -65,12 +65,11 @@ import EditFodder from "./Components/Feeding/EditFodder.jsx";
 import Dashboard from "./Components/Dashboard/Dashboard.jsx";
 import NotAuthorized from "./Components/Dashboard/NotAuthorized.jsx";
 import DashboardContextProvider from "./Context/DashboardContext.js";
-<<<<<<< HEAD
+
 import LocationContextProvider from "./Context/Locationshedcontext.js";
 import VaccinetableentriescontextProvider from "./Context/Vaccinetableentriescontext.jsx";
 import EditVaccineanimals from "./Components/Vaccine/EditVaccineanimals.jsx";
 import Vaccinebytagid from "./Components/Vaccine/Vaccinebytagid.jsx";
-=======
 import AnimalServices from "./Components/Services/AnimalServices.jsx";
 import MatingServices from "./Components/Services/MatingServices.jsx";
 import WeightServices from "./Components/Services/WeightServices.jsx";
@@ -82,7 +81,7 @@ import FeedingServices from "./Components/Services/FeedingServices.jsx";
 import FodderServices from "./Components/Services/FodderServices.jsx";
 
 
->>>>>>> 9d81abff3bba8c72b21884c7a64cef955f0e8355
+
 let routers = createBrowserRouter([
   {
     path: "", 
@@ -140,10 +139,10 @@ let routers = createBrowserRouter([
       { path: "fodderTable", element: <ProtectedRoute><FodderTable/></ProtectedRoute> },
       { path: "editFodder/:id", element: <ProtectedRoute><EditFodder/></ProtectedRoute> },
       { path: "dashboard", element: <ProtectedRoute  allowedRoles={['admin']}><Dashboard/></ProtectedRoute> },
-<<<<<<< HEAD
+
       { path: "editVaccineanimals/:id", element: <ProtectedRoute><EditVaccineanimals/></ProtectedRoute> },
       { path: "vaccinebytagid", element: <ProtectedRoute><Vaccinebytagid/></ProtectedRoute> },
-=======
+
       { path: "animalServices", element: <ProtectedRoute><AnimalServices/></ProtectedRoute> },
       { path: "matingServices", element: <ProtectedRoute><MatingServices/></ProtectedRoute> },
       { path: "weightServices", element: <ProtectedRoute><WeightServices/></ProtectedRoute> },
@@ -155,7 +154,7 @@ let routers = createBrowserRouter([
       { path: "fodderServices", element: <ProtectedRoute><FodderServices/></ProtectedRoute> },
 
 
->>>>>>> 9d81abff3bba8c72b21884c7a64cef955f0e8355
+
     ],
   },
 ]);
