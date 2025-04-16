@@ -88,7 +88,7 @@ function Excludedtable() {
                 </div>
             ) : (
                 <div className="container" >
-                <div className="title2">Excluted Records</div>
+                <div className="title2">Excluded Records</div>
 
                     <div className="d-flex flex-column flex-md-row align-items-center gap-2 mt-4">
                         <input type="text" className="form-control" value={searchCriteria.tagId} placeholder="Search Tag ID" onChange={(e) => setSearchCriteria(prev => ({ ...prev, tagId: e.target.value }))} />

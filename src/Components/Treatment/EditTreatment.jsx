@@ -5,25 +5,24 @@ import Swal from 'sweetalert2';
 import { IoIosSave } from "react-icons/io";
 import * as Yup from 'yup';
 import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 function EditTreatment() {
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const { id } = useParams();
-    
+    const { t } = useTranslation(); // Using i18next translation hook
 
-    
-// Helper function to generate headers with the latest token
-const getHeaders = () => {
-    const Authorization = localStorage.getItem('Authorization');
-  
-    // Ensure the token has only one "Bearer" prefix
-    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-  
-    return {
-        Authorization: formattedToken
+    // Helper function to generate headers with the latest token
+    const getHeaders = () => {
+        const Authorization = localStorage.getItem('Authorization');
+        // Ensure the token has only one "Bearer" prefix
+        const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+        return {
+            Authorization: formattedToken
+        };
     };
-  };
+
     // Submit the updated treatment data
     async function submitTreatment(values) {
         const headers = getHeaders(); // Get the latest headers
@@ -35,17 +34,16 @@ const getHeaders = () => {
                 values,
                 { headers }
             );
-
             if (data.status === "success") {
                 Swal.fire({
-                    title: 'Success!',
-                    text: 'Treatment updated successfully!',
+                    title: t('successTitle'), // Translating success title
+                    text: t('treatmentUpdated'), // Translating success message
                     icon: 'success',
-                    confirmButtonText: 'OK',
+                    confirmButtonText: t('ok'), // Translating button text
                 });
             }
         } catch (err) {
-            setError(err.response?.data?.message || 'An error occurred');
+            setError(err.response?.data?.message || t('errorOccurred')); // Translating error message
         } finally {
             setIsLoading(false);
         }
@@ -61,11 +59,8 @@ const getHeaders = () => {
                     `https://farm-project-bbzj.onrender.com/api/treatment/getsingletreatment/${id}`,
                     { headers }
                 );
-                console.log("API response:", data);
-
                 if (data && data.data && data.data.treatment) {
                     const treatment = data.data.treatment;
-
                     // Populate Formik with the fetched data
                     formik.setValues({
                         name: treatment.name || '',
@@ -77,8 +72,7 @@ const getHeaders = () => {
                     throw new Error("Unexpected API response structure");
                 }
             } catch (error) {
-                console.error("Failed to fetch treatment data:", error);
-                setError("Failed to fetch treatment details.");
+                setError(t('fetchError')); // Translating fetch error message
             }
         }
         fetchTreatment();
@@ -86,10 +80,10 @@ const getHeaders = () => {
 
     // Validation schema for Formik
     const validationSchema = Yup.object({
-        name: Yup.string().required('Name is required'),
-        type: Yup.string().required('Type is required'),
-        volume: Yup.number().required('Volume is required').positive('Volume must be positive'),
-        price: Yup.number().required('Price is required').positive('Price must be positive'),
+        name: Yup.string().required(t('nameRequired')), // Translating validation messages
+        type: Yup.string().required(t('typeRequired')),
+        volume: Yup.number().required(t('volumeRequired')).positive(t('volumePositive')),
+        price: Yup.number().required(t('priceRequired')).positive(t('pricePositive')),
     });
 
     // Initialize Formik
@@ -106,7 +100,7 @@ const getHeaders = () => {
 
     return (
         <div className='container'>
-            <div className="title2">Edit Treatment</div>
+            <div className="title2">{t('editTreatment')}</div> {/* Translating title */}
             {error && <p className="text-danger">{error}</p>}
             <form onSubmit={formik.handleSubmit} className='mt-5'>
                 {isLoading ? (
@@ -115,13 +109,13 @@ const getHeaders = () => {
                     </button>
                 ) : (
                     <button type="submit" className="btn button2">
-                        <IoIosSave /> Save
+                        <IoIosSave /> {t('save')} {/* Translating button text */}
                     </button>
                 )}
 
                 <div className='animaldata'>
                     <div className="input-box">
-                        <label className="label" htmlFor="name">Name</label>
+                        <label className="label" htmlFor="name">{t('name')}</label> {/* Translating label */}
                         <input
                             autoComplete="off"
                             onBlur={formik.handleBlur}
@@ -131,13 +125,13 @@ const getHeaders = () => {
                             type="text"
                             className="input2"
                             name="name"
-                            aria-label="Treatment Name"
+                            aria-label={t('treatmentName')}
                         />
                         {formik.errors.name && formik.touched.name && <p className="text-danger">{formik.errors.name}</p>}
                     </div>
 
                     <div className="input-box">
-                        <label className="label" htmlFor="type">Type</label>
+                        <label className="label" htmlFor="type">{t('type')}</label> {/* Translating label */}
                         <input
                             autoComplete="off"
                             onBlur={formik.handleBlur}
@@ -147,13 +141,13 @@ const getHeaders = () => {
                             type="text"
                             className="input2"
                             name="type"
-                            aria-label="Treatment Type"
+                            aria-label={t('treatmentType')}
                         />
                         {formik.errors.type && formik.touched.type && <p className="text-danger">{formik.errors.type}</p>}
                     </div>
 
                     <div className="input-box">
-                        <label className="label" htmlFor="volume">Volume</label>
+                        <label className="label" htmlFor="volume">{t('volume')}</label> {/* Translating label */}
                         <input
                             autoComplete="off"
                             onBlur={formik.handleBlur}
@@ -163,13 +157,13 @@ const getHeaders = () => {
                             type="number"
                             className="input2"
                             name="volume"
-                            aria-label="Treatment Volume"
+                            aria-label={t('treatmentVolume')}
                         />
                         {formik.errors.volume && formik.touched.volume && <p className="text-danger">{formik.errors.volume}</p>}
                     </div>
 
                     <div className="input-box">
-                        <label className="label" htmlFor="price">Price</label>
+                        <label className="label" htmlFor="price">{t('price')}</label> {/* Translating label */}
                         <input
                             autoComplete="off"
                             onBlur={formik.handleBlur}
@@ -179,7 +173,7 @@ const getHeaders = () => {
                             type="number"
                             className="input2"
                             name="price"
-                            aria-label="Treatment Price"
+                            aria-label={t('treatmentPrice')}
                         />
                         {formik.errors.price && formik.touched.price && <p className="text-danger">{formik.errors.price}</p>}
                     </div>

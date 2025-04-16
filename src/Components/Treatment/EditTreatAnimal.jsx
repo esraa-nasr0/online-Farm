@@ -64,20 +64,20 @@ function EditTreatAnimal() {
 
   // Validation schema
   const validationSchema = Yup.object({
-    tagId: Yup.string().required("Tag ID is required"),
-    locationShed: Yup.string().required("Location Shed is required"),
-    date: Yup.date().required("Date is required"),
+    tagId: Yup.string().required(t("tagId_required")),
+    locationShed: Yup.string().required(t("location_shed_required")),
+    date: Yup.date().required(t("date_required")),
     treatments: Yup.array()
       .of(
         Yup.object({
-          treatmentId: Yup.string().required("Treatment ID is required"),
+          treatmentId: Yup.string().required(t("treatment_id_required")),
           volume: Yup.number()
-            .required("Volume is required")
-            .positive("Volume must be positive")
-            .typeError("Volume must be a valid number"),
+            .required(t("volume_required"))
+            .positive(t("volume_positive"))
+            .typeError(t("volume_valid_number")),
         })
       )
-      .min(1, "At least one treatment must be selected"),
+      .min(1, t("at_least_one_treatment")),
   });
 
   // Formik initialization
@@ -101,15 +101,15 @@ function EditTreatAnimal() {
 
         if (data.status === "success") {
           Swal.fire({
-            title: "Success!",
-            text: "Treatment updated successfully!",
+            title: t("success_title"),
+            text: t("success_text"),
             icon: "success",
-            confirmButtonText: "OK",
+            confirmButtonText: t("ok"),
           });
         }
       } catch (err) {
         console.error("Error updating treatment:", err);
-        setError(err.response?.data?.message || "An error occurred");
+        setError(err.response?.data?.message || t("error_occurred"));
       } finally {
         setIsLoading(false);
       }
@@ -143,7 +143,7 @@ function EditTreatAnimal() {
         }
       } catch (error) {
         console.error("Failed to fetch treatment data:", error);
-        setError("Failed to fetch treatment details.");
+        setError(t("failed_to_fetch_treatment_details"));
       }
     };
 
@@ -168,17 +168,17 @@ function EditTreatAnimal() {
 
   return (
     <div className="container">
-      <div className="title2">Edit Treatment</div>
+      <div className="title2">{t("edit_treatment")}</div>
       {error && <p className="text-danger">{error}</p>}
       <form onSubmit={formik.handleSubmit} className="mt-5">
         <button type="submit" className="btn button2" disabled={isLoading}>
-          {isLoading ? <i className="fas fa-spinner fa-spin"></i> : <IoIosSave />} Save
+          {isLoading ? <i className="fas fa-spinner fa-spin"></i> : <IoIosSave />} {t("save")}
         </button>
 
         <div className="animaldata">
           <div className="input-box">
             <label className="label" htmlFor="tagId">
-              Tag ID
+              {t("tag_id")}
             </label>
             <input
               autoComplete="off"
@@ -200,39 +200,36 @@ function EditTreatAnimal() {
           </div>
 
           {formik.values.treatments.map((treatment, index) => (
-  <div key={index} className="input-box">
-    {/* Treatment Name Label and Dropdown */}
-    <label className="label" htmlFor={`treatment-${index}`}>
-      Treatment Name
-    </label>
-    <select
-      id={`treatment-${index}`}
-      name="treatmentId"
-      className="input2"
-      value={treatment.treatmentId}
-      onChange={(e) => handleTreatmentChange(e, index)}
-    >
-      <option value="">Select Treatment</option>
-      {treatmentOptions.map((option) => (
-        <option key={option._id} value={option._id}>{option.name}</option>
-      ))}
-    </select>
+            <div key={index} className="input-box">
+              <label className="label" htmlFor={`treatment-${index}`}>
+                {t("treatment_name")}
+              </label>
+              <select
+                id={`treatment-${index}`}
+                name="treatmentId"
+                className="input2"
+                value={treatment.treatmentId}
+                onChange={(e) => handleTreatmentChange(e, index)}
+              >
+                <option value="">{t("select_treatment")}</option>
+                {treatmentOptions.map((option) => (
+                  <option key={option._id} value={option._id}>{option.name}</option>
+                ))}
+              </select>
 
-    {/* Volume Label and Input */}
-    <label className="label" htmlFor={`volume-${index}`}>
-      Volume
-    </label>
-    <input
-      type="number"
-      id={`volume-${index}`}
-      className="input2"
-      name="volume"
-      value={treatment.volume}
-      onChange={(e) => handleTreatmentChange(e, index)}
-    />
-  </div>
-))}
-
+              <label className="label" htmlFor={`volume-${index}`}>
+                {t("volume")}
+              </label>
+              <input
+                type="number"
+                id={`volume-${index}`}
+                className="input2"
+                name="volume"
+                value={treatment.volume}
+                onChange={(e) => handleTreatmentChange(e, index)}
+              />
+            </div>
+          ))}
         </div>
 
         <button type="button" onClick={addTreat} className="btn button2"> + </button>

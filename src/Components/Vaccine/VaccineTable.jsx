@@ -149,13 +149,8 @@ function VaccineTable() {
                     <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4" style={{ marginTop: "140px" }}>
                         <h2 className="bottom-line pb-2" style={{ color: "#88522e" }}>Vaccine Records</h2>
                         <div className='d-flex flex-column flex-sm-row gap-2'>
-                            <Link to='/vaccinebyanimal'>
-                                <button type="button" className="btn btn-lg d-flex align-items-center justify-content-center active" 
-                                    style={{ background: "#88522e", color: "white", borderColor: "#3a7d44" }}>
-                                    <MdOutlineAddToPhotos className="me-2" /> Add New Vaccine by Animal
-                                </button>
-                            </Link>
-                            <Link to='/vaccinebylocationshed'>
+                        
+                            {/* <Link to='/vaccinebylocationshed'>
                                 <button type="button" className="btn btn-lg d-flex align-items-center justify-content-center active" 
                                     style={{ background: "#88522e", color: "white", borderColor: "#3a7d44" }}>
                                     <MdOutlineAddToPhotos className="me-2" /> by Location Shed
@@ -166,7 +161,7 @@ function VaccineTable() {
                                     style={{ background: "#88522e", color: "white", borderColor: "#3a7d44" }}>
                                     <MdOutlineAddToPhotos className="me-2" /> by Animal Tag
                                 </button>
-                            </Link>
+                            </Link> */}
                         </div>
                     </div>
 
@@ -193,10 +188,10 @@ function VaccineTable() {
                             onChange={(e) => setSearchCriteria(prev => ({ ...prev, locationShed: e.target.value }))}
                         />
                         <button 
-                            className="btn btn-primary d-flex align-items-center" 
+                            className="btn button2 d-flex align-items-center" 
                             onClick={handleSearch}
                         >
-                            <i className="fas fa-search me-2"></i> Search
+                            <i className="fas fa-search me-2 "></i> Search
                         </button>
                     </div>
 

@@ -152,7 +152,6 @@ const getHeaders = () => {
                 )}
 
                 <div className='animaldata'>
-                   
                     <div className="input-box">
                         <label className="label" htmlFor="locationShed">{t('location_shed')}</label>
                         <select
@@ -197,7 +196,7 @@ const getHeaders = () => {
                     {/* Loop through treatments and render form fields */}
                     {formik.values.treatments.map((treatment, index) => (
                         <div key={index} className="input-box">
-                            <label className="label" htmlFor={`treatment-${index}`}>Treatment Name</label>
+                            <label className="label" htmlFor={`treatment-${index}`}>{t('Treatment Name')}</label>
                             <select
                                 id={`treatment-${index}`}
                                 name="treatmentId"
@@ -205,14 +204,15 @@ const getHeaders = () => {
                                 value={treatment.treatmentId}
                                 onChange={(e) => handleTreatmentChange(e, index)}
                             >
-                                <option value="">Select Treatment</option>
+                                <option value="">{t('Select Treatment')}</option>
                                 {treatmentOptions?.map((option) => (
                                     <option key={option._id} value={option._id}>{option.name}</option>
                                 ))}
                             </select>
-                            <label className="label" htmlFor={`volume-${index}`}>Volume</label>
+                            <label className="label" htmlFor={`volume-${index}`}>{t('Volume')}</label>
                             <input
                                 type="number"
+                                placeholder={t('Enter The Volume')}
                                 className="input2"
                                 name="volume"
                                 value={treatment.volume}

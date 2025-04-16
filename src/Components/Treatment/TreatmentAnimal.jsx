@@ -5,25 +5,25 @@ import Swal from 'sweetalert2';
 import { IoIosSave } from "react-icons/io";
 import * as Yup from 'yup';
 import { TreatmentContext } from '../../Context/TreatmentContext';
+import { useTranslation } from 'react-i18next';
+
 
 function TreatmentAnimal() {
+        const { t } = useTranslation();
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [treatmentData, setTreatmentData] = useState([]);
     const { getTreatmentMenue } = useContext(TreatmentContext);
 
-    
-// Helper function to generate headers with the latest token
-const getHeaders = () => {
-    const Authorization = localStorage.getItem('Authorization');
-  
-    // Ensure the token has only one "Bearer" prefix
-    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-  
-    return {
-        Authorization: formattedToken
+    // Helper function to generate headers with the latest token
+    const getHeaders = () => {
+        const Authorization = localStorage.getItem('Authorization');
+        const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+        return {
+            Authorization: formattedToken
+        };
     };
-  };
+
     // Fetch treatment menu options when the component mounts
     const fetchTreatments = async () => {
         try {
@@ -66,11 +66,11 @@ const getHeaders = () => {
                     confirmButtonText: 'OK',
                 });
             }
-        }catch (error) {
-                    Swal.fire('Error', error.response?.data?.message, 'error');
-                } finally {
-                    setIsLoading(false);
-                } 
+        } catch (error) {
+            Swal.fire('Error', error.response?.data?.message, 'error');
+        } finally {
+            setIsLoading(false);
+        }
     }
 
     // Validation Schema for Formik
@@ -110,13 +110,13 @@ const getHeaders = () => {
     const handleTreatmentChange = (e, index) => {
         const { name, value } = e.target;
         const updatedTreatments = [...formik.values.treatments];
-        updatedTreatments[index][name] = name === 'volume' ? Number(value) : value; // Ensuring volume is a number
+        updatedTreatments[index][name] = name === 'volume' ? Number(value) : value;
         formik.setFieldValue('treatments', updatedTreatments);
     };
 
     return (
         <div className='container'>
-            <div className="title2">Treatment by Animal</div>
+            <div className="title2">{t('Treatment by Animal')}</div>
             {error && <p className="text-danger">{error}</p>}
             <form onSubmit={formik.handleSubmit} className='mt-5'>
                 {isLoading ? (
@@ -125,40 +125,40 @@ const getHeaders = () => {
                     </button>
                 ) : (
                     <button type="submit" className="btn button2">
-                        <IoIosSave /> Save
+                        <IoIosSave /> {t('Save')}
                     </button>
                 )}
                 <div className='animaldata'>
                     <div className="input-box">
-                        <label className="label" htmlFor="tagId">Tag Id</label>
+                        <label className="label" htmlFor="tagId">{t('Tag Id')}</label>
                         <input
                             autoComplete="off"
                             onBlur={formik.handleBlur}
                             onChange={formik.handleChange}
                             value={formik.values.tagId}
                             id="tagId"
-                            placeholder="Enter The Tag Id"
+                            placeholder={t('Enter The Tag Id')}
                             type="text"
                             className="input2"
                             name="tagId"
-                            aria-label="Tag Id"
+                            aria-label={t('Tag Id')}
                         />
                         {formik.errors.tagId && formik.touched.tagId && <p className="text-danger">{formik.errors.tagId}</p>}
                     </div>
 
                     <div className="input-box">
-                        <label className="label" htmlFor="date">Date</label>
+                        <label className="label" htmlFor="date">{t('Date')}</label>
                         <input
                             autoComplete="off"
                             onBlur={formik.handleBlur}
                             onChange={formik.handleChange}
                             value={formik.values.date}
-                            placeholder="Enter The Treatment Date"
+                            placeholder={t('Enter The Treatment Date')}
                             id="date"
                             type="date"
                             className="input2"
                             name="date"
-                            aria-label="Treatment Date"
+                            aria-label={t('Treatment Date')}
                         />
                         {formik.errors.date && formik.touched.date && <p className="text-danger">{formik.errors.date}</p>}
                     </div>
@@ -168,7 +168,7 @@ const getHeaders = () => {
                         <div key={index} className="input-box">
                             {/* Treatment Name - Dropdown */}
                             <div>
-                                <label className="label" htmlFor={`treatmentName-${index}`}>Treatment Name</label>
+                                <label className="label" htmlFor={`treatmentName-${index}`}>{t('Treatment Name')}</label>
                                 <select
                                     id={`treatmentName-${index}`}
                                     name="treatmentId"
@@ -176,9 +176,9 @@ const getHeaders = () => {
                                     value={treatment.treatmentId}
                                     onChange={(e) => handleTreatmentChange(e, index)}
                                     onBlur={formik.handleBlur}
-                                    aria-label="Treatment Name"
+                                    aria-label={t('Treatment Name')}
                                 >
-                                    <option value="">Select Treatment</option>
+                                    <option value="">{t('Select Treatment')}</option>
                                     {Array.isArray(treatmentData) && treatmentData.map((treatmentOption) => (
                                         <option key={treatmentOption._id} value={treatmentOption._id}>
                                             {treatmentOption.name}
@@ -192,18 +192,18 @@ const getHeaders = () => {
 
                             {/* Volume Input */}
                             <div>
-                                <label className="label" htmlFor={`volume-${index}`}>Volume</label>
+                                <label className="label" htmlFor={`volume-${index}`}>{t('Volume')}</label>
                                 <input
                                     autoComplete="off"
                                     onBlur={formik.handleBlur}
                                     onChange={formik.handleChange}
                                     value={treatment.volume}
-                                    placeholder="Enter The Volume"
+                                    placeholder={t('Enter The Volume')}
                                     id={`volume-${index}`}
                                     type="number"
                                     className="input2"
                                     name={`treatments[${index}].volume`}
-                                    aria-label="Treatment Volume"
+                                    aria-label={t('Treatment Volume')}
                                 />
                                 {formik.errors.treatments?.[index]?.volume && formik.touched.treatments?.[index]?.volume && (
                                     <p className="text-danger">{formik.errors.treatments[index].volume}</p>
@@ -213,7 +213,7 @@ const getHeaders = () => {
                     ))}
                 </div>
                 <button type="button" onClick={addTreat} className="btn button2">
-                    + 
+                    {t('+')}
                 </button>
             </form>
         </div>

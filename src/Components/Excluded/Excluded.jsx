@@ -73,7 +73,7 @@ const getHeaders = () => {
     return (
         <>
             <div className="container">
-            <div className="title2">Add Excluted</div>
+            <div className="title2">Add Excluded</div>
                 <p className="text-danger">{error}</p>
                 
                 {showAlert && matingData && matingData.expectedDeliveryDate && (

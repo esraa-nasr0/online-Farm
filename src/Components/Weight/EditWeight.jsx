@@ -4,9 +4,11 @@ import * as Yup from 'yup';
 import { IoIosSave } from 'react-icons/io';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next'; // import
 
 
 function EditWeight() {
+    const { t } = useTranslation(); // hook
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const { id } = useParams(); // Get the animal ID from the URL params
@@ -115,8 +117,8 @@ const getHeaders = () => {
 return (
     <>
     <div className='container'>
-        <div className='title2'>Edit Weight</div>
-        <p className='text-danger'>{error}</p>
+    <div className='title2'>{t('edit_weight')}</div>
+    <p className='text-danger'>{error}</p>
 
         <form onSubmit={formik.handleSubmit} className='mt-5'>
         {isLoading ? (
@@ -125,20 +127,20 @@ return (
             </button>
         ) : (
             <button type='submit' className='btn btn-dark button2'>
-            <IoIosSave /> Save
-            </button>
+    <IoIosSave /> {t('save')}
+    </button>
         )}
 
         <div className='animaldata'>
             <div className='input-box'>
             <label className='label' htmlFor='tagId'>
-                Tag ID
+            {t('tag_id')}            
             </label>
             <input
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
                 value={formik.values.tagId}
-                placeholder='Enter your Tag ID'
+                placeholder={t('enter_tag_id')}
                 id='tagId'
                 type='text'
                 className='input2'
@@ -153,7 +155,7 @@ return (
 
             <div className='input-box'>
             <label className='label' htmlFor='weightType'>
-                Weight Type
+            {t('weight_type')}
             </label>
             <select
                 value={formik.values.weightType}
@@ -165,11 +167,11 @@ return (
                 aria-label='Default select example'
             >
                 <option value='' disabled>
-                Select Weight Type
+                {t('select_weight_type')}
                 </option>
-                <option value='birth'>Birth</option>
-                <option value='weaning'>Weaning</option>
-                <option value='regular'>Regular</option>
+                <option value='birth'>{t('birth')}</option>
+                <option value='weaning'>{t('weaning')}</option>
+                <option value='regular'>{t('regular')}</option>
             </select>
             {formik.errors.weightType && formik.touched.weightType ? (
                 <p className='text-danger'>{formik.errors.weightType}</p>
@@ -180,13 +182,13 @@ return (
 
             <div className='input-box'>
             <label className='label' htmlFor='weight'>
-                Weight
+            {t('weight')}
             </label>
             <input
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
                 value={formik.values.weight}
-                placeholder='Enter your weight'
+                placeholder={t('enter_weight')}
                 id='weight'
                 type='text'
                 className='input2'
@@ -201,13 +203,13 @@ return (
 
             <div className='input-box'>
             <label className='label' htmlFor='height'>
-                Height
+            {t('height')}
             </label>
             <input
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
                 value={formik.values.height}
-                placeholder='Enter your Height'
+                placeholder={t('enter_height')}
                 id='height'
                 type='text'
                 className='input2'
@@ -222,7 +224,7 @@ return (
 
             <div className='input-box'>
             <label className='label' htmlFor='Date'>
-                Date
+            {t('date')}
             </label>
             <input
                 onBlur={formik.handleBlur}
