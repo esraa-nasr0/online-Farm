@@ -148,7 +148,7 @@ function TreatAnimalTable() {
                                     <tr key={item._id || index}>
                                         <th scope="row">{(currentPage - 1) * TreatAnimalPerPage + index + 1}</th>
                                         <td>{item.tagId}</td>
-                                        <td>{item.locationShed}</td>
+                                        <td>{item.locationShed?.locationShedName || item.locationShed || '-'}</td>
                                         <td>{item.treatments && item.treatments[0] ? item.treatments[0].treatmentName : "No Treatment"}</td>
                                         <td>{item.treatments && item.treatments[0] ? item.treatments[0].volume : "N/A"}</td>
                                         <td>{new Date(item.date).toLocaleDateString()}</td>

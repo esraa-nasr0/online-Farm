@@ -79,6 +79,17 @@ import ExcludedServices from "./Components/Services/ExcludedServices.jsx";
 import TreetmentServices from "./Components/Services/TreetmentSerivces.jsx";
 import FeedingServices from "./Components/Services/FeedingServices.jsx";
 import FodderServices from "./Components/Services/FodderServices.jsx";
+import MatingLocation from "./Components/Mating/MatingLocation.jsx";
+import LocationPost from "./Components/LocationShed/LocationPost.jsx";
+import LocationContextshedProvider from "./Context/LocationContext.js";
+import LocationTable from "./Components/LocationShed/LocationTable.jsx";
+import EditLocation from "./Components/LocationShed/EditLocation.jsx";
+import BreedPost from "./Components/Breed/BreedPost.jsx";
+import BreedContextProvider from "./Context/BreedContext.js";
+import BreedTable from "./Components/Breed/BreedTable.jsx";
+import EditBreed from "./Components/Breed/EditBreed.jsx";
+import LocationServices from "./Components/Services/LocationServices.jsx";
+import BreedServices from "./Components/Services/BreedServices.jsx";
 
 
 
@@ -152,6 +163,15 @@ let routers = createBrowserRouter([
       { path: "treetmentServices", element: <ProtectedRoute><TreetmentServices/></ProtectedRoute> },
       { path: "feedingServices", element: <ProtectedRoute><FeedingServices/></ProtectedRoute> },
       { path: "fodderServices", element: <ProtectedRoute><FodderServices/></ProtectedRoute> },
+      { path: "matingLocation", element: <ProtectedRoute><MatingLocation/></ProtectedRoute> },
+      { path: "locationPost", element: <ProtectedRoute><LocationPost/></ProtectedRoute> },
+      { path: "locationTable", element: <ProtectedRoute><LocationTable/></ProtectedRoute> },
+      { path: "editLocation/:id", element: <ProtectedRoute><EditLocation/></ProtectedRoute> },
+      { path: "breedPost", element: <ProtectedRoute><BreedPost/></ProtectedRoute> },
+      { path: "breedTable", element: <ProtectedRoute><BreedTable/></ProtectedRoute> },
+      { path: "editBreed/:id", element: <ProtectedRoute><EditBreed/></ProtectedRoute> },
+      { path: "locationServices", element: <ProtectedRoute><LocationServices/></ProtectedRoute> },
+      { path: "breedServices", element: <ProtectedRoute><BreedServices/></ProtectedRoute> },
 
 
 
@@ -175,8 +195,10 @@ export default function App() {
   },[]);
 
   return <>
-   <VaccinetableentriescontextProvider>
-   <LocationContextProvider>
+    <VaccinetableentriescontextProvider>
+  <BreedContextProvider>
+  <LocationContextshedProvider>
+  <LocationContextProvider>
   <DashboardContextProvider>
   <FeedbyLocationContextProvider>
   <FeedContextProvider>
@@ -188,9 +210,10 @@ export default function App() {
   <WeightContextProvider>
   <MatingContextProvider>
 <AnimalContextProvider>
-  <RouterProvider router={routers}>
 
+  <RouterProvider router={routers}>
   </RouterProvider>
+
   </AnimalContextProvider>
   </MatingContextProvider>
   </WeightContextProvider>
@@ -203,6 +226,8 @@ export default function App() {
   </FeedbyLocationContextProvider>
   </DashboardContextProvider>
   </LocationContextProvider>
+  </LocationContextshedProvider>
+  </BreedContextProvider>
   </VaccinetableentriescontextProvider>
   </>
 }

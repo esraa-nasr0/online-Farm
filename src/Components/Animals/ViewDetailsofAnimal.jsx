@@ -100,9 +100,9 @@ export default function ViewDetailsofAnimal() {
                                     <ul>
                                         <li><strong>{t("tag_id")}:</strong> {animalData.tagId}</li>
                                         <li><strong>{t("animal_type")}:</strong> {t(animalData.animalType)}</li>
-                                        <li><strong>{t("breed")}:</strong> {animalData.breed}</li>
                                         <li><strong>{t("gender")}:</strong> {t(animalData.gender)}</li>
-                                        <li><strong>{t("location_shed")}:</strong> {animalData.locationShed}</li>
+                                        <li><strong>{t("breed")}:</strong> {animalData.breed?.breedName || '-'}</li>
+                                        <li><strong>{t("location_shed")}:</strong> {animalData.locationShed?.locationShedName || '-'}</li>
                                     </ul>
                                 </div>
                                 <div className="mating-record-actions">

@@ -11,6 +11,8 @@ import Img17 from '../../Assets/Img/treatment.webp';
 import Img18 from '../../Assets/Img/animalCost.jpg';
 import Img19 from '../../Assets/Img/feedingAnimal.webp';
 import Img20 from '../../Assets/Img/full-shot-man-living-countryside.jpg';
+import Img21 from '../../Assets/Img/breed.jpg';
+import Img22 from '../../Assets/Img/locationShed.jpg';
 
 
 import { Link } from 'react-router-dom';
@@ -20,6 +22,22 @@ function HomeServices() {
     <div className='section'>
         <h2>Home Services</h2>
         <ul className='cards'>
+        <li className='card'>
+                <Link className='Link' to="/locationServices">
+                <img  src={Img22} alt='goat1'/>
+                <h3>Location Shed</h3>
+                <p>Enter The  Location Shed  Data</p>
+                <button className='btn mb-2 me-2 ' style={{ backgroundColor: '#FAA96C', color: 'white' }}>Go to Location Shed</button>
+                </Link>
+            </li>
+        <li className='card'>
+                <Link className='Link' to="/breedServices">
+                <img  src={Img21} alt='goat1'/>
+                <h3>Breeds</h3>
+                <p>Enter The  Breed Details Data</p>
+                <button className='btn mb-2 me-2 ' style={{ backgroundColor: '#FAA96C', color: 'white' }}>Go to Breeds</button>
+                </Link>
+            </li>
             <li className='card'>
                 <Link className='Link' to="/animalServices">
                 <img  src={Img1} alt='goat1'/>

@@ -140,7 +140,7 @@ const getHeaders = () => {
 
                     <div className="input-box">
                         <label className="label" htmlFor="price">
-                            Price
+                            Price/ton
                         </label>
                         <input
                             {...formik.getFieldProps("price")}
@@ -156,7 +156,7 @@ const getHeaders = () => {
 
                     <div className="input-box">
                         <label className="label" htmlFor="concentrationOfDryMatter">
-                            Concentration of Dry Matter
+                            Concentration of Dry Matter (presentage %)
                         </label>
                         <input
                             {...formik.getFieldProps("concentrationOfDryMatter")}
@@ -172,7 +172,7 @@ const getHeaders = () => {
                     
                     <div className="input-box">
                         <label className="label" htmlFor="quantity">
-                        Quantity
+                        Quantity (ton)
                         </label>
                         <input
                             {...formik.getFieldProps("quantity")}
