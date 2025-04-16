@@ -24,19 +24,19 @@ function VaccineServices() {
         </Link>
     </div>
     <div className="card2">
-    <Link className='Link' to='/vaccinebyanimal'>
+    <Link className='Link' to='/Vaccinebyanimalsstable'>
         <div className="icon">
         <IoAddCircleOutline />
         </div>
         <div className="info">
-            <h3>Add  by Animal</h3>
-            <p>Add Details by Animal </p>
+            <h3>Add  by Tag Id</h3>
+            <p>Add Details by Tag Id </p>
             <button className='btn mb-2 me-2 ' style={{ backgroundColor: '#FAA96C', color: 'white' }}>Go to Add Vaccine by Animal</button>
         </div>
         </Link>
         </div>
         <div className="card2">
-        <Link className='Link' to="/vaccinebylocationshed">
+        <Link className='Link' to="/Vaccinebyanimalsstable">
         <div className="icon">
         <MdOutlineAddToPhotos />
         </div>
