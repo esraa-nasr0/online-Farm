@@ -168,7 +168,7 @@ function VaccineTable() {
               </div>
             </div>
        
-            <div className="d-flex flex-column flex-md-row align-items-center gap-2 mt-4" style={{ flexWrap: 'nowrap' }}>
+            <div className="d-flex flex-column flex-md-row align-items-center gap-2 mt-4 mb-4" style={{ flexWrap: 'nowrap' }}>
               <input
                 type="text"
                 className="form-control"
@@ -198,8 +198,8 @@ function VaccineTable() {
 
           <div className="table-responsive">
             <div className="full-width-table">
-              <table className="table table-striped mt-4">
-                <thead>
+              <table className="table table-striped table-hover">
+                <thead className="table-dark">
                   <tr>
                     <th scope="col">Tag ID</th>
                     <th scope="col">Vaccine Name</th>
@@ -207,8 +207,7 @@ function VaccineTable() {
                     <th scope="col">Entry Type</th>
                     <th scope="col">Date</th>
                     <th scope="col">Location Shed</th>
-                    <th scope="col">Edit</th>
-                    <th scope="col">Remove</th>
+                    <th scope="col">Actions</th>s
                   </tr>
                 </thead>
                 <tbody>
@@ -221,21 +220,24 @@ function VaccineTable() {
                         <td>{vaccine.entryType}</td>
                         <td>{new Date(vaccine.date).toLocaleDateString()}</td>
                         <td>{vaccine.locationShed?.locationShedName || '--'}</td>
-                        <td
-                          onClick={() => editVaccine(vaccine._id)}
-                          style={{ cursor: "pointer", color: "#198754" }}
-                          title="Edit Vaccine"
-                        >
-                          <FaRegEdit className="me-1" /> Edit
-                        </td>
-                        <td
-                          onClick={() => handleClick(vaccine._id)}
-                          className="text-danger"
-                          style={{ cursor: "pointer" }}
-                          title="Remove Vaccine"
-                        >
-                          <RiDeleteBin6Line className="me-1" /> Remove
-                        </td>
+                      <td>
+                                                                     <div className="d-flex gap-2">
+                                                                         <button 
+                                                                             className="btn btn-sm btn-outline-primary"
+                                                                             onClick={() => editVaccine(vaccine._id)}
+                                                                             title="Edit"
+                                                                         >
+                                                                             <FaRegEdit />
+                                                                         </button>
+                                                                         <button 
+                                                                             className="btn btn-sm btn-outline-danger"
+                                                                             onClick={() => handleClick(vaccine._id)}
+                                                                             title="Delete"
+                                                                         >
+                                                                             <RiDeleteBin6Line />
+                                                                         </button>
+                                                                     </div>
+                                                                 </td>
                       </tr>
                     ))
                   ) : (

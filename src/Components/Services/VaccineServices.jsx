@@ -27,7 +27,7 @@ function VaccineServices() {
                     </Link>
                 </div>
                 <div className="card2">
-                    <Link className='Link' to='/vaccinebyanimal'>
+                    <Link className='Link' to='/Vaccinebyanimalsstable'>
                         <div className="icon">
                             <IoAddCircleOutline />
                         </div>
@@ -41,7 +41,7 @@ function VaccineServices() {
                     </Link>
                 </div>
                 <div className="card2">
-                    <Link className='Link' to="/vaccinebylocationshed">
+                    <Link className='Link' to="/Vaccinebyanimalsstable">
                         <div className="icon">
                             <MdOutlineAddToPhotos />
                         </div>
