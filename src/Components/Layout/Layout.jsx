@@ -13,8 +13,7 @@ export default function Layout() {
         setIsSidebarOpen(!isSidebarOpen);
     };
 
-    const shouldShowSidebar = !['/', '/home', '/register', '/login', '/dashboard','/forgetpassword','/verifyotp','/resetpassword'].includes(location.pathname);
-    // const shouldHideNavbar = ['/login', '/register'].includes(location.pathname);
+    const shouldShowSidebar = !['/', '/home', '/register', '/login', '/dashboard', '/forgetpassword', '/verifyotp', '/resetpassword'].includes(location.pathname);
 
     useEffect(() => {
         if (window.innerWidth <= 768) {
@@ -23,27 +22,28 @@ export default function Layout() {
     }, [location.pathname]);
 
     return (
-        <div className="app-container">
-            
+        <>
+            <div className="app-container">
                 <Navbar 
                     toggleSidebar={toggleSidebar} 
                     isSidebarOpen={isSidebarOpen} 
                 />
-            
-            <div className="content-wrapper">
-                {shouldShowSidebar && (
-                    <Sidebare 
-                        isOpen={isSidebarOpen} 
-                        toggleSidebar={toggleSidebar} 
-                    />
-                )}
-                <main className={`main-content ${isSidebarOpen && shouldShowSidebar ? "sidebar-open" : ""}`}>
-                    <div className="content-container">
-                        <Outlet />
-                    </div>
-                </main>
+
+                <div className="content-wrapper">
+                    {shouldShowSidebar && (
+                        <Sidebare 
+                            isOpen={isSidebarOpen} 
+                            toggleSidebar={toggleSidebar} 
+                        />
+                    )}
+                    <main className={`main-content ${isSidebarOpen && shouldShowSidebar ? "sidebar-open" : ""}`}>
+                        <div className="content-container">
+                            <Outlet />
+                        </div>
+                    </main>
+                </div>
+                <Footer />
             </div>
-            <Footer />
         </>
     );
 }
