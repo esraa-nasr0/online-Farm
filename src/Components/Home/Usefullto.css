@@ -1,0 +1,41 @@
+.pp{
+    height: 250px;
+}
+
+.div-1{
+    border: 0.5px;
+    border-color: black;
+}
+
+
+  
+.card-hover {
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+  }
+  
+  .card-hover:hover {
+    box-shadow: 0 0 20px rgba(0, 128, 0, 0.2);
+  }
+  
+  .immg:hover{
+    transform: scale(1.1);
+    border: none;
+   
+  }
+
+  .usefull{
+    margin-top: 30px;
+  }
+.color-text{
+  color: #4caf50;  
+}
+
+.card-hover:hover .ll {
+    border: none;
+  }
+  
+  
+
+
+  /* color: #778983; */

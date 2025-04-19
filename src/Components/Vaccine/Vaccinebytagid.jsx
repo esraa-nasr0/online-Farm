@@ -7,8 +7,9 @@ import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { LocationContext } from '../../Context/Locationshedcontext';
 import { number } from 'yup';
-
+import { useTranslation } from 'react-i18next';
 function VaccinebytagId() {
+    const { t } = useTranslation();
     const { getallVaccineanimal } = useContext(VaccineanimalContext); 
     const { getLocationtMenue,getVaccineMenue } = useContext(LocationContext); 
     const [isLoading, setIsLoading] = useState(false);
@@ -134,15 +135,15 @@ function VaccinebytagId() {
         <div className="container">
             <form onSubmit={formik.handleSubmit} className="mt-5">
                 <div className='d-flex vaccine align-items-center justify-content-between'>
-                    <div className="title-v">Add Vaccine by Tag Id</div>
+                    <div className="title-v"> {t('Add Vaccine by Tag Id')}</div>
                     <button type="submit" className="btn button2" disabled={isLoading}>
-                        {isLoading ? <i className="fas fa-spinner fa-spin"></i> : <IoIosSave />} Save
+                        {isLoading ? <i className="fas fa-spinner fa-spin"></i> : <IoIosSave />}  {t('Save')}
                     </button>
                 </div>
 
                 <div className="animaldata">
                 <div className="input-box">
-                        <label className="label" htmlFor="tagId">Vaccine Name</label>
+                        <label className="label" htmlFor="tagId"> {t('Vaccine Name')}</label>
                         <select
                             id="vaccineId"
                             name="vaccineId"
@@ -152,9 +153,9 @@ function VaccinebytagId() {
                             required
                             type="number"
                         >
-                            <option value="">Select Vaccine Name</option>
+                            <option value=""> {t('Select Vaccine Name')}</option>
                             {isLoadingLocations ? (
-                                <option disabled>Loading locations...</option>
+                                <option disabled> {t('Loading locations...')}</option>
                             ) : (
                                 Vaccine.map((Vaccine) => (
                                     <option key={Vaccine._id} value={Vaccine._id}>
@@ -166,7 +167,7 @@ function VaccinebytagId() {
                     </div>
 
                     <div className="input-box">
-                        <label className="label" htmlFor="date">Date</label>
+                        <label className="label" htmlFor="date"> {t('Date')}</label>
                         <input
                             id="date"
                             name="date"
@@ -180,7 +181,7 @@ function VaccinebytagId() {
                     </div>
 
                     <div className="input-box">
-    <label className="label" htmlFor="entryType">Entry Type</label>
+    <label className="label" htmlFor="entryType"> {t('Entry Type')}</label>
     <select
         id="entryType"
         name="entryType"
@@ -189,20 +190,20 @@ function VaccinebytagId() {
         onBlur={formik.handleBlur}
         value={formik.values.entryType}
     >
-        <option value="">Select Entry Type</option>
-        <option value="Booster Dose">Booster Dose</option>
-        <option value="Annual Dose">Annual Dose</option>
-        <option value="First Dose">First Dose</option>
+        <option value=""> {t('Select Entry Type')}</option>
+        <option value="Booster Dose"> {t('Booster Dose')}</option>
+        <option value="Annual Dose"> {t('Annual Dose')}</option>
+        <option value="First Dose"> {t('First Dose')}</option>
     </select>
 </div>
                     <div className="input-box">
-                        <label className="label" htmlFor="tagId">Tag Id</label>
+                        <label className="label" htmlFor="tagId"> {t('Tag Id')}</label>
                         <input
                             id="tagId"
                             name="tagId"
                             type="text"
                             className="input2"
-                            placeholder="Enter Tag Id"
+                            placeholder= {t('Enter Tag Id')}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             value={formik.values.tagId}
