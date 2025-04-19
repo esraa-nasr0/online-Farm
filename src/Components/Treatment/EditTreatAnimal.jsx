@@ -6,63 +6,78 @@ import { IoIosSave } from "react-icons/io";
 import * as Yup from "yup";
 import { useParams } from "react-router-dom";
 import { TreatmentContext } from "../../Context/TreatmentContext";
+import { LocationContext } from "../../Context/LocationContext";
+import { useTranslation } from "react-i18next";
 
 function EditTreatAnimal() {
+  const { id } = useParams(); // Extract id from URL
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { id } = useParams();
+  const [locationSheds, setLocationSheds] = useState([]);
+  const [treatmentOptions, setTreatmentOptions] = useState([]);
+
   const { getTreatmentMenue } = useContext(TreatmentContext);
-  const [treatmentData, setTreatmentData] = useState([]);
+  const { LocationMenue } = useContext(LocationContext);
+  const { t } = useTranslation();
 
-  
-// Helper function to generate headers with the latest token
-const getHeaders = () => {
-  const Authorization = localStorage.getItem('Authorization');
-
-  // Ensure the token has only one "Bearer" prefix
-  const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-
-  return {
-      Authorization: formattedToken
+  // Helper function to generate headers with the latest token
+  const getHeaders = () => {
+    const Authorization = localStorage.getItem("Authorization");
+    if (!Authorization) return {};
+    return {
+      Authorization: Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`,
+    };
   };
-};
-  // Fetch treatment menu options
+
+  // Fetch location sheds
+  useEffect(() => {
+    const fetchLocation = async () => {
+      try {
+        const { data } = await LocationMenue();
+        setLocationSheds(data?.status === "success" ? data.data.locationSheds || [] : []);
+      } catch (err) {
+        console.error("Error loading location sheds:", err);
+        setError("Failed to load location sheds");
+      }
+    };
+
+    fetchLocation();
+  }, []);
+
+  // Fetch treatment options
   useEffect(() => {
     const fetchTreatments = async () => {
       try {
         const { data } = await getTreatmentMenue();
-        if (data.status === "success" && Array.isArray(data.data)) {
-          setTreatmentData(data.data);
-        } else {
-          setTreatmentData([]);
-        }
+        setTreatmentOptions(data?.status === "success" ? data.data || [] : []);
       } catch (err) {
+        console.error("Error loading treatment data:", err);
         setError("Failed to load treatment data");
-        setTreatmentData([]);
       }
     };
+
     fetchTreatments();
-  }, [getTreatmentMenue]);
+  }, []);
 
   // Format date from ISO to YYYY-MM-DD
   const formatDate = (isoString) => (isoString ? isoString.split("T")[0] : "");
 
   // Validation schema
   const validationSchema = Yup.object({
-    tagId: Yup.string().required("Tag ID is required"),
-    locationShed: Yup.string().required("Location Shed is required"),
-    date: Yup.date().required("Date is required"),
+    tagId: Yup.string().required(t("tagId_required")),
+    locationShed: Yup.string().required(t("location_shed_required")),
+    date: Yup.date().required(t("date_required")),
     treatments: Yup.array()
       .of(
         Yup.object({
-          treatmentId: Yup.string().required("Treatment ID is required"),
+          treatmentId: Yup.string().required(t("treatment_id_required")),
           volume: Yup.number()
-            .required("Volume is required")
-            .positive("Volume must be positive")
-            .typeError("Volume must be a valid number"),
+            .required(t("volume_required"))
+            .positive(t("volume_positive"))
+            .typeError(t("volume_valid_number")),
         })
       )
-      .min(1, "At least one treatment must be selected"),
+      .min(1, t("at_least_one_treatment")),
   });
 
   // Formik initialization
@@ -75,26 +90,26 @@ const getHeaders = () => {
     },
     validationSchema,
     onSubmit: async (values) => {
-      const headers = getHeaders(); // Get the latest headers
       setIsLoading(true);
       setError(null);
       try {
         const { data } = await axios.patch(
           `https://farm-project-bbzj.onrender.com/api/treatment/updatetreatmentforAnimals/${id}`,
           values,
-          { headers }
+          { headers: getHeaders() }
         );
 
         if (data.status === "success") {
           Swal.fire({
-            title: "Success!",
-            text: "Treatment updated successfully!",
+            title: t("success_title"),
+            text: t("success_text"),
             icon: "success",
-            confirmButtonText: "OK",
+            confirmButtonText: t("ok"),
           });
         }
       } catch (err) {
-        setError(err.response?.data?.message || "An error occurred");
+        console.error("Error updating treatment:", err);
+        setError(err.response?.data?.message || t("error_occurred"));
       } finally {
         setIsLoading(false);
       }
@@ -104,19 +119,18 @@ const getHeaders = () => {
   // Fetch the treatment data
   useEffect(() => {
     const fetchTreatment = async () => {
-      const headers = getHeaders(); // Get the latest headers
       setError(null);
       try {
         const { data } = await axios.get(
           `https://farm-project-bbzj.onrender.com/api/treatment/getsingletreatmentforAnimals/${id}`,
-          { headers }
+          { headers: getHeaders() }
         );
 
         if (data?.data?.treatmentShed) {
           const treatment = data.data.treatmentShed;
           formik.setValues({
             tagId: treatment.tagId || "",
-            locationShed: treatment.locationShed || "",
+            locationShed: treatment.locationShed?._id || "", // Ensure correct value format
             date: formatDate(treatment.date) || "",
             treatments:
               treatment.treatments?.map((comp) => ({
@@ -129,9 +143,10 @@ const getHeaders = () => {
         }
       } catch (error) {
         console.error("Failed to fetch treatment data:", error);
-        setError("Failed to fetch treatment details.");
+        setError(t("failed_to_fetch_treatment_details"));
       }
     };
+
     fetchTreatment();
   }, [id]);
 
@@ -153,114 +168,71 @@ const getHeaders = () => {
 
   return (
     <div className="container">
-      <div className="title2">Edit Treatment</div>
+      <div className="title2">{t("edit_treatment")}</div>
       {error && <p className="text-danger">{error}</p>}
       <form onSubmit={formik.handleSubmit} className="mt-5">
-        {isLoading ? (
-          <button type="submit" className="btn button2" disabled>
-            <i className="fas fa-spinner fa-spin"></i>
-          </button>
-        ) : (
-          <button type="submit" className="btn button2">
-            <IoIosSave /> Save
-          </button>
-        )}
+        <button type="submit" className="btn button2" disabled={isLoading}>
+          {isLoading ? <i className="fas fa-spinner fa-spin"></i> : <IoIosSave />} {t("save")}
+        </button>
 
         <div className="animaldata">
           <div className="input-box">
             <label className="label" htmlFor="tagId">
-              Tag ID
+              {t("tag_id")}
             </label>
             <input
               autoComplete="off"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              value={formik.values.tagId}
+              {...formik.getFieldProps("tagId")}
               id="tagId"
               type="text"
               className="input2"
-              name="tagId"
-              aria-label="Tag ID"
             />
           </div>
 
           <div className="input-box">
-            <label className="label" htmlFor="locationShed">
-              Location Shed
-            </label>
-            <input
-              autoComplete="off"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              value={formik.values.locationShed}
-              id="locationShed"
-              type="text"
-              className="input2"
-              name="locationShed"
-              aria-label="Location Shed"
-            />
-          </div>
-
-          <div className="input-box">
-            <label className="label" htmlFor="date">
-              Date
-            </label>
-            <input
-              autoComplete="off"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              value={formik.values.date}
-              id="date"
-              type="date"
-              className="input2"
-              name="date"
-              aria-label="Date of Treatment"
-            />
+            <label className="label" htmlFor="locationShed">{t("location_shed")}</label>
+            <select {...formik.getFieldProps("locationShed")} id="locationShed" className="input2">
+              <option value="">{t("select_location_shed")}</option>
+              {locationSheds?.map((shed) => (
+                <option key={shed._id} value={shed._id}>{shed.locationShedName}</option>
+              ))}
+            </select>
           </div>
 
           {formik.values.treatments.map((treatment, index) => (
             <div key={index} className="input-box">
-              <label className="label" htmlFor={`treatmentId-${index}`}>
-                Treatment Name
+              <label className="label" htmlFor={`treatment-${index}`}>
+                {t("treatment_name")}
               </label>
               <select
-                id={`treatmentId-${index}`}
+                id={`treatment-${index}`}
                 name="treatmentId"
                 className="input2"
                 value={treatment.treatmentId}
                 onChange={(e) => handleTreatmentChange(e, index)}
-                onBlur={formik.handleBlur}
-                aria-label="Treatment Name"
               >
-                <option value="">Select Treatment</option>
-                {treatmentData.map((option) => (
-                  <option key={option._id} value={option._id}>
-                    {option.name}
-                  </option>
+                <option value="">{t("select_treatment")}</option>
+                {treatmentOptions.map((option) => (
+                  <option key={option._id} value={option._id}>{option.name}</option>
                 ))}
               </select>
 
               <label className="label" htmlFor={`volume-${index}`}>
-                Volume
+                {t("volume")}
               </label>
               <input
-                autoComplete="off"
-                onBlur={formik.handleBlur}
-                onChange={(e) => handleTreatmentChange(e, index)}
-                value={treatment.volume}
-                id={`volume-${index}`}
                 type="number"
+                id={`volume-${index}`}
                 className="input2"
                 name="volume"
-                aria-label="Treatment Volume"
-            />
+                value={treatment.volume}
+                onChange={(e) => handleTreatmentChange(e, index)}
+              />
             </div>
           ))}
         </div>
-        
-        <button type="button" onClick={addTreat} className="btn button2">
-            + 
-        </button>
+
+        <button type="button" onClick={addTreat} className="btn button2"> + </button>
       </form>
     </div>
   );

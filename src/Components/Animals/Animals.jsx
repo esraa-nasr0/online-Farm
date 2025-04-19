@@ -9,7 +9,7 @@ import Swal from 'sweetalert2';
 import { useNavigate } from "react-router-dom";
 import { GrView } from "react-icons/gr";
 import { useTranslation } from 'react-i18next';
-// import AnimalStatistics from './AnimalStatistics';
+import AnimalStatistics from './AnimalStatistics';
 
 export default function Animals() {
     const { t } = useTranslation();
@@ -124,7 +124,7 @@ export default function Animals() {
             ) : (
                 <div className="container">
                     <div className="title2">{t('animals')}</div>
-                    {/* <AnimalStatistics className='mt-3'/> */}
+                    <AnimalStatistics className='mt-3'/>
 
 
                     <div className='container mt-5'>

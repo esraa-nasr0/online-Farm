@@ -8,6 +8,7 @@ import LastSection from "../LastSection/LastSection";
 export default function Home() {
 return (<>
     <ImgSlide/>
+
     {/* <About/> */}
     <Usefullto></Usefullto>
     <Section></Section>

@@ -80,7 +80,7 @@ const getHeaders = () => {
     return (
         <>
             <div className="container">
-            <div className="title2">Add Vaccine </div>
+            <div className="title2">Add Vaccine  </div>
                 <p className="text-danger">{error}</p>
                 <form onSubmit={formik.handleSubmit} className="mt-5">
                 {isLoading ? (
@@ -136,10 +136,11 @@ const getHeaders = () => {
                         </div>
 
                         <div className="input-box">
-                            <label className="label" htmlFor="bottles">bottles</label>
+                            <label className="label" htmlFor="bottles">Bottles</label>
                             <input
                                 id="bottles"
                                 name="bottles"
+                                 placeholder="Enter Number Of Bottles"
                              type="text"
                              placeholder="Enter bottles"
                                 className="input2"
@@ -151,10 +152,11 @@ const getHeaders = () => {
 
                         
                         <div className="input-box">
-                            <label className="label" htmlFor="dosesPerBottle">doses Per Bottle</label>
+                            <label className="label" htmlFor="dosesPerBottle">Doses Per Bottle</label>
                             <input
                                 id="dosesPerBottle"
                                 name="dosesPerBottle"
+                                placeholder="Enter Doses Per Bottle"
                              type="text"
                               placeholder="Enter doses Per Bottle"
                                 className="input2"
@@ -166,9 +168,10 @@ const getHeaders = () => {
 
                         
                         <div className="input-box">
-                            <label className="label" htmlFor="bottlePrice">bottle Price</label>
+                            <label className="label" htmlFor="bottlePrice">Bottle Price</label>
                             <input
                                 id="bottlePrice"
+                                        placeholder="Enter Bottle Price"
                                 name="bottlePrice"
                              type="text"
                               placeholder="Enter bottle Price"
