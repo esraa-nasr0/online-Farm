@@ -6,12 +6,11 @@ import { AnimalContext } from '../../Context/AnimalContext';
 import Swal from 'sweetalert2';
 import ViewAnimalMating from './ViewAnimalMating';
 import ViewAnimalWeight from './ViewAnimalWeight';
-// import ViewAnimalBreed from './ViewAnimalBreed';
-// import ViewAnimalVaccine from './ViewAnimalVaccine';
-import { useTranslation } from 'react-i18next';
 import ViewVaccine from '../Vaccine/ViewVaccine';
 import ViewBreeding from '../Breeding/ViewBreeding';
 import ViewTeatment from '../Treatment/ViewTreatment';
+import { useTranslation } from 'react-i18next';
+
 export default function ViewDetailsofAnimal() {
     const { t } = useTranslation();
     const { id } = useParams();  
@@ -23,7 +22,7 @@ export default function ViewDetailsofAnimal() {
 
     const getHeaders = () => {
         const Authorization = localStorage.getItem('Authorization');
-        const formattedToken = Authorization.startsWith`("Bearer ") ? Authorization : Bearer ${Authorization}`;
+        const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
         return { Authorization: formattedToken };
     };
 
@@ -33,7 +32,7 @@ export default function ViewDetailsofAnimal() {
         setError(null);
         try {
             let { data } = await axios.get(
-               ` https://farm-project-bbzj.onrender.com/api/animal/getsinglanimals/${id}`,
+                `https://farm-project-bbzj.onrender.com/api/animal/getsinglanimals/${id}`,
                 { headers }
             );
             if (data.status === 'success') {
