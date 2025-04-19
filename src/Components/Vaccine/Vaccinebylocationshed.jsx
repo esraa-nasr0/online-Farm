@@ -155,7 +155,7 @@ function Vaccinebylocationshed() {
                             required
                             type="number"
                         >
-                            <option value="">Select Location Shed</option>
+                            <option value="">Vaccine Name</option>
                             {isLoadingLocations ? (
                                 <option disabled>Loading locations...</option>
                             ) : (

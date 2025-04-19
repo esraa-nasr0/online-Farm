@@ -130,8 +130,8 @@ function EditVaccine() {
                     <form onSubmit={formik.handleSubmit}>
                          <div className='d-flex vaccine align-items-center justify-content-between'>
                                             <h2 className="title-v">Edit Vaccine</h2>
-                                            <button type="submit" className="btn btn-primary" disabled={isLoading}>
-                                                {isLoading ? <span className="spinner-border spinner-border-sm"></span> : <><IoIosSave /> Save</>}
+                                            <button type="submit" className="btn button2" disabled={isLoading}>
+                                                {isLoading ? <span className="btn button2"></span> : <><IoIosSave /> Save</>}
                                             </button>
                                         </div>
                         <div className="row g-3">

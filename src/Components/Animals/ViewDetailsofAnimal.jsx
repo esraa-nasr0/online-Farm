@@ -6,8 +6,9 @@ import { AnimalContext } from '../../Context/AnimalContext';
 import Swal from 'sweetalert2';
 import ViewAnimalMating from './ViewAnimalMating';
 import ViewAnimalWeight from './ViewAnimalWeight';
-import ViewAnimalBreed from './ViewAnimalBreed';
-import ViewAnimalVaccine from './ViewAnimalVaccine';
+import ViewVaccine from '../Vaccine/ViewVaccine';
+import ViewBreeding from '../Breeding/ViewBreeding';
+import ViewTeatment from '../Treatment/ViewTreatment';
 import { useTranslation } from 'react-i18next';
 
 export default function ViewDetailsofAnimal() {
@@ -119,8 +120,9 @@ export default function ViewDetailsofAnimal() {
             
             <ViewAnimalMating animalId={id}/>
             <ViewAnimalWeight animalId={id}/>
-            <ViewAnimalBreed animalId={id} />
-            <ViewAnimalVaccine animalId={id} />
+            <ViewBreeding animalId={id}/>
+            <ViewVaccine  animalId={id}/>
+            <ViewTeatment  animalId={id}/>
         </div>
     );
 }

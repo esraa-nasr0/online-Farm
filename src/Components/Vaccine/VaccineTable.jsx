@@ -2,13 +2,12 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaRegEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { MdOutlineAddToPhotos } from "react-icons/md";
 import { VaccineanimalContext } from '../../Context/VaccineanimalContext';
 import { Rings } from 'react-loader-spinner';
 import Swal from 'sweetalert2';
 import { useTranslation } from 'react-i18next';
 function VaccineTable() {
-       const { t } = useTranslation();
+    const { t } = useTranslation();
     let navigate = useNavigate();
     let { getallVaccineanimal, DeletVaccineanimal } = useContext(VaccineanimalContext);
     const [vaccines, setVaccines] = useState([]);
