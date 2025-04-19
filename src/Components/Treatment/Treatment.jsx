@@ -4,24 +4,25 @@ import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 import { IoIosSave } from "react-icons/io";
 import * as Yup from 'yup';
+import { useTranslation } from 'react-i18next';
 
 function Treatment() {
+    const { t } = useTranslation();
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [treatmentData, setTreatmentData] = useState(null);
 
-    
-// Helper function to generate headers with the latest token
-const getHeaders = () => {
-    const Authorization = localStorage.getItem('Authorization');
-  
-    // Ensure the token has only one "Bearer" prefix
-    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-  
-    return {
-        Authorization: formattedToken
+    // Helper function to generate headers with the latest token
+    const getHeaders = () => {
+        const Authorization = localStorage.getItem('Authorization');
+      
+        // Ensure the token has only one "Bearer" prefix
+        const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+      
+        return {
+            Authorization: formattedToken
+        };
     };
-  };
 
     async function submitTreatment(values) {
         const headers = getHeaders(); // Get the latest headers
@@ -39,23 +40,23 @@ const getHeaders = () => {
                 console.log(data.data.treatment);
                 setTreatmentData(data.data.treatment);
                 Swal.fire({
-                    title: 'Success!',
-                    text: 'Treatment data added successfully!',
+                    title: t('success'),
+                    text: t('mating_success_message'),
                     icon: 'success',
-                    confirmButtonText: 'OK',
+                    confirmButtonText: t('ok'),
                 });
             }
         } catch (err) {
             setIsLoading(false);
-            setError(err.response?.data?.message || 'An error occurred');
+            setError(err.response?.data?.message || t('error_message'));
         }
     }
     
     const validationSchema = Yup.object({
-        name: Yup.string().required('Name is required'),
-        type: Yup.string().required('Type is required'),
-        volume: Yup.number().required('Volume is required').positive('Volume must be positive'),
-        price: Yup.number().required('Price is required').positive('Price must be positive'),
+        name: Yup.string().required(t('name_required')),
+        type: Yup.string().required(t('type_required')),
+        volume: Yup.number().required(t('volume_required')).positive(t('volume_positive')),
+        price: Yup.number().required(t('price_required')).positive(t('price_positive')),
     });
 
     const formik = useFormik({
@@ -71,7 +72,7 @@ const getHeaders = () => {
 
     return (
         <div className='container'>
-            <div className="title2">Treatment</div>
+            <div className="title2">{t('treatment')}</div>
             {error && <p className="text-danger">{error}</p>}
             <form onSubmit={formik.handleSubmit} className='mt-5'>
                 {isLoading ? (
@@ -80,75 +81,75 @@ const getHeaders = () => {
                     </button>
                 ) : (
                     <button type="submit" className="btn button2">
-                        <IoIosSave /> Save
+                        <IoIosSave /> {t('save')}
                     </button>
                 )}
 
                 <div className='animaldata'>
                     <div className="input-box">
-                        <label className="label" htmlFor="name">Name</label>
+                        <label className="label" htmlFor="name">{t('name')}</label>
                         <input
                             autoComplete="off"
                             onBlur={formik.handleBlur}
                             onChange={formik.handleChange}
                             value={formik.values.name}
                             id="name"
-                            placeholder="Enter The Treatment Name"
+                            placeholder={t('enter_treatment_name')}
                             type="text"
                             className="input2"
                             name="name"
-                            aria-label="Treatment Name"
+                            aria-label={t('treatment_name')}
                         />
                         {formik.errors.name && formik.touched.name && <p className="text-danger">{formik.errors.name}</p>}
                     </div>
 
                     <div className="input-box">
-                        <label className="label" htmlFor="type">Type</label>
+                        <label className="label" htmlFor="type">{t('type')}</label>
                         <input
                             autoComplete="off"
                             onBlur={formik.handleBlur}
                             onChange={formik.handleChange}
                             value={formik.values.type}
                             id="type"
-                            placeholder="Enter The Treatment Type"
+                            placeholder={t('enter_treatment_type')}
                             type="text"
                             className="input2"
                             name="type"
-                            aria-label="Treatment Type"
+                            aria-label={t('treatment_type')}
                         />
                         {formik.errors.type && formik.touched.type && <p className="text-danger">{formik.errors.type}</p>}
                     </div>
 
                     <div className="input-box">
-                        <label className="label" htmlFor="volume">Volume</label>
+                        <label className="label" htmlFor="volume">{t('volume')}</label>
                         <input
                             autoComplete="off"
                             onBlur={formik.handleBlur}
                             onChange={formik.handleChange}
                             value={formik.values.volume}
-                            placeholder="Enter The Treatment Volume"
+                            placeholder={t('enter_treatment_volume')}
                             id="volume"
                             type="number"
                             className="input2"
                             name="volume"
-                            aria-label="Treatment Volume"
+                            aria-label={t('treatment_volume')}
                         />
                         {formik.errors.volume && formik.touched.volume && <p className="text-danger">{formik.errors.volume}</p>}
                     </div>
 
                     <div className="input-box">
-                        <label className="label" htmlFor="price">Price</label>
+                        <label className="label" htmlFor="price">{t('price')}</label>
                         <input
                             autoComplete="off"
                             onBlur={formik.handleBlur}
                             onChange={formik.handleChange}
                             value={formik.values.price}
-                            placeholder="Enter The Treatment Price"
+                            placeholder={t('enter_treatment_price')}
                             id="price"
                             type="number"
                             className="input2"
                             name="price"
-                            aria-label="Treatment Price"
+                            aria-label={t('treatment_price')}
                         />
                         {formik.errors.price && formik.touched.price && <p className="text-danger">{formik.errors.price}</p>}
                     </div>
