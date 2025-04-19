@@ -24,7 +24,7 @@ import Breeding from "./Components/Breeding/Breeding.jsx";
 import WeightTable from "./Components/Weight/WeightTable.jsx";
 import WeightContextProvider from "./Context/WeightContext.js";
 import EditWeight from "./Components/Weight/EditWeight.jsx";
-import BreedingcontextProvider from "./Context/BreedingContext.js";
+import BreedingcontextProvider from "./Context/BreedingContext.jsx";
 import BreadingTable from "./Components/Breeding/BreadingTable.jsx";
 import EditBreeding from "./Components/Breeding/EditBreeding.jsx";
 import GetAnimalContextProvider from "./Context/GetAnimalContext.js";
@@ -81,6 +81,11 @@ import FeedingServices from "./Components/Services/FeedingServices.jsx";
 import FodderServices from "./Components/Services/FodderServices.jsx";
 
 
+import Use from "./Components/Home/Usefullto.jsx";
+import Features from "./Components/LastSection/LastSection.jsx"
+import Manageemployee from "./Components/Section/Section.jsx";
+
+
 
 let routers = createBrowserRouter([
   {
@@ -100,6 +105,9 @@ let routers = createBrowserRouter([
       { path: "verifyotp", element: <Verifyotp /> },
       { path: "forgetpassword", element: <Forgetpassword /> },
       { path: "resetpassword", element: <Resetpassword /> },
+      { path: "/Use", element: <Use /> },
+      { path: "/Manageemployee", element: <Manageemployee /> },
+      { path: "features", element: <Features /> },
       { path: "register", element: <Register /> },
       { path: "breeding", element: <ProtectedRoute><Breeding /></ProtectedRoute> },
       { path: "breadingTable", element: <ProtectedRoute><BreadingTable /></ProtectedRoute> },

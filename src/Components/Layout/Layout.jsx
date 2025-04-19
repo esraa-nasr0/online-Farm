@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Navbar from "../Navbar/Navbar";
 import { Outlet } from "react-router-dom";
 import Sidebare from "../Sidebare/Sidebare";
+import Footer from "../Footer/Footer";
 
 export default function Layout() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -18,6 +19,7 @@ export default function Layout() {
             <div className="w-100">
                 <Outlet />
             </div>
+            <Footer />
         </>
     );
 }

@@ -1,0 +1,61 @@
+.section-container {
+    width: 100%;
+    padding: 50px 20px;
+    background-color: #f6f1ea;
+   
+  }
+  
+  .section-content {
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  
+  .text-area {
+    flex: 1;
+    min-width: 300px;
+    padding-right: 40px;
+  }
+  
+  .text-area h1 {
+    font-size: 32px;
+    color: #4caf50;
+    margin-bottom: 20px;
+  }
+  
+  .text-area ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .text-area li {
+    margin-bottom: 15px;
+    font-size: 16px;
+    position: relative;
+    padding-left: 25px;
+  }
+  
+  .text-area li::before {
+    content: "✔";
+    position: absolute;
+    left: 0;
+    color: #4caf50;
+    font-weight: bold;
+  }
+  
+  .image-area {
+    flex: 1;
+    min-width: 300px;
+    text-align: center;
+  }
+  .image-area img {
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+  
+  

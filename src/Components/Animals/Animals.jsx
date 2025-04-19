@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 import { useNavigate } from "react-router-dom";
 import { GrView } from "react-icons/gr";
 import { useTranslation } from 'react-i18next';
+// import AnimalStatistics from './AnimalStatistics';
 
 export default function Animals() {
     const { t } = useTranslation();
@@ -115,6 +116,7 @@ export default function Animals() {
 
     return (
         <>
+
             {isLoading ? (
                 <div className='animal'>
                     <Rings visible={true} height="100" width="100" color="#9cbd81" ariaLabel="rings-loading" />
@@ -122,6 +124,8 @@ export default function Animals() {
             ) : (
                 <div className="container">
                     <div className="title2">{t('animals')}</div>
+                    {/* <AnimalStatistics className='mt-3'/> */}
+
 
                     <div className='container mt-5'>
                         <div className="d-flex flex-column flex-md-row align-items-center gap-2" style={{ flexWrap: 'nowrap' }}>
@@ -145,6 +149,7 @@ export default function Animals() {
                                 <th scope="col">{t('tag_id')}</th>
                                 <th scope="col">{t('animal_type')}</th>
                                 <th scope="col">{t('breed')}</th>
+                                <th scope="col">{t('location_shed')}</th>
                                 <th scope="col">{t('gender')}</th>
                                 <th scope="col">{t('view_details')}</th>
                                 <th scope="col">{t('edit_animal')}</th>
@@ -157,7 +162,8 @@ export default function Animals() {
                                     <th scope="row">{(currentPage - 1) * animalsPerPage + index + 1}</th>
                                     <td>{animal.tagId}</td>
                                     <td>{animal.animalType}</td>
-                                    <td>{animal.breed}</td>
+                                    <td>{animal.breed?.breedName || animal.breed || '-'}</td>
+                                    <td>{animal.locationShed?.locationShedName || animal.locationShed || '-'}</td>
                                     <td>{animal.gender}</td>
                                     <td onClick={() => viewAnimal(animal._id)} style={{ cursor: 'pointer' }} className='text-primary'>
                                         <GrView /> {t('view_details')}

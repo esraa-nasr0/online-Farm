@@ -24,7 +24,7 @@ function VaccineServices() {
         </Link>
     </div>
     <div className="card2">
-    <Link className='Link' to='/vaccinebyanimal'>
+    <Link className='Link' to='/vaccinebytagid'>
         <div className="icon">
         <IoAddCircleOutline />
         </div>

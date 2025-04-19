@@ -20,7 +20,7 @@ const getHeaders = () => {
 
         return axios
           .get(
-            `https://farm-project-bbzj.onrender.com/api/vaccine/GetSingleAnimalGaccine/${animalid}`,
+            `https://farm-project-bbzj.onrender.com/api/vaccine/GetVaccineForAnimal/${animalid}`,
             { headers }
           )
           .then((response) => {
@@ -47,16 +47,25 @@ const getHeaders = () => {
       .catch((err)=>err)
   }
   
-    function getAnimalWeight(animalid) {
-      const headers = getHeaders(); // Get the latest headers
-        return axios.get(`https://farm-project-bbzj.onrender.com/api/weight/GetSingleAnimalWeight/${animalid}` , {headers})
-        .then((response)=>response)
-        .catch((err)=>err)
-    }
 
+    
+  function getAnimalWeight(animalid) {
+    const headers = getHeaders(); // Get the latest headers
+      return axios.get(`https://farm-project-bbzj.onrender.com/api/weight/GetSingleAnimalWeight/${animalid}` , {headers})
+      .then((response)=>response)
+      .catch((err)=>err)
+  }
+ 
 
+  function getAnimalTreatment(animalid) {
+    const headers = getHeaders(); // Get the latest headers
+    return axios.get(`https://farm-project-bbzj.onrender.com/api/treatment/gettreatmentsForAnimal/${animalid}` , {headers})
+    .then((response)=>response)
+    .catch((err)=>err)
+}
+  
 export default function GetAnimalContextProvider(props) {
-    return <GetAnimalContext.Provider value={{getAnimalVaccine,getAnimalMating,getAnimalBreeding,getAnimalWeight}}>
+    return <GetAnimalContext.Provider value={{getAnimalVaccine,getAnimalMating,getAnimalBreeding,getAnimalWeight,getAnimalTreatment}}>
             {props.children}      
         </GetAnimalContext.Provider>
     

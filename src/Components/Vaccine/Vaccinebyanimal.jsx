@@ -114,7 +114,7 @@ const getHeaders = () => {
                                 name="BoosterDose"
                                 type="text"
                                 className="input2"
-                                placeholder="Given Every"
+                                 placeholder="Enter Booster Dose"
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                                 value={formik.values.BoosterDose}
@@ -128,7 +128,7 @@ const getHeaders = () => {
                                 name="AnnualDose"
                                 type="text"
                                 className="input2"
-                                placeholder="Enter tag ID"
+                                placeholder="Enter Annual Dose"
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                                 value={formik.values.AnnualDose}
@@ -141,6 +141,7 @@ const getHeaders = () => {
                                 id="bottles"
                                 name="bottles"
                              type="text"
+                             placeholder="Enter bottles"
                                 className="input2"
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
@@ -155,6 +156,7 @@ const getHeaders = () => {
                                 id="dosesPerBottle"
                                 name="dosesPerBottle"
                              type="text"
+                              placeholder="Enter doses Per Bottle"
                                 className="input2"
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
@@ -169,6 +171,7 @@ const getHeaders = () => {
                                 id="bottlePrice"
                                 name="bottlePrice"
                              type="text"
+                              placeholder="Enter bottle Price"
                                 className="input2"
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
