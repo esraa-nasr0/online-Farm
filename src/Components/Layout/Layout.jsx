@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import Navbar from "../Navbar/Navbar";
 import { Outlet, useLocation } from "react-router-dom";
 import Sidebare from "../Sidebare/Sidebare";
-import Footer from "../Footer/Footer";
 import "./Layout.css";
 
 export default function Layout() {
@@ -42,7 +41,6 @@ export default function Layout() {
                         </div>
                     </main>
                 </div>
-                <Footer />
             </div>
         </>
     );
