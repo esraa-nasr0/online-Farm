@@ -430,7 +430,11 @@
     "doses_per_bottle": "الجرعات لكل زجاجة",
     "total_doses": "إجمالي الجرعات",
     "bottle_price": "سعر الزجاجة",
-    "dose_price": "سعر الجرعة"
+    "dose_price": "سعر الجرعة",
+
+    "dosage": "الجرعة",
+    "unit_price": "سعر الوحدة",
+    "total_cost": "التكلفة الإجمالية"
 
 
 }
