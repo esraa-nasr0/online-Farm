@@ -342,6 +342,10 @@
     "doses_per_bottle": "Doses per Bottle",
     "total_doses": "Total Doses",
     "bottle_price": "Bottle Price",
-    "dose_price": "Dose Price"
+    "dose_price": "Dose Price",
+
+"dosage": "Dosage",
+"unit_price": "Unit Price",
+"total_cost": "Total Cost"
 
 }

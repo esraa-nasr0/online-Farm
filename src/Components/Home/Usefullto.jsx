@@ -2,7 +2,7 @@ import React from 'react';
 import img1 from '../../Assets/Img/goat-farm.jpg'; // غيري المسار حسب مكان الصورة عندك
 import goat from "./Usefullto.css"
 import trader from '../../Assets/Img/full-shot-man-living-countryside.jpg'; 
-import butchers from '../../Assets/Img/goat-farm.jpg'; 
+import butchers from '../../Assets/Img/home.jpg'; 
 const GoatCard = () => {
   return (
     <div className='container usefull mx-auto'>
