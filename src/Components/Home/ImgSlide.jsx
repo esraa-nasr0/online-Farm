@@ -1,9 +1,21 @@
-import React from "react";
+import React, { useContext } from "react";
 import gardenImg from "../../Assets/Img/vecteezy_goat-animals-in-mountain-pastures-with-amazing-landscape-views_46816048.jpg";
 import "./imgslide.css";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { UserContext } from "../../Context/UserContext";
 
 export default function HomeHero() {
+  const { Authorization } = useContext(UserContext);
+  const navigate = useNavigate();
+
+  const handleStartNow = () => {
+    if (Authorization) {
+      navigate("/homeServices");
+    } else {
+      navigate("/login");
+    }
+  };
+
   return (
     <div
       style={{
@@ -48,14 +60,14 @@ export default function HomeHero() {
             textAlign: "center",
           }}
         >
-        Welcome to Online Farm, the all-in-one solution for efficient goat
-        and sheep farm management, designed to simplify tracking of animal
-        health, breeding, and productivity!
+          Welcome to Online Farm, the all-in-one solution for efficient goat
+          and sheep farm management, designed to simplify tracking of animal
+          health, breeding, and productivity!
         </p>
 
         <div style={{ textAlign: "center" }}>
-          <Link className='Link' to="/homeServices">
           <button
+            onClick={handleStartNow}
             style={{
               backgroundColor: "#28a745",
               color: "white",
@@ -70,7 +82,6 @@ export default function HomeHero() {
           >
             START NOW
           </button>
-          </Link>
         </div>
       </div>
 

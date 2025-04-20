@@ -107,7 +107,7 @@ export default function Login() {
             </div>
           </div>
 
-          <div className={style.divbutton}>
+          <div className={style.divbutton3}>
             {isLoading ? (
               <button type="button" className={style.button3}>
                 <i className="fas fa-spinner fa-spin"></i>
@@ -128,6 +128,7 @@ export default function Login() {
                     Forget Password
                   </Link>
                 </div>
+                
                 <button
                   disabled={!(formik.isValid && formik.dirty)}
                   type="submit"
@@ -135,7 +136,6 @@ export default function Login() {
                 >
                   Submit
                 </button>
-
               </>
             )}
           </div>
