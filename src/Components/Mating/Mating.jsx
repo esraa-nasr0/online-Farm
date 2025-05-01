@@ -55,7 +55,7 @@ function Mating() {
             maleTag_id: '',
             matingDate: '',
             sonarDate: '',
-            sonarRsult: '',
+            sonarRsult: null,
         },
         onSubmit: submitMating
     });
