@@ -13,6 +13,8 @@ export default function Fodder() {
   const [fooderData, setFooderData] = useState(null);
   const [feeds, setFeeds] = useState([]);
   const { getFodderMenue } = useContext(Feedcontext);
+  const [isSubmitted, setIsSubmitted] = useState(false); // حالة جديدة لتتبع الإرسال
+
 
   const getHeaders = () => {
     const Authorization = localStorage.getItem('Authorization');
@@ -36,6 +38,11 @@ export default function Fodder() {
   }, [getFodderMenue]);
 
   async function submitFodder(value) {
+    
+    // إذا كانت البيانات قد أرسلت بالفعل، لا تفعل شيئاً
+    if (isSubmitted) {
+      return;
+    }
     const headers = getHeaders();
     setIsLoading(true);
     setError(null);
@@ -48,6 +55,9 @@ export default function Fodder() {
 
       if (data.status === 'success') {
         setIsLoading(false);
+        setIsSubmitted(true); // تحديث حالة الإرسال
+        formik.resetForm(); // إعادة تعيين النموذج
+        
         setFooderData(data.data.fodder);
         Swal.fire({
           title: t('successTitle'),
@@ -72,19 +82,39 @@ export default function Fodder() {
   });
 
   const addFeed = () => {
-    formik.setFieldValue('feeds', [...formik.values.feeds, { feedId: '', quantity: '' }]);
+    if (!isSubmitted) { // لا تسمح بإضافة علف إذا تم الإرسال
+      formik.setFieldValue('feeds', [...formik.values.feeds, { feedId: '', quantity: '' }]);
+    }
   };
 
   const handleFeedChange = (index, field, value) => {
-    const newFeeds = [...formik.values.feeds];
-    newFeeds[index][field] = value;
-    formik.setFieldValue('feeds', newFeeds);
+    if (!isSubmitted) { // لا تسمح بتعديل البيانات إذا تم الإرسال
+      const newFeeds = [...formik.values.feeds];
+      newFeeds[index][field] = field === 'quantity' ? Number(value) : value;
+      formik.setFieldValue('feeds', newFeeds);
+    }
+  };
+
+   // دالة لإعادة تعيين النموذج والسماح بإدخال جديد
+    const resetForm = () => {
+    formik.resetForm({
+      values: {
+        name: '',
+        feeds: [{ feedId: '', quantity: '' }],
+      }
+    });
+    setIsSubmitted(false);
   };
 
   return (
     <div className="container">
       <div className="title2">{t('fodderTitle')}</div>
       <p className="text-danger">{error}</p>
+      {isSubmitted && (
+        <div className="alert alert-success mt-3">
+          {t('fodderAddedSuccessfully')}
+        </div>
+      )}
 
       <form onSubmit={formik.handleSubmit}>
         {isLoading ? (
@@ -92,7 +122,7 @@ export default function Fodder() {
             <i className="fas fa-spinner fa-spin"></i>
           </button>
         ) : (
-          <button type="submit" className="btn button2">
+          <button type="submit" className="btn button2" disabled={isLoading || isSubmitted || !formik.isValid}>
             <IoIosSave /> {t('save')}
           </button>
         )}
@@ -108,6 +138,8 @@ export default function Fodder() {
               id="name"
               type="text"
               className="input2"
+              disabled={isSubmitted}
+
             />
             {formik.touched.name && formik.errors.name && (
               <p className="text-danger">{formik.errors.name}</p>
@@ -126,6 +158,8 @@ export default function Fodder() {
                 value={feed.feedId}
                 onChange={(e) => handleFeedChange(index, 'feedId', e.target.value)}
                 onBlur={formik.handleBlur}
+                disabled={isSubmitted}
+
               >
                 <option value="">{t('selectFeed')}</option>
                 {feeds.map((feedOption) => (
@@ -150,6 +184,8 @@ export default function Fodder() {
                 onChange={(e) => handleFeedChange(index, 'quantity', e.target.value)}
                 onBlur={formik.handleBlur}
                 placeholder={t('enterQuantity')}
+                disabled={isSubmitted}
+
               />
             </div>
           ))}

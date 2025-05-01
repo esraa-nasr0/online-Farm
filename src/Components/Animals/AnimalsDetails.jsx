@@ -14,6 +14,7 @@ function AnimalsDetails() {
     const [responseData, setResponseData] = useState(null);
     const [locationSheds, setLocationSheds] = useState([]);
     const [breeds, setBreeds] = useState([]);
+    const [isSubmitted, setIsSubmitted] = useState(false); // حالة جديدة لتتبع الإرسال
     const { LocationMenue } = useContext(LocationContext);
     const { BreedMenue } = useContext(BreedContext);
 
@@ -51,6 +52,11 @@ function AnimalsDetails() {
     }, [BreedMenue]);
 
     const postAnimal = async (values) => {
+        // إذا كانت البيانات قد أرسلت بالفعل، لا تفعل شيئاً
+        if (isSubmitted) {
+            return;
+        }
+
         const headers = getHeaders();
         setIsLoading(true);
         setError(null);
@@ -60,20 +66,20 @@ function AnimalsDetails() {
                 values,
                 { headers },
             );
-            console.log('Submitting form with values:', values);
-            console.log('Response:', data);
+            
             if (data.status === "success") {
                 setResponseData(data.data.animal);
+                setIsSubmitted(true); // تحديث حالة الإرسال
                 Swal.fire({
-                    title: 'Success!',
-                    text: 'Animal data added successfully!',
+                    title: t('success_title'),
+                    text: t('animal_add_success'),
                     icon: 'success',
-                    confirmButtonText: 'OK',
+                    confirmButtonText: t('ok'),
                 });
                 formik.resetForm();
             }
         } catch (err) {
-            setError(err.response?.data?.message || 'An error occurred');
+            setError(err.response?.data?.message || t('error_message'));
             console.error('Submission error:', err);
         } finally {
             setIsLoading(false);
@@ -125,6 +131,7 @@ function AnimalsDetails() {
                             type="text" 
                             className="input2" 
                             name="tagId"
+                            disabled={isSubmitted}
                         />
                         {formik.errors.tagId && formik.touched.tagId && ( 
                             <p className="text-danger">{formik.errors.tagId}</p> 
@@ -139,6 +146,7 @@ function AnimalsDetails() {
                             id="breed"
                             className="input2"
                             name="breed"
+                            disabled={isSubmitted}
                         >
                             <option value="">{t('select_breed')}</option>
                             {breeds.map((breed) => (
@@ -161,6 +169,7 @@ function AnimalsDetails() {
                             id="locationShedName"
                             className="input2"
                             name="locationShedName"
+                            disabled={isSubmitted}
                         >
                             <option value="">{t('select_location_shed')}</option>
                             {locationSheds.map((shed) => (
@@ -182,6 +191,7 @@ function AnimalsDetails() {
                             className="input2"
                             name="animalType"
                             id="animalType"
+                            disabled={isSubmitted}
                         >
                             <option value="">{t('animal_type')}</option>
                             <option value="goat">{t('goat')}</option>
@@ -200,6 +210,7 @@ function AnimalsDetails() {
                             className="input2"
                             name="gender"
                             id="gender"
+                            disabled={isSubmitted}
                         >
                             <option value="">{t('gender')}</option>
                             <option value="female">{t('female')}</option>  
@@ -221,6 +232,7 @@ function AnimalsDetails() {
                                 type="text" 
                                 className="input2" 
                                 name="female_Condition"
+                                disabled={isSubmitted}
                             />
                             {formik.errors.female_Condition && formik.touched.female_Condition && (
                                 <p className="text-danger">{formik.errors.female_Condition}</p>
@@ -235,7 +247,8 @@ function AnimalsDetails() {
                             onBlur={formik.handleBlur}
                             className="input2"
                             name="animaleCondation"
-                            id="animaleCondation">
+                            id="animaleCondation"
+                            disabled={isSubmitted}>
                             <option value="">{t('animal_condition')}</option>
                             <option value="purchase">{t('purchase')}</option>
                             <option value="born at farm">{t('born_at_farm')}</option>
@@ -253,7 +266,9 @@ function AnimalsDetails() {
                                 id="traderName"
                                 type="text"
                                 className="input2"
-                                name="traderName"/>
+                                name="traderName"
+                                disabled={isSubmitted}
+                                />
                             {formik.errors.traderName && formik.touched.traderName && (<p className="text-danger">{formik.errors.traderName}</p>)}
                         </div>
 
@@ -266,7 +281,9 @@ function AnimalsDetails() {
                                 id="purchaseDate"
                                 type="date"
                                 className="input2"
-                                name="purchaseDate"/>
+                                name="purchaseDate"
+                                disabled={isSubmitted}
+                                />
                             {formik.errors.purchaseDate && formik.touched.purchaseDate && (<p className="text-danger">{formik.errors.purchaseDate}</p>)}
                         </div>
 
@@ -281,6 +298,7 @@ function AnimalsDetails() {
                                 type="number"
                                 className="input2"
                                 name="purchasePrice"
+                                disabled={isSubmitted}
                             />
                             {formik.errors.purchasePrice && formik.touched.purchasePrice && (<p className="text-danger">{formik.errors.purchasePrice}</p>)}
                         </div>
@@ -290,7 +308,7 @@ function AnimalsDetails() {
                             <select
                                 value={formik.values.teething}
                                 onChange={formik.handleChange}
-                                onBlur={formik.handleBlur} className="input2" name="teething" id="teething">
+                                onBlur={formik.handleBlur} className="input2" name="teething" id="teething" disabled={isSubmitted}>
                                 <option value="">{t('teething')}</option>
                                 <option value="two">{t('two')}</option>
                                 <option value="four">{t('four')}</option>
@@ -312,6 +330,7 @@ function AnimalsDetails() {
                                 type="text" 
                                 className="input2" 
                                 name="motherId"
+                                disabled={isSubmitted}
                             />
                             {formik.errors.motherId && formik.touched.motherId ? <p className="text-danger">{formik.errors.motherId}</p> : ""}
                         </div>
@@ -327,6 +346,7 @@ function AnimalsDetails() {
                                 type="text" 
                                 className="input2" 
                                 name="fatherId"
+                                disabled={isSubmitted}
                             />
                             {formik.errors.fatherId && formik.touched.fatherId ? <p className="text-danger">{formik.errors.fatherId}</p> : ""}
                         </div>
@@ -341,6 +361,7 @@ function AnimalsDetails() {
                                 type="date" 
                                 className="input2" 
                                 name="birthDate"
+                                disabled={isSubmitted}
                             />
                             {formik.errors.birthDate && formik.touched.birthDate ? <p className="text-danger">{formik.errors.birthDate}</p> : ""}
                         </div>
