@@ -5,8 +5,10 @@ import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { LocationContext } from '../../Context/Locationshedcontext';
+import { useTranslation } from 'react-i18next';
 
 function EditVaccine() {
+    const { t } = useTranslation();
     const { getVaccineMenue } = useContext(LocationContext); 
     const [vaccines, setVaccines] = useState([]);
     const [isLoadingVaccines, setIsLoadingVaccines] = useState(true);
@@ -57,8 +59,8 @@ function EditVaccine() {
             
             if (response.data.status === "success") {
                 Swal.fire({
-                    title: 'Success!',
-                    text: 'Vaccine entry updated successfully',
+                    title: t('success'),
+                    text: t('vaccine_updated_successfully'),
                     icon: 'success',
                     confirmButtonColor: '#88522e'
                 });
@@ -66,10 +68,10 @@ function EditVaccine() {
             }
         } catch (err) {
             console.error('Error details:', err.response?.data);
-            setError(err.response?.data?.message || "An error occurred while processing your request");
+            setError(err.response?.data?.message || t('error_updating_vaccine'));
             Swal.fire({
-                title: 'Error!',
-                text: err.response?.data?.message || "Failed to update vaccine entry",
+                title: t('error'),
+                text: err.response?.data?.message || t('error_updating_vaccine'),
                 icon: 'error',
                 confirmButtonColor: '#88522e'
             });
@@ -97,13 +99,10 @@ function EditVaccine() {
                 );
                 
                 const vaccineEntry = response.data.data.vaccineEntry;
-                console.log('Vaccine entry data:', vaccineEntry);
-                
                 const formattedDate = vaccineEntry.date 
                     ? new Date(vaccineEntry.date).toISOString().split('T')[0]
                     : '';
                 
-                // البحث عن vaccineId في البيانات بطرق مختلفة
                 const vaccineId = vaccineEntry.vaccineId || 
                                  (vaccineEntry.vaccine ? vaccineEntry.vaccine._id : '');
                 
@@ -115,42 +114,41 @@ function EditVaccine() {
                 });
             } catch (error) {
                 console.error("Error fetching vaccine entry:", error.response?.data);
-                setError("Failed to fetch vaccine entry details.");
+                setError(t("error_fetching_vaccine_details"));
             }
         }
         fetchVaccineEntry();
     }, [id]);
 
     return (
-        <div className="container" >
+        <div className="container">
             <div className="animaldata">
-              
                 <div className="card-body">
-                {error && <div className="alert alert-danger">{error}</div>}
+                    {error && <div className="alert alert-danger">{error}</div>}
                     <form onSubmit={formik.handleSubmit}>
-                         <div className='d-flex vaccine align-items-center justify-content-between'>
-                                            <h2 className="title-v">Edit Vaccine</h2>
-                                            <button type="submit" className="btn btn-primary" disabled={isLoading}>
-                                                {isLoading ? <span className="spinner-border spinner-border-sm"></span> : <><IoIosSave /> Save</>}
-                                            </button>
-                                        </div>
+                        <div className='d-flex vaccine align-items-center justify-content-between'>
+                            <h2 className="title-v">{t("Edit Vaccine")}</h2>
+                                <button type="submit" className="btn button2">
+                                                  <IoIosSave /> {t("save")}
+                                              </button>
+                        </div>
                         <div className="row g-3">
-                            <div className="mb-3 input-box ">
-                                <label htmlFor="tagId" className="form-label fw-bold">Animal Tag ID</label>
+                            <div className="mb-3 input-box">
+                                <label htmlFor="tagId" className="form-label fw-bold">{t("animal_tag_id")}</label>
                                 <input
                                     id="tagId"
                                     name="tagId"
                                     type="text"
                                     className="form-control"
-                                    placeholder="Enter animal tag ID"
+                                    placeholder={t("enter_animal_tag_id")}
                                     value={formik.values.tagId}
                                     onChange={formik.handleChange}
                                     required
                                 />
                             </div>
-                            
-                            <div className="mb-3 input-box ">
-                                <label htmlFor="date" className="form-label fw-bold">Vaccination Date</label>
+
+                            <div className="mb-3 input-box">
+                                <label htmlFor="date" className="form-label fw-bold">{t("vaccination_date")}</label>
                                 <input
                                     id="date"
                                     name="date"
@@ -161,9 +159,9 @@ function EditVaccine() {
                                     required
                                 />
                             </div>
-                            
-                            <div className="mb-3 input-box ">
-                                <label htmlFor="vaccineId" className="form-label fw-bold">Vaccine</label>
+
+                            <div className="mb-3 input-box">
+                                <label htmlFor="vaccineId" className="form-label fw-bold">{t("vaccine")}</label>
                                 <select
                                     id="vaccineId"
                                     name="vaccineId"
@@ -173,9 +171,9 @@ function EditVaccine() {
                                     required
                                     disabled={isLoadingVaccines}
                                 >
-                                    <option value="">Select Vaccine</option>
+                                    <option value="">{t("select_vaccine")}</option>
                                     {isLoadingVaccines ? (
-                                        <option disabled>Loading vaccines...</option>
+                                        <option disabled>{t("loading_vaccines")}</option>
                                     ) : (
                                         vaccines.map((vaccine) => (
                                             <option key={vaccine._id} value={vaccine._id}>
@@ -185,9 +183,9 @@ function EditVaccine() {
                                     )}
                                 </select>
                             </div>
-                            
-                            <div className="mb-3 input-box ">
-                                <label htmlFor="entryType" className="form-label fw-bold">Entry Type</label>
+
+                            <div className="mb-3 input-box">
+                                <label htmlFor="entryType" className="form-label fw-bold">{t("entry_type")}</label>
                                 <select
                                     id="entryType"
                                     name="entryType"
@@ -196,10 +194,10 @@ function EditVaccine() {
                                     onChange={formik.handleChange}
                                     required
                                 >
-                                    <option value="">Select entry type</option>
-                                    <option value="Booster Dose">Booster Dose</option>
-                                    <option value="Annual Dose">Annual Dose</option>
-                                    <option value="Initial Dose">Initial Dose</option>
+                                    <option value="">{t("select_entry_type")}</option>
+                                    <option value="Booster Dose">{t("booster_dose")}</option>
+                                    <option value="Annual Dose">{t("annual_dose")}</option>
+                                    <option value="Initial Dose">{t("initial_dose")}</option>
                                 </select>
                             </div>
                         </div>

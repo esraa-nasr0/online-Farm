@@ -148,7 +148,7 @@ function VaccineTable() {
             ) : (
                 <div className="container">
                     <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4" style={{ marginTop: "140px" }}>
-                        <h2 className="bottom-line pb-2" style={{ color: "#88522e" }}>  {t('Vaccine Records')}</h2>
+                        <h2 className="bottom-line pb-2" style={{ color: "#778983" }}>  {t('Vaccine Records')}</h2>
                         <div className='d-flex flex-column flex-sm-row gap-2'>
                            
                       
@@ -177,18 +177,14 @@ function VaccineTable() {
                             placeholder=  {t('Search Location Shed')}
                             onChange={(e) => setSearchCriteria(prev => ({ ...prev, locationShed: e.target.value }))}
                         />
-                        <button 
-                            className="btn button2 d-flex align-items-center" 
-                            onClick={handleSearch}
-                        >
-                            <i className="fas fa-search me-2 "></i>   {t('Search')}
-                          
-                        </button>
+                            <button className="btn mb-2 me-2" onClick={handleSearch} style={{ backgroundColor: '#FAA96C', color: 'white' }}>
+                                <i className="fas fa-search"></i>
+                            </button>
                     </div>
 
                     <div className="table-responsive">
-                        <table className="table table-striped table-hover">
-                            <thead className="table-dark">
+                        <table className="table table-hover mt-3 p-2">
+                            <thead >
                                 <tr>
                                     <th scope="col">#</th>
                                     <th scope="col">  {t('Vaccine Name')}</th>
@@ -199,7 +195,8 @@ function VaccineTable() {
                                     <th scope="col">  {t('Dose Price')}</th>
                                     <th scope="col">  {t('Booster Dose')}</th>
                                     <th scope="col">  {t('Annual Dose')}</th>
-                                    <th scope="col">  {t('Actions')}</th>
+                                    <th scope="col">{t('edit_vaccine')}</th>
+                                    <th scope="col">{t('remove_vaccine')}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -219,24 +216,14 @@ function VaccineTable() {
                                             <td>{vaccine.pricing?.dosePrice || 'N/A'}</td>
                                             <td>{vaccine.BoosterDose || 'N/A'}</td>
                                             <td>{vaccine.AnnualDose || 'N/A'}</td>
-                                            <td>
-                                                <div className="d-flex gap-2">
-                                                    <button 
-                                                        className="btn btn-sm btn-outline-primary"
-                                                        onClick={() => editVaccine(vaccine._id)}
-                                                        title=  {t('Edit')}
-                                                    >
-                                                        <FaRegEdit />
-                                                    </button>
-                                                    <button 
-                                                        className="btn btn-sm btn-outline-danger"
-                                                        onClick={() => handleClick(vaccine._id)}
-                                                        title=  {t('Delete')}
-                                                    >
-                                                        <RiDeleteBin6Line />
-                                                    </button>
-                                                </div>
-                                            </td>
+                                        
+
+                                            <td    onClick={() => editVaccine(vaccine._id)} style={{ cursor: 'pointer' }} className='text-success'>
+                                                                                                            <FaRegEdit /> {t('edit_vaccine')}
+                                                                                                        </td>
+                                                                                                        <td   onClick={() => handleClick(vaccine._id)} className='text-danger' style={{ cursor: 'pointer' }}>
+                                                                                                            <RiDeleteBin6Line /> {t('remove_vaccine')}
+                                                                                                        </td>
                                         </tr>
                                     ))
                                 )}

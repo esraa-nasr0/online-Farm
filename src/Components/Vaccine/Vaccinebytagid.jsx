@@ -23,12 +23,11 @@ function VaccinebytagId() {
             setIsLoadingLocations(true);
             try {
                 const { data } = await getLocationtMenue();
-                // console.log("API Response Data:", data);
+            
                 
                 if (data.status === 'success') {
                 
                     const locationsData = data.data.tagIds || data.data;
-                    // console.log("Locations Data:", locationsData);
                     setLocations(Array.isArray(locationsData) ? locationsData : []);
                 }
             } catch (err) {

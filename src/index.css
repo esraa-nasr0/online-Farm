@@ -253,7 +253,7 @@ code {
   color: #3f5c40;
 }
 .contact p {
-  color: #88522e;
+  color: #778983;
   font-size: 15px;
 }
 .row2 {
@@ -305,7 +305,7 @@ code {
 .add-record-btn {
   display: flex;
   align-items: center;
-  background-color: #88522e; /* Blue button */
+  background-color: #778983; /* Blue button */
   color: white;
   border: none;
   border-radius: 5px;
@@ -491,7 +491,7 @@ code {
   font-size: 28px;
   font-weight: 500;
   position: relative;
-  color: #88522e !important ;
+  color: #778983  ;
 }
 .bottom-line::before{
   
@@ -502,7 +502,7 @@ code {
   height: 2px;
   width: 75%;
   border-radius: 5px;
-  background-color: #88522e !important;
+  background-color: #778983 ;
 }
 .full-width-table {
   max-width: 92%;
@@ -551,11 +551,11 @@ code {
 
 
 .title-v{
-  /* margin-top: 20px; */
+
   font-size: 28px;
   font-weight: 500;
   position: relative;
-  color: #88522e !important ;
+  color: #778983 !important ;
 }
 .title-v::before{
   
@@ -566,7 +566,7 @@ code {
   height: 2px;
   width: 50%;
   border-radius: 5px;
-  background-color: #88522e !important;
+  background-color: #778983 !important;
 }
 
 
@@ -580,7 +580,7 @@ code {
   font-size: 28px;
   font-weight: 500;
   position: relative;
-  color: #88522e !important ;
+  color: #778983 !important ;
 }
 .title-v::before{
   
@@ -591,7 +591,7 @@ code {
   height: 2px;
   width: 50%;
   border-radius: 5px;
-  background-color: #88522e !important;
+  background-color: #778983 !important;
 }
 
 

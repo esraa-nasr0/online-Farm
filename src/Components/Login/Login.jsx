@@ -24,17 +24,17 @@ export default function Login() {
         localStorage.setItem("Authorization", data.data.token);
         setAuthorization(data.data.token);
 
-        // Decode the token to get the user's role
+      
         const decodedToken = jwtDecode(data.data.token);
         const userRole = decodedToken.role;
 
-        // Navigate based on the user's role
+      
         if (userRole === "admin") {
           navigate("/dashboard");
         } else if (userRole === "user") {
           navigate("/");
         } else {
-          // Handle other roles or unexpected roles
+     
           navigate("/");
         }
 

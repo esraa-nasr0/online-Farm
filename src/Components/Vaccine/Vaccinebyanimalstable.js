@@ -6,8 +6,10 @@ import { MdOutlineAddToPhotos } from "react-icons/md";
 import { Vaccinetableentriescontext } from '../../Context/Vaccinetableentriescontext';
 import { Rings } from 'react-loader-spinner';
 import Swal from 'sweetalert2';
+import { useTranslation } from 'react-i18next';
 
 function VaccineTable() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { getallVaccineanimalEntries, DeletVaccineanimal } = useContext(Vaccinetableentriescontext);
 
@@ -30,26 +32,26 @@ function VaccineTable() {
     setCurrentPage(pageNumber);
   };
 
-  function handleClick(id) {
+  const handleClick = (id) => {
     Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
+      title: t("are_you_sure"),
+      text: t("no_revert"),
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
-      confirmButtonText: "Yes, delete it!",
-      cancelButtonText: "Cancel",
+      confirmButtonText: t("yes_delete_it"),
+      cancelButtonText: t("cancel"),
     }).then((result) => {
       if (result.isConfirmed) {
         deleteItem(id);
       }
     });
-  }
-  
-  function editVaccine(id) {
+  };
+
+  const editVaccine = (id) => {
     navigate(`/editVaccineanimals/${id}`);
-  }
+  };
 
   const renderPaginationButtons = () => {
     const buttons = [];
@@ -66,7 +68,7 @@ function VaccineTable() {
     return buttons;
   };
 
-  async function getItem() {
+  const getItem = async () => {
     setIsLoading(true);
     try {
       const filters = {
@@ -77,14 +79,14 @@ function VaccineTable() {
 
       const { data } = await getallVaccineanimalEntries(currentPage, animalsPerPage, filters);
 
-      if (data?.entries) {
+      if (data?.entries?.length) {
         setVaccines(data.entries);
         setPagination(data.pagination || { totalPages: 1 });
       } else {
         Swal.fire({
           icon: 'error',
-          title: 'No Data',
-          text: 'No vaccine records found.'
+          title: t('no_data'),
+          text: t('no_vaccine_records')
         });
         setVaccines([]);
       }
@@ -92,28 +94,28 @@ function VaccineTable() {
       console.error("Fetch error:", error);
       Swal.fire({
         icon: 'error',
-        title: 'Error',
-        text: 'Failed to fetch vaccine data.'
+        title: t('error'),
+        text: t('fetch_vaccine_failed')
       });
     } finally {
       setIsLoading(false);
     }
-  }
+  };
 
   const handleSearch = () => {
     setCurrentPage(1);
     getItem();
   };
 
-  async function deleteItem(id) {
+  const deleteItem = async (id) => {
     try {
       const response = await DeletVaccineanimal(id);
-      
+
       if (response.data) {
         Swal.fire({
           icon: 'success',
-          title: 'Deleted!',
-          text: response.data.message || 'Vaccine record deleted successfully.',
+          title: t('deleted'),
+          text: response.data.message || t('vaccine_deleted'),
           timer: 1500
         });
         setVaccines(prev => prev.filter(item => item._id !== id));
@@ -124,16 +126,16 @@ function VaccineTable() {
       console.error("Delete error:", error);
       Swal.fire({
         icon: 'error',
-        title: 'Error',
-        text: error.message || 'Something went wrong while deleting.'
+        title: t('error'),
+        text: error.message || t('delete_failed')
       });
     }
-  }
+  };
 
   return (
     <div className="p-4">
       {isLoading ? (
-        <div className="d-flex justify-content-center align-items-center" style={{ 
+        <div className="d-flex justify-content-center align-items-center" style={{
           position: 'fixed',
           top: 0,
           left: 0,
@@ -142,55 +144,38 @@ function VaccineTable() {
           backgroundColor: 'rgba(255, 255, 255, 0.8)',
           zIndex: 9999
         }}>
-          <Rings 
-            height="100"
-            width="100"
-            color="#88522e"
-            ariaLabel="loading-indicator"
-          />
+          <Rings height="100" width="100" color="#88522e" ariaLabel="loading-indicator" />
         </div>
       ) : (
         <>
           <div className='container'>
             <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4" style={{ marginTop: "140px" }}>
-              <h2 className="bottom-line pb-2" style={{ color: "#88522e" }}>Vaccine Records</h2>
-              <div className='d-flex flex-column flex-sm-row gap-2'>
-                <Link to='/vaccinebyanimal'>
-                  <button type="button" className="btn btn-lg d-flex align-items-center justify-content-center active button2" style={{ background: "#88522e", color: "white", borderColor: "#3a7d44" }}>
-                    <MdOutlineAddToPhotos /> Add New Vaccine by Animal
-                  </button>
-                </Link>
-                <Link to='/vaccinebylocationshed'>
-                  <button type="button" className="btn btn-lg active button2" style={{ background: "#88522e", color: "white", borderColor: "#3a7d44" }}>
-                    <MdOutlineAddToPhotos />+ by Location Shed
-                  </button>
-                </Link>
-              </div>
+              <h2 className="bottom-line pb-2" style={{ color: "#778983" }}>{t('Vaccine Records')}</h2>
             </div>
-       
-            <div className="d-flex flex-column flex-md-row align-items-center gap-2 mt-4 mb-4" style={{ flexWrap: 'nowrap' }}>
+
+            <div className="d-flex flex-column flex-md-row align-items-center gap-2 mt-4 mb-4">
               <input
                 type="text"
                 className="form-control"
                 value={searchCriteria.vaccineName}
-                placeholder="Search Vaccine Name"
+                placeholder={t("search_vaccine_name")}
                 onChange={(e) => setSearchCriteria(prev => ({ ...prev, vaccineName: e.target.value }))}
               />
               <input
                 type="text"
                 className="form-control"
                 value={searchCriteria.tagId}
-                placeholder="Search Tag ID"
+                placeholder={t("search_tag_id")}
                 onChange={(e) => setSearchCriteria(prev => ({ ...prev, tagId: e.target.value }))}
               />
               <input
                 type="text"
                 className="form-control"
                 value={searchCriteria.locationShed}
-                placeholder="Search Location Shed"
+                placeholder={t("search_location_shed")}
                 onChange={(e) => setSearchCriteria(prev => ({ ...prev, locationShed: e.target.value }))}
               />
-              <button className="btn" onClick={handleSearch} style={{ backgroundColor: '#88522e', borderColor: '#88522e', color: 'white' }}>
+              <button className="btn" onClick={handleSearch} style={{ backgroundColor: '#FAA96C', color: 'white' }}>
                 <i className="fas fa-search"></i>
               </button>
             </div>
@@ -198,51 +183,40 @@ function VaccineTable() {
 
           <div className="table-responsive">
             <div className="full-width-table">
-              <table className="table table-striped table-hover">
-                <thead className="table-dark">
+              <table className="table table-hover mt-3 p-2">
+                <thead>
                   <tr>
-                    <th scope="col">Tag ID</th>
-                    <th scope="col">Vaccine Name</th>
-                    <th scope="col">Dose Price</th>
-                    <th scope="col">Entry Type</th>
-                    <th scope="col">Date</th>
-                    <th scope="col">Location Shed</th>
-                    <th scope="col">Actions</th>s
+                    <th>{t('tag_id')}</th>
+                    <th>{t('vaccine_name')}</th>
+                    <th>{t('dose_price')}</th>
+                    <th>{t('Entry Type')}</th>
+                    <th>{t('date')}</th>
+                    <th>{t('location_shed')}</th>
+                    <th>{t('edit_vaccine')}</th>
+                    <th>{t('remove_vaccine')}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {vaccines.length > 0 ? (
                     vaccines.map(vaccine => (
-                      <tr key={vaccine._id} className="hover:bg-gray-50 transition">
+                      <tr key={vaccine._id}>
                         <td>{vaccine.tagId}</td>
                         <td>{vaccine.Vaccine?.vaccineName || '--'}</td>
                         <td>{vaccine.Vaccine?.pricing?.dosePrice || '--'}</td>
                         <td>{vaccine.entryType}</td>
                         <td>{new Date(vaccine.date).toLocaleDateString()}</td>
                         <td>{vaccine.locationShed?.locationShedName || '--'}</td>
-                      <td>
-                                                                     <div className="d-flex gap-2">
-                                                                         <button 
-                                                                             className="btn btn-sm btn-outline-primary"
-                                                                             onClick={() => editVaccine(vaccine._id)}
-                                                                             title="Edit"
-                                                                         >
-                                                                             <FaRegEdit />
-                                                                         </button>
-                                                                         <button 
-                                                                             className="btn btn-sm btn-outline-danger"
-                                                                             onClick={() => handleClick(vaccine._id)}
-                                                                             title="Delete"
-                                                                         >
-                                                                             <RiDeleteBin6Line />
-                                                                         </button>
-                                                                     </div>
-                                                                 </td>
+                        <td onClick={() => editVaccine(vaccine._id)} style={{ cursor: 'pointer' }} className='text-success'>
+                          <FaRegEdit /> {t('edit_vaccine')}
+                        </td>
+                        <td onClick={() => handleClick(vaccine._id)} className='text-danger' style={{ cursor: 'pointer' }}>
+                          <RiDeleteBin6Line /> {t('remove_vaccine')}
+                        </td>
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="8" className="text-center py-6 text-gray-500">No vaccine records found.</td>
+                      <td colSpan="8" className="text-center py-4 text-muted">{t('no_vaccine_records')}</td>
                     </tr>
                   )}
                 </tbody>
@@ -250,7 +224,7 @@ function VaccineTable() {
             </div>
           </div>
 
-          <div className="d-flex flex-wrap justify-content-center mt-4">
+          <div className="d-flex justify-content-center mt-4">
             <nav>
               <ul className="pagination">
                 {renderPaginationButtons()}

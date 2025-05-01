@@ -6,6 +6,7 @@ import { MdOutlineAddToPhotos } from "react-icons/md";
 import { ExcludedContext } from '../../Context/ExcludedContext';
 import { Rings } from 'react-loader-spinner';
 import Swal from 'sweetalert2';
+import { useTranslation } from 'react-i18next'; // استيراد الترجمة
 
 const NO_DATE = 'No Date';
 
@@ -19,6 +20,7 @@ function formatDate(date) {
 }
 
 function Excludedtable() {
+    const { t } = useTranslation(); // استخدام الترجمة
     const navigate = useNavigate();
     const { getExcluted, deleteExcluted } = useContext(ExcludedContext);
 
@@ -87,30 +89,30 @@ function Excludedtable() {
                     <Rings visible={true} height="100" width="100" color="#9cbd81" ariaLabel="rings-loading" />
                 </div>
             ) : (
-                <div className="container" >
-                <div className="title2">Excluted Records</div>
+                <div className="container">
+                    <div className="title2">{t("Excluted Records")}</div>
 
                     <div className="d-flex flex-column flex-md-row align-items-center gap-2 mt-4">
-                        <input type="text" className="form-control" value={searchCriteria.tagId} placeholder="Search Tag ID" onChange={(e) => setSearchCriteria(prev => ({ ...prev, tagId: e.target.value }))} />
-                        <input type="text" className="form-control" value={searchCriteria.animalType}z placeholder="Search animalType" onChange={(e) => setSearchCriteria(prev => ({ ...prev, animalType: e.target.value }))} />
+                        <input type="text" className="form-control" value={searchCriteria.tagId} placeholder={t("Search Tag ID")} onChange={(e) => setSearchCriteria(prev => ({ ...prev, tagId: e.target.value }))} />
+                        <input type="text" className="form-control" value={searchCriteria.animalType} placeholder={t("Search animalType")} onChange={(e) => setSearchCriteria(prev => ({ ...prev, animalType: e.target.value }))} />
                         <button className="btn" onClick={fetchExcluted} style={{ backgroundColor: '#FAA96C', color: 'white' }}>
                             <i className="fas fa-search"></i>
                         </button>
                     </div>
+
                     <div className="table-responsive">
                         <table className="table table-hover mt-3 p-2">
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>Date</th>
-                                    <th>tagId</th>
-                                    {/* <th>Animal Type</th> */}
-                                    <th>Excluded Type</th>
-                                    <th>Reason</th>
-                                    <th>Price</th>
-                                    <th>Weight</th>
-                                    <th>Edit</th>
-                                    <th>Remove</th>
+                                    <th>{t("Date")}</th>
+                                    <th> {t("Tag Id")}</th>
+                                    <th>{t("Excluded Type")}</th>
+                                    <th>{t("Reason")}</th>
+                                    <th>{t("Price")}</th>
+                                    <th>{t("Weight")}</th>
+                                    <th>{t('edit_Excluded')}</th>
+                                    <th>{t('remove_Excluded')}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -119,27 +121,23 @@ function Excludedtable() {
                                         <td>{(currentPage - 1) * animalsPerPage + index + 1}</td>
                                         <td>{formatDate(item.Date)}</td>
                                         <td>{item.tagId}</td>
-                                        {/* <td>{item.animalId ? item.animalId.animalType : "N/A"}</td> */}
-
                                         <td>{item.excludedType}</td>
-                                        <td>{item.reasoneOfDeath?item.reasoneOfDeath:"_"}</td>
-                                        <td>{item.price?item.price:"_"}</td>
+                                        <td>{item.reasoneOfDeath ? item.reasoneOfDeath : "_"}</td>
+                                        <td>{item.price ? item.price : "_"}</td>
                                         <td>{item.weight}</td>
-                                        <td>
-                                            <button className="btn" style={{ color: "#198754" }} onClick={() => editMating(item._id)}>
-                                                <FaRegEdit /> Edit
-                                            </button>
+
+                                        <td onClick={() => editMating(item._id)} style={{ cursor: 'pointer' }} className='text-success'>
+                                            <FaRegEdit /> {t('edit_Excluded')}
                                         </td>
-                                        <td>
-                                            <button className="btn" style={{ color: "#ff0000" }} onClick={() => handleClick(item._id)}>
-                                                <RiDeleteBin6Line /> Remove
-                                            </button>
+                                        <td onClick={() => handleClick(item._id)} className='text-danger' style={{ cursor: 'pointer' }}>
+                                            <RiDeleteBin6Line /> {t('remove_Excluded')}
                                         </td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
                     </div>
+
                     <div className="d-flex justify-content-center mt-4">
                         <nav>
                             <ul className="pagination">
@@ -158,7 +156,3 @@ function Excludedtable() {
 }
 
 export default Excludedtable;
-
-
-
-                                        
