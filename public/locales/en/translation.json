@@ -344,8 +344,88 @@
     "bottle_price": "Bottle Price",
     "dose_price": "Dose Price",
 
+    "remove": "Remove ",
+    "Vaccine_Records": "Vaccine Records",
+
 "dosage": "Dosage",
 "unit_price": "Unit Price",
-"total_cost": "Total Cost"
+"total_cost": "Total Cost",
+
+    "animalManagement": "ANIMAL MANAGEMENT",
+    "animal": "Animal",
+    "animalsData": "Animals Data",
+    "addAnimal": "Add Animal",
+    "animalCost": "Animal Cost",
+
+    "healthAndBreeding": "HEALTH & BREEDING",
+    "matingData": "Mating Data",
+    "addMating": "Add Mating",
+    "addByLocationShed": "Add by Location Shed",
+
+    "vaccineData": "Vaccine Data",
+    "addByAnimal": "Add by Animal",
+    "addVaccineByLocation": "Add by Location Shed",
+
+    "treatmentData": "Treatment Data",
+    "addTreatment": "Add by Treatment",
+    "showByAnimal": "Show by Animal",
+    "addTreatmentByAnimal": "Add by Animal",
+    "addTreatmentByLocation": "Add by Location Shed",
+
+    "weightData": "Weight Data",
+    "addWeight": "Add Weight",
+
+    "breedingData": "Breeding Data",
+    "addBreeding": "Add Breeding",
+
+    "feedingAndReports": "FEEDING & REPORTS",
+    "feedingData": "Feeding Data",
+    "addFeeding": "Add Feeding",
+    "dataByLocation": "Data by Location",
+    "addFeedingByLocation": "Add by Location",
+
+    "fodderData": "Fodder Data",
+    "addFodder": "Add Fodder",
+
+    "reports": "Reports",
+    "dailyReports": "Daily Reports",
+
+    "system": "SYSTEM",
+    "excludedData": "Excluded Data",
+    "addExcluded": "Add Excluded",
+
+    "version": "FarmOS v2.4.1",
+    "tag1": "Management",
+    "tag2": "Agriculture",
+
+
+    "fodder.title": "Fodder",
+    "fodder.searchPlaceholder": "Search by Name",
+    "fodder.searchButton": "Search",
+    "fodder.table.index": "#",
+    "fodder.table.name": "Name",
+    "fodder.table.components": "Components",
+    "fodder.table.totalQuantity": "Total Quantity",
+    "fodder.table.totalPrice": "Total Price",
+    "fodder.table.edit": "Edit Fodder",
+    "fodder.table.remove": "Remove Fodder",
+    "fodder.table.noData": "No Fodder found.",
+    "fodder.delete.confirmTitle": "Are you sure?",
+    "fodder.delete.confirmText": "You won't be able to revert this!",
+    "fodder.delete.confirmButton": "Yes, delete it!",
+    "fodder.delete.success": "Fodder has been deleted.",
+    "fodder.delete.error": "Failed to delete fodder.",
+    "fodder.fetch.error": "Failed to fetch data",
+
+    "editFodder": "Edit Fodder",
+    "enterFeedName": "Enter feed name",
+    "feedName": "Feed Name",
+    "selectFeed": "Select Feed",
+    "enterQuantity": "Enter quantity",
+    "successMessage": "Fodder data updated successfully!",
+    "fetchFeedError": "Failed to load feed data",
+    "fetchFodderError": "Failed to fetch fodder details.",
+    "submitError": "An error occurred",
+    "fodderTitle": "Fodder"
 
 }
