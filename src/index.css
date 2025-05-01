@@ -245,6 +245,8 @@ code {
   padding: 80px 0 0;
 }
 
+
+
 .contact h2 {
   font-size: 1.8rem;
   color: #3f5c40;
@@ -256,6 +258,7 @@ code {
   color: #778983;
   font-size: 15px;
 }
+
 .row2 {
   margin: 60px 0 90px;
   display: flex;
@@ -305,7 +308,13 @@ code {
 .add-record-btn {
   display: flex;
   align-items: center;
-  background-color: #778983; /* Blue button */
+
+
+
+  background-color: #FAA96C; /* Blue button */
+
+
+
   color: white;
   border: none;
   border-radius: 5px;
@@ -502,7 +511,9 @@ code {
   height: 2px;
   width: 75%;
   border-radius: 5px;
+
   background-color: #778983 ;
+
 }
 .full-width-table {
   max-width: 92%;
@@ -550,6 +561,7 @@ code {
 }
 
 
+
 .title-v{
 
   font-size: 28px;
@@ -570,9 +582,11 @@ code {
 }
 
 
+
 .vaccine{
   margin-top: 90px;
 }
+
 
 
 .title-v{
@@ -598,6 +612,8 @@ code {
 .vaccine{
   margin-top: 90px;
 }
+
+
 
 
 .user-details{

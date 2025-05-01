@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { UserContext } from "../../Context/UserContext";
 import { jwtDecode } from 'jwt-decode';
+import style from "./Login.module.css";
 
 export default function Login() {
   let { setAuthorization } = useContext(UserContext);
@@ -21,24 +22,17 @@ export default function Login() {
 
       if (data.status === "success") {
         setIsLoading(false);
+        const decodedToken = jwtDecode(data.data.token);
         localStorage.setItem("Authorization", data.data.token);
         setAuthorization(data.data.token);
-
-      
-        const decodedToken = jwtDecode(data.data.token);
+        console.log("Decoded Token:", decodedToken);
         const userRole = decodedToken.role;
 
-      
         if (userRole === "admin") {
           navigate("/dashboard");
-        } else if (userRole === "user") {
-          navigate("/");
         } else {
-     
           navigate("/");
         }
-
-        console.log(data);
       }
     } catch (err) {
       setIsLoading(false);
@@ -46,32 +40,40 @@ export default function Login() {
     }
   }
 
-  // let validation = Yup.object({
-  //   email: Yup.string().email("Invalid email").required("Email is required"),
-  //   password: Yup.string()
-  //     .required("No password provided.")
-  //     .min(4, "Password is too short - should be 4 chars minimum.")
-  //     .matches(/[a-zA-Z]/, "Password can only contain Latin letters."),
-  // });
-
   let formik = useFormik({
     initialValues: {
       email: "",
       password: "",
     },
-    // validationSchema: validation,
     onSubmit: submitLogin,
+    validateOnMount: true, // Add this to ensure validation runs on mount
   });
 
+  React.useEffect(() => {
+    formik.setValues({
+      email: '',
+      password: ''
+    });
+    formik.setTouched({});
+    formik.setErrors({});
+  }, []);
+
+  React.useEffect(() => {
+    formik.resetForm();
+    // Clear any potential stored values from localStorage/sessionStorage
+    localStorage.removeItem('formData');
+    sessionStorage.removeItem('formData');
+  }, []);
+
   return (
-    <div className="body">
-      <div className="container2">
-        <div className="title">Login</div>
+    <div className={style.body}>
+      <div className={style.container3}>
+        <div className={style.title3}>Login</div>
         <p className="text-danger">{error}</p>
-        <form onSubmit={formik.handleSubmit}>
-          <div className="user-detail">
-            <div className="input-box2">
-              <label className="label" htmlFor="email">Email</label>
+        <form onSubmit={formik.handleSubmit} className={style.content3}>
+          <div className={style.user_details3}>
+            <div className={style.input_box3}>
+              <label htmlFor="email" className={style.details3}>Email</label>
               <input
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
@@ -79,16 +81,16 @@ export default function Login() {
                 placeholder="Enter your email"
                 id="email"
                 type="text"
-                className="input"
                 name="email"
+                className={style.input3}
               />
               {formik.errors.email && formik.touched.email ? (
                 <p className="text-danger">{formik.errors.email}</p>
               ) : null}
             </div>
 
-            <div className="input-box2">
-              <label className="label" htmlFor="password">Password</label>
+            <div className={style.input_box3}>
+              <label htmlFor="password" className={style.details3}>Password</label>
               <input
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
@@ -96,8 +98,8 @@ export default function Login() {
                 placeholder="Enter your password"
                 id="password"
                 type="password"
-                className="input"
                 name="password"
+                className={style.input3}
               />
               {formik.errors.password && formik.touched.password ? (
                 <p className="text-danger">{formik.errors.password}</p>
@@ -105,26 +107,35 @@ export default function Login() {
             </div>
           </div>
 
-          <div className="divbutton">
+          <div className={style.divbutton3}>
             {isLoading ? (
-              <button type="button" className="button">
+              <button type="button" className={style.button3}>
                 <i className="fas fa-spinner fa-spin"></i>
               </button>
             ) : (
               <>
+              
+              <div className="d-flex justify-content-between mt-3">
+                  <Link 
+                  className="btn btn-link" 
+                  to="/register"
+                  onClick={() => {
+                  formik.resetForm();
+                  navigate('/register', { replace: true }); // Add replace option
+                  }}>Register New
+                  </Link>
+                  <Link className="btn btn-link" to="/forgetpassword">
+                    Forget Password
+                  </Link>
+                </div>
+                
                 <button
                   disabled={!(formik.isValid && formik.dirty)}
                   type="submit"
-                  className="button"
+                  className={style.button3}
                 >
                   Submit
                 </button>
-                <div className=" d-flex btnss">
-                  <Link className="btn" to="/register">
-                    Register New
-                  </Link>
-                  <Link className="btn" to="/forgetpassword">Forget Password</Link>
-                </div>
               </>
             )}
           </div>

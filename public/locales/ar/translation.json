@@ -1,4 +1,3 @@
-
 {
     "welcome": "مرحبًا بكم في المزرعة",
     "description": "نحن نزرع منتجات طازجة وعضوية.",
@@ -382,6 +381,7 @@
     "title": "خدمات التطعيم",
     "showTitle": "عرض البيانات",
     "showDescription": "جميع تفاصيل التطعيم",
+    "showDescription2": "جميع تفاصيل التطعيم باسم الحيوان ومكان الحظيره",
     "showButton": "اذهب إلى بيانات التطعيم",
     "addByAnimalTitle": "إضافة حسب الحيوان",
     "addByAnimalDescription": "إضافة التفاصيل حسب الحيوان",
@@ -433,7 +433,92 @@
     "bottle_price": "سعر الزجاجة",
     "dose_price": "سعر الجرعة",
 
+    "remove": "حذف",
+    "Vaccine_Records": "سجلات اللقاحات",
 
+    "dosage": "الجرعة",
+    "unit_price": "سعر الوحدة",
+    "total_cost": "التكلفة الإجمالية",
+
+    "animalManagement": "إدارة الحيوانات",
+    "animal": "الحيوان",
+    "animalsData": "بيانات الحيوانات",
+    "addAnimal": "إضافة حيوان",
+    "animalCost": "تكلفة الحيوان",
+
+    "healthAndBreeding": "الصحة والتكاثر",
+    "matingData": "بيانات التزاوج",
+    "addMating": "إضافة تزاوج",
+    "addByLocationShed": "إضافة حسب الحظيرة",
+
+    "vaccineData": "بيانات اللقاحات",
+    "addByAnimal": "إضافة حسب الحيوان",
+    "addVaccineByLocation": "إضافة حسب الحظيرة",
+
+    "treatmentData": "بيانات العلاج",
+    "addTreatment": "إضافة حسب العلاج",
+    "showByAnimal": "عرض حسب الحيوان",
+    "addTreatmentByAnimal": "إضافة حسب الحيوان",
+    "addTreatmentByLocation": "إضافة حسب الحظيرة",
+
+    "weightData": "بيانات الوزن",
+    "addWeight": "إضافة وزن",
+
+    "breedingData": "بيانات التكاثر",
+    "addBreeding": "إضافة تكاثر",
+
+    "feedingAndReports": "التغذية والتقارير",
+    "feedingData": "بيانات التغذية",
+    "addFeeding": "إضافة تغذية",
+    "dataByLocation": "بيانات حسب الحظيرة",
+    "addFeedingByLocation": "إضافة حسب الحظيرة",
+
+    "fodderData": "بيانات العلف",
+    "addFodder": "إضافة علف",
+
+    "reports": "التقارير",
+    "dailyReports": "التقارير اليومية",
+
+    "system": "النظام",
+    "excludedData": "بيانات المستبعدين",
+    "addExcluded": "إضافة مستبعد",
+
+    "version": "FarmOS الإصدار 2.4.1",
+    "tag1": "الإدارة",
+    "tag2": "الزراعة",
+
+    
+    "fodder.title": "العلف",
+    "fodder.searchPlaceholder": "ابحث بالاسم",
+    "fodder.searchButton": "بحث",
+    "fodder.table.index": "#",
+    "fodder.table.name": "الاسم",
+    "fodder.table.components": "المكونات",
+    "fodder.table.totalQuantity": "إجمالي الكمية",
+    "fodder.table.totalPrice": "إجمالي السعر",
+    "fodder.table.edit": "تعديل العلف",
+    "fodder.table.remove": "حذف العلف",
+    "fodder.table.noData": "لا يوجد علف.",
+    "fodder.delete.confirmTitle": "هل أنت متأكد؟",
+    "fodder.delete.confirmText": "لن تتمكن من التراجع عن هذا!",
+    "fodder.delete.confirmButton": "نعم، احذفه!",
+    "fodder.delete.success": "تم حذف العلف.",
+    "fodder.delete.error": "فشل في حذف العلف.",
+    "fodder.fetch.error": "فشل في جلب البيانات",
+
+    "editFodder": "تعديل العلف",
+    "enterFeedName": "أدخل اسم العلف",
+    "feedName": "اسم العلف",
+    "selectFeed": "اختر العلف",
+    "enterQuantity": "أدخل الكمية",
+    "successMessage": "تم تحديث بيانات العلف بنجاح!",
+    "successMessage-breeding":"تم تحديث بيانات المولوم بنجاح!",
+    "fetchFeedError": "فشل في تحميل بيانات العلف",
+    "fetchFodderError": "فشل في جلب تفاصيل العلف.",
+    "submitError": "حدث خطأ ما",
+
+    "fodderTitle": "العلف",
+    
 
   "Enter your delivery state": "أدخل حالة الولادة",
   "Enter your delivery date": "أدخل تاريخ الولادة",
@@ -534,5 +619,17 @@
   "Go to Excluded Data": "الذهاب إلى بيانات المستبعدين",
   "Add Excluded": "إضافة مستبعد",
   "Add Details of Excluded": "إضافة تفاصيل المستبعد",
-  "Go to Add Excluded": "الذهاب لإضافة مستبعد"
+  "Go to Add Excluded": "الذهاب لإضافة مستبعد",
+
+  "Normal":"طبيعيه",
+  "Difficult":"متعسرة",
+  "Assisted":"طبيعيه ب مساعده",
+  "Caesarean":"قيصرية",
+  "Search Entry Type":"البحث باستخدام نوع الادخال",
+  "Add New Vaccine":"إضافة لقاح جديد",
+  "showDescription-v":"ادخل بينات اللقاح"
+
 }
+
+
+

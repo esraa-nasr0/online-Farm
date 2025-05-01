@@ -126,12 +126,21 @@ function EditVaccine() {
                 <div className="card-body">
                     {error && <div className="alert alert-danger">{error}</div>}
                     <form onSubmit={formik.handleSubmit}>
+
+                         <div className='d-flex vaccine align-items-center justify-content-between'>
+                                            <h2 className="title-v">Edit Vaccine</h2>
+                                            <button type="submit" className="btn button2" disabled={isLoading}>
+                                                {isLoading ? <span className="btn button2"></span> : <><IoIosSave /> Save</>}
+                                            </button>
+                                        </div>
+
                         <div className='d-flex vaccine align-items-center justify-content-between'>
                             <h2 className="title-v">{t("Edit Vaccine")}</h2>
                                 <button type="submit" className="btn button2">
                                                   <IoIosSave /> {t("save")}
                                               </button>
                         </div>
+
                         <div className="row g-3">
                             <div className="mb-3 input-box">
                                 <label htmlFor="tagId" className="form-label fw-bold">{t("animal_tag_id")}</label>

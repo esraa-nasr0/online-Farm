@@ -44,7 +44,7 @@ function BreedingServices() {
 
             </div>
         </div>
-    )
+    );
 }
 
 export default BreedingServices;
