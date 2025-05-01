@@ -11,7 +11,7 @@ function ProtectedRoute({ children, allowedRoles }) {
 
     if (token) {
       try {
-        // Decode the token to get the user's role
+      
         const decodedToken = jwtDecode(token);
         const userRole = decodedToken.role;
 

@@ -384,6 +384,19 @@ code {
 /* contact us */
 
 
+
+.contact h2 {
+  font-size: 1.8rem;
+  color: #3f5c40;
+}
+.contact h5{
+  color: #3f5c40;
+}
+.contact p {
+  color: #778983;
+  font-size: 15px;
+}
+
 .row2 {
   margin: 60px 0 90px;
   display: flex;
@@ -433,7 +446,11 @@ code {
 .add-record-btn {
   display: flex;
   align-items: center;
+
   background-color: #FAA96C; /* Blue button */
+
+  background-color: #778983; /* Blue button */
+
   color: white;
   border: none;
   border-radius: 5px;
@@ -706,7 +723,10 @@ code {
   font-size: 28px;
   font-weight: 500;
   position: relative;
+
   color: #FAA96C !important ;
+
+  color: #778983  ;
 }
 .bottom-line::before{
   
@@ -717,7 +737,11 @@ code {
   height: 2px;
   width: 75%;
   border-radius: 5px;
+
   background-color: #FAA96C !important;
+
+  background-color: #778983 ;
+
 }
 .full-width-table {
   max-width: 92%;
@@ -764,9 +788,62 @@ code {
   }
 }
 
+
+
+
+.title-v{
+
+  font-size: 28px;
+  font-weight: 500;
+  position: relative;
+  color: #778983 !important ;
+}
+.title-v::before{
+  
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 50%;
+  border-radius: 5px;
+  background-color: #778983 !important;
+}
+
+
+
 .vaccine{
   margin-top: 90px;
 }
+
+
+
+
+.title-v{
+  /* margin-top: 20px; */
+  font-size: 28px;
+  font-weight: 500;
+  position: relative;
+  color: #778983 !important ;
+}
+.title-v::before{
+  
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 50%;
+  border-radius: 5px;
+  background-color: #778983 !important;
+}
+
+
+.vaccine{
+  margin-top: 90px;
+}
+
+
 
 .user-details{
   
@@ -950,5 +1027,3 @@ code {
 .nav-item {
   margin: 0 0.5rem;
 }
-
-

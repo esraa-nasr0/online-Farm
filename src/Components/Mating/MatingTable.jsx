@@ -29,7 +29,7 @@ function MatingTable() {
         sonarDate :'',
     });
     const [matings, setMatings] = useState([]);
-    const [pagination, setPagination] = useState({ totalPages: 1 }); // حالة جديدة لتخزين معلومات الصفحات
+    const [pagination, setPagination] = useState({ totalPages: 1 }); 
 
     async function fetchMating() {
         setIsLoading(true);
@@ -43,10 +43,10 @@ function MatingTable() {
             };
             const { data } = await getMating(currentPage, animalsPerPage, filters);
             setMatings(data.data.mating);
-            setPagination(data.pagination || { totalPages: 1 }); // Ensure pagination is defined with a fallback value
-            const total = data.pagination?.totalPages || 1; // Use optional chaining with a fallback
+            setPagination(data.pagination || { totalPages: 1 }); 
+            const total = data.pagination?.totalPages || 1;
             console.log("Calculated Total Pages:", total);
-            setTotalPages(total); // Update total pages
+            setTotalPages(total); 
         } catch (error) {
             Swal.fire(t('error'), t('fetch_error'), 'error');
         } finally {
@@ -86,13 +86,12 @@ function MatingTable() {
         navigate(`/editMating/${id}`);
     };
 
-    // البحث
+
     const handleSearch = () => {
-        setCurrentPage(1); // العودة إلى الصفحة الأولى عند البحث
+        setCurrentPage(1); 
         fetchMating();
     };
 
-    // تغيير الصفحة
     const paginate = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
@@ -100,8 +99,8 @@ function MatingTable() {
     // عرض أزرار الصفحات
     const renderPaginationButtons = () => {
         const buttons = [];
-        const total = pagination?.totalPages || 1; // Use optional chaining and fallback to 1 if undefined
-        for (let i = 1; i <= total; i++) { // use `total` instead of `totalPages`
+        const total = pagination?.totalPages || 1; 
+        for (let i = 1; i <= total; i++) { 
             buttons.push(
                 <li key={i} className={`page-item ${i === currentPage ? 'active' : ''}`}>
                     <button className="page-link" onClick={() => paginate(i)}>
