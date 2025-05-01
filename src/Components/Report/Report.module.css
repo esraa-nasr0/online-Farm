@@ -1,0 +1,140 @@
+/* Report.module.css */  
+
+.container {  
+    padding: 20px;  
+    font-family: Arial, sans-serif;  
+}  
+
+.title { 
+    margin-top: 50px;
+    font-size: 28px;
+    font-weight: 500;
+    position: relative;
+    color: #778983 !important ;
+}  
+
+.button {  
+    margin-top: 30px;
+    background-color: #FAA96C !important;
+    color: #ffffff;  
+    border: none;  
+    padding: 10px 20px;  
+    cursor: pointer;  
+    border-radius: 5px;  
+    font-size: 16px;  
+    margin-bottom: 20px;  
+}  
+
+.button:hover {  
+    background-color: #FAA96C;  
+}  
+
+.animalData {  
+    display: flex;  
+    gap: 20px;  
+    margin-bottom: 20px;  
+}  
+
+.inputBox {  
+    flex: 1;  
+}  
+
+.label {  
+    display: block;  
+    margin-bottom: 5px;  
+    font-weight: bold;  
+}  
+
+.input {  
+    width: 100%;  
+    padding: 10px;  
+    border: 1px solid #ccc;  
+    border-radius: 4px;  
+}  
+
+.reportGrid {  
+    display: grid;  
+    grid-template-columns: repeat(2, 1fr);  /* تعديل عدد الأعمدة إلى عمودين */  
+    gap: 20px;  
+}  
+
+.card {  
+    border: 1px solid #ddd;  
+    border-radius: 4px;  
+    padding: 15px;  
+    background-color: #fff;  
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);  
+    margin-bottom: 20px;  
+}  
+
+.sectionTitle {  
+    font-size: 18px;  
+    margin-bottom: 10px;  
+    color: #778983;  
+    font-weight: bold;  
+}  
+
+.table {  
+    width: 100%;  
+    border-collapse: collapse;  
+    margin-top: 10px;  
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);  
+}  
+
+.table th, .table td {  
+    border: 1px solid #ddd;  
+    padding: 10px;  
+    text-align: left;  
+}  
+
+.table th {  
+    background-color: #f2f2f2;  
+}  
+
+.summaryItem {  
+    display: flex;  
+    align-items: baseline; /* استخدم this لجعل الكرة ترتفع قليلاً */  
+    margin-bottom: 4px; /* زيادة الفجوة بين العناصر */  
+}  
+
+.colorDot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    margin-right: 10px;
+    transform: translateY(-0px);
+}  
+
+/* الألوان المستخدمة في Current Status */  
+.animal{
+    background-color: #08095e; /* أزرق */  
+
+}
+.male {  
+    background-color: #f3f395; /* أزرق */  
+}  
+
+.female {  
+    background-color: #fce5a5; /* وردي */  
+}  
+
+.pregnant {  
+    background-color: #41e1a9; /* أصفر */  
+}  
+
+.excluded {  
+    background-color: #e70505; /* أحمر */  
+}  
+
+.birthMales {  
+    background-color: #4169E1; /* أزرق غامق للذكور المولودين */  
+}  
+
+.birthFemales {  
+    background-color: #81a9d1; /* أزرق فاتح للإناث المولودات */  
+}  
+@media (max-width: 768px) {  
+    .animalData {  
+        flex-direction: column;  
+    }  
+}  

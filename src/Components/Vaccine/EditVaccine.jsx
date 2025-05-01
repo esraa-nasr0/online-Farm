@@ -100,7 +100,7 @@ function EditVaccine() {
                 <h2 className="title-v">Edit Vaccine</h2>
                 <button 
                     type="submit" 
-                    className="btn btn-primary" 
+                    className="btn button2" 
                     disabled={isLoading}
                     onClick={formik.handleSubmit}
                 >

@@ -9,7 +9,7 @@ function BreedingServices() {
 
     return (
         <div className='section'>
-            <h2>{t("Breeding Services")}</h2>
+            <h2>{t('breeding_services')}</h2>
             <div className="content">
 
                 <div className="card2">
@@ -18,10 +18,10 @@ function BreedingServices() {
                             <GoTable />
                         </div>
                         <div className="info">
-                            <h3>{t("Show Data")}</h3>
-                            <p>{t("All the Details of Breeding")}</p>
+                            <h3>{t('breeding')}</h3>
+                            <p>{t('enter_breeding_data')}</p>
                             <button className='btn mb-2 me-2' style={{ backgroundColor: '#FAA96C', color: 'white' }}>
-                                {t("Go to Breeding Data")}
+                                {t('go_to_breeding')}
                             </button>
                         </div>
                     </Link>
@@ -33,10 +33,10 @@ function BreedingServices() {
                             <IoAddCircleOutline />
                         </div>
                         <div className="info">
-                            <h3>{t("Add Breeding")}</h3>
-                            <p>{t("Add Details of Breeding")}</p>
+                            <h3>{t('add_breeding')}</h3>
+                            <p>{t('enter_breeding_data')}</p>
                             <button className='btn mb-2 me-2' style={{ backgroundColor: '#FAA96C', color: 'white' }}>
-                                {t("Go to Add Breeding")}
+                                {t('go_to_add_breeding')}
                             </button>
                         </div>
                     </Link>
@@ -44,7 +44,7 @@ function BreedingServices() {
 
             </div>
         </div>
-    )
+    );
 }
 
 export default BreedingServices;
