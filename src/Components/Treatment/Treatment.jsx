@@ -4,27 +4,29 @@ import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 import { IoIosSave } from "react-icons/io";
 import * as Yup from 'yup';
+import { useTranslation } from 'react-i18next';
 
 function Treatment() {
+    const { t } = useTranslation();
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [treatmentData, setTreatmentData] = useState(null);
+    const [isSubmitted, setIsSubmitted] = useState(false); // حالة جديدة لتتبع الإرسال
 
-    
-// Helper function to generate headers with the latest token
-const getHeaders = () => {
-    const Authorization = localStorage.getItem('Authorization');
-  
-    // Ensure the token has only one "Bearer" prefix
-    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-  
-    return {
-        Authorization: formattedToken
+    // Helper function to generate headers with the latest token
+    const getHeaders = () => {
+        const Authorization = localStorage.getItem('Authorization');
+        const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+        return { Authorization: formattedToken };
     };
-  };
 
     async function submitTreatment(values) {
-        const headers = getHeaders(); // Get the latest headers
+        // إذا كانت البيانات قد أرسلت بالفعل، لا تفعل شيئاً
+        if (isSubmitted) {
+            return;
+        }
+
+        const headers = getHeaders();
         setIsLoading(true);
         setError(null);
         try {
@@ -36,26 +38,34 @@ const getHeaders = () => {
 
             if (data.status === "success") {
                 setIsLoading(false);
-                console.log(data.data.treatment);
+                setIsSubmitted(true); // تحديث حالة الإرسال
                 setTreatmentData(data.data.treatment);
+                formik.resetForm(); // إعادة تعيين النموذج بعد النجاح
+                
                 Swal.fire({
-                    title: 'Success!',
-                    text: 'Treatment data added successfully!',
+                    title: t('success'),
+                    text: t('treatment_success_message'), // تغيير الرسالة لتكون خاصة بالعلاج
                     icon: 'success',
-                    confirmButtonText: 'OK',
+                    confirmButtonText: t('ok'),
                 });
             }
         } catch (err) {
             setIsLoading(false);
-            setError(err.response?.data?.message || 'An error occurred');
+            setError(err.response?.data?.message || t('error_message'));
         }
     }
     
     const validationSchema = Yup.object({
-        name: Yup.string().required('Name is required'),
-        type: Yup.string().required('Type is required'),
-        volume: Yup.number().required('Volume is required').positive('Volume must be positive'),
-        price: Yup.number().required('Price is required').positive('Price must be positive'),
+        name: Yup.string().required(t('name_required')),
+        type: Yup.string().required(t('type_required')),
+        volume: Yup.number()
+            .required(t('volume_required'))
+            .positive(t('volume_positive'))
+            .typeError(t('volume_must_be_number')), // رسالة خطأ عند إدخال غير رقمي
+        price: Yup.number()
+            .required(t('price_required'))
+            .positive(t('price_positive'))
+            .typeError(t('price_must_be_number')), // رسالة خطأ عند إدخال غير رقمي
     });
 
     const formik = useFormik({
@@ -69,88 +79,131 @@ const getHeaders = () => {
         onSubmit: submitTreatment,
     });
 
+    // دالة لإعادة تعيين النموذج والسماح بإدخال جديد
+    const resetForm = () => {
+        formik.resetForm();
+        setIsSubmitted(false);
+        setTreatmentData(null);
+    };
+
     return (
         <div className='container'>
-            <div className="title2">Treatment</div>
+            <div className="title2">{t('treatment')}</div>
             {error && <p className="text-danger">{error}</p>}
+            
+            {treatmentData && (
+                <div className="alert mt-3 alert-success">
+                    {t('treatment_added_successfully')}: {treatmentData.name}
+                </div>
+            )}
+
             <form onSubmit={formik.handleSubmit} className='mt-5'>
-                {isLoading ? (
-                    <button type="submit" className="btn button2" disabled>
-                        <i className="fas fa-spinner fa-spin"></i>
-                    </button>
-                ) : (
-                    <button type="submit" className="btn button2">
-                        <IoIosSave /> Save
-                    </button>
-                )}
+                <div className='d-flex justify-content-between mb-4'>
+                    {isLoading ? (
+                        <button type="submit" className="btn button2" disabled>
+                            <i className="fas fa-spinner fa-spin"></i> {t('saving')}
+                        </button>
+                    ) : (
+                        <button 
+                            type="submit" 
+                            className="btn button2"
+                            disabled={isSubmitted || !formik.isValid}
+                        >
+                            <IoIosSave /> {t('save')}
+                        </button>
+                    )}
+
+                    {/* زر إضافة علاج جديد */}
+                    {isSubmitted && (
+                        <button 
+                            type="button" 
+                            className="btn button2"
+                            onClick={resetForm}
+                        >
+                            {t('add_new_treatment')}
+                        </button>
+                    )}
+                </div>
 
                 <div className='animaldata'>
                     <div className="input-box">
-                        <label className="label" htmlFor="name">Name</label>
+                        <label className="label" htmlFor="name">{t('name')}</label>
                         <input
                             autoComplete="off"
                             onBlur={formik.handleBlur}
                             onChange={formik.handleChange}
                             value={formik.values.name}
                             id="name"
-                            placeholder="Enter The Treatment Name"
+                            placeholder={t('enter_treatment_name')}
                             type="text"
                             className="input2"
                             name="name"
-                            aria-label="Treatment Name"
+                            disabled={isSubmitted} // تعطيل الحقل إذا تم الإرسال
+                            aria-label={t('treatment_name')}
                         />
-                        {formik.errors.name && formik.touched.name && <p className="text-danger">{formik.errors.name}</p>}
+                        {formik.errors.name && formik.touched.name && (
+                            <p className="text-danger">{formik.errors.name}</p>
+                        )}
                     </div>
 
                     <div className="input-box">
-                        <label className="label" htmlFor="type">Type</label>
+                        <label className="label" htmlFor="type">{t('type')}</label>
                         <input
                             autoComplete="off"
                             onBlur={formik.handleBlur}
                             onChange={formik.handleChange}
                             value={formik.values.type}
                             id="type"
-                            placeholder="Enter The Treatment Type"
+                            placeholder={t('enter_treatment_type')}
                             type="text"
                             className="input2"
                             name="type"
-                            aria-label="Treatment Type"
+                            disabled={isSubmitted} // تعطيل الحقل إذا تم الإرسال
+                            aria-label={t('treatment_type')}
                         />
-                        {formik.errors.type && formik.touched.type && <p className="text-danger">{formik.errors.type}</p>}
+                        {formik.errors.type && formik.touched.type && (
+                            <p className="text-danger">{formik.errors.type}</p>
+                        )}
                     </div>
 
                     <div className="input-box">
-                        <label className="label" htmlFor="volume">Volume</label>
+                        <label className="label" htmlFor="volume">{t('volume')}</label>
                         <input
                             autoComplete="off"
                             onBlur={formik.handleBlur}
                             onChange={formik.handleChange}
                             value={formik.values.volume}
-                            placeholder="Enter The Treatment Volume"
+                            placeholder={t('enter_treatment_volume')}
                             id="volume"
                             type="number"
                             className="input2"
                             name="volume"
-                            aria-label="Treatment Volume"
+                            disabled={isSubmitted} // تعطيل الحقل إذا تم الإرسال
+                            aria-label={t('treatment_volume')}
                         />
-                        {formik.errors.volume && formik.touched.volume && <p className="text-danger">{formik.errors.volume}</p>}
+                        {formik.errors.volume && formik.touched.volume && (
+                            <p className="text-danger">{formik.errors.volume}</p>
+                        )}
                     </div>
 
                     <div className="input-box">
-                        <label className="label" htmlFor="price">Price</label>
+                        <label className="label" htmlFor="price">{t('price')}</label>
                         <input
                             autoComplete="off"
                             onBlur={formik.handleBlur}
                             onChange={formik.handleChange}
                             value={formik.values.price}
-                            placeholder="Enter The Treatment Price"
+                            placeholder={t('enter_treatment_price')}
                             id="price"
                             type="number"
                             className="input2"
                             name="price"
-                            aria-label="Treatment Price"
+                            disabled={isSubmitted} // تعطيل الحقل إذا تم الإرسال
+                            aria-label={t('treatment_price')}
                         />
-                        {formik.errors.price && formik.touched.price && <p className="text-danger">{formik.errors.price}</p>}
+                        {formik.errors.price && formik.touched.price && (
+                            <p className="text-danger">{formik.errors.price}</p>
+                        )}
                     </div>
                 </div>
             </form>

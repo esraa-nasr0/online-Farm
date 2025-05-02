@@ -1,0 +1,63 @@
+/* General Container for Statistics */  
+.statisticsContainer {  
+    display: flex;  
+    flex-wrap: wrap;  
+    gap: 4rem; /* Make this smaller for closer spacing */  
+    justify-content: center;  
+    margin-top: 2rem;  
+}  
+
+.card {
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(168, 168, 168, 0.2);
+    padding: 0.75rem;
+    width: 14rem;
+    display: flex;
+    flex-direction: column; /* اجعل العناصر داخل الكارد عمودية */
+    align-items: center; /* وسّط المحتوى أفقياً */
+    justify-content: center; /* وسّط المحتوى رأسياً */
+    text-align: center; /* وسّط النصوص */
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  
+  .icon {
+    font-size: 2.5rem;
+    margin-top: 1rem; /* مسافة بين النص والأيقونة */
+    color: #8ab864;
+  }
+  
+
+.card:hover {  
+    transform: translateY(-6px); /* A more pronounced hover effect */  
+    box-shadow: 0 8px 20px rgba(77, 77, 77, 0.3);  
+}  
+
+.totalAnimals {  
+    background-color: #f7f6d5; /* A soft light color */  
+}  
+
+.sheep {  
+    background-color: #e7eff9; /* Soft light blue */  
+}  
+
+.goat {  
+    background-color: #eafae0; /* Soft light green */  
+}  
+
+.statTitle {  
+    font-size: 1.75rem; /* Increased font size */  
+    font-weight: bold;  
+    color: #333; /* Darker text for contrast */  
+}  
+
+.statDescription {  
+    color: #555; /* Slightly darker gray */  
+    margin-top: 0.5rem; /* Adjusted margin */  
+}  
+
+
+
+.loadingText {  
+    color: #aaa; /* Softer loading text color */  
+    margin-top: 3rem;  
+}  

@@ -3,7 +3,7 @@ import React, { useContext, useState } from "react";
 import { useFormik } from "formik";
 import { Link, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
-import { UserContext } from "../../Context/UserContext";
+import style from "./Login.module.css";
 
 export default function Forgetpassword() {
 
@@ -49,14 +49,14 @@ let validation = Yup.object({
 });
 
 return (
-    <div className="body">
-    <div className="container2">
-        <div className="title">Enter Your Email</div>
+    <div className={style.body}>
+    <div className={style.container3}>
+        <div className={style.title3}>Enter Your Email</div>
         <p className="text-danger">{error}</p>
-        <form onSubmit={formik.handleSubmit}>
-        <div className="user-detail">
-            <div className="input-box2">
-            <label className="label" htmlFor="email">Email</label>
+        <form onSubmit={formik.handleSubmit} className={style.content3}>
+        <div className={style.user_details3}>
+            <div className={style.input_box3}>
+            <label className={style.details3} htmlFor="email">Email</label>
             <input
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
@@ -64,7 +64,7 @@ return (
                 placeholder="Enter your email"
                 id="email"
                 type="text"
-                className="input"
+                className={style.input3}
                 name="email"
             />
             {formik.errors.email && formik.touched.email ? (
@@ -74,9 +74,9 @@ return (
 
         </div>
 
-        <div className="divbutton">
+        <div className={style.divbutton3}>
             {isLoading ? (
-            <button type="button" className="button">
+            <button type="button" className={style.button3}>
                 <i className="fas fa-spinner fa-spin"></i>
             </button>
             ) : (
@@ -84,7 +84,7 @@ return (
                 <button
                 disabled={!(formik.isValid && formik.dirty)}
                 type="submit"
-                className="button"
+                className={style.button3}
                 >
                 Send
                 </button>
