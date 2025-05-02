@@ -139,7 +139,6 @@ export default function Animals() {
                             </button>
                         </div>
                     </div>
-
                     <div className="table-responsive">
                     <div className="full-width-table">
                     <table className="table table-hover mt-3 p-2">

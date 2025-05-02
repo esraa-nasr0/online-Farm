@@ -308,13 +308,7 @@ code {
 .add-record-btn {
   display: flex;
   align-items: center;
-
-
-
-  background-color: #FAA96C; /* Blue button */
-
-
-
+  background-color: #FAA96C; 
   color: white;
   border: none;
   border-radius: 5px;
@@ -332,7 +326,7 @@ code {
   justify-content: space-between;
   align-items: center;
   padding: 8px 0;
-  border-bottom: 1px solid #e0e0e0; /* Light border for each record */
+  border-bottom: 1px solid #e0e0e0; 
 }
 
 .mating-record-info {
@@ -351,7 +345,7 @@ code {
 }
 
 .edit-icon:hover, .delete-icon:hover {
-  color:#3f5c40; /* Darker shade on hover */
+  color:#3f5c40;
 }
 
 /* Pagination Controls */
