@@ -385,6 +385,8 @@ code {
 
 
 
+
+
 .contact h2 {
   font-size: 1.8rem;
   color: #3f5c40;
@@ -447,9 +449,13 @@ code {
   display: flex;
   align-items: center;
 
+
+
+
   background-color: #FAA96C; /* Blue button */
 
-  background-color: #778983; /* Blue button */
+
+
 
   color: white;
   border: none;
@@ -738,7 +744,6 @@ code {
   width: 75%;
   border-radius: 5px;
 
-  background-color: #FAA96C !important;
 
   background-color: #778983 ;
 
@@ -787,7 +792,6 @@ code {
     min-width: 48%; 
   }
 }
-
 
 
 
@@ -842,6 +846,7 @@ code {
 .vaccine{
   margin-top: 90px;
 }
+
 
 
 

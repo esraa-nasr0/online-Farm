@@ -67,7 +67,9 @@ function Excluded() {
             <div className="container">
 
 
+
                 <div className="title2">{t('add_excluded')}</div>
+
 
                 <p className="text-danger">{error}</p>
 
