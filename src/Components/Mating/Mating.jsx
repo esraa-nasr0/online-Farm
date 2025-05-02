@@ -10,6 +10,7 @@ function Mating() {
     const [error, setError] = useState(null);
     const [isLoading, setisLoading] = useState(false);
     const [matingData, setMatingData] = useState(null);
+    const [isSubmitted, setIsSubmitted] = useState(false); // حالة جديدة لتتبع الإرسال
     const { t } = useTranslation();
 
     const getHeaders = () => {
@@ -19,6 +20,11 @@ function Mating() {
     };
 
     async function submitMating(value) {
+        // إذا كانت البيانات قد أرسلت بالفعل، لا تفعل شيئاً
+        if (isSubmitted) {
+            return;
+        }
+
         const headers = getHeaders();
         setisLoading(true); 
         try {
@@ -27,14 +33,16 @@ function Mating() {
                 value,
                 { headers }
             );
-            console.log('Submitting form with values:', value);
-            console.log('Headers:', headers);
-            console.log('Response:', data);
 
             if (data.status === "success") {
                 setisLoading(false);
                 setMatingData(data.data.mating);
                 setShowAlert(true);
+                setIsSubmitted(true); // تحديث حالة الإرسال
+                
+                // إعادة تعيين النموذج
+                formik.resetForm();
+                
                 Swal.fire({
                     title: t('success_title'),
                     text: t('mating_success_message'),
@@ -43,6 +51,7 @@ function Mating() {
                 });
             }
         } catch (err) {
+            setisLoading(false);
             const errorMessage = err.response?.data?.message || t('error_message');
             setError(errorMessage);
         }
@@ -55,7 +64,7 @@ function Mating() {
             maleTag_id: '',
             matingDate: '',
             sonarDate: '',
-            sonarRsult: '',
+            sonarRsult: null,
         },
         onSubmit: submitMating
     });
@@ -76,37 +85,95 @@ function Mating() {
                         <i className="fas fa-spinner fa-spin"></i>
                     </button>
                 ) : (
-                    <button type="submit" className="btn button2">
+                    <button 
+                        type="submit" 
+                        className="btn button2"
+                        disabled={isSubmitted} // تعطيل الزر إذا تم الإرسال
+                    >
                         <IoIosSave /> {t('save')}
                     </button>
                 )}
                 <div className="animaldata">
                     <div className="input-box">
                         <label className="label" htmlFor="tagId">{t('female_tag_id')}</label>
-                        <input onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.tagId} placeholder={t('enter_tag_id')} id="tagId" type="text" className="input2" name="tagId" />
+                        <input 
+                            onBlur={formik.handleBlur} 
+                            onChange={formik.handleChange} 
+                            value={formik.values.tagId} 
+                            placeholder={t('enter_tag_id')} 
+                            id="tagId" 
+                            type="text" 
+                            className="input2" 
+                            name="tagId" 
+                            disabled={isSubmitted} // تعطيل الحقل إذا تم الإرسال
+                        />
                     </div>
                     <div className="input-box">
                         <label className="label" htmlFor="matingType">{t('mating_type')}</label>
-                        <select value={formik.values.matingType} onChange={formik.handleChange} onBlur={formik.handleBlur} className="input2" name="matingType" id="matingType">
+                        <select 
+                            value={formik.values.matingType} 
+                            onChange={formik.handleChange} 
+                            onBlur={formik.handleBlur} 
+                            className="input2" 
+                            name="matingType" 
+                            id="matingType"
+                            disabled={isSubmitted} // تعطيل الحقل إذا تم الإرسال
+                        >
                             <option value="">{t('mating_type')}</option>
                             <option value="Natural">{t('natural')}</option>
                         </select>
                     </div>
                     <div className="input-box">
                         <label className="label" htmlFor="maleTag_id">{t('male_tag_id')}</label>
-                        <input onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.maleTag_id} placeholder={t('enter_male_tag_id')} id="maleTag_id" type="text" className="input2" name="maleTag_id" />
+                        <input 
+                            onBlur={formik.handleBlur} 
+                            onChange={formik.handleChange} 
+                            value={formik.values.maleTag_id} 
+                            placeholder={t('enter_male_tag_id')} 
+                            id="maleTag_id" 
+                            type="text" 
+                            className="input2" 
+                            name="maleTag_id" 
+                            disabled={isSubmitted} // تعطيل الحقل إذا تم الإرسال
+                        />
                     </div>
                     <div className="input-box">
                         <label className="label" htmlFor="matingDate">{t('mating_date')}</label>
-                        <input onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.matingDate} id="matingDate" type="date" className="input2" name="matingDate" />
+                        <input 
+                            onBlur={formik.handleBlur} 
+                            onChange={formik.handleChange} 
+                            value={formik.values.matingDate} 
+                            id="matingDate" 
+                            type="date" 
+                            className="input2" 
+                            name="matingDate" 
+                            disabled={isSubmitted} // تعطيل الحقل إذا تم الإرسال
+                        />
                     </div>
                     <div className="input-box">
                         <label className="label" htmlFor="sonarDate">{t('sonar_date')}</label>
-                        <input onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.sonarDate} id="sonarDate" type="date" className="input2" name="sonarDate" />
+                        <input 
+                            onBlur={formik.handleBlur} 
+                            onChange={formik.handleChange} 
+                            value={formik.values.sonarDate} 
+                            id="sonarDate" 
+                            type="date" 
+                            className="input2" 
+                            name="sonarDate" 
+                            disabled={isSubmitted} // تعطيل الحقل إذا تم الإرسال
+                        />
                     </div>
                     <div className="input-box">
                         <label className="label" htmlFor="sonarRsult">{t('sonar_result')}</label>
-                        <select onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.sonarRsult} id="sonarRsult" className="input2" name="sonarRsult">
+                        <select 
+                            onBlur={formik.handleBlur} 
+                            onChange={formik.handleChange} 
+                            value={formik.values.sonarRsult} 
+                            id="sonarRsult" 
+                            className="input2" 
+                            name="sonarRsult"
+                            disabled={isSubmitted} // تعطيل الحقل إذا تم الإرسال
+                        >
                             <option value="" disabled>{t('select_sonar_result')}</option>
                             <option value="positive">{t('positive')}</option>
                             <option value="negative">{t('negative')}</option>

@@ -4,28 +4,24 @@ import React, { useState, useEffect, useContext } from 'react';
 import Swal from 'sweetalert2';
 import { IoIosSave } from 'react-icons/io';
 import { Feedcontext } from '../../Context/FeedContext';
+import { useTranslation } from 'react-i18next';
 
 export default function Fodder() {
+  const { t } = useTranslation();
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [fooderData, setFooderData] = useState(null);
   const [feeds, setFeeds] = useState([]);
   const { getFodderMenue } = useContext(Feedcontext);
+  const [isSubmitted, setIsSubmitted] = useState(false); // حالة جديدة لتتبع الإرسال
 
-  
-// Helper function to generate headers with the latest token
-const getHeaders = () => {
-  const Authorization = localStorage.getItem('Authorization');
 
-  // Ensure the token has only one "Bearer" prefix
-  const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-
-  return {
-      Authorization: formattedToken
+  const getHeaders = () => {
+    const Authorization = localStorage.getItem('Authorization');
+    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+    return { Authorization: formattedToken };
   };
-};
 
-  // Fetch the available feeds from the API
   const fetchFeeds = async () => {
     try {
       const { data } = await getFodderMenue();
@@ -33,7 +29,7 @@ const getHeaders = () => {
         setFeeds(data.data);
       }
     } catch (err) {
-      setError('Failed to load Feed data');
+      setError(t('fetchFeedError'));
     }
   };
 
@@ -42,7 +38,12 @@ const getHeaders = () => {
   }, [getFodderMenue]);
 
   async function submitFodder(value) {
-    const headers = getHeaders(); // Get the latest headers
+    
+    // إذا كانت البيانات قد أرسلت بالفعل، لا تفعل شيئاً
+    if (isSubmitted) {
+      return;
+    }
+    const headers = getHeaders();
     setIsLoading(true);
     setError(null);
     try {
@@ -54,18 +55,21 @@ const getHeaders = () => {
 
       if (data.status === 'success') {
         setIsLoading(false);
+        setIsSubmitted(true); // تحديث حالة الإرسال
+        formik.resetForm(); // إعادة تعيين النموذج
+        
         setFooderData(data.data.fodder);
         Swal.fire({
-          title: 'Success!',
-          text: 'Fodder data added successfully!',
+          title: t('successTitle'),
+          text: t('successMessage'),
           icon: 'success',
-          confirmButtonText: 'OK',
+          confirmButtonText: t('ok'),
         });
       }
     } catch (err) {
       setIsLoading(false);
-      setError(err.response?.data?.message);
-      console.log(err.response.data);
+      setError(err.response?.data?.message || t('submitError'));
+      console.log(err.response?.data);
     }
   }
 
@@ -78,19 +82,39 @@ const getHeaders = () => {
   });
 
   const addFeed = () => {
-    formik.setFieldValue('feeds', [...formik.values.feeds, { feedId: '', quantity: '' }]);
+    if (!isSubmitted) { // لا تسمح بإضافة علف إذا تم الإرسال
+      formik.setFieldValue('feeds', [...formik.values.feeds, { feedId: '', quantity: '' }]);
+    }
   };
 
   const handleFeedChange = (index, field, value) => {
-    const newFeeds = [...formik.values.feeds];
-    newFeeds[index][field] = value;
-    formik.setFieldValue('feeds', newFeeds);
+    if (!isSubmitted) { // لا تسمح بتعديل البيانات إذا تم الإرسال
+      const newFeeds = [...formik.values.feeds];
+      newFeeds[index][field] = field === 'quantity' ? Number(value) : value;
+      formik.setFieldValue('feeds', newFeeds);
+    }
+  };
+
+   // دالة لإعادة تعيين النموذج والسماح بإدخال جديد
+    const resetForm = () => {
+    formik.resetForm({
+      values: {
+        name: '',
+        feeds: [{ feedId: '', quantity: '' }],
+      }
+    });
+    setIsSubmitted(false);
   };
 
   return (
     <div className="container">
-      <div className="title2">Fodder</div>
+      <div className="title2">{t('fodderTitle')}</div>
       <p className="text-danger">{error}</p>
+      {isSubmitted && (
+        <div className="alert alert-success mt-3">
+          {t('fodderAddedSuccessfully')}
+        </div>
+      )}
 
       <form onSubmit={formik.handleSubmit}>
         {isLoading ? (
@@ -98,32 +122,34 @@ const getHeaders = () => {
             <i className="fas fa-spinner fa-spin"></i>
           </button>
         ) : (
-          <button type="submit" className="btn button2">
-            <IoIosSave /> Save
+          <button type="submit" className="btn button2" disabled={isLoading || isSubmitted || !formik.isValid}>
+            <IoIosSave /> {t('save')}
           </button>
         )}
+
         <div className="animaldata">
           <div className="input-box">
             <label className="label" htmlFor="name">
-              Name
+              {t('name')}
             </label>
             <input
               {...formik.getFieldProps('name')}
-              placeholder="Enter feed name"
+              placeholder={t('enterFeedName')}
               id="name"
               type="text"
               className="input2"
+              disabled={isSubmitted}
+
             />
             {formik.touched.name && formik.errors.name && (
               <p className="text-danger">{formik.errors.name}</p>
             )}
           </div>
 
-          {/* Loop through the feeds array to create a dynamic dropdown for each feed */}
           {formik.values.feeds.map((feed, index) => (
             <div key={index} className="input-box">
               <label className="label" htmlFor={`feeds[${index}].feedId`}>
-                Feed Name
+                {t('feedName')}
               </label>
               <select
                 id={`feeds[${index}].feedId`}
@@ -132,8 +158,10 @@ const getHeaders = () => {
                 value={feed.feedId}
                 onChange={(e) => handleFeedChange(index, 'feedId', e.target.value)}
                 onBlur={formik.handleBlur}
+                disabled={isSubmitted}
+
               >
-                <option value="">Select Feed</option>
+                <option value="">{t('selectFeed')}</option>
                 {feeds.map((feedOption) => (
                   <option key={feedOption._id} value={feedOption._id}>
                     {feedOption.name}
@@ -145,7 +173,7 @@ const getHeaders = () => {
               )}
 
               <label className="label" htmlFor={`feeds[${index}].quantity`}>
-                Quantity
+                {t('quantity')}
               </label>
               <input
                 type="number"
@@ -155,7 +183,9 @@ const getHeaders = () => {
                 value={feed.quantity}
                 onChange={(e) => handleFeedChange(index, 'quantity', e.target.value)}
                 onBlur={formik.handleBlur}
-                placeholder="Enter quantity"
+                placeholder={t('enterQuantity')}
+                disabled={isSubmitted}
+
               />
             </div>
           ))}

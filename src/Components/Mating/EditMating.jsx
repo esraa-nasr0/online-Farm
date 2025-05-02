@@ -24,43 +24,45 @@ const getHeaders = () => {
     };
 };
     
-    async function editMating(values) {
-        const headers = getHeaders(); // Get the latest headers
-        setisLoading(true); 
-        try {
-            const convertToISO = (dateString) => {
-                if (dateString && !isNaN(new Date(dateString))) {
-                    return new Date(dateString).toISOString();
-                }
-                return null;  
-            };
+async function editMating(values) {
+    const headers = getHeaders();
+    setisLoading(true); 
+    try {
+        const convertToISO = (dateString) => {
+            if (!dateString) return undefined; // Return undefined for empty dates
+            const date = new Date(dateString);
+            return isNaN(date) ? undefined : date.toISOString();
+        };
 
-            const updatedValues = {
-                ...values,
-                matingDate: convertToISO(values.matingDate),
-                sonarDate: convertToISO(values.sonarDate),
-                expectedDeliveryDate: convertToISO(values.expectedDeliveryDate), // Include this
-            };
-    
-            let { data } = await axios.patch(
-                `https://farm-project-bbzj.onrender.com/api/mating/UpdateMating/${id}`,
-                updatedValues,
-                { headers }
-            );
-            console.log('Submitting form with values:', updatedValues);
-    
-            if (data.status === "success") {
-                setisLoading(false);
-                setMatingData(data.data.mating); // Update state with new mating data
-                setShowAlert(true);
-            }
-        } catch (err) {
-            const errorMessage = err.response?.data?.message || "An error occurred while processing your request";
-            setError(errorMessage);
-            console.log(err.response?.data);
-            setisLoading(false); // Reset loading state on error
+        const updatedValues = {
+            ...values,
+            matingDate: convertToISO(values.matingDate),
+            sonarDate: convertToISO(values.sonarDate),
+            expectedDeliveryDate: convertToISO(values.expectedDeliveryDate),
+        };
+        // Remove undefined values from the payload
+        const payload = Object.fromEntries(
+            Object.entries(updatedValues).filter(([_, v]) => v !== undefined)
+        );
+        console.log('Submitting form with values:', payload);
+        let { data } = await axios.patch(
+            `https://farm-project-bbzj.onrender.com/api/mating/UpdateMating/${id}`,
+            payload,
+            { headers }
+        );
+
+        if (data.status === "success") {
+            setisLoading(false);
+            setMatingData(data.data.mating);
+            setShowAlert(true);
         }
+    } catch (err) {
+        const errorMessage = err.response?.data?.message || "An error occurred while processing your request";
+        setError(errorMessage);
+        console.log(err.response?.data);
+        setisLoading(false);
     }
+}
 
     useEffect(() => {
         async function fetchAnimal() {
@@ -103,7 +105,7 @@ const getHeaders = () => {
             maleTag_id: '',
             matingDate: '',
             sonarDate: '',
-            sonarRsult: '',
+            sonarRsult: null,
             expectedDeliveryDate: '', // Initialize this in the formik initial values
         },
         onSubmit: (values) => editMating(values),

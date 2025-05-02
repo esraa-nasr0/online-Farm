@@ -129,11 +129,11 @@ function FeedingTable() {
             <tr>
                 <th scope="col">Feed Name</th>
                 <th scope="col">Type</th>
-                <th scope="col">Price</th>
-                <th scope="col">Concentration of Dry Matter</th>
+                <th scope="col">Price / ton</th>
+                <th scope="col">Concentration of Dry Matter (presentage %)</th>
                 <th scope="col">Edit</th>
                 <th scope="col">Delete</th>
-         
+        
               </tr>
             </thead>
             <tbody>

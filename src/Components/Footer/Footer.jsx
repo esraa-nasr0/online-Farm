@@ -1,5 +1,5 @@
 import React from 'react'
-import footer from "./footer.css"
+import  "./footer.css"
 import logo from "../../Assets/Img/logo.jpeg"
 export default function Footer() {
   return (
@@ -30,8 +30,8 @@ export default function Footer() {
       {/* <!-- Contact Us --> */}
       <div class="footer-section contact-us">
         <h4 className='fw-bold'>CONTACT US</h4>
-        <p><strong>Phone:</strong> +91 7757919988</p>
-        <p><strong>Email:</strong> support@farminggoat.com</p>
+        <p><strong>Phone:</strong> +20 1150995796</p>
+        <p><strong>Email:</strong> esraaelbordeny@gmail.com</p>
         <div class="social-icons">
           <a href="#"><i class="fab p-1 rounded icon-color fa-twitter"></i></a>
           <a href="#"><i class="fab  rounded p-1 icon-color fa-youtube"></i></a>

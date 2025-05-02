@@ -6,6 +6,17 @@ import Swal from 'sweetalert2';
 import { useTranslation } from 'react-i18next';
 import { BreedingContext } from '../../Context/BreedingContext';
 
+
+function ordinalSuffix(i) {    
+    let j = i % 10,
+        k = i % 100;
+    if (j === 1 && k !== 11) return i + "st";
+    if (j === 2 && k !== 12) return i + "nd";
+    if (j === 3 && k !== 13) return i + "rd";
+    return i + "th";
+}
+
+
 function ViewAnimalBreeding({ animalId }) {
     const { t } = useTranslation();
     const navigate = useNavigate();
@@ -81,10 +92,10 @@ function ViewAnimalBreeding({ animalId }) {
 
             <div className="mating-record-list">
                 {animalBreeding && animalBreeding.length > 0 ? (
-                    animalBreeding.map((breeding) => (
+                    animalBreeding.map((breeding , index) => (
                         <div className="mating-record-item" key={breeding._id}>
                             <div className="mating-record-info">
-                                <span>{t('Breeding')} Info</span>
+                            <span>{ordinalSuffix(index + 1)} Breeding</span>
                                 <p><strong>Tag ID:</strong> {breeding.tagId}</p>
                                 <p><strong>Delivery Date:</strong> {breeding.deliveryDate?.slice(0, 10)}</p>
                                 <p><strong>Delivery State:</strong> {breeding.deliveryState}</p>
