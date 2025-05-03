@@ -75,6 +75,7 @@ function VaccineTable() {
         tagId: searchCriteria.tagId,
         vaccineName: searchCriteria.vaccineName,
         locationShed: searchCriteria.locationShed,
+        entryType:searchCriteria.entryType
       };
 
       const { data } = await getallVaccineanimalEntries(currentPage, animalsPerPage, filters);
@@ -144,7 +145,7 @@ function VaccineTable() {
           backgroundColor: 'rgba(255, 255, 255, 0.8)',
           zIndex: 9999
         }}>
-          <Rings height="100" width="100" color="#88522e" ariaLabel="loading-indicator" />
+          <Rings height="100" width="100" color="#9cbd81" ariaLabel="loading-indicator" />
         </div>
       ) : (
         <>
@@ -154,13 +155,7 @@ function VaccineTable() {
             </div>
 
             <div className="d-flex flex-column flex-md-row align-items-center gap-2 mt-4 mb-4">
-              <input
-                type="text"
-                className="form-control"
-                value={searchCriteria.vaccineName}
-                placeholder={t("search_vaccine_name")}
-                onChange={(e) => setSearchCriteria(prev => ({ ...prev, vaccineName: e.target.value }))}
-              />
+   
               <input
                 type="text"
                 className="form-control"
@@ -168,12 +163,21 @@ function VaccineTable() {
                 placeholder={t("search_tag_id")}
                 onChange={(e) => setSearchCriteria(prev => ({ ...prev, tagId: e.target.value }))}
               />
-              <input
+            <input
+                            type="text"
+                            className="form-control"
+                            value={searchCriteria.locationShed}
+                            placeholder= {t('search_by_location_shed')}
+                            onChange={(e) => setSearchCriteria(prev => ({ ...prev, locationShed: e.target.value }))}
+                        /> 
+
+
+<input
                 type="text"
                 className="form-control"
-                value={searchCriteria.locationShed}
-                placeholder={t("search_location_shed")}
-                onChange={(e) => setSearchCriteria(prev => ({ ...prev, locationShed: e.target.value }))}
+                value={searchCriteria.entryType}
+                placeholder={t('Search Entry Type')}
+                onChange={(e) => setSearchCriteria(prev => ({ ...prev, entryType: e.target.value }))}
               />
               <button className="btn" onClick={handleSearch} style={{ backgroundColor: '#FAA96C', color: 'white' }}>
                 <i className="fas fa-search"></i>

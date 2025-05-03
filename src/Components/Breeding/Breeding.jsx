@@ -37,7 +37,7 @@ export default function Breeding() {
             if (data.status === "success") {
                 Swal.fire({
                     title: t("successTitle"),
-                    text: t("successMessage"),
+                    text: t("successMessage-breeding"),
                     icon: "success",
                     confirmButtonText: t("OK")
                 }).then(() => navigate('/breadingTable'));
@@ -113,12 +113,24 @@ export default function Breeding() {
                         {formik.touched.tagId && formik.errors.tagId && <p className="text-danger">{formik.errors.tagId}</p>}
                     </div>
 
+                
                     <div className="input-box">
                         <label className="label" htmlFor="deliveryState">{t("Delivery State")}</label>
-                        <input {...formik.getFieldProps("deliveryState")} placeholder={t("Enter your delivery state")} id="deliveryState" type="text" className="input2" />
-                        {formik.touched.deliveryState && formik.errors.deliveryState && <p className="text-danger">{formik.errors.deliveryState}</p>}
+                        <select
+                            id="deliveryState"
+                            name="deliveryState"
+                            className="input2"
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            value={formik.values.deliveryState}
+                        >
+                            <option value="">{t("Select milking")}</option>
+                            <option value="normal">{t("Normal")}</option>
+                            <option value="difficult">{t("Difficult")}</option>
+                            <option value="assisted">{t("Assisted")}</option>
+                            <option value="caesarean">{t("Caesarean")}</option>
+                        </select>
                     </div>
-
                     <div className="input-box">
                         <label className="label" htmlFor="deliveryDate">{t("Delivery Date")}</label>
                         <input {...formik.getFieldProps("deliveryDate")} placeholder={t("Enter your delivery date")} id="deliveryDate" type="date" className="input2" />

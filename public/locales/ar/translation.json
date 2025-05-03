@@ -467,7 +467,6 @@
     "breedingData": "بيانات التكاثر",
     "addBreeding": "إضافة تكاثر",
 
-
     "feedingAndReports": "التغذية والتقارير",
     "feedingData": "بيانات التغذية",
     "addFeeding": "إضافة تغذية",
@@ -476,7 +475,6 @@
 
     "fodderData": "بيانات العلف",
     "addFodder": "إضافة علف",
-
 
     "reports": "التقارير",
     "dailyReports": "التقارير اليومية",
@@ -514,9 +512,7 @@
     "selectFeed": "اختر العلف",
     "enterQuantity": "أدخل الكمية",
     "successMessage": "تم تحديث بيانات العلف بنجاح!",
-
     "successMessage-breeding":"تم تحديث بيانات المولوم بنجاح!",
-
     "fetchFeedError": "فشل في تحميل بيانات العلف",
     "fetchFodderError": "فشل في جلب تفاصيل العلف.",
     "submitError": "حدث خطأ ما",
@@ -623,7 +619,6 @@
   "Go to Excluded Data": "الذهاب إلى بيانات المستبعدين",
   "Add Excluded": "إضافة مستبعد",
   "Add Details of Excluded": "إضافة تفاصيل المستبعد",
-
   "Go to Add Excluded": "الذهاب لإضافة مستبعد",
 
   "Normal":"طبيعيه",
@@ -635,4 +630,6 @@
   "showDescription-v":"ادخل بينات اللقاح"
 
 }
+
+
 
