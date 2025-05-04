@@ -324,16 +324,12 @@ code {
   background: #fff;
   padding: 40px 20px;
   list-style: none;
-  border-radius: 7px;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(168, 168, 168, 0.2);
   margin-bottom: 30px;
   width: calc(100% / 3 - 35px);
   text-align: center;
-  -webkit-border-radius: 7px;
-  -moz-border-radius: 7px;
-  -ms-border-radius: 7px;
-  -o-border-radius: 7px;
-  transition: 0.7s ease;
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 .card img {
   width: 120px;
@@ -352,9 +348,9 @@ code {
   margin-top: 5px;
   color: #778983 !important ;
 }
-.card:hover{
-  transform: scale(1.1);
-  opacity: 0.9;
+.card:hover{ 
+  transform: translateY(-6px); /* A more pronounced hover effect */  
+  box-shadow: 0 8px 20px rgba(77, 77, 77, 0.3); 
 }
 .Link{
   color: #0e0e0e;

@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import { GoTable } from "react-icons/go";
 import { IoAddCircleOutline } from "react-icons/io5";
 import { Link } from 'react-router-dom';
@@ -11,6 +11,7 @@ function BreedingServices() {
         <div className='section'>
             <h2>{t('breeding_services')}</h2>
             <div className="content">
+
                 <div className="card2">
                     <Link className='Link' to="/breadingTable">
                         <div className="icon">
@@ -40,9 +41,10 @@ function BreedingServices() {
                         </div>
                     </Link>
                 </div>
+
             </div>
         </div>
-    )
+    );
 }
 
 export default BreedingServices;

@@ -83,44 +83,44 @@ function ViewAnimalTreatment({ animalId }) {
             </div>
 
             <div className="mating-record-list">
-                {treatments.length > 0 ? (
-                    treatments.map((treatment, index) => (
-                        <div key={treatment._id}  className="mating-record-item">
-                            <div className="mating-record-info">
-                                <span>{ordinalSuffix(index + 1)} {t('treatment')}</span>
-                                <ul>
-                                    <li><strong>{t('date')}:</strong> {formatDate(treatment.date)}</li>
-                                    <li><strong>{t('location')}:</strong> {treatment.location?.name || '-'}</li>
-                                    <li>
-                                        <strong>{t('medications')}:</strong>
-                                        {treatment.medications?.map((med) => (
-                                        <ul key={med._id}>
-                                            <li >{t('name')}: {med.name}, </li>
-                                            <li>{t('dosage')}: {med.dosage}, </li>
-                                            <li>{t('unit_price')}: {med.unitPrice},</li>
-                                            <li> {t('total_cost')}: {med.totalCost}</li>
-                                        </ul>
-                                        ))}
-                                    </li>
-                                </ul>
-                            </div>
-                            <div className="mating-record-actions">
-                                <FaEdit
-                                    onClick={() => editTreatment(treatment._id)}
-                                    className="edit-icon"
-                                    title={t('edit')}
-                                />    
-                                <FaTrashAlt
-                                    onClick={() => handleDeleteClick(treatment._id)}
-                                    className="delete-icon"
-                                    title={t('delete')}
-                                />
-                            </div>
-                        </div>
-                    ))
-                ) : (
-                    <p>{t('no_treatment_records')}</p>
-                )}
+            {treatments.length > 0 ? (
+    treatments.map((treatment, index) => (
+        <div key={treatment._id} className="mating-record-item">
+            <div className="mating-record-info">
+                <span>{ordinalSuffix(index + 1)} {t('treatment')}</span>
+                <ul>
+                    <li><strong>{t('date')}:</strong> {formatDate(treatment.date)}</li>
+                    <li><strong>{t('location')}:</strong> {treatment.locationShed?.name || '-'}</li>
+                    <li>
+                        <strong>{t('medications')}:</strong>
+                        {treatment.treatments?.map((med, medIndex) => (
+                            <ul key={medIndex}>
+                                <li>{t('name')}: {med.name}</li>
+                                <li>{t('volume')}: {med.volume}</li>
+                                <li>{t('price_per_ml')}: {med.pricePerMl}</li>
+                            </ul>
+                        ))}
+                    </li>
+                </ul>
+            </div>
+            <div className="mating-record-actions">
+                <FaEdit
+                    onClick={() => editTreatment(treatment._id)}
+                    className="edit-icon"
+                    title={t('edit')}
+                />    
+                <FaTrashAlt
+                    onClick={() => handleDeleteClick(treatment._id)}
+                    className="delete-icon"
+                    title={t('delete')}
+                />
+            </div>
+        </div>
+    ))
+) : (
+    <p>{t('no_treatment_records')}</p>
+)}
+
             </div>
         </div>
     );

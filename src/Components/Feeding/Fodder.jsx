@@ -130,7 +130,7 @@ export default function Fodder() {
         <div className="animaldata">
           <div className="input-box">
             <label className="label" htmlFor="name">
-              {t('name')}
+              {t('foddernames')}
             </label>
             <input
               {...formik.getFieldProps('name')}

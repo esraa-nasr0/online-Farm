@@ -117,7 +117,7 @@
     "Save":"حفظ",
     "Calf Tag ID":"رقم المولود",
     "Birth Weight":"وزن الميلاد",
-    "Number of Births":"عدد المواليد",
+    "Number Of Births":"عدد المواليد",
     "Excluted Records":"السجلات المستبعدة",
     "Date":"التاريخ",
     "tagId":"رقم الحيوان",
@@ -431,6 +431,7 @@
     "total_doses": "إجمالي الجرعات",
     "bottle_price": "سعر الزجاجة",
     "dose_price": "سعر الجرعة",
+
     "remove": "حذف",
     "Vaccine_Records": "سجلات اللقاحات",
 
@@ -485,7 +486,7 @@
     "tag1": "الإدارة",
     "tag2": "الزراعة",
 
-    
+    "foddernames": "اسم",
     "fodder.title": "العلف",
     "fodder.searchPlaceholder": "ابحث بالاسم",
     "fodder.searchButton": "بحث",
@@ -514,6 +515,116 @@
     "fetchFodderError": "فشل في جلب تفاصيل العلف.",
     "submitError": "حدث خطأ ما",
 
-    "fodderTitle": "العلف"
+    "fodderTitle": "العلف",
+    
+
+  "Enter your delivery state": "أدخل حالة الولادة",
+  "Enter your delivery date": "أدخل تاريخ الولادة",
+  "Enter number of births": "أدخل عدد الولادات",
+  "Enter Calf Tag ID": "أدخل رقم تعريف العجل",
+  "Enter Gender": "أدخل الجنس",
+  "Enter Birth Weight": "أدخل وزن الولادة",
+  "Milking": "الإدرار",
+  "Select milking": "اختر حالة الإدرار",
+  "No Milk": "لا يوجد حليب",
+  "One Teat": "حلمة واحدة",
+  "Two Teat": "حلمتان",
+  "Mothering Ability": "قدرة الأمومة",
+  "Good": "جيدة",
+  "Bad": "سيئة",
+  "Medium": "متوسطة",
+  "Success!": "تم بنجاح!",
+  "Data has been submitted successfully!": "تم إرسال البيانات بنجاح!",
+  "OK": "حسنًا",
+  "Error!": "خطأ!",
+  "An error occurred while submitting data.": "حدث خطأ أثناء إرسال البيانات.",
+  "remove_vaccine":"حذف التحصين",
+  
+  "animal_tag_id": "رقم تعريف الحيوان",
+  "enter_animal_tag_id": "أدخل رقم تعريف الحيوان",
+  "vaccination_date": "تاريخ التطعيم",
+
+  "select_vaccine": "اختر اللقاح",
+  "loading_vaccines": "جاري تحميل اللقاحات...",
+  "entry_type": "نوع الإدخال",
+  "select_entry_type": "اختر نوع الإدخال",
+  "booster_dose": "جرعة داعمة",
+  "annual_dose": "جرعة سنوية",
+  "initial_dose": "جرعة أولية",
+ "edit_vaccine":"تعديل التحصين",
+  "vaccine_updated_successfully": "تم تعديل بيانات اللقاح بنجاح",
+   "error_updating_vaccine": "فشل في تعديل بيانات اللقاح",
+  "error_fetching_vaccine_details": "فشل في جلب تفاصيل بيانات اللقاح",
+  "Edit Vaccine":"تعديل التحصين",
+  "search_vaccine_name":"ابحث باستخدام اسم التحصين",
+  "Vaccine Services": "خدمات التطعيم",
+  "Show Data": "عرض البيانات",
+  "All the Details of Vaccine": "جميع تفاصيل التطعيم",
+  "Go to Vaccine Data": "الذهاب إلى بيانات التطعيم",
+  "Add by Animal": "إضافة حسب الحيوان",
+  "Add Details by Animal": "إضافة التفاصيل حسب الحيوان",
+  "Go to Add Vaccine by Animal": "الذهاب إلى إضافة تطعيم حسب الحيوان",
+  "Add by Location Shed": "إضافة حسب الحظيرة",
+  "Add Details by Location Shed": "إضافة التفاصيل حسب الحظيرة",
+  "Go to Add by Location Shed": "الذهاب إلى الإضافة حسب الحظيرة",
+  "All the Details of Vaccine by tag id and locationshed": "جميع تفاصيل التطعيم حسب رقم الحيوان والحظيرة",
+  "Breeding Services": "خدمات المولود",
+
+  "All the Details of Breeding": "جميع تفاصيل المولود",
+  "Go to Breeding Data": "الذهاب إلى بيانات المولود",
+
+  "Add Details of Breeding": "إضافة تفاصيل المولود",
+  "Go to Add Breeding": "الذهاب إلى إضافة مولود",
+
+
+
+  "Search animalType": "البحث بنوع الحيوان",
+  "edit_Excluded": "تعديل الاستبعاد",
+  "remove_Excluded": "إزالة الاستبعاد",
+  "No Data": "لا توجد بيانات",
+
+  
+  "edit_excluded": "تعديل المستبعد",
+  "excluded_type": "نوع الاستبعاد",
+  
+  "update_success": "تم تحديث البيانات المستبعدة بنجاح!",
+  "excluded_type_required": "نوع الاستبعاد مطلوب",
+  "invalid_date": "صيغة التاريخ غير صحيحة",
+  "enter_excluded_type": "أدخل نوع الاستبعاد",
+  "enter_price": "أدخل السعر",
+  "enter_date": "أدخل تاريخ الاستبعاد",
+
+
+
+  "data_submitted": "تم إرسال البيانات بنجاح!",
+
+  "submit_error": "حدث خطأ أثناء إرسال البيانات.",
+
+  "weight_placeholder": "أدخل الوزن",
+ 
+  "tag_id_placeholder": "أدخل رقم الوسم",
+ 
+  "choose_excluded_type": "اختر نوع الاستبعاد",
+  "sale": "بيع",
+  "death": "موت",
+  "sweep": "تنظيف",
+
+  "reason_of_death": "سبب الموت",
+  "reason_of_sweep": "سبب التنظيف",
+
+  "Excluded Services": "الخدمات المستبعدة",
+  "All the Details of Excluded": "كل تفاصيل المستبعدين",
+  "Go to Excluded Data": "الذهاب إلى بيانات المستبعدين",
+  "Add Excluded": "إضافة مستبعد",
+  "Add Details of Excluded": "إضافة تفاصيل المستبعد",
+  "Go to Add Excluded": "الذهاب لإضافة مستبعد",
+
+  
+    "price_per_ml": "السعر لكل مل",
+    "treatment_deleted_success": "تم حذف العلاج بنجاح.",
+    "treatment_deleted_failed": "فشل حذف العلاج.",
+    "fetch_treatments_failed": "فشل في جلب بيانات العلاج.",
+    "no_treatment_records": "لا توجد سجلات علاج"
+  
 
 }
