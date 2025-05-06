@@ -559,7 +559,8 @@
     "treatment_deleted_failed": "Failed to delete treatment.",
     "fetch_treatments_failed": "Failed to fetch treatment data.",
     "treatment_record": "Treatment Records",
-    "no_treatment_records": "No treatment records available."
+    "no_treatment_records": "No treatment records available.",
   
-  
+  "check_Days": "Check Days"
+
 }

@@ -43,8 +43,8 @@ function MatingTable() {
             };
             const { data } = await getMating(currentPage, animalsPerPage, filters);
             setMatings(data.data.mating);
-            setPagination(data.pagination || { totalPages: 1 }); // Ensure pagination is defined with a fallback value
-            const total = data.pagination?.totalPages || 1; // Use optional chaining with a fallback
+            setPagination(data.data.pagination || { totalPages: 1 }); // Ensure pagination is defined with a fallback value
+            const total = data.data.pagination?.totalPages || 1; // Use optional chaining with a fallback
             console.log("Calculated Total Pages:", total);
             setTotalPages(total); // Update total pages
         } catch (error) {
@@ -92,16 +92,14 @@ function MatingTable() {
         fetchMating();
     };
 
-    // تغيير الصفحة
     const paginate = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
 
-    // عرض أزرار الصفحات
     const renderPaginationButtons = () => {
         const buttons = [];
-        const total = pagination?.totalPages || 1; // Use optional chaining and fallback to 1 if undefined
-        for (let i = 1; i <= total; i++) { // use `total` instead of `totalPages`
+        const total = pagination.totalPages;
+        for (let i = 1; i <= total; i++) {
             buttons.push(
                 <li key={i} className={`page-item ${i === currentPage ? 'active' : ''}`}>
                     <button className="page-link" onClick={() => paginate(i)}>
@@ -203,7 +201,7 @@ function MatingTable() {
                         <tbody>
                             {matings.map((mating, index) => (
                                 <tr key={mating._id}>
-                                    <td>{(currentPage - 1) * animalsPerPage + index + 1}</td>
+                                    <th scope="row">{(currentPage - 1) * animalsPerPage + index + 1}</th>
                                     <td>{mating.tagId}</td>
                                     <td>{mating.maleTag_id}</td>
                                     <td>{mating.matingType}</td>
@@ -225,6 +223,7 @@ function MatingTable() {
                     </div>
 
                     {/* أزرار الصفحات */}
+                    
                     <div className="d-flex justify-content-center mt-4">
                         <nav>
                             <ul className="pagination">

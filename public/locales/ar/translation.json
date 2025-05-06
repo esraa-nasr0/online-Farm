@@ -624,7 +624,9 @@
     "treatment_deleted_success": "تم حذف العلاج بنجاح.",
     "treatment_deleted_failed": "فشل حذف العلاج.",
     "fetch_treatments_failed": "فشل في جلب بيانات العلاج.",
-    "no_treatment_records": "لا توجد سجلات علاج"
+    "no_treatment_records": "لا توجد سجلات علاج",
+
+    "check_Days": "تحقق من الأيام"
   
 
 }
