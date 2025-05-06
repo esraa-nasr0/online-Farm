@@ -1,5 +1,4 @@
 {
-
   "welcome": "Welcome to the farm",
   "description": "We grow fresh and organic products.",
   "animals": "Animals",
@@ -350,11 +349,9 @@
   "remove": "Remove ",
   "Vaccine_Records": "Vaccine Records",
 
-
 "dosage": "Dosage",
 "unit_price": "Unit Price",
 "total_cost": "Total Cost",
-
 
   "animalManagement": "ANIMAL MANAGEMENT",
   "animal": "Animal",
