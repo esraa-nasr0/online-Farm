@@ -6,33 +6,30 @@ import { VaccineanimalContext } from '../../Context/VaccineanimalContext';
 import { useNavigate } from 'react-router-dom'; 
 import Swal from 'sweetalert2';
 import { LocationContext } from '../../Context/Locationshedcontext';
-import { number } from 'yup';
+import { useTranslation } from 'react-i18next';
 
 function Vaccinebylocationshed() {
     const { getallVaccineanimal } = useContext(VaccineanimalContext); 
-    const { getLocationtMenue,getVaccineMenue } = useContext(LocationContext); 
+    const { getLocationtMenue, getVaccineMenue } = useContext(LocationContext); 
     const [isLoading, setIsLoading] = useState(false);
     const [locations, setLocations] = useState([]);
     const [Vaccine, setVaccine] = useState([]);
     const [isLoadingLocations, setIsLoadingLocations] = useState(true);
     const navigate = useNavigate();
-  
+    const { t } = useTranslation();
+
     useEffect(() => {
         const fetchLocations = async () => {
             setIsLoadingLocations(true);
             try {
                 const { data } = await getLocationtMenue();
-                // console.log("API Response Data:", data);
-                
                 if (data.status === 'success') {
-                
                     const locationsData = data.data.locationSheds || data.data;
-                    // console.log("Locations Data:", locationsData);
                     setLocations(Array.isArray(locationsData) ? locationsData : []);
                 }
             } catch (err) {
                 console.error("Error details:", err);
-                Swal.fire("Error!", "Failed to load locations data", "error");
+                Swal.fire(t("error"), t("failedLoadLocations"), "error");
                 setLocations([]);
             } finally {
                 setIsLoadingLocations(false);
@@ -46,18 +43,13 @@ function Vaccinebylocationshed() {
             setIsLoadingLocations(true);
             try {
                 const { data } = await getVaccineMenue();
-                console.log("API Response Data:", data.data.vaccines);
-                
                 if (data.status === 'success') {
-                
-                    const Vaccine = data.data.vaccines
-                     || data.data;
-                    console.log("Vaccine:", Vaccine);
-                    setVaccine(Array.isArray(Vaccine) ? Vaccine : []);
+                    const vaccineData = data.data.vaccines || data.data;
+                    setVaccine(Array.isArray(vaccineData) ? vaccineData : []);
                 }
             } catch (err) {
                 console.error("Error details:", err);
-                Swal.fire("Error!", "Failed to load locations data", "error");
+                Swal.fire(t("error"), t("failedLoadVaccines"), "error");
                 setVaccine([]);
             } finally {
                 setIsLoadingLocations(false);
@@ -79,10 +71,10 @@ function Vaccinebylocationshed() {
 
     const formik = useFormik({
         initialValues: {
-            vaccineId:'',
-            date:'',
-            locationShed:'', 
-            entryType:'',
+            vaccineId: '',
+            date: '',
+            locationShed: '', 
+            entryType: '',
         },
         onSubmit: async (values) => {
             setIsLoading(true);
@@ -94,58 +86,51 @@ function Vaccinebylocationshed() {
                     locationShed: values.locationShed,
                     entryType: values.entryType,
                 };
-        
-                console.log("🚀 Data to send:", dataToSend);
-        
-                const {data} = await axios.post(
+
+                const { data } = await axios.post(
                     'https://farm-project-bbzj.onrender.com/api/vaccine/AddVaccineForAnimals',
                     dataToSend,
                     { headers }
                 );
-        
-                console.log("✅ API Response:", data);
-        
-                if (data.status === "SUCCESS") {
 
+                if (data.status === "SUCCESS") {
                     Swal.fire({
-                        title: "Success!",
-                        text: "Data has been submitted successfully!",
+                        title: t("success"),
+                        text: t("dataSubmittedSuccessfully"),
                         icon: "success",
-                        confirmButtonText: "OK",
-                        
+                        confirmButtonText: t("ok"),
                     }).then(() => navigate('/Vaccinebyanimalsstable'));
                 }
             } catch (err) {
-                console.error("❌ API Error:", err.response?.data);
                 Swal.fire({
-                    title: "Error!",
-                    text: err.response?.data?.message || "An error occurred while submitting data.",
+                    title: t("error"),
+                    text: err.response?.data?.message || t("submitError"),
                     icon: "error",
-                    confirmButtonText: "OK",
+                    confirmButtonText: t("ok"),
                 });
             } finally {
                 setIsLoading(false);
             }
         }
-        
     });
 
     return (
         <div className="container">
-                    <div className="title2">Add  by Location Shed</div>
+            <div className="title2">{t("addByLocationTitle")}</div>
             <form onSubmit={formik.handleSubmit} className="mt-5">
-                        {isLoading ? (
-                                        <button type="submit" className="btn button2" disabled>
-                                            <i className="fas fa-spinner fa-spin"></i>
-                                        </button>
-                                    ) : (
-                                        <button type="submit" className="btn button2">
-                                            <IoIosSave /> Save
-                                        </button>
-                                    )}
+                {isLoading ? (
+                    <button type="submit" className="btn button2" disabled>
+                        <i className="fas fa-spinner fa-spin"></i>
+                    </button>
+                ) : (
+                    <button type="submit" className="btn button2">
+                        <IoIosSave /> {t("save")}
+                    </button>
+                )}
                 <div className="animaldata">
-                <div className="input-box">
-                        <label className="label" htmlFor="locationShed">Vaccine Name</label>
+
+                    <div className="input-box">
+                        <label className="label" htmlFor="vaccineId">{t("vaccineName")}</label>
                         <select
                             id="vaccineId"
                             name="vaccineId"
@@ -153,15 +138,14 @@ function Vaccinebylocationshed() {
                             onChange={formik.handleChange}
                             value={formik.values.vaccineId}
                             required
-                            type="number"
                         >
-                            <option value="">Vaccine Name</option>
+                            <option value="">{t("selectVaccine")}</option>
                             {isLoadingLocations ? (
-                                <option disabled>Loading locations...</option>
+                                <option disabled>{t("loadingVaccines")}...</option>
                             ) : (
-                                Vaccine.map((Vaccine) => (
-                                    <option key={Vaccine._id} value={Vaccine._id}>
-                                        {Vaccine.vaccineName}
+                                Vaccine.map((v) => (
+                                    <option key={v._id} value={v._id}>
+                                        {v.vaccineName}
                                     </option>
                                 ))
                             )}
@@ -169,7 +153,7 @@ function Vaccinebylocationshed() {
                     </div>
 
                     <div className="input-box">
-                        <label className="label" htmlFor="date">Date</label>
+                        <label className="label" htmlFor="date">{t("date")}</label>
                         <input
                             id="date"
                             name="date"
@@ -183,7 +167,7 @@ function Vaccinebylocationshed() {
                     </div>
 
                     <div className="input-box">
-                        <label className="label" htmlFor="locationShed">Location Shed</label>
+                        <label className="label" htmlFor="locationShed">{t("Location Shed")}</label>
                         <select
                             id="locationShed"
                             name="locationShed"
@@ -191,11 +175,10 @@ function Vaccinebylocationshed() {
                             onChange={formik.handleChange}
                             value={formik.values.locationShed}
                             required
-                             type="number"
                         >
-                            <option value="">Select Location Shed</option>
+                            <option value="">{t("selectLocationShed")}</option>
                             {isLoadingLocations ? (
-                                <option disabled>Loading locations...</option>
+                                <option disabled>{t("loadingLocations")}...</option>
                             ) : (
                                 locations.map((location) => (
                                     <option key={location._id} value={location._id}>
@@ -205,22 +188,24 @@ function Vaccinebylocationshed() {
                             )}
                         </select>
                     </div>
+
                     <div className="input-box">
-    <label className="label" htmlFor="entryType">Entry Type</label>
-    <select
-        id="entryType"
-        name="entryType"
-        className="input2"
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        value={formik.values.entryType}
-    >
-        <option value="">Select Entry Type</option>
-        <option value="Booster Dose">Booster Dose</option>
-        <option value="Annual Dose">Annual Dose</option>
-        <option value="First Dose">First Dose</option>
-    </select>
-</div>
+                        <label className="label" htmlFor="entryType">{t("Entry Type")}</label>
+                        <select
+                            id="entryType"
+                            name="entryType"
+                            className="input2"
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            value={formik.values.entryType}
+                        >
+                            <option value="">{t("selectEntryType")}</option>
+                            <option value="Booster Dose">{t("boosterDose")}</option>
+                            <option value="Annual Dose">{t("annualDose")}</option>
+                            <option value="First Dose">{t("firstDose")}</option>
+                        </select>
+                    </div>
+
                 </div>
             </form>
         </div>

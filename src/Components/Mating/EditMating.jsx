@@ -105,7 +105,7 @@ async function editMating(values) {
             maleTag_id: '',
             matingDate: '',
             sonarDate: '',
-            sonarRsult: '',
+            sonarRsult: null,
             expectedDeliveryDate: '', // Initialize this in the formik initial values
         },
         onSubmit: (values) => editMating(values),

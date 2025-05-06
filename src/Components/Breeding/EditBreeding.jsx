@@ -4,25 +4,27 @@ import * as Yup from 'yup';
 import axios from 'axios';
 import { IoIosSave } from 'react-icons/io';
 import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function EditBreeding() {
     const { id } = useParams(); // Get the ID from URL parameters
+    const { t } = useTranslation(); // Use translation
     const [showAlert, setShowAlert] = useState(false);
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [birthEntries, setBirthEntries] = useState([{ tagId: '', gender: '', birthweight: '', expectedWeaningDate: '' }]);
     
-// Helper function to generate headers with the latest token
-const getHeaders = () => {
-    const Authorization = localStorage.getItem('Authorization');
-  
-    // Ensure the token has only one "Bearer" prefix
-    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-  
-    return {
-        Authorization: formattedToken
+    // Helper function to generate headers with the latest token
+    const getHeaders = () => {
+        const Authorization = localStorage.getItem('Authorization');
+      
+        // Ensure the token has only one "Bearer" prefix
+        const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+      
+        return {
+            Authorization: formattedToken
+        };
     };
-  };
 
     async function fetchBreedingData() {
         const headers = getHeaders(); // Get the latest headers
@@ -95,10 +97,10 @@ const getHeaders = () => {
             numberOfBirths: 1,
         },
         validationSchema: Yup.object({
-            tagId: Yup.string().required('Tag ID is required'),
-            deliveryState: Yup.string().required('Delivery state is required').max(50, 'Delivery state must be 50 characters or less'),
-            deliveryDate: Yup.date().required('Delivery date is required').typeError('Invalid date format'),
-            numberOfBirths: Yup.number().required('Number of births is required').min(1, 'At least 1').max(4, 'No more than 4'),
+            tagId: Yup.string().required(t('Tag ID is required')),
+            deliveryState: Yup.string().required(t('Delivery state is required')).max(50, t('Delivery state must be 50 characters or less')),
+            deliveryDate: Yup.date().required(t('Delivery date is required')).typeError(t('Invalid date format')),
+            numberOfBirths: Yup.number().required(t('Number of births is required')).min(1, t('At least 1')).max(4, t('No more than 4')),
         }),
         onSubmit: (values) => editBreeding(values),
     });
@@ -128,25 +130,25 @@ const getHeaders = () => {
 
     return (
         <div className="container" >
-            <div className="title2">Edit Breeding</div>
+            <div className="title2">{t('Edit Breeding')}</div>
 
             <form onSubmit={formik.handleSubmit} className="mt-5">
                 {isLoading ? (
                     <button type="submit" className="btn button2" disabled>
-                    <i className="fas fa-spinner fa-spin"></i>
+                        <i className="fas fa-spinner fa-spin"></i>
                     </button>
-                    ) : (
+                ) : (
                     <button type="submit" className="btn button2">
-                    <IoIosSave /> Save
+                        <IoIosSave /> {t('Save')}
                     </button>
-                    )}
+                )}
 
                 <div className="animaldata">
                     <div className="input-box">
-                        <label className="label" htmlFor="tagId">Tag ID</label>
+                        <label className="label" htmlFor="tagId">{t('Tag ID')}</label>
                         <input
                             {...formik.getFieldProps('tagId')}
-                            placeholder="Enter your Tag ID"
+                            placeholder={t('Enter your Tag ID')}
                             id="tagId"
                             type="text"
                             className="input2"
@@ -155,10 +157,10 @@ const getHeaders = () => {
                     </div>
 
                     <div className="input-box">
-                        <label className="label" htmlFor="deliveryState">Delivery State</label>
+                        <label className="label" htmlFor="deliveryState">{t('Delivery State')}</label>
                         <input
                             {...formik.getFieldProps('deliveryState')}
-                            placeholder="Enter your delivery state"
+                            placeholder={t('Enter your delivery state')}
                             id="deliveryState"
                             type="text"
                             className="input2"
@@ -167,10 +169,10 @@ const getHeaders = () => {
                     </div>
 
                     <div className="input-box">
-                        <label className="label" htmlFor="deliveryDate">Delivery Date</label>
+                        <label className="label" htmlFor="deliveryDate">{t('Delivery Date')}</label>
                         <input
                             {...formik.getFieldProps('deliveryDate')}
-                            placeholder="Enter your delivery date"
+                            placeholder={t('Enter your delivery date')}
                             id="deliveryDate"
                             type="date"
                             className="input2"
@@ -179,11 +181,11 @@ const getHeaders = () => {
                     </div>
 
                     <div className="input-box">
-                        <label className="label" htmlFor="numberOfBirths">Number of Births</label>
+                        <label className="label" htmlFor="numberOfBirths">{t('Number of Births')}</label>
                         <input
                             value={formik.values.numberOfBirths}
                             onChange={handleNumberOfBirthsChange}
-                            placeholder="Enter number of births"
+                            placeholder={t('Enter number of births')}
                             id="numberOfBirths"
                             type="number"
                             className="input2"
@@ -194,44 +196,44 @@ const getHeaders = () => {
 
                     {birthEntries.map((entry, index) => (
                         <div key={`birth-entry-${index}`} className="input-box">
-                            <label className="label" htmlFor={`birthEntries-${index}-tagId`}>Calf Tag ID {index + 1}</label>
+                            <label className="label" htmlFor={`birthEntries-${index}-tagId`}>{t('Calf Tag ID')} {index + 1}</label>
                             <input
                                 value={entry.tagId}
                                 onChange={(e) => handleBirthEntriesChange(e, index)}
-                                placeholder="Enter Calf Tag ID"
+                                placeholder={t('Enter Calf Tag ID')}
                                 id={`birthEntries-${index}-tagId`}
                                 name="tagId"
                                 type="text"
                                 className="input2"
                             />
 
-                            <label className="label" htmlFor={`birthEntries-${index}-gender`}>Gender {index + 1}</label>
+                            <label className="label" htmlFor={`birthEntries-${index}-gender`}>{t('Gender')} {index + 1}</label>
                             <input
                                 value={entry.gender}
                                 onChange={(e) => handleBirthEntriesChange(e, index)}
-                                placeholder="Enter Gender"
+                                placeholder={t('Enter Gender')}
                                 id={`birthEntries-${index}-gender`}
                                 name="gender"
                                 type="text"
                                 className="input2"
                             />
 
-                            <label className="label" htmlFor={`birthEntries-${index}-birthweight`}>Birthweight {index + 1}</label>
+                            <label className="label" htmlFor={`birthEntries-${index}-birthweight`}>{t('Birthweight')} {index + 1}</label>
                             <input
                                 value={entry.birthweight}
                                 onChange={(e) => handleBirthEntriesChange(e, index)}
-                                placeholder="Enter Birthweight"
+                                placeholder={t('Enter Birthweight')}
                                 id={`birthEntries-${index}-birthweight`}
                                 name="birthweight"
                                 type="text"
                                 className="input2"
                             />
 
-                            <label className="label" htmlFor={`birthEntries-${index}-expectedWeaningDate`}>Expected Weaning Date {index + 1}</label>
+                            <label className="label" htmlFor={`birthEntries-${index}-expectedWeaningDate`}>{t('Expected Weaning Date')} {index + 1}</label>
                             <input
                                 value={entry.expectedWeaningDate}
                                 onChange={(e) => handleBirthEntriesChange(e, index)}
-                                placeholder="Enter Expected Weaning Date"
+                                placeholder={t('Enter Expected Weaning Date')}
                                 id={`birthEntries-${index}-expectedWeaningDate`}
                                 name="expectedWeaningDate"
                                 type="date"
