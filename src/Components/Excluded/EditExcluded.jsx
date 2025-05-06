@@ -4,25 +4,27 @@ import * as Yup from 'yup';
 import axios from 'axios';
 import { IoIosSave } from 'react-icons/io';
 import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function EditExcluded() {
     const { id } = useParams(); // Get the ID from URL parameters
     const [showAlert, setShowAlert] = useState(false);
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const { t } = useTranslation();  // useTranslation hook
 
-    
-// Helper function to generate headers with the latest token
-const getHeaders = () => {
-    const Authorization = localStorage.getItem('Authorization');
-  
-    // Ensure the token has only one "Bearer" prefix
-    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-  
-    return {
-        Authorization: formattedToken
+    // Helper function to generate headers with the latest token
+    const getHeaders = () => {
+        const Authorization = localStorage.getItem('Authorization');
+      
+        // Ensure the token has only one "Bearer" prefix
+        const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+      
+        return {
+            Authorization: formattedToken
+        };
     };
-  };
+
     // Function to fetch excluded data from the API
     async function fetchExclutedData() {
         const headers = getHeaders(); // Get the latest headers
@@ -95,38 +97,38 @@ const getHeaders = () => {
             Date: '',
         },
         validationSchema: Yup.object({
-            tagId: Yup.string().required('Tag ID is required'),
-            excludedType: Yup.string().required('Excluded type is required'),
-            price: Yup.string().required('Price is required'),
-            weight: Yup.string().required('Weight is required'),
-            Date: Yup.date().required('Date is required').typeError('Invalid date format'),
+            tagId: Yup.string().required(t('tag_id_required')),
+            excludedType: Yup.string().required(t('excluded_type_required')),
+            price: Yup.string().required(t('price_required')),
+            weight: Yup.string().required(t('weight_required')),
+            Date: Yup.date().required(t('date_required')).typeError(t('invalid_date')),
         }),
         onSubmit: (values) => editExcluted(values),
     });
 
     return (
         <div className="container">
-            <div className="title2">Edit Excluded</div>
+            <div className="title2">{t('edit_excluded')}</div>
             {error && <p className="text-danger">{error}</p>}
-            {showAlert && <div className="alert alert-success mt-3">Excluded information updated successfully!</div>}
+            {showAlert && <div className="alert alert-success mt-3">{t('update_success')}</div>}
 
             <form onSubmit={formik.handleSubmit} className="mt-5">
-            {isLoading ? (
-                                    <button type="submit" className="btn button2" disabled>
-                                        <i className="fas fa-spinner fa-spin"></i>
-                                    </button>
-                                ) : (
-                                    <button type="submit" className="btn button2">
-                                        <IoIosSave /> Save
-                                    </button>
-                                )}
+                {isLoading ? (
+                    <button type="submit" className="btn button2" disabled>
+                        <i className="fas fa-spinner fa-spin"></i>
+                    </button>
+                ) : (
+                    <button type="submit" className="btn button2">
+                        <IoIosSave /> {t('save')}
+                    </button>
+                )}
 
                 <div className="animaldata">
                     <div className="input-box">
-                        <label className="label" htmlFor="tagId">Tag ID</label>
+                        <label className="label" htmlFor="tagId">{t('tag_id')}</label>
                         <input
                             {...formik.getFieldProps('tagId')}
-                            placeholder="Enter your Tag ID"
+                            placeholder={t('enter_tag_id')}
                             id="tagId"
                             type="text"
                             className="input2"
@@ -135,10 +137,10 @@ const getHeaders = () => {
                     </div>
 
                     <div className="input-box">
-                        <label className="label" htmlFor="excludedType">Excluded Type</label>
+                        <label className="label" htmlFor="excludedType">{t('excluded_type')}</label>
                         <input
                             {...formik.getFieldProps('excludedType')}
-                            placeholder="Enter your excluded type"
+                            placeholder={t('enter_excluded_type')}
                             id="excludedType"
                             type="text"
                             className="input2"
@@ -147,10 +149,10 @@ const getHeaders = () => {
                     </div>
 
                     <div className="input-box">
-                        <label className="label" htmlFor="price">Price</label>
+                        <label className="label" htmlFor="price">{t('price')}</label>
                         <input
                             {...formik.getFieldProps('price')}
-                            placeholder="Enter the price"
+                            placeholder={t('enter_price')}
                             id="price"
                             type="text"
                             className="input2"
@@ -159,10 +161,10 @@ const getHeaders = () => {
                     </div>
 
                     <div className="input-box">
-                        <label className="label" htmlFor="weight">Weight</label>
+                        <label className="label" htmlFor="weight">{t('weight')}</label>
                         <input
                             {...formik.getFieldProps('weight')}
-                            placeholder="Enter the weight"
+                            placeholder={t('enter_weight')}
                             id="weight"
                             type="text"
                             className="input2"
@@ -171,10 +173,10 @@ const getHeaders = () => {
                     </div>
 
                     <div className="input-box">
-                        <label className="label" htmlFor="Date">Date</label>
+                        <label className="label" htmlFor="Date">{t('date')}</label>
                         <input
                             {...formik.getFieldProps('Date')}
-                            placeholder="Enter the excluded date"
+                            placeholder={t('enter_date')}
                             id="Date"
                             type="date"
                             className="input2"

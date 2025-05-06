@@ -381,6 +381,7 @@
     "title": "خدمات التطعيم",
     "showTitle": "عرض البيانات",
     "showDescription": "جميع تفاصيل التطعيم",
+    "showDescription2": "جميع تفاصيل التطعيم باسم الحيوان ومكان الحظيره",
     "showButton": "اذهب إلى بيانات التطعيم",
     "addByAnimalTitle": "إضافة حسب الحيوان",
     "addByAnimalDescription": "إضافة التفاصيل حسب الحيوان",
@@ -511,6 +512,7 @@
     "selectFeed": "اختر العلف",
     "enterQuantity": "أدخل الكمية",
     "successMessage": "تم تحديث بيانات العلف بنجاح!",
+    "successMessage-breeding":"تم تحديث بيانات المولوم بنجاح!",
     "fetchFeedError": "فشل في تحميل بيانات العلف",
     "fetchFodderError": "فشل في جلب تفاصيل العلف.",
     "submitError": "حدث خطأ ما",
@@ -618,7 +620,6 @@
   "Add Excluded": "إضافة مستبعد",
   "Add Details of Excluded": "إضافة تفاصيل المستبعد",
   "Go to Add Excluded": "الذهاب لإضافة مستبعد",
-
   
     "price_per_ml": "السعر لكل مل",
     "treatment_deleted_success": "تم حذف العلاج بنجاح.",
@@ -626,7 +627,18 @@
     "fetch_treatments_failed": "فشل في جلب بيانات العلاج.",
     "no_treatment_records": "لا توجد سجلات علاج",
 
-    "check_Days": "تحقق من الأيام"
-  
+    "check_Days": "تحقق من الأيام",
+    
+  "Normal":"طبيعيه",
+  "Difficult":"متعسرة",
+  "Assisted":"طبيعيه ب مساعده",
+  "Caesarean":"قيصرية",
+  "Search Entry Type":"البحث باستخدام نوع الادخال",
+  "Add New Vaccine":"إضافة لقاح جديد",
+  "showDescription-v":"ادخل بينات اللقاح"
 
 }
+
+
+
+

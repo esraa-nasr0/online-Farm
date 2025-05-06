@@ -29,7 +29,7 @@ function MatingTable() {
         sonarDate :'',
     });
     const [matings, setMatings] = useState([]);
-    const [pagination, setPagination] = useState({ totalPages: 1 }); // حالة جديدة لتخزين معلومات الصفحات
+    const [pagination, setPagination] = useState({ totalPages: 1 }); 
 
     async function fetchMating() {
         setIsLoading(true);
@@ -45,8 +45,9 @@ function MatingTable() {
             setMatings(data.data.mating);
             setPagination(data.data.pagination || { totalPages: 1 }); // Ensure pagination is defined with a fallback value
             const total = data.data.pagination?.totalPages || 1; // Use optional chaining with a fallback
+
             console.log("Calculated Total Pages:", total);
-            setTotalPages(total); // Update total pages
+            setTotalPages(total); 
         } catch (error) {
             Swal.fire(t('error'), t('fetch_error'), 'error');
         } finally {
@@ -86,9 +87,9 @@ function MatingTable() {
         navigate(`/editMating/${id}`);
     };
 
-    // البحث
+
     const handleSearch = () => {
-        setCurrentPage(1); // العودة إلى الصفحة الأولى عند البحث
+        setCurrentPage(1); 
         fetchMating();
     };
 
@@ -98,6 +99,7 @@ function MatingTable() {
 
     const renderPaginationButtons = () => {
         const buttons = [];
+
         const total = pagination.totalPages;
         for (let i = 1; i <= total; i++) {
             buttons.push(

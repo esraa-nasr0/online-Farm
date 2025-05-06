@@ -136,7 +136,7 @@ let routers = createBrowserRouter([
       { path: "weight", element: <ProtectedRoute><Weight /></ProtectedRoute> },
       { path: "weightTable", element: <ProtectedRoute><WeightTable /></ProtectedRoute> },
       { path: "editWeight/:id", element: <ProtectedRoute><EditWeight /></ProtectedRoute> },
-      { path: "vaccinebyanimal", element: <ProtectedRoute><Vaccinebyanimal/></ProtectedRoute> },
+      { path: "addVaccine", element: <ProtectedRoute><Vaccinebyanimal/></ProtectedRoute> },
       { path: "vaccinebylocationshed", element: <ProtectedRoute><Vaccinebylocationshed/></ProtectedRoute> },
       { path: "Vaccinebyanimalsstable", element: <ProtectedRoute><Vaccinebyanimalsstable/></ProtectedRoute> },
       { path: "vaccineTable", element: <ProtectedRoute><VaccineTable/></ProtectedRoute> },
