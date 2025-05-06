@@ -84,7 +84,8 @@ async function editMating(values) {
                         maleTag_id: mating.maleTag_id || '',
                         matingDate: formatDate(mating.matingDate),
                         sonarDate: formatDate(mating.sonarDate),
-                        sonarRsult: mating.sonarRsult || '',
+                        checkDays: mating.checkDays || null,
+                        sonarRsult: mating.sonarRsult || null,
                         expectedDeliveryDate: formatDate(mating.expectedDeliveryDate) || '', // Set initial value for expectedDeliveryDate
                     });
                 } else {
@@ -104,9 +105,10 @@ async function editMating(values) {
             matingType: '',
             maleTag_id: '',
             matingDate: '',
-            sonarDate: '',
+            checkDays: null,
             sonarRsult: null,
             expectedDeliveryDate: '', // Initialize this in the formik initial values
+            sonarDate: '',
         },
         onSubmit: (values) => editMating(values),
     });
@@ -189,19 +191,22 @@ async function editMating(values) {
 {formik.errors.matingDate && formik.touched.matingDate && <p className="text-danger">{formik.errors.matingDate}</p>}
 </div>
 
-<div className="input-box">
-<label className="label" htmlFor="sonarDate">{t('sonar_date')}</label>
-<input
-    onBlur={formik.handleBlur}
-    onChange={formik.handleChange}
-    value={formik.values.sonarDate}
-    id="sonarDate"
-    type="date"
-    className="input2"
-    name="sonarDate"
-/>
-{formik.errors.sonarDate && formik.touched.sonarDate && <p className="text-danger">{formik.errors.sonarDate}</p>}
-</div>
+                    <div className="input-box">
+                        <label className="label" htmlFor="checkDays">{t('check_Days')}</label>
+                        <select 
+                            onBlur={formik.handleBlur} 
+                            onChange={formik.handleChange} 
+                            value={formik.values.checkDays} 
+                            id="checkDays" 
+                            className="input2" 
+                            name="checkDays"
+                        >
+                            <option value="" disabled>{t('select_check_Days')}</option>
+                            <option value="45">{t('45')}</option>
+                            <option value="60">{t('60')}</option>
+                            <option value="90">{t('90')}</option>
+                        </select>
+                    </div>
 
 <div className="input-box">
 <label className="label" htmlFor="sonarRsult">{t('sonar_result')}</label>
@@ -218,6 +223,19 @@ async function editMating(values) {
     <option value="negative">{t('negative')}</option>
 </select>
 {formik.errors.sonarRsult && formik.touched.sonarRsult && <p className="text-danger">{formik.errors.sonarRsult}</p>}
+</div>
+<div className="input-box">
+<label className="label" htmlFor="sonarDate">{t('sonar_date')}</label>
+<input
+    onBlur={formik.handleBlur}
+    onChange={formik.handleChange}
+    value={formik.values.sonarDate}
+    id="sonarDate"
+    type="date"
+    className="input2"
+    name="sonarDate"
+/>
+{formik.errors.sonarDate && formik.touched.sonarDate && <p className="text-danger">{formik.errors.sonarDate}</p>}
 </div>
                     <div className="input-box">
                         <label className="label" htmlFor="expectedDeliveryDate">{t('expected_delivery_date')}</label>

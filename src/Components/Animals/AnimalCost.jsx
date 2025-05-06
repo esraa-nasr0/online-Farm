@@ -98,6 +98,7 @@ function AnimalCost() {
                                 <th scope="col">Animal Tag ID</th>
                                 <th scope="col">Feed Cost</th>
                                 <th scope="col">Treatment Cost</th>
+                                <th scope="col">Vaccine Cost</th>
                                 <th scope="col">Date</th>
                                 <th scope="col">Total Cost</th>
                             </tr>
@@ -109,6 +110,7 @@ function AnimalCost() {
                                     <td>{item.animalTagId}</td>
                                     <td>{item.feedCost}</td>
                                     <td>{item.treatmentCost}</td>
+                                    <td>{item.vaccineCost}</td>
                                     <td>{new Date(item.date).toLocaleDateString()}</td>
                                     <td>{item.totalCost}</td>
                                 </tr>

@@ -436,7 +436,19 @@
 "successMessage-breeding":"Breeding data updated successfully!",
 
 
+
+    "location": "Location",
+    "medications": "Medications",
+    "price_per_ml": "Price (per mL)",
+    "treatment_deleted_success": "Treatment deleted successfully.",
+    "treatment_deleted_failed": "Failed to delete treatment.",
+    "fetch_treatments_failed": "Failed to fetch treatment data.",
+    "treatment_record": "Treatment Records",
+    "no_treatment_records": "No treatment records available.",
   
+  "check_Days": "Check Days",
+
+
 "Enter your delivery state": "Enter the delivery condition",
 "Enter your delivery date": "Enter the date of delivery",
 "Enter number of births": "Enter the number of births",

@@ -5,6 +5,8 @@ import { IoIosSave } from "react-icons/io";
 import Swal from 'sweetalert2';
 import { useTranslation } from 'react-i18next';
 import { LocationContext } from '../../Context/LocationContext';
+import { useNavigate } from 'react-router-dom';
+
 
 function MatingLocation() {
     const [showAlert, setShowAlert] = useState(false);
@@ -15,6 +17,8 @@ function MatingLocation() {
     const [isSubmitted, setIsSubmitted] = useState(false); // حالة جديدة لتتبع الإرسال
     const { t } = useTranslation();
     const {LocationMenue} = useContext(LocationContext);
+        let navigate = useNavigate();
+    
 
     const getHeaders = () => {
         const Authorization = localStorage.getItem('Authorization');
@@ -45,9 +49,10 @@ function MatingLocation() {
         if (isSubmitted) {
             return;
         }
-
         const headers = getHeaders();
         setisLoading(true); 
+        value.checkDays = parseInt(value.checkDays, 10);
+
         try {
             let { data } = await axios.post(
                 `https://farm-project-bbzj.onrender.com/api/mating/AddMatingByLocation`,
@@ -57,10 +62,10 @@ function MatingLocation() {
 
             if (data.status === "success") {
                 setisLoading(false);
-                setMatingData(data.data.mating);
+                setMatingData(data.data.matings);
+                formik.setFieldValue('sonarDate', data.data.matings[0]?.sonarDate);
                 setShowAlert(true);
                 setIsSubmitted(true); // تحديث حالة الإرسال
-                
                 // إعادة تعيين النموذج
                 formik.resetForm();
                 
@@ -70,6 +75,7 @@ function MatingLocation() {
                     icon: 'success',
                     confirmButtonText: t('ok')
                 });
+                navigate('/matingtable');
             }
         } catch (err) {
             setisLoading(false);
@@ -84,7 +90,7 @@ function MatingLocation() {
             matingType: '',
             maleTag_id: '',
             matingDate: '',
-            sonarDate: '',
+            checkDays: null,
         },
         onSubmit: submitMating
     });
@@ -93,11 +99,13 @@ function MatingLocation() {
         <div className="container">
             <div className="title2">{t('mating')}</div>
             <p className="text-danger">{error}</p>
-            {showAlert && matingData && matingData.expectedDeliveryDate && (
-                <div className="alert mt-5 p-4 alert-success">
-                    {t('expected_delivery_date')}: {new Date(matingData.expectedDeliveryDate).toLocaleDateString()}
-                </div>
-            )}
+            
+            {showAlert && matingData && matingData.length > 0 && (
+    <div className="alert mt-5 p-4 alert-success">
+        {t('sonar_date')}: {new Date(matingData[0].sonarDate).toLocaleDateString()}
+    </div>
+)}
+
             <form onSubmit={formik.handleSubmit} className="mt-5">
                 
                 {isLoading ? (
@@ -175,17 +183,21 @@ function MatingLocation() {
                         />
                     </div>
                     <div className="input-box">
-                        <label className="label" htmlFor="sonarDate">{t('sonar_date')}</label>
-                        <input 
+                        <label className="label" htmlFor="checkDays">{t('check_Days')}</label>
+                        <select 
                             onBlur={formik.handleBlur} 
                             onChange={formik.handleChange} 
-                            value={formik.values.sonarDate} 
-                            id="sonarDate" 
-                            type="date" 
+                            value={formik.values.checkDays} 
+                            id="checkDays" 
                             className="input2" 
-                            name="sonarDate" 
+                            name="checkDays"
                             disabled={isSubmitted} // تعطيل الحقل إذا تم الإرسال
-                        />
+                        >
+                            <option value="" disabled>{t('select_check_Days')}</option>
+                            <option value="45">{t('45')}</option>
+                            <option value="60">{t('60')}</option>
+                            <option value="90">{t('90')}</option>
+                        </select>
                     </div>
                 </div>
             </form>

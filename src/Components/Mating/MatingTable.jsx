@@ -43,8 +43,9 @@ function MatingTable() {
             };
             const { data } = await getMating(currentPage, animalsPerPage, filters);
             setMatings(data.data.mating);
-            setPagination(data.pagination || { totalPages: 1 }); 
-            const total = data.pagination?.totalPages || 1;
+            setPagination(data.data.pagination || { totalPages: 1 }); // Ensure pagination is defined with a fallback value
+            const total = data.data.pagination?.totalPages || 1; // Use optional chaining with a fallback
+
             console.log("Calculated Total Pages:", total);
             setTotalPages(total); 
         } catch (error) {
@@ -96,11 +97,11 @@ function MatingTable() {
         setCurrentPage(pageNumber);
     };
 
-    // عرض أزرار الصفحات
     const renderPaginationButtons = () => {
         const buttons = [];
-        const total = pagination?.totalPages || 1; 
-        for (let i = 1; i <= total; i++) { 
+
+        const total = pagination.totalPages;
+        for (let i = 1; i <= total; i++) {
             buttons.push(
                 <li key={i} className={`page-item ${i === currentPage ? 'active' : ''}`}>
                     <button className="page-link" onClick={() => paginate(i)}>
@@ -202,7 +203,7 @@ function MatingTable() {
                         <tbody>
                             {matings.map((mating, index) => (
                                 <tr key={mating._id}>
-                                    <td>{(currentPage - 1) * animalsPerPage + index + 1}</td>
+                                    <th scope="row">{(currentPage - 1) * animalsPerPage + index + 1}</th>
                                     <td>{mating.tagId}</td>
                                     <td>{mating.maleTag_id}</td>
                                     <td>{mating.matingType}</td>
@@ -224,6 +225,7 @@ function MatingTable() {
                     </div>
 
                     {/* أزرار الصفحات */}
+                    
                     <div className="d-flex justify-content-center mt-4">
                         <nav>
                             <ul className="pagination">
