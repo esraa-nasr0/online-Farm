@@ -487,7 +487,7 @@
     "tag1": "الإدارة",
     "tag2": "الزراعة",
 
-    
+    "foddernames": "اسم",
     "fodder.title": "العلف",
     "fodder.searchPlaceholder": "ابحث بالاسم",
     "fodder.searchButton": "بحث",
@@ -620,7 +620,13 @@
   "Add Excluded": "إضافة مستبعد",
   "Add Details of Excluded": "إضافة تفاصيل المستبعد",
   "Go to Add Excluded": "الذهاب لإضافة مستبعد",
-
+  
+    "price_per_ml": "السعر لكل مل",
+    "treatment_deleted_success": "تم حذف العلاج بنجاح.",
+    "treatment_deleted_failed": "فشل حذف العلاج.",
+    "fetch_treatments_failed": "فشل في جلب بيانات العلاج.",
+    "no_treatment_records": "لا توجد سجلات علاج",
+  
   "Normal":"طبيعيه",
   "Difficult":"متعسرة",
   "Assisted":"طبيعيه ب مساعده",
@@ -630,6 +636,7 @@
   "showDescription-v":"ادخل بينات اللقاح"
 
 }
+
 
 
 

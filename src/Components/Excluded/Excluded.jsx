@@ -70,7 +70,6 @@ function Excluded() {
 
                 <div className="title2">{t('add_excluded')}</div>
 
-
                 <p className="text-danger">{error}</p>
 
                 {showAlert && matingData && matingData.expectedDeliveryDate && (
