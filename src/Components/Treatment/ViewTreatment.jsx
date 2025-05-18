@@ -29,7 +29,6 @@ function ViewAnimalTreatment({ animalId }) {
                 setTreatments(data.data.treatments || []);
             } catch (error) {
                 console.error("Error fetching treatments", error);
-                Swal.fire(t('error'), t('fetch_treatments_failed'), 'error');
             }
         }
 
@@ -52,7 +51,6 @@ function ViewAnimalTreatment({ animalId }) {
             Swal.fire(t('deleted'), t('treatment_deleted_success'), 'success');
         } catch (error) {
             console.error(t('delete_failed_treatment'), error);
-            Swal.fire(t('error'), t('treatment_deleted_failed'), 'error');
         }
     };
 

@@ -627,7 +627,7 @@
     "fetch_treatments_failed": "فشل في جلب بيانات العلاج.",
     "no_treatment_records": "لا توجد سجلات علاج",
 
-    "check_Days": "تحقق من الأيام",
+  "check_Days": "تحقق من الأيام",
     
   "Normal":"طبيعيه",
   "Difficult":"متعسرة",
@@ -635,7 +635,12 @@
   "Caesarean":"قيصرية",
   "Search Entry Type":"البحث باستخدام نوع الادخال",
   "Add New Vaccine":"إضافة لقاح جديد",
-  "showDescription-v":"ادخل بينات اللقاح"
+  "showDescription-v":"ادخل بينات اللقاح",
+
+  "add_animal":"اضافة حيوان",
+  "basic_info":"المعلومات الأساسية",
+  "animal_details":"تفاصيل الحيوان",
+  "acquisition_details":"تفاصيل الاستحواذ"
 
 }
 

@@ -573,6 +573,11 @@
 "Caesarean":"Caesarean",
   "Search Entry Type":  "Search Entry Type",
   "Add New Vaccine":"Add New Vaccine",
-    "showDescription-v":"Enter The Vaccine Data"
+    "showDescription-v":"Enter The Vaccine Data",
+
+    "add_animal":"Add Animal",
+    "basic_info":"Basic information",
+    "animal_details":"Animal Details",
+    "acquisition_details":"Acquisition Details"
 }
 
