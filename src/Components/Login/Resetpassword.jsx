@@ -4,7 +4,8 @@ import { useFormik } from "formik";
 import { Link, useNavigate } from "react-router-dom";
 import { UserContext } from "../../Context/UserContext";
 import * as Yup from "yup";
-
+import style from "./Login.module.css";
+import { CgShapeRhombus } from "react-icons/cg";
 
 export default function Resetpassword() {
 let { Authorization } = useContext(UserContext);
@@ -32,29 +33,22 @@ async function Resetpassword(value) {
         navigate("/login");
         console.log(data);
     }
-console.log(data);
-
-
-
-
+    console.log(data);
     } catch (err) {
     setIsLoading(false);
     setError(err.response?.data?.message || "Reset password failed. Please try again.");
     }
 }
 
-
 let validation = Yup.object({
-
     newPassword: Yup.string()
     .required("No password provided.")
     .min(8, "Password is too short - should be 8 chars minimum.")
     .matches(/[a-zA-Z]/, "Password can only contain Latin letters."),
-    });
+});
 
 let formik = useFormik({
     initialValues: {
-    
         newPassword: "",
     },
     validationSchema: validation,
@@ -62,53 +56,40 @@ let formik = useFormik({
 });
 
 return (
-    <div className="body">
-    <div className="container2">
-        <div className="title">Reset password</div>
-        <p className="text-danger">{error}</p>
-        <form onSubmit={formik.handleSubmit}>
-        <div className="user-detail">
-    
-
-            <div className="input-box2">
-            <label className="label" htmlFor="newPassword">newPassword</label>
-            <input
-                onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
-                value={formik.values.password}
-                placeholder="Enter your newPassword"
-                id="newPassword"
-                type="Password"
-                className="input"
-                name="newPassword"
-            />
-            {formik.errors.newPassword && formik.touched.newPassword ? (
-                <p className="text-danger">{formik.errors.newPassword}</p>
-            ) : null}
-            </div>
-        </div>
-
-        <div className="divbutton">
-            {isLoading ? (
-            <button type="button" className="button">
-                <i className="fas fa-spinner fa-spin"></i>
-            </button>
-            ) : (
-            <>
-                <button
-                disabled={!(formik.isValid && formik.dirty)}
-                type="submit"
-                className="button"
+    <div className={style.loginPageBg}>
+        <div className={style.loginCard}>
+            <div className={style.logo}><CgShapeRhombus /></div>
+            <h2 className={style.title}>Reset your password</h2>
+            <p className={style.subtitle}>Enter your new password below.</p>
+            <p className="text-danger">{error}</p>
+            <form onSubmit={formik.handleSubmit}>
+                <label className={style.label} htmlFor="newPassword">New Password</label>
+                <input
+                    className={style.input}
+                    id="newPassword"
+                    name="newPassword"
+                    type="password"
+                    placeholder="Enter your new password"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.newPassword}
+                />
+                {formik.errors.newPassword && formik.touched.newPassword ? (
+                    <p className="text-danger">{formik.errors.newPassword}</p>
+                ) : null}
+                <button 
+                    className={style.signInBtn} 
+                    type="submit"
+                    disabled={!(formik.isValid && formik.dirty)}
                 >
-                Send
+                    {isLoading ? (
+                        <i className="fas fa-spinner fa-spin"></i>
+                    ) : (
+                        "Reset Password"
+                    )}
                 </button>
-
-        
-            </>
-            )}
+            </form>
         </div>
-        </form>
-    </div>
     </div>
 );
 }

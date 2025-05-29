@@ -1,11 +1,11 @@
 import axios from "axios";
 import { useFormik } from "formik";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import * as Yup from "yup";
 import style from "./Register.module.css";
 import { jwtDecode } from 'jwt-decode';
-
+import { CgShapeRhombus } from "react-icons/cg";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -21,7 +21,7 @@ export default function Register() {
       );
       if (data.status === "success") {
         setisLoading(false);
-        formik.resetForm(); // Reset before navigating
+        formik.resetForm();
         navigate("/login");
       }
     } catch (err) {
@@ -74,173 +74,143 @@ export default function Register() {
     },
     validationSchema: validation,
     onSubmit: submitRegister,
-    validateOnMount: true, // Add this
+    validateOnMount: true,
   });
   
   React.useEffect(() => {
     formik.resetForm();
-    // Clear any potential stored values from localStorage/sessionStorage
     localStorage.removeItem('formData');
     sessionStorage.removeItem('formData');
   }, []);
 
-
   return (
-    <div className={style.body}>
-      <div className={style.container3}>
-        <div className={style.content3}>
-          <div className={style.title3}>Registration</div>
-          <p className="text-danger">{error}</p>
-          <form onSubmit={formik.handleSubmit}>
-            <div className={style.user_details3}>
-              <div className={style.input_box3}>
-                <label className={style.details3} htmlFor="name">
-                  UserName
-                </label>
-                <input
-                  onBlur={formik.handleBlur}
-                  onChange={formik.handleChange}
-                  value={formik.values.name}
-                  placeholder="Enter your username"
-                  id="name"
-                  type="text"
-                  className={style.input3}
-                  name="name"
-                />
-                {formik.errors.name && formik.touched.name ? (
-                  <p className="text-danger">{formik.errors.name}</p>
-                ) : (
-                  ""
-                )}
-              </div>
-
-              <div className={style.input_box3}>
-                <label className={style.details3} htmlFor="email">
-                  Email
-                </label>
-                <input
-                  onBlur={formik.handleBlur}
-                  onChange={formik.handleChange}
-                  value={formik.values.email}
-                  placeholder="Enter your email"
-                  id="email"
-                  type="text"
-                  className={style.input3}
-                  name="email"
-                />
-                {formik.errors.email && formik.touched.email ? (
-                  <p className="text-danger">{formik.errors.email}</p>
-                ) : (
-                  ""
-                )}
-              </div>
-
-              <div className={style.input_box3}>
-                <label className={style.details3} htmlFor="phone">
-                  Phone Number
-                </label>
-                <input
-                  onBlur={formik.handleBlur}
-                  onChange={formik.handleChange}
-                  value={formik.values.phone}
-                  placeholder="Enter your number"
-                  id="phone"
-                  type="tel"
-                  className={style.input3}
-                  name="phone"
-                />
-                {formik.errors.phone && formik.touched.phone ? (
-                  <p className="text-danger">{formik.errors.phone}</p>
-                ) : (
-                  ""
-                )}
-              </div>
-
-              <div className={style.input_box3}>
-                <label className={style.details3} htmlFor="country">
-                  Country
-                </label>
-                <input
-                  onBlur={formik.handleBlur}
-                  onChange={formik.handleChange}
-                  value={formik.values.country}
-                  placeholder="Enter your Country"
-                  id="country"
-                  type="text"
-                  className={style.input3}
-                  name="country"
-                />
-                {formik.errors.country && formik.touched.country ? (
-                  <p className="text-danger">{formik.errors.country}</p>
-                ) : (
-                  ""
-                )}
-              </div>
-
-              <div className={style.input_box3}>
-                <label className={style.details3} htmlFor="password">
-                  Password
-                </label>
-                <input
-                  onBlur={formik.handleBlur}
-                  onChange={formik.handleChange}
-                  value={formik.values.password}
-                  placeholder="Enter your password"
-                  id="password"
-                  type="password"
-                  className={style.input3}
-                  name="password"
-                />
-                {formik.errors.password && formik.touched.password ? (
-                  <p className="text-danger">{formik.errors.password}</p>
-                ) : (
-                  ""
-                )}
-              </div>
-
-
-              <div className={style.input_box3}>
-                <label className={style.details3} htmlFor="confirmpassword">
-                  Confirm Password
-                </label>
-                <input
-                  onBlur={formik.handleBlur}
-                  onChange={formik.handleChange}
-                  value={formik.values.confirmpassword}
-                  placeholder="Confirm your password"
-                  id="confirmpassword"
-                  type="password"
-                  className={style.input3}
-                  name="confirmpassword"
-                />
-                {formik.errors.confirmpassword &&
-                formik.touched.confirmpassword ? (
-                  <p className="text-danger">
-                    {formik.errors.confirmpassword}
-                  </p>
-                ) : (
-                  ""
-                )}
-              </div>
+    <div className={style.loginPageBg}>
+      <div className={style.loginCard}>
+        <div className={style.logo}><CgShapeRhombus /></div>
+        <h2 className={style.title}>Create an account</h2>
+        <p className={style.subtitle}>Please fill in your details to register.</p>
+        <p className="text-danger">{error}</p>
+        <form onSubmit={formik.handleSubmit}>
+          <div className={style.formGrid}>
+            <div className={style.inputGroup}>
+              <label className={style.label} htmlFor="name">Username</label>
+              <input
+                className={style.input}
+                id="name"
+                name="name"
+                type="text"
+                placeholder="Enter your username"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.name}
+              />
+              {formik.errors.name && formik.touched.name ? (
+                <p className="text-danger">{formik.errors.name}</p>
+              ) : null}
             </div>
 
-            <div className={style.divbutton}>
-              {isLoading ? (
-                <button type="button" className={style.button3}>
-                  <i className="fas fa-spinner fa-spin"></i>
-                </button>
-              ) : (
-                <button
-                  disabled={!(formik.isValid && formik.dirty)}
-                  type="submit"
-                  className={style.button3}
-                >
-                  Submit
-                </button>
-              )}
+            <div className={style.inputGroup}>
+              <label className={style.label} htmlFor="email">Email</label>
+              <input
+                className={style.input}
+                id="email"
+                name="email"
+                type="email"
+                placeholder="Enter your email"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.email}
+              />
+              {formik.errors.email && formik.touched.email ? (
+                <p className="text-danger">{formik.errors.email}</p>
+              ) : null}
             </div>
-          </form>
-        </div>
+
+            <div className={style.inputGroup}>
+              <label className={style.label} htmlFor="phone">Phone Number</label>
+              <input
+                className={style.input}
+                id="phone"
+                name="phone"
+                type="tel"
+                placeholder="Enter your phone number"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.phone}
+              />
+              {formik.errors.phone && formik.touched.phone ? (
+                <p className="text-danger">{formik.errors.phone}</p>
+              ) : null}
+            </div>
+
+            <div className={style.inputGroup}>
+              <label className={style.label} htmlFor="country">Country</label>
+              <input
+                className={style.input}
+                id="country"
+                name="country"
+                type="text"
+                placeholder="Enter your country"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.country}
+              />
+              {formik.errors.country && formik.touched.country ? (
+                <p className="text-danger">{formik.errors.country}</p>
+              ) : null}
+            </div>
+
+            <div className={style.inputGroup}>
+              <label className={style.label} htmlFor="password">Password</label>
+              <input
+                className={style.input}
+                id="password"
+                name="password"
+                type="password"
+                placeholder="Enter your password"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.password}
+              />
+              {formik.errors.password && formik.touched.password ? (
+                <p className="text-danger">{formik.errors.password}</p>
+              ) : null}
+            </div>
+
+            <div className={style.inputGroup}>
+              <label className={style.label} htmlFor="confirmpassword">Confirm Password</label>
+              <input
+                className={style.input}
+                id="confirmpassword"
+                name="confirmpassword"
+                type="password"
+                placeholder="Confirm your password"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.confirmpassword}
+              />
+              {formik.errors.confirmpassword && formik.touched.confirmpassword ? (
+                <p className="text-danger">{formik.errors.confirmpassword}</p>
+              ) : null}
+            </div>
+          </div>
+
+          <button 
+            className={style.signInBtn} 
+            type="submit"
+            disabled={!(formik.isValid && formik.dirty)}
+          >
+            {isLoading ? (
+              <i className="fas fa-spinner fa-spin"></i>
+            ) : (
+              "Sign up"
+            )}
+          </button>
+
+          <div className={style.signupPrompt}>
+            Already have an account? <Link to="/login">Sign in</Link>
+          </div>
+        </form>
       </div>
     </div>
   );

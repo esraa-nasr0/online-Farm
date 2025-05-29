@@ -108,10 +108,7 @@ function AnimalsDetails() {
         <div className="animal-details-container">
             <div className="animal-details-header">
                 <h1>{t('add_animal')}</h1>
-                <div className="weather-info">
-                    <span className="temperature">24°C</span>
-                    <span className="weather-desc">Today is partly sunny day!</span>
-                </div>
+                
             </div>
 
             {error && <div className="error-message">{error}</div>}

@@ -6,6 +6,8 @@ import * as Yup from "yup";
 import { UserContext } from "../../Context/UserContext";
 import { jwtDecode } from 'jwt-decode';
 import style from "./Login.module.css";
+import { CgShapeRhombus } from "react-icons/cg";
+
 
 export default function Login() {
   let { setAuthorization } = useContext(UserContext);
@@ -66,78 +68,53 @@ export default function Login() {
   }, []);
 
   return (
-    <div className={style.body}>
-      <div className={style.container3}>
-        <div className={style.title3}>Login</div>
-        <p className="text-danger">{error}</p>
-        <form onSubmit={formik.handleSubmit} className={style.content3}>
-          <div className={style.user_details3}>
-            <div className={style.input_box3}>
-              <label htmlFor="email" className={style.details3}>Email</label>
-              <input
-                onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
-                value={formik.values.email}
-                placeholder="Enter your email"
-                id="email"
-                type="text"
-                name="email"
-                className={style.input3}
-              />
-              {formik.errors.email && formik.touched.email ? (
-                <p className="text-danger">{formik.errors.email}</p>
-              ) : null}
-            </div>
-
-            <div className={style.input_box3}>
-              <label htmlFor="password" className={style.details3}>Password</label>
-              <input
-                onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
-                value={formik.values.password}
-                placeholder="Enter your password"
-                id="password"
-                type="password"
-                name="password"
-                className={style.input3}
-              />
-              {formik.errors.password && formik.touched.password ? (
-                <p className="text-danger">{formik.errors.password}</p>
-              ) : null}
-            </div>
+    <div className={style.loginPageBg}>
+      <div className={style.loginCard}>
+        <div className={style.logo}><CgShapeRhombus /></div>
+        <h2 className={style.title}>Log in to your account</h2>
+        <p className={style.subtitle}>Welcome back! Please enter your details.</p>
+        <form onSubmit={formik.handleSubmit}>
+          <label className={style.label} htmlFor="email">Email</label>
+          <input
+            className={style.input}
+            id="email"
+            name="email"
+            type="email"
+            placeholder="Enter your email"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.email}
+          />
+          {formik.errors.email && formik.touched.email ? (
+            <p className="text-danger">{formik.errors.email}</p>
+          ) : null}
+          <label className={style.label} htmlFor="password">Password</label>
+          <input
+            className={style.input}
+            id="password"
+            name="password"
+            type="password"
+            placeholder="Password"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.password}
+          />
+          {formik.errors.password && formik.touched.password ? (
+            <p className="text-danger">{formik.errors.password}</p>
+          ) : null}
+          <div className={style.optionsRow}>
+            <label className={style.checkboxLabel}>
+              <input type="checkbox" name="remember" />
+              Remember me
+            </label>
+            <Link className={style.forgotLink} to="/forgetpassword">Forgot password</Link>
           </div>
-
-          <div className={style.divbutton3}>
-            {isLoading ? (
-              <button type="button" className={style.button3}>
-                <i className="fas fa-spinner fa-spin"></i>
-              </button>
-            ) : (
-              <>
-              
-              <div className="d-flex justify-content-between mt-3">
-                  <Link 
-                  className="btn btn-link" 
-                  to="/register"
-                  onClick={() => {
-                  formik.resetForm();
-                  navigate('/register', { replace: true }); // Add replace option
-                  }}>Register New
-                  </Link>
-                  <Link className="btn btn-link" to="/forgetpassword">
-                    Forget Password
-                  </Link>
-                </div>
-                
-                <button
-                  disabled={!(formik.isValid && formik.dirty)}
-                  type="submit"
-                  className={style.button3}
-                >
-                  Submit
-                </button>
-              </>
-            )}
+          <button className={style.signInBtn} type="submit">Sign in</button>
+          {/* <button className={style.googleBtn} type="button">
+            <span className={style.googleIcon}>G</span> Sign in with Google
+          </button> */}
+          <div className={style.signupPrompt}>
+            Don’t have an account? <Link to="/register">Sign up</Link>
           </div>
         </form>
       </div>
