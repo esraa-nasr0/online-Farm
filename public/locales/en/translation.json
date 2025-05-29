@@ -1,4 +1,6 @@
 {
+
+
   "welcome": "Welcome to the farm",
   "description": "We grow fresh and organic products.",
   "animals": "Animals",
@@ -349,9 +351,11 @@
   "remove": "Remove ",
   "Vaccine_Records": "Vaccine Records",
 
+
 "dosage": "Dosage",
 "unit_price": "Unit Price",
 "total_cost": "Total Cost",
+
 
   "animalManagement": "ANIMAL MANAGEMENT",
   "animal": "Animal",
@@ -432,7 +436,19 @@
 "successMessage-breeding":"Breeding data updated successfully!",
 
 
+
+    "location": "Location",
+    "medications": "Medications",
+    "price_per_ml": "Price (per mL)",
+    "treatment_deleted_success": "Treatment deleted successfully.",
+    "treatment_deleted_failed": "Failed to delete treatment.",
+    "fetch_treatments_failed": "Failed to fetch treatment data.",
+    "treatment_record": "Treatment Records",
+    "no_treatment_records": "No treatment records available.",
   
+  "check_Days": "Check Days",
+
+
 "Enter your delivery state": "Enter the delivery condition",
 "Enter your delivery date": "Enter the date of delivery",
 "Enter number of births": "Enter the number of births",
@@ -558,19 +574,10 @@
   "Search Entry Type":  "Search Entry Type",
   "Add New Vaccine":"Add New Vaccine",
     "showDescription-v":"Enter The Vaccine Data",
-    "Add Vaccine": "Add Vaccine",
-    "Success": "Success",
-    "Error": "Error",
-    "Vaccine Name": "Vaccine Name",
-    "Enter vaccine name": "Enter vaccine name",
-    "Booster Dose": "Booster Dose",
-    "Enter Booster Dose": "Enter Booster Dose",
-    "Annual Dose": "Annual Dose",
-    "Enter Annual Dose": "Enter Annual Dose",
-    "Bottles": "Bottles",
-    "Enter Number Of Bottles": "Enter Number Of Bottles",
-    "Doses Per Bottle": "Doses Per Bottle",
-    "Enter Doses Per Bottle": "Enter Doses Per Bottle",
-    "Bottle Price": "Bottle Price",
-    "Enter Bottle Price": "Enter Bottle Price"
+
+    "add_animal":"Add Animal",
+    "basic_info":"Basic information",
+    "animal_details":"Animal Details",
+    "acquisition_details":"Acquisition Details"
 }
+

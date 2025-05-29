@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import { IoIosSave } from "react-icons/io";
 import Swal from 'sweetalert2';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+
 
 function Mating() {
     const [showAlert, setShowAlert] = useState(false);
@@ -12,6 +14,7 @@ function Mating() {
     const [matingData, setMatingData] = useState(null);
     const [isSubmitted, setIsSubmitted] = useState(false); // حالة جديدة لتتبع الإرسال
     const { t } = useTranslation();
+    let navigate = useNavigate();
 
     const getHeaders = () => {
         const Authorization = localStorage.getItem('Authorization');
@@ -24,6 +27,7 @@ function Mating() {
         if (isSubmitted) {
             return;
         }
+        value.checkDays = parseInt(value.checkDays, 10);
 
         const headers = getHeaders();
         setisLoading(true); 
@@ -39,7 +43,7 @@ function Mating() {
                 setMatingData(data.data.mating);
                 setShowAlert(true);
                 setIsSubmitted(true); // تحديث حالة الإرسال
-                
+                formik.setFieldValue('sonarDate', data.data.mating.sonarDate);
                 // إعادة تعيين النموذج
                 formik.resetForm();
                 
@@ -49,6 +53,7 @@ function Mating() {
                     icon: 'success',
                     confirmButtonText: t('ok')
                 });
+                navigate('/matingtable');
             }
         } catch (err) {
             setisLoading(false);
@@ -63,7 +68,7 @@ function Mating() {
             matingType: '',
             maleTag_id: '',
             matingDate: '',
-            sonarDate: '',
+            checkDays: null,
             sonarRsult: null,
         },
         onSubmit: submitMating
@@ -73,11 +78,15 @@ function Mating() {
         <div className="container">
             <div className="title2">{t('mating')}</div>
             <p className="text-danger">{error}</p>
-            {showAlert && matingData && matingData.expectedDeliveryDate && (
-                <div className="alert mt-5 p-4 alert-success">
-                    {t('expected_delivery_date')}: {new Date(matingData.expectedDeliveryDate).toLocaleDateString()}
-                </div>
-            )}
+            
+    
+
+            {showAlert && matingData && matingData.sonarDate && (
+    <div className="alert mt-5 p-4 alert-success">
+        {t('sonar_date')}: {new Date(matingData.sonarDate).toLocaleDateString()}
+    </div>
+)}
+
             <form onSubmit={formik.handleSubmit} className="mt-5">
                 
                 {isLoading ? (
@@ -93,6 +102,7 @@ function Mating() {
                         <IoIosSave /> {t('save')}
                     </button>
                 )}
+                
                 <div className="animaldata">
                     <div className="input-box">
                         <label className="label" htmlFor="tagId">{t('female_tag_id')}</label>
@@ -151,34 +161,23 @@ function Mating() {
                         />
                     </div>
                     <div className="input-box">
-                        <label className="label" htmlFor="sonarDate">{t('sonar_date')}</label>
-                        <input 
-                            onBlur={formik.handleBlur} 
-                            onChange={formik.handleChange} 
-                            value={formik.values.sonarDate} 
-                            id="sonarDate" 
-                            type="date" 
-                            className="input2" 
-                            name="sonarDate" 
-                            disabled={isSubmitted} // تعطيل الحقل إذا تم الإرسال
-                        />
-                    </div>
-                    <div className="input-box">
-                        <label className="label" htmlFor="sonarRsult">{t('sonar_result')}</label>
+                        <label className="label" htmlFor="checkDays">{t('check_Days')}</label>
                         <select 
                             onBlur={formik.handleBlur} 
                             onChange={formik.handleChange} 
-                            value={formik.values.sonarRsult} 
-                            id="sonarRsult" 
+                            value={formik.values.checkDays} 
+                            id="checkDays" 
                             className="input2" 
-                            name="sonarRsult"
+                            name="checkDays"
                             disabled={isSubmitted} // تعطيل الحقل إذا تم الإرسال
                         >
-                            <option value="" disabled>{t('select_sonar_result')}</option>
-                            <option value="positive">{t('positive')}</option>
-                            <option value="negative">{t('negative')}</option>
+                            <option value="" disabled>{t('select_check_Days')}</option>
+                            <option value="45">{t('45')}</option>
+                            <option value="60">{t('60')}</option>
+                            <option value="90">{t('90')}</option>
                         </select>
                     </div>
+                    
                 </div>
             </form>
         </div>
