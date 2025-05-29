@@ -65,7 +65,6 @@ import EditFodder from "./Components/Feeding/EditFodder.jsx";
 import Dashboard from "./Components/Dashboard/Dashboard.jsx";
 import NotAuthorized from "./Components/Dashboard/NotAuthorized.jsx";
 import DashboardContextProvider from "./Context/DashboardContext.js";
-
 import LocationContextProvider from "./Context/Locationshedcontext.js";
 import VaccinetableentriescontextProvider from "./Context/Vaccinetableentriescontext.jsx";
 import EditVaccineanimals from "./Components/Vaccine/EditVaccineanimals.jsx";
@@ -90,12 +89,10 @@ import BreedTable from "./Components/Breed/BreedTable.jsx";
 import EditBreed from "./Components/Breed/EditBreed.jsx";
 import LocationServices from "./Components/Services/LocationServices.jsx";
 import BreedServices from "./Components/Services/BreedServices.jsx";
-
-
 import Use from "./Components/Home/Usefullto.jsx";
 import Features from "./Components/LastSection/LastSection.jsx"
 import Manageemployee from "./Components/Section/Section.jsx";
-
+import { SidebarProvider, useSidebar } from './Context/SidebarContext.jsx';
 
 
 let routers = createBrowserRouter([
@@ -203,6 +200,7 @@ export default function App() {
   },[]);
 
   return <>
+      <SidebarProvider>
     <VaccinetableentriescontextProvider>
   <BreedContextProvider>
   <LocationContextshedProvider>
@@ -237,6 +235,7 @@ export default function App() {
   </LocationContextshedProvider>
   </BreedContextProvider>
   </VaccinetableentriescontextProvider>
+  </SidebarProvider>
   </>
 }
 

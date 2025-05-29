@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Rings } from 'react-loader-spinner'; // Ensure this is installed via npm/yarn
 import { AnimalContext } from '../../Context/AnimalContext';
+import "../Vaccine/styles.css"
 
 function AnimalCost() {
     const { costAnimal } = useContext(AnimalContext);
@@ -72,10 +73,14 @@ function AnimalCost() {
                     />
                 </div>
             ) : (
-                <div className="container">
-                    <div className="title2">Animals Cost</div>
-                    <div className="d-flex flex-wrap mt-4">
-                        <input
+                <div className="container mt-5 vaccine-table-container">
+                    
+                     <h2 className="vaccine-table-title">Animals Cost</h2>
+                 
+
+                 <div className="row g-2 mb-3">
+        <div className="col-md-4">
+    <input
                             type="text"
                             className="form-control me-2 mb-2"
                             placeholder="Search by Animal Tag ID"
@@ -83,23 +88,22 @@ function AnimalCost() {
                             onChange={(e) => setSearchAnimalTagId(e.target.value)}
                             style={{ flex: 1 }}
                         />
-                        <button
-                            className="btn mb-2 me-2"
-                            onClick={handleSearch}
-                            style={{ backgroundColor: '#FAA96C', color: 'white' }}
-                        >
-                            <i className="fas fa-search"></i>
-                        </button>
-                    </div>
+        </div>
+    
+          <div className="d-flex justify-content-end mb-3">
+        <button className="btn btn-outline-secondary" onClick={handleSearch}>search</button>
+      </div>
+      </div>
+
                     <table className="table table-hover mt-4 p-2">
                         <thead>
                             <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Animal Tag ID</th>
-                                <th scope="col">Feed Cost</th>
-                                <th scope="col">Treatment Cost</th>
-                                <th scope="col">Date</th>
-                                <th scope="col">Total Cost</th>
+                                <th scope="col"className="text-center bg-color" >#</th>
+                                <th scope="col" className="text-center bg-color">Animal Tag ID</th>
+                                <th scope="col" className="text-center bg-color">Feed Cost</th>
+                                <th scope="col" className="text-center bg-color">Treatment Cost</th>
+                                <th scope="col" className="text-center bg-color">Date</th>
+                                <th scope="col" className="text-center bg-color">Total Cost</th>
                             </tr>
                         </thead>
                         <tbody>

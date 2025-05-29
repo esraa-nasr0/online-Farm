@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaRegEdit } from "react-icons/fa";
-import { RiDeleteBin6Line } from "react-icons/ri";
+import { RiDeleteBin6Line, RiDeleteBinLine } from "react-icons/ri";
 import { MdOutlineAddToPhotos } from "react-icons/md";
 import { Rings } from 'react-loader-spinner';
 import { AnimalContext } from '../../Context/AnimalContext';
@@ -10,6 +10,10 @@ import { useNavigate } from "react-router-dom";
 import { GrView } from "react-icons/gr";
 import { useTranslation } from 'react-i18next';
 import AnimalStatistics from './AnimalStatistics';
+import axios from 'axios';
+import "../Vaccine/styles.css"
+import { IoEyeOutline } from "react-icons/io5";
+
 
 export default function Animals() {
     const { t } = useTranslation();
@@ -28,6 +32,188 @@ export default function Animals() {
     const [searchBreed, setSearchBreed] = useState('');
     const [searchGender, setSearchGender] = useState('');
     const [pagination, setPagination] = useState({ totalPages: 1 });
+
+    // Helper function to get headers with token
+    const getHeaders = () => {
+        const Authorization = localStorage.getItem('Authorization');
+        const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+        return { Authorization: formattedToken };
+    };
+
+    // Handle download template
+    const handleDownloadTemplate = async () => {
+        const headers = getHeaders();
+        try {
+            setIsLoading(true); // Show loading while downloading
+            const response = await axios.get(
+                'https://farm-project-bbzj.onrender.com/api/animal/downloadAnimalTemplate',
+                {
+                    responseType: 'blob',
+                    headers: {
+                        ...headers,
+                        'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                    }
+                }
+            );
+
+            // Check if we received an Excel file
+            if (response.data.type !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+                throw new Error('Invalid file type received');
+            }
+
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'animal_template.xlsx');
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(url); // Clean up
+        } catch (error) {
+            console.error("Error downloading template:", error);
+            Swal.fire(t('error'), t('failed_to_download_template'), 'error');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Handle export to Excel
+    const handleExportToExcel = async () => {
+        const headers = getHeaders();
+        try {
+            const response = await axios.get(
+                'https://farm-project-bbzj.onrender.com/api/animal/exportAnimalsToExcel',
+                {
+                    responseType: 'blob',
+                    headers
+                }
+            );
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'animals.xlsx');
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        } catch (error) {
+            console.error("Error exporting to Excel:", error);
+            Swal.fire(t('error'), t('failed_to_export_to_excel'), 'error');
+        }
+    };
+
+    // Handle import from Excel
+    const handleImportFromExcel = async (event) => {
+        const file = event.target.files[0];
+        if (!file) {
+            Swal.fire({
+                title: t('error'),
+                html: `
+                    <div>
+                        <p>${t('please_select_file')}</p>
+                        <p style="color: #666; margin-top: 10px; font-size: 0.9em;">
+                            ${t('date_format_note')}:<br/>
+                            - ${t('birth_date')}: YYYY-MM-DD<br/>
+                            - ${t('purchase_date')}: YYYY-MM-DD
+                        </p>
+                    </div>
+                `,
+                icon: 'error'
+            });
+            return;
+        }
+
+        // Check file extension
+        const fileName = file.name.toLowerCase();
+        if (!fileName.endsWith('.xlsx') && !fileName.endsWith('.xls')) {
+            Swal.fire({
+                title: t('error'),
+                html: `
+                    <div>
+                        <p>${t('please_upload_valid_excel')}</p>
+                        <p style="color: #666; margin-top: 10px; font-size: 0.9em;">
+                            ${t('supported_formats')}: .xlsx, .xls
+                        </p>
+                    </div>
+                `,
+                icon: 'error'
+            });
+            return;
+        }
+
+        const headers = getHeaders();
+        const formData = new FormData();
+        
+        try {
+            setIsLoading(true);
+            formData.append('file', file);
+
+            const response = await axios.post(
+                'https://farm-project-bbzj.onrender.com/api/animal/import',
+                formData,
+                {
+                    headers: {
+                        ...headers,
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }
+            );
+
+            if (response.data && response.data.status === 'success') {
+                await fetchAnimals();
+                Swal.fire({
+                    title: t('success'),
+                    text: t('animals_imported_successfully'),
+                    icon: 'success'
+                });
+            } else {
+                throw new Error(response.data?.message || 'Import failed');
+            }
+        } catch (error) {
+            console.error("Error details:", error);
+            let errorMessage = t('failed_to_import_from_excel');
+            let errorDetails = '';
+            
+            if (error.response?.data?.message) {
+                const message = error.response.data.message;
+                
+                // Check if it's a date format error
+                if (message.includes('Invalid date format in row')) {
+                    const row = message.match(/row (\d+)/)?.[1] || '';
+                    errorMessage = t('date_format_error');
+                    errorDetails = `
+                        <p style="margin-top: 10px; color: #666;">
+                            ${t('error_in_row')}: ${row}<br/>
+                            ${t('correct_date_format')}: YYYY-MM-DD<br/>
+                            ${t('example')}: 2024-03-20
+                        </p>
+                        <p style="margin-top: 10px; color: #666;">
+                            ${t('please_check_dates')}:
+                            <ul style="text-align: left; margin-top: 5px;">
+                                <li>${t('birth_date')}</li>
+                                <li>${t('purchase_date')}</li>
+                            </ul>
+                        </p>
+                    `;
+                } else {
+                    errorMessage = message;
+                }
+            }
+
+            Swal.fire({
+                title: t('error'),
+                html: `
+                    <div>
+                        <p>${errorMessage}</p>
+                        ${errorDetails}
+                    </div>
+                `,
+                icon: 'error'
+            });
+        } finally {
+            setIsLoading(false);
+            event.target.value = ''; // Reset file input
+        }
+    };
 
     const removeItem = async (id) => {
         try {
@@ -115,44 +301,89 @@ export default function Animals() {
     };
 
     return (
-        <>
-
-            {isLoading ? (
+        < >
+        <div  className='container mt-5 vaccine-table-container'>
+  {isLoading ? (
                 <div className='animal'>
                     <Rings visible={true} height="100" width="100" color="#9cbd81" ariaLabel="rings-loading" />
                 </div>
             ) : (
-                <div className="container">
-                    <div className="title2">{t('animals')}</div>
-                    <AnimalStatistics className='mt-3'/>
+                <div className="">
+                  
+           <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mt-5 mb-3">
+    
+
+  <h2 className="vaccine-table-title">{t('animals')}</h2>
 
 
-                    <div className='container mt-5'>
-                        <div className="d-flex flex-column flex-md-row align-items-center gap-2" style={{ flexWrap: 'nowrap' }}>
-                            <input type="text" className="form-control" placeholder={t('search_by_tag_id')} value={searchTagId} onChange={(e) => setSearchTagId(e.target.value)} style={{ flex: 1 }} />
-                            <input type="text" className="form-control" placeholder={t('search_by_animal_type')} value={searchAnimalType} onChange={(e) => setSearchAnimalType(e.target.value)} style={{ flex: 1 }} />
-                            <input type="text" className="form-control" placeholder={t('search_by_location_shed')} value={searchLocationShed} onChange={(e) => setSearchLocationShed(e.target.value)} style={{ flex: 1 }} />
-                            <input type="text" className="form-control" placeholder={t('search_by_breed')} value={searchBreed} onChange={(e) => setSearchBreed(e.target.value)} style={{ flex: 1 }} />
-                            <input type="text" className="form-control" placeholder={t('search_by_gender')} value={searchGender} onChange={(e) => setSearchGender(e.target.value)} style={{ flex: 1 }} />
-                            <button className="btn mb-2 me-2" onClick={handleSearch} style={{ backgroundColor: '#FAA96C', color: 'white' }}>
-                                <i className="fas fa-search"></i>
-                            </button>
-                        </div>
-                    </div>
+
+        <div className="d-flex flex-wrap gap-2">
+          <button className="btn btn-outline-dark" onClick={handleExportToExcel} title={t('export_all_data')}>
+            <i className="fas fa-download me-1"></i> {t('export_all_data')}
+          </button>
+          <button className="btn btn-success" onClick={handleDownloadTemplate} title={t('download_template')}>
+            <i className="fas fa-file-arrow-down me-1"></i> {t('download_template')}
+          </button>
+          <label className="btn btn-dark  btn-outline-dark mb-0 d-flex align-items-center" style={{ cursor: 'pointer', color:"white" }} title={t('import_from_excel')}>
+            <i className="fas fa-file-import me-1"></i> {t('import_from_excel')}
+            <input type="file" hidden accept=".xlsx,.xls" onChange={handleImportFromExcel} />
+          </label>
+        </div>
+
+
+
+
+
+
+
+      </div>
+
+                    <AnimalStatistics className='mt-3  mb-5'/>
+
+               
+
+                        
+      <div className="row g-2 mt-3  mb-3">
+        <div className="col-md-4">
+                                    <input type="text" className="form-control" placeholder={t('search_by_tag_id')} value={searchTagId} onChange={(e) => setSearchTagId(e.target.value)} style={{ flex: 1 }} />
+        </div>
+        <div className="col-md-4">
+        <input type="text" className="form-control" placeholder={t('search_by_animal_type')} value={searchAnimalType} onChange={(e) => setSearchAnimalType(e.target.value)} style={{ flex: 1 }} />
+        </div>
+        <div className="col-md-4">
+                                     <input type="text" className="form-control" placeholder={t('search_by_location_shed')} value={searchLocationShed} onChange={(e) => setSearchLocationShed(e.target.value)} style={{ flex: 1 }} />
+
+        </div>
+          <div className="col-md-4">
+                                                          <input type="text" className="form-control" placeholder={t('search_by_breed')} value={searchBreed} onChange={(e) => setSearchBreed(e.target.value)} style={{ flex: 1 }} />
+
+
+        </div>
+
+
+           <div className="col-md-4">
+       <input type="text" className="form-control" placeholder={t('search_by_gender')} value={searchGender} onChange={(e) => setSearchGender(e.target.value)} style={{ flex: 1 }} />
+
+
+
+        </div>
+
+          <div className="d-flex justify-content-end mb-3">
+        <button className="btn btn-outline-secondary" onClick={handleSearch}>{t('search')}</button>
+      </div>
+      </div>
                     <div className="table-responsive">
                     <div className="full-width-table">
-                    <table className="table table-hover mt-3 p-2">
+                    <table className="table vaccine-modern-table align-middle">
                         <thead>
                             <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">{t('tag_id')}</th>
-                                <th scope="col">{t('animal_type')}</th>
-                                <th scope="col">{t('breed')}</th>
-                                <th scope="col">{t('location_shed')}</th>
-                                <th scope="col">{t('gender')}</th>
-                                <th scope="col">{t('view_details')}</th>
-                                <th scope="col">{t('edit_animal')}</th>
-                                <th scope="col">{t('remove_animal')}</th>
+                                <th scope="col" className="text-center bg-color">#</th>
+                                <th scope="col" className="text-center bg-color">{t('tag_id')}</th>
+                                <th scope="col" className="text-center bg-color">{t('animal_type')}</th>
+                                <th scope="col" className="text-center bg-color">{t('breed')}</th>
+                                <th scope="col" className="text-center bg-color">{t('location_shed')}</th>
+                                <th scope="col" className="text-center bg-color">{t('gender')}</th>
+                                       <th className="text-center bg-color">{t('actions')}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -164,15 +395,20 @@ export default function Animals() {
                                     <td>{animal.breed?.breedName || animal.breed || '-'}</td>
                                     <td>{animal.locationShed?.locationShedName || animal.locationShed || '-'}</td>
                                     <td>{animal.gender}</td>
-                                    <td onClick={() => viewAnimal(animal._id)} style={{ cursor: 'pointer' }} className='text-primary'>
-                                        <GrView /> {t('view_details')}
-                                    </td>
-                                    <td onClick={() => editAnimal(animal._id)} style={{ cursor: 'pointer' }} className='text-success'>
-                                        <FaRegEdit /> {t('edit_animal')}
-                                    </td>
-                                    <td onClick={() => handleClick(animal.id || animal._id)} className='text-danger' style={{ cursor: 'pointer' }}>
-                                        <RiDeleteBin6Line /> {t('remove_animal')}
-                                    </td>
+                            
+
+                                         <td className="text-center">
+                                    
+                                     <button className="btn btn-link p-0 me-2" onClick={() => viewAnimal(animal._id)}  title={t('edit')} style={{
+                                                          color:"#808080"
+                                                        }}><IoEyeOutline /></button>
+                                                        <button className="btn btn-link p-0 me-2" onClick={() => editAnimal(animal._id)}  title={t('edit')} style={{
+                                                          color:"#808080"
+                                                        }}><FaRegEdit /></button>
+                                                        <button className="btn btn-link  p-0" style={{
+                                                          color:"#808080"
+                                                        }} onClick={() => handleClick(animal.id || animal._id)}  title={t('delete')}  ><RiDeleteBinLine /></button>
+                                                      </td>
                                 </tr>
                             ))}
                         </tbody>
@@ -189,6 +425,8 @@ export default function Animals() {
                     </div>
                 </div>
             )}
+        </div>
+          
         </>
     );
 }

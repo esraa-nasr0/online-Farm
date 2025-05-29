@@ -20,6 +20,7 @@ export default function Sidebar({ isOpen }) {
     <aside className={`sidebar ${isOpen ? "open" : "closed"}`}>
       <div className="sidebar-header">
         <nav>
+          {/* Animal Management Section */}
           <div className="sidebar-section">
             <p className="section-title">{t("animalManagement")}</p>
             <ul className="sidebar-menu">
@@ -43,6 +44,7 @@ export default function Sidebar({ isOpen }) {
             </ul>
           </div>
 
+          {/* Health and Breeding Section */}
           <div className="sidebar-section">
             <p className="section-title">{t("healthAndBreeding")}</p>
             <ul className="sidebar-menu">
@@ -138,6 +140,7 @@ export default function Sidebar({ isOpen }) {
             </ul>
           </div>
 
+          {/* Feeding and Reports Section */}
           <div className="sidebar-section">
             <p className="section-title">{t("feedingAndReports")}</p>
             <ul className="sidebar-menu">
@@ -190,6 +193,7 @@ export default function Sidebar({ isOpen }) {
             </ul>
           </div>
 
+          {/* System Section */}
           <div className="sidebar-section">
             <p className="section-title">{t("system")}</p>
             <ul className="sidebar-menu">
@@ -214,14 +218,6 @@ export default function Sidebar({ isOpen }) {
             </ul>
           </div>
         </nav>
-      </div>
-
-      <div className="sidebar-footer">
-        <div className="system-info">{t("version")}</div>
-        <div className="sidebar-tags">
-          <span>{t("tag1")}</span>
-          <span>{t("tag2")}</span>
-        </div>
       </div>
     </aside>
   );

@@ -2,10 +2,10 @@ import React, { useContext, useEffect, useState } from 'react';
 import { LocationContext } from '../../Context/LocationContext';
 import Swal from 'sweetalert2';
 import { FaRegEdit } from "react-icons/fa";
-import { RiDeleteBin6Line } from "react-icons/ri";
+import { RiDeleteBin6Line, RiDeleteBinLine } from "react-icons/ri";
 import { Rings } from 'react-loader-spinner';
 import {  useNavigate } from 'react-router-dom';
-
+import "../Vaccine/styles.css"
 
 function LocationTable() {
         let navigate = useNavigate();
@@ -86,18 +86,44 @@ function LocationTable() {
                                 />
                             </div>
             ) : (
-                <div className="container">
-                    <div className="title2">Location Shed</div>
+                <div className="container mt-5 vaccine-table-container">
+            
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mt-5 mb-3">
+        <h2 className="vaccine-table-title">Location Shed</h2>
+
+
+
+{/* 
+        <div className="d-flex flex-wrap gap-2">
+          <button className="btn btn-outline-dark" onClick={handleExportToExcel} title={t('export_all_data')}>
+            <i className="fas fa-download me-1"></i> {t('export_all_data')}
+          </button>
+          <button className="btn btn-success" onClick={handleDownloadTemplate} title={t('download_template')}>
+            <i className="fas fa-file-arrow-down me-1"></i> {t('download_template')}
+          </button>
+          <label className="btn btn-dark  btn-outline-dark mb-0 d-flex align-items-center" style={{ cursor: 'pointer', color:"white" }} title={t('import_from_excel')}>
+            <i className="fas fa-file-import me-1"></i> {t('import_from_excel')}
+            <input type="file" hidden accept=".xlsx,.xls" onChange={handleImportFromExcel} />
+          </label>
+        </div> */}
+
+
+
+
+
+
+
+      </div>
 
                     <div className="table-responsive">
                         <div className="full-width-table">
                             <table className="table table-hover mt-5">
                                 <thead>
                                     <tr>
-                                        <th>#</th>
-                                        <th>Location Shed Name</th>
-                                        <th>Edit Location</th>
-                                        <th>Remove Location</th>
+                                        <th className="text-center bg-color">#</th>
+                                        <th className="text-center bg-color">Location Shed Name</th>
+                                              <th className="text-center bg-color">actions</th>
+
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -105,19 +131,17 @@ function LocationTable() {
                                         <tr key={location._id}>
                                             <td>{(currentPage - 1) * locationPerPage + index + 1}</td>
                                             <td>{location.locationShedName}</td>
-                                            <td 
-                                            onClick={() => editLocations(location._id)}
-                                            className="text-success"
-                                            style={{ cursor: 'pointer' }}>
-                                                <FaRegEdit /> Edit Location
-                                            </td>
-                                            <td
-                                                className="text-danger"
-                                                style={{ cursor: 'pointer' }}
-                                                onClick={() => handleClick(location._id)}
-                                            >
-                                                <RiDeleteBin6Line /> Remove Location
-                                            </td>
+                                        
+
+                                              <td className="text-center">
+                                            
+                                                                <button className="btn btn-link p-0 me-2"            onClick={() => editLocations(location._id)} title='edit' style={{
+                                                                  color:"#808080"
+                                                                }}><FaRegEdit /></button>
+                                                                <button className="btn btn-link  p-0" style={{
+                                                                  color:"#808080"
+                                                                }}  onClick={() => handleClick(location._id)} title='delete' ><RiDeleteBinLine/></button>
+                                                              </td>
                                         </tr>
                                     ))}
                                 </tbody>

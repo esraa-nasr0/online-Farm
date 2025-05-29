@@ -1,11 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaRegEdit } from "react-icons/fa";
-import { RiDeleteBin6Line } from "react-icons/ri";
+import { RiDeleteBin6Line, RiDeleteBinLine } from "react-icons/ri";
 import { VaccineanimalContext } from '../../Context/VaccineanimalContext';
 import { Rings } from 'react-loader-spinner';
 import Swal from 'sweetalert2';
 import { useTranslation } from 'react-i18next';
+import "./styles.css"
 function VaccineTable() {
     const { t } = useTranslation();
     let navigate = useNavigate();
@@ -145,57 +146,67 @@ function VaccineTable() {
                     <Rings visible={true} height="100" width="100" color="#9cbd81" ariaLabel="rings-loading" />
                 </div>
             ) : (
-                <div className="container">
+                <div className="container mt-5 vaccine-table-container">
                     <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4" style={{ marginTop: "140px" }}>
-                        <h2 className="bottom-line pb-2" style={{ color: "#778983" }}>  {t('Vaccine Records')}</h2>
+         <h2 className="vaccine-table-title">{t('Vaccines')}</h2>
                         <div className='d-flex flex-column flex-sm-row gap-2'>
                            
                       
                         </div>
                     </div>
 
-                    <div className="d-flex flex-column flex-md-row align-items-center gap-2 mb-4">
-                        <input
-                            type="text"
-                            className="form-control"
-                            value={searchCriteria.vaccineName}
-                            placeholder=  {t('Search Vaccine Name')}
-                            onChange={(e) => setSearchCriteria(prev => ({ ...prev, vaccineName: e.target.value }))}
-                        />
-                        <input
-                            type="text"
-                            className="form-control"
-                            value={searchCriteria.tagId}
-                            placeholder=  {t('Search Tag ID')}
-                            onChange={(e) => setSearchCriteria(prev => ({ ...prev, tagId: e.target.value }))}
-                        />
-                        <input
-                            type="text"
-                            className="form-control"
-                            value={searchCriteria.locationShed}
-                            placeholder=  {t('Search Location Shed')}
-                            onChange={(e) => setSearchCriteria(prev => ({ ...prev, locationShed: e.target.value }))}
-                        />
-                            <button className="btn mb-2 me-2" onClick={handleSearch} style={{ backgroundColor: '#FAA96C', color: 'white' }}>
-                                <i className="fas fa-search"></i>
-                            </button>
-                    </div>
+
+
+                         
+      <div className="row g-2 mb-3">
+        <div className="col-md-4">
+          <input
+            type="text"
+            className="form-control"
+            placeholder={t('search_tag_id')}
+            value={searchCriteria.tagId}
+            onChange={e => setSearchCriteria(prev => ({ ...prev, tagId: e.target.value }))}
+          />
+        </div>
+        <div className="col-md-4">
+          <input
+            type="text"
+            className="form-control"
+            placeholder={t('search_by_vaccine_name')}
+            value={searchCriteria.vaccineName}
+            onChange={e => setSearchCriteria(prev => ({ ...prev, vaccineName: e.target.value }))}
+          />
+        </div>
+        <div className="col-md-4">
+          <input
+            type="text"
+            className="form-control"
+            placeholder={t('search_by_location_shed')}
+            value={searchCriteria.locationShed}
+            onChange={e => setSearchCriteria(prev => ({ ...prev, locationShed: e.target.value }))}
+          />
+        </div>
+          <div className="d-flex justify-content-end mb-3">
+        <button className="btn btn-outline-secondary" onClick={handleSearch}>{t('search')}</button>
+      </div>
+      </div>
 
                     <div className="table-responsive">
                         <table className="table table-hover mt-3 p-2">
                             <thead >
                                 <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">  {t('Vaccine Name')}</th>
-                                    <th scope="col">  {t('Bottles')}</th>
-                                    <th scope="col">  {t('Doses Per Bottle')}</th>
-                                    <th scope="col">  {t('Total Doses')}</th>
-                                    <th scope="col">  {t('Bottle Price')}</th>
-                                    <th scope="col">  {t('Dose Price')}</th>
-                                    <th scope="col">  {t('Booster Dose')}</th>
-                                    <th scope="col">  {t('Annual Dose')}</th>
-                                    <th scope="col">{t('edit_vaccine')}</th>
-                                    <th scope="col">{t('remove_vaccine')}</th>
+                                    <th scope="col" className="text-center bg-color">#</th>
+                                    <th scope="col" className="text-center bg-color">  {t('Vaccine Name')}</th>
+                                    <th scope="col" className="text-center bg-color">  {t('Bottles')}</th>
+                                    <th scope="col" className="text-center bg-color">  {t('Doses Per Bottle')}</th>
+                                    <th scope="col"  className="text-center bg-color">  {t('Total Doses')}</th>
+                                    <th scope="col" className="text-center bg-color">  {t('Bottle Price')}</th>
+                                    <th scope="col" className="text-center bg-color">  {t('Dose Price')}</th>
+                                    <th scope="col" className="text-center bg-color">  {t('Booster Dose')}</th>
+                                    <th scope="col " className="text-center bg-color">  {t('Annual Dose')}</th>
+                                     <th scope="col " className="text-center bg-color">  Expiry Date</th>
+                                                <th className="text-center bg-color">{t('actions')}</th>
+
                                 </tr>
                             </thead>
                             <tbody>
@@ -215,14 +226,21 @@ function VaccineTable() {
                                             <td>{vaccine.pricing?.dosePrice || 'N/A'}</td>
                                             <td>{vaccine.BoosterDose || 'N/A'}</td>
                                             <td>{vaccine.AnnualDose || 'N/A'}</td>
+<td>{vaccine.expiryDate ? new Date(vaccine.expiryDate).toLocaleDateString() : 'N/A'}</td>
                                         
 
-                                            <td    onClick={() => editVaccine(vaccine._id)} style={{ cursor: 'pointer' }} className='text-success'>
-                                                                                                            <FaRegEdit /> {t('edit_vaccine')}
-                                                                                                        </td>
-                                                                                                        <td   onClick={() => handleClick(vaccine._id)} className='text-danger' style={{ cursor: 'pointer' }}>
-                                                                                                            <RiDeleteBin6Line /> {t('remove_vaccine')}
-                                                                                                        </td>
+                                    
+
+
+ <td className="text-center">
+                                                                                                        
+                  <button className="btn btn-link p-0 me-2" onClick={() => editVaccine(vaccine._id)} title={t('edit')} style={{
+                    color:"#808080"
+                  }}><FaRegEdit /></button>
+                  <button className="btn btn-link  p-0" style={{
+                    color:"#808080"
+                  }} onClick={() => handleClick(vaccine._id)} title={t('delete')}  ><RiDeleteBinLine/></button>
+</td>
                                         </tr>
                                     ))
                                 )}

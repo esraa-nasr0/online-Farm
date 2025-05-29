@@ -1,83 +1,100 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaRegEdit } from "react-icons/fa";
-import { RiDeleteBin6Line } from "react-icons/ri";
+import { RiDeleteBin6Line, RiDeleteBinLine } from "react-icons/ri";
+import { MdOutlineAddToPhotos } from "react-icons/md";
+import { WeightContext } from '../../Context/WeightContext';
 import { Rings } from 'react-loader-spinner';
 import Swal from 'sweetalert2';
-import { WeightContext } from '../../Context/WeightContext';
 import { useTranslation } from 'react-i18next';
+import axios from 'axios';
+import "../Vaccine/styles.css"
 
 function WeightTable() {
-    const { t } = useTranslation();
     const navigate = useNavigate();
     const { getWeight, deleteWeight } = useContext(WeightContext);
+    const { t } = useTranslation();
 
-    const [weights, setWeight] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [searchCriteria, setSearchCriteria] = useState({
-        tagId: '',
-        weightType: '',
-        Date: ''
-    });
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
-    const animalsPerPage = 10;
-    const [pagination, setPagination] = useState({ totalPages: 1 });
+    const weightsPerPage = 10;
+    const [searchCriteria, setSearchCriteria] = useState({
+        tagId: '',
+        weightDate: '',
+        animalType: '',
+        locationShed: ''
+    });
+    const [weights, setWeights] = useState([]);
+    const [pagination, setPagination] = useState({ totalPages: 1 }); 
 
-    async function fetchWeight() {
+    async function fetchWeights() {
         setIsLoading(true);
-        const filters = {
-            tagId: searchCriteria.tagId,
-            weightType: searchCriteria.weightType,
-            Date: searchCriteria.Date,
-        };
         try {
-            const { data } = await getWeight(currentPage, animalsPerPage, filters);
-            setWeight(data.data.weight);
-            setPagination(data.pagination || { totalPages: 1 });
-            setTotalPages(data.pagination?.totalPages || 1);
+            const filters = {
+                tagId: searchCriteria.tagId,
+                weightDate: searchCriteria.weightDate,
+                animalType: searchCriteria.animalType,
+                locationShed: searchCriteria.locationShed
+            };
+            const { data } = await getWeight(currentPage, weightsPerPage, filters);
+            setWeights(data.data.weight);
+            setPagination(data.pagination || { totalPages: 1 }); 
+            const total = data.pagination?.totalPages || 1;
+            setTotalPages(total); 
         } catch (error) {
-            console.error('Error fetching weight data:', error);
+            Swal.fire(t('error'), t('fetch_error'), 'error');
         } finally {
             setIsLoading(false);
         }
     }
 
     useEffect(() => {
-        fetchWeight();
+        fetchWeights();
     }, [currentPage]);
 
     const deleteItem = async (id) => {
         try {
             await deleteWeight(id);
-            setWeight((prev) => prev.filter((w) => w._id !== id));
-            Swal.fire(t('deleted'), t('weight_deleted_success'), 'success');
+            setWeights((prevWeights) => prevWeights.filter((weight) => weight._id !== id));
+            Swal.fire({
+                icon: 'success',
+                title: t('deleted'),
+                text: t('weight_deleted'),
+                timer: 1500
+            });
         } catch (error) {
-            console.error('Failed to delete:', error);
-            Swal.fire(t('error'), t('weight_deleted_fail'), 'error');
+            console.error("Delete error:", error);
+            Swal.fire({
+                icon: 'error',
+                title: t('error'),
+                text: error.message || t('delete_failed')
+            });
         }
     };
 
-    const handleClick = (id) => {
+    const confirmDelete = (id) => {
         Swal.fire({
-            title: t('confirm_delete'),
-            text: t('delete_warning'),
+            title: t('are_you_sure'),
+            text: t('cannot_undo'),
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: t('yes_delete')
+            confirmButtonText: t('yes_delete'),
         }).then((result) => {
             if (result.isConfirmed) deleteItem(id);
         });
     };
 
-    const editWeight = (id) => navigate(`/editWeight/${id}`);
+    const editWeight = (id) => {
+        navigate(`/editWeight/${id}`);
+    };
 
-    function handleSearch() {
-        setCurrentPage(1);
-        fetchWeight();
-    }
+    const handleSearch = () => {
+        setCurrentPage(1); 
+        fetchWeights();
+    };
 
     const paginate = (pageNumber) => {
         setCurrentPage(pageNumber);
@@ -85,8 +102,8 @@ function WeightTable() {
 
     const renderPaginationButtons = () => {
         const buttons = [];
-        const total = pagination?.totalPages || 1;
-        for (let i = 1; i <= total; i++) {
+        const total = pagination?.totalPages || 1; 
+        for (let i = 1; i <= total; i++) { 
             buttons.push(
                 <li key={i} className={`page-item ${i === currentPage ? 'active' : ''}`}>
                     <button className="page-link" onClick={() => paginate(i)}>
@@ -98,6 +115,189 @@ function WeightTable() {
         return buttons;
     };
 
+    // Helper function to get headers with token
+    const getHeaders = () => {
+        const token = localStorage.getItem('Authorization');
+        if (!token) {
+            navigate('/login');
+            throw new Error('No authorization token found');
+        }
+        return {
+            Authorization: token.startsWith("Bearer ") ? token : `Bearer ${token}`
+        };
+    };
+
+    // Handle download template
+    const handleDownloadTemplate = async () => {
+        const headers = getHeaders();
+        try {
+            setIsLoading(true);
+            const response = await axios.get(
+                'https://farm-project-bbzj.onrender.com/api/weight/downloadWeightTemplate',
+                {
+                    responseType: 'blob',
+                    headers: {
+                        ...headers,
+                        'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                    }
+                }
+            );
+
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'weight_template.xlsx');
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error("Error downloading template:", error);
+            Swal.fire(t('error'), t('failed_to_download_template'), 'error');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Handle export to Excel
+    const handleExportToExcel = async () => {
+        const headers = getHeaders();
+        try {
+            setIsLoading(true);
+            const response = await axios.get(
+                'https://farm-project-bbzj.onrender.com/api/weight/exportWeightsToExcel',
+                {
+                    responseType: 'blob',
+                    headers: {
+                        ...headers,
+                        'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                    }
+                }
+            );
+
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'weights.xlsx');
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error("Error exporting to Excel:", error);
+            Swal.fire(t('error'), t('failed_to_export_to_excel'), 'error');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Handle import from Excel
+    const handleImportFromExcel = async (event) => {
+        const file = event.target.files[0];
+        if (!file) {
+            Swal.fire({
+                title: t('error'),
+                html: `
+                    <div>
+                        <p>${t('please_select_file')}</p>
+                        <p style="color: #666; margin-top: 10px; font-size: 0.9em;">
+                            ${t('date_format_note')}:<br/>
+                            - ${t('weight_date')}: YYYY-MM-DD
+                        </p>
+                    </div>
+                `,
+                icon: 'error'
+            });
+            return;
+        }
+
+        // Check file extension
+        const fileName = file.name.toLowerCase();
+        if (!fileName.endsWith('.xlsx') && !fileName.endsWith('.xls')) {
+            Swal.fire({
+                title: t('error'),
+                html: `
+                    <div>
+                        <p>${t('please_upload_valid_excel')}</p>
+                        <p style="color: #666; margin-top: 10px; font-size: 0.9em;">
+                            ${t('supported_formats')}: .xlsx, .xls
+                        </p>
+                    </div>
+                `,
+                icon: 'error'
+            });
+            return;
+        }
+
+        const headers = getHeaders();
+        const formData = new FormData();
+        
+        try {
+            setIsLoading(true);
+            formData.append('file', file);
+
+            const response = await axios.post(
+                'https://farm-project-bbzj.onrender.com/api/weight/importWeightsFromExcel',
+                formData,
+                {
+                    headers: {
+                        ...headers,
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }
+            );
+
+            if (response.data && response.data.status === 'success') {
+                Swal.fire({
+                    title: t('success'),
+                    text: t('weights_imported_successfully'),
+                    icon: 'success'
+                });
+                // Refresh data if needed
+                fetchWeights();
+            } else {
+                throw new Error(response.data?.message || 'Import failed');
+            }
+        } catch (error) {
+            console.error("Error details:", error);
+            let errorMessage = t('failed_to_import_from_excel');
+            let errorDetails = '';
+            
+            if (error.response?.data?.message) {
+                const message = error.response.data.message;
+                
+                // Check if it's a date format error
+                if (message.includes('Invalid date format in row')) {
+                    const row = message.match(/row (\d+)/)?.[1] || '';
+                    errorMessage = t('date_format_error');
+                    errorDetails = `
+                        <p style="margin-top: 10px; color: #666;">
+                            ${t('error_in_row')}: ${row}<br/>
+                            ${t('correct_date_format')}: YYYY-MM-DD<br/>
+                            ${t('example')}: 2024-03-20
+                        </p>
+                    `;
+                } else {
+                    errorMessage = message;
+                }
+            }
+
+            Swal.fire({
+                title: t('error'),
+                html: `
+                    <div>
+                        <p>${errorMessage}</p>
+                        ${errorDetails}
+                    </div>
+                `,
+                icon: 'error'
+            });
+        } finally {
+            setIsLoading(false);
+            event.target.value = ''; // Reset file input
+        }
+    };
+
     return (
         <>
             {isLoading ? (
@@ -105,71 +305,96 @@ function WeightTable() {
                     <Rings visible={true} height="100" width="100" color="#9cbd81" ariaLabel="rings-loading" />
                 </div>
             ) : (
-                <div className="container">
-                    <div className="title2">{t('weight_title')}</div>
-
+                <div className="container mt-5 vaccine-table-container">
                     <div className="container mt-5">
-                        <div className="d-flex flex-column flex-md-row align-items-center gap-2" style={{ flexWrap: 'nowrap' }}>
-                            <input
+                   
+   <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mt-5 mb-3">
+        <h2 className="vaccine-table-title">{t('Weight Records')}</h2>
+
+
+
+
+        <div className="d-flex flex-wrap gap-2">
+          <button className="btn btn-outline-dark" onClick={handleExportToExcel} title={t('export_all_data')}>
+            <i className="fas fa-download me-1"></i> {t('export_all_data')}
+          </button>
+          <button className="btn btn-success" onClick={handleDownloadTemplate} title={t('download_template')}>
+            <i className="fas fa-file-arrow-down me-1"></i> {t('download_template')}
+          </button>
+          <label className="btn btn-dark  btn-outline-dark mb-0 d-flex align-items-center" style={{ cursor: 'pointer', color:"white" }} title={t('import_from_excel')}>
+            <i className="fas fa-file-import me-1"></i> {t('import_from_excel')}
+            <input type="file" hidden accept=".xlsx,.xls" onChange={handleImportFromExcel} />
+          </label>
+        </div>
+
+
+
+
+
+
+
+      </div>
+
+                            
+      <div className="row g-2 mb-3">
+        <div className="col-md-4">
+           <input
                                 type="text"
-                                className="form-control me-2 mb-2"
-                                placeholder={t('search_by_tag_id')}
+                                className="form-control"
                                 value={searchCriteria.tagId}
-                                onChange={(e) => setSearchCriteria({ ...searchCriteria, tagId: e.target.value })}
+                                placeholder={t("search_tag_id")}
+                                onChange={(e) => setSearchCriteria(prev => ({ ...prev, tagId: e.target.value }))}
                             />
-                            <input
-                                type="text"
-                                className="form-control me-2 mb-2"
-                                placeholder={t('search_by_weight_type')}
-                                value={searchCriteria.weightType}
-                                onChange={(e) => setSearchCriteria({ ...searchCriteria, weightType: e.target.value })}
-                            />
-                            <input
-                                type="text"
-                                className="form-control me-2 mb-2"
-                                placeholder={t('search_by_date')}
-                                value={searchCriteria.Date}
-                                onChange={(e) => setSearchCriteria({ ...searchCriteria, Date: e.target.value })}
-                            />
-                            <button className="btn mb-2 me-2" onClick={handleSearch} style={{ backgroundColor: '#FAA96C', color: '#E9E6E2' }}>
-                                <i className="fas fa-search"></i>
-                            </button>
-                        </div>
+        </div>
+     
+          <div className="d-flex justify-content-end mb-3">
+        <button className="btn btn-outline-secondary" onClick={handleSearch}>{t('search')}</button>
+      </div>
+      </div>
                     </div>
 
-                    <div className="table-responsive full-width-table">
-                        <table className="table table-hover mt-6">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>{t('tag_id')}</th>
-                                    <th>{t('weight_type')}</th>
-                                    <th>{t('weight')}</th>
-                                    <th>{t('height')}</th>
-                                    <th>{t('date')}</th>
-                                    <th>{t('edit_weight')}</th>
-                                    <th>{t('remove_weight')}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {weights.map((weight, index) => (
-                                    <tr key={`${weight.id || weight._id}-${index}`}>
-                                        <td>{(currentPage - 1) * animalsPerPage + index + 1}</td>
-                                        <td>{weight.tagId}</td>
-                                        <td>{weight.weightType}</td>
-                                        <td>{weight.weight}</td>
-                                        <td>{weight.height}</td>
-                                        <td>{weight.Date ? weight.Date.split('T')[0] : t('no_date')}</td>
-                                        <td onClick={() => editWeight(weight._id)} className="text-success" style={{ cursor: 'pointer' }}>
-                                            <FaRegEdit /> {t('edit_weight')}
-                                        </td>
-                                        <td onClick={() => handleClick(weight._id)} className="text-danger" style={{ cursor: 'pointer' }}>
-                                            <RiDeleteBin6Line /> {t('remove_weight')}
-                                        </td>
+                    <div className="table-responsive">
+                        <div className="full-width-table">
+                            <table className="table align-middle">
+                                <thead>
+                                    <tr>
+                                        <th className="text-center bg-color">{t('tag_id')}</th>
+                                        <th className="text-center bg-color">{t('weight')}</th>
+                                        <th className="text-center bg-color">{t('date')}</th>
+                                        <th className="text-center bg-color">{t('location_shed')}</th>
+                                                   <th className="text-center bg-color">{t('actions')}</th>
+
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {weights.length > 0 ? (
+                                        weights.map(weight => (
+                                            <tr key={weight._id}>
+                                                <td>{weight.tagId}</td>
+                                                <td>{weight.weight}</td>
+                                                <td>{new Date(weight.date).toLocaleDateString()}</td>
+                                                <td>{weight.locationShed?.locationShedName || '--'}</td>
+                                           
+
+                                                    <td className="text-center">
+                                                
+                                                                    <button className="btn btn-link p-0 me-2" onClick={() => editWeight(weight._id)} title={t('edit')} style={{
+                                                                      color:"#808080"
+                                                                    }}><FaRegEdit /></button>
+                                                                    <button className="btn btn-link  p-0" style={{
+                                                                      color:"#808080"
+                                                                    }}  onClick={() => confirmDelete(weight._id)} title={t('delete')}  ><RiDeleteBinLine/></button>
+                                                                  </td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td colSpan="6" className="text-center py-4 text-muted">{t('no_weight_records')}</td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
 
                     <div className="d-flex justify-content-center mt-4">
@@ -179,6 +404,8 @@ function WeightTable() {
                             </ul>
                         </nav>
                     </div>
+
+                 
                 </div>
             )}
         </>

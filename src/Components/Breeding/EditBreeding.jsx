@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
@@ -7,27 +7,21 @@ import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 export default function EditBreeding() {
-    const { id } = useParams(); // Get the ID from URL parameters
-    const { t } = useTranslation(); // Use translation
+    const { id } = useParams();
+    const { t } = useTranslation();
     const [showAlert, setShowAlert] = useState(false);
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [birthEntries, setBirthEntries] = useState([{ tagId: '', gender: '', birthweight: '', expectedWeaningDate: '' }]);
-    
-    // Helper function to generate headers with the latest token
+
     const getHeaders = () => {
         const Authorization = localStorage.getItem('Authorization');
-      
-        // Ensure the token has only one "Bearer" prefix
         const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-      
-        return {
-            Authorization: formattedToken
-        };
+        return { Authorization: formattedToken };
     };
 
     async function fetchBreedingData() {
-        const headers = getHeaders(); // Get the latest headers
+        const headers = getHeaders();
         setIsLoading(true);
         try {
             const response = await axios.get(
@@ -43,6 +37,8 @@ export default function EditBreeding() {
                     deliveryState: breedingData.deliveryState || '',
                     deliveryDate: breedingData.deliveryDate ? breedingData.deliveryDate.split('T')[0] : '',
                     numberOfBirths: breedingData.birthEntries ? breedingData.birthEntries.length : 1,
+                    milking: breedingData.milking || '',
+                    motheringAbility: breedingData.motheringAbility || '',
                 });
 
                 setBirthEntries(breedingData.birthEntries.map(entry => ({
@@ -60,11 +56,11 @@ export default function EditBreeding() {
     }
 
     useEffect(() => {
-        fetchBreedingData(); // Fetch data when component mounts
+        fetchBreedingData();
     }, [id]);
 
     const editBreeding = async (values) => {
-        const headers = getHeaders(); // Get the latest headers
+        const headers = getHeaders();
         setIsLoading(true);
         try {
             const dataToSubmit = {
@@ -79,7 +75,7 @@ export default function EditBreeding() {
             if (data.status === "success") {
                 console.log(data);
                 setShowAlert(true);
-                await fetchBreedingData(); // Fetch new data after update
+                await fetchBreedingData();
             }
         } catch (err) {
             const errorMessage = err.response?.data?.message || "An error occurred while processing your request";
@@ -94,11 +90,15 @@ export default function EditBreeding() {
             tagId: '',
             deliveryState: '',
             deliveryDate: '',
+            milking: '',
+            motheringAbility: '',
             numberOfBirths: 1,
         },
         validationSchema: Yup.object({
             tagId: Yup.string().required(t('Tag ID is required')),
-            deliveryState: Yup.string().required(t('Delivery state is required')).max(50, t('Delivery state must be 50 characters or less')),
+            deliveryState: Yup.string()
+                .required(t('Delivery state is required'))
+                .oneOf(['normal', 'difficult', 'assisted', 'caesarean'], t('Invalid delivery state')),
             deliveryDate: Yup.date().required(t('Delivery date is required')).typeError(t('Invalid date format')),
             numberOfBirths: Yup.number().required(t('Number of births is required')).min(1, t('At least 1')).max(4, t('No more than 4')),
         }),
@@ -122,14 +122,14 @@ export default function EditBreeding() {
     function handleBirthEntriesChange(e, index) {
         const { name, value } = e.target;
         setBirthEntries((prevEntries) => {
-            return prevEntries.map((entry, i) => 
+            return prevEntries.map((entry, i) =>
                 i === index ? { ...entry, [name]: value } : entry
             );
         });
     }
 
     return (
-        <div className="container" >
+        <div className="container">
             <div className="title2">{t('Edit Breeding')}</div>
 
             <form onSubmit={formik.handleSubmit} className="mt-5">
@@ -157,15 +157,21 @@ export default function EditBreeding() {
                     </div>
 
                     <div className="input-box">
-                        <label className="label" htmlFor="deliveryState">{t('Delivery State')}</label>
-                        <input
-                            {...formik.getFieldProps('deliveryState')}
-                            placeholder={t('Enter your delivery state')}
+                        <label className="label" htmlFor="deliveryState">{t("Delivery State")}</label>
+                        <select
                             id="deliveryState"
-                            type="text"
+                            name="deliveryState"
                             className="input2"
-                        />
-                        {formik.touched.deliveryState && formik.errors.deliveryState && <p className="text-danger">{formik.errors.deliveryState}</p>}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            value={formik.values.deliveryState}
+                        >
+                            <option value="">{t("Select delivery state")}</option>
+                            <option value="normal">{t("Normal")}</option>
+                            <option value="difficult">{t("Difficult")}</option>
+                            <option value="assisted">{t("Assisted")}</option>
+                            <option value="caesarean">{t("Caesarean")}</option>
+                        </select>
                     </div>
 
                     <div className="input-box">
@@ -192,6 +198,40 @@ export default function EditBreeding() {
                             name="numberOfBirths"
                         />
                         {formik.touched.numberOfBirths && formik.errors.numberOfBirths && <p className="text-danger">{formik.errors.numberOfBirths}</p>}
+                    </div>
+
+                    <div className="input-box">
+                        <label className="label" htmlFor="milking">{t("Milking")}</label>
+                        <select
+                            id="milking"
+                            name="milking"
+                            className="input2"
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            value={formik.values.milking}
+                        >
+                            <option value="">{t("Select milking")}</option>
+                            <option value="no milk">{t("No Milk")}</option>
+                            <option value="one teat">{t("One Teat")}</option>
+                            <option value="two teat">{t("Two Teat")}</option>
+                        </select>
+                    </div>
+
+                    <div className="input-box">
+                        <label className="label" htmlFor="motheringAbility">{t("Mothering Ability")}</label>
+                        <select
+                            id="motheringAbility"
+                            name="motheringAbility"
+                            className="input2"
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            value={formik.values.motheringAbility}
+                        >
+                            <option value="">{t("Select mothering ability")}</option>
+                            <option value="good">{t("Good")}</option>
+                            <option value="medium">{t("Medium")}</option>
+                            <option value="bad">{t("Bad")}</option>
+                        </select>
                     </div>
 
                     {birthEntries.map((entry, index) => (
@@ -228,7 +268,6 @@ export default function EditBreeding() {
                                 type="text"
                                 className="input2"
                             />
-
                             <label className="label" htmlFor={`birthEntries-${index}-expectedWeaningDate`}>{t('Expected Weaning Date')} {index + 1}</label>
                             <input
                                 value={entry.expectedWeaningDate}

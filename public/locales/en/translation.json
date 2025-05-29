@@ -557,5 +557,20 @@
 "Caesarean":"Caesarean",
   "Search Entry Type":  "Search Entry Type",
   "Add New Vaccine":"Add New Vaccine",
-    "showDescription-v":"Enter The Vaccine Data"
+    "showDescription-v":"Enter The Vaccine Data",
+    "Add Vaccine": "Add Vaccine",
+    "Success": "Success",
+    "Error": "Error",
+    "Vaccine Name": "Vaccine Name",
+    "Enter vaccine name": "Enter vaccine name",
+    "Booster Dose": "Booster Dose",
+    "Enter Booster Dose": "Enter Booster Dose",
+    "Annual Dose": "Annual Dose",
+    "Enter Annual Dose": "Enter Annual Dose",
+    "Bottles": "Bottles",
+    "Enter Number Of Bottles": "Enter Number Of Bottles",
+    "Doses Per Bottle": "Doses Per Bottle",
+    "Enter Doses Per Bottle": "Enter Doses Per Bottle",
+    "Bottle Price": "Bottle Price",
+    "Enter Bottle Price": "Enter Bottle Price"
 }

@@ -5,17 +5,20 @@ import Usefullto from "./Usefullto";
 import Section from "../Section/Section";
 import LastSection from "../LastSection/LastSection";
 import Footer from "../Footer/Footer";
+import Navbar from "../Navbar/Navbar";
 
 
 export default function Home() {
 return (<>
-    <ImgSlide/>
-
-    {/* <About/> */}
+<div className=" mt-0">
+    <Navbar></Navbar>
+   <ImgSlide/>
     <Usefullto></Usefullto>
     <Section></Section>
     <LastSection></LastSection>
     <Footer />
+</div>
+ 
     </>
 );
 }

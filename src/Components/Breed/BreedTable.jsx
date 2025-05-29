@@ -2,11 +2,11 @@ import React, { useContext, useEffect, useState } from 'react';
 import { LocationContext } from '../../Context/LocationContext';
 import Swal from 'sweetalert2';
 import { FaRegEdit } from "react-icons/fa";
-import { RiDeleteBin6Line } from "react-icons/ri";
+import { RiDeleteBin6Line, RiDeleteBinLine } from "react-icons/ri";
 import { Rings } from 'react-loader-spinner';
 import {  useNavigate } from 'react-router-dom';
 import { BreedContext } from '../../Context/BreedContext';
-
+import "../Vaccine/styles.css"
 
 function BreedTable() {
         let navigate = useNavigate();
@@ -87,18 +87,19 @@ function BreedTable() {
                                 />
                             </div>
             ) : (
-                <div className="container">
-                    <div className="title2">Breed</div>
+                <div className="container mt-5 vaccine-table-container">
+                        <h2 className="vaccine-table-title">Breed</h2>
+
 
                     <div className="table-responsive">
                         <div className="full-width-table">
                             <table className="table table-hover mt-5">
                                 <thead>
                                     <tr>
-                                        <th>#</th>
-                                        <th>Breed Name</th>
-                                        <th>Edit Breed</th>
-                                        <th>Remove Breed</th>
+                                        <th className="text-center bg-color">#</th>
+                                        <th className="text-center bg-color">Breed Name</th>
+                                                     <th className="text-center bg-color">actions</th>
+
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -106,19 +107,18 @@ function BreedTable() {
                                         <tr key={breeds._id}>
                                             <td>{(currentPage - 1) * breedPerPage + index + 1}</td>
                                             <td>{breeds.breedName}</td>
-                                            <td 
-                                            onClick={() => editBreed(breeds._id)}
-                                            className="text-success"
-                                            style={{ cursor: 'pointer' }}>
-                                                <FaRegEdit /> Edit Breed
-                                            </td>
-                                            <td
-                                                className="text-danger"
-                                                style={{ cursor: 'pointer' }}
-                                                onClick={() => handleClick(breeds._id)}
-                                            >
-                                                <RiDeleteBin6Line /> Remove Breed
-                                            </td>
+                                       
+
+                                              
+                                                              <td className="text-center">
+                                            
+                                                                <button className="btn btn-link p-0 me-2"  onClick={() => editBreed(breeds._id)} title='edit' style={{
+                                                                  color:"#808080"
+                                                                }}><FaRegEdit /></button>
+                                                                <button className="btn btn-link  p-0" style={{
+                                                                  color:"#808080"
+                                                                }}   onClick={() => handleClick(breeds._id)} title='delete'  ><RiDeleteBinLine/></button>
+                                                              </td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -126,7 +126,7 @@ function BreedTable() {
                         </div>
                     </div>
 
-                    {/* Pagination */}
+                 
                     <div className="d-flex justify-content-center mt-4">
                         <nav>
                             <ul className="pagination">

@@ -1,0 +1,238 @@
+/* Card Styles */
+.custom-card {
+    background: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.custom-card:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Title Styles */
+.custom-title {
+    color: #2c3e50;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+.custom-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50px;
+    height: 3px;
+    background: #3498db;
+    border-radius: 2px;
+}
+
+/* Button Styles */
+.custom-btn-primary {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.custom-btn-primary:hover {
+    background: #2980b9;
+    transform: translateY(-2px);
+}
+
+.custom-btn-success {
+    background: #2ecc71;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.custom-btn-success:hover {
+    background: #27ae60;
+    transform: translateY(-2px);
+}
+
+.custom-btn-warning {
+    background: #f1c40f;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.custom-btn-warning:hover {
+    background: #f39c12;
+    transform: translateY(-2px);
+}
+
+/* Input Styles */
+.custom-input-group {
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.custom-input-group-text {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    color: #6c757d;
+}
+
+.custom-input {
+    border: 1px solid #e9ecef;
+    padding: 10px;
+    transition: all 0.3s ease;
+}
+
+.custom-input:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+}
+
+/* Table Styles */
+.custom-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-bottom: 1rem;
+}
+
+.custom-table thead th {
+    background: #f8f9fa;
+    color: #2c3e50;
+    font-weight: 600;
+    padding: 12px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.custom-table tbody tr {
+    transition: all 0.3s ease;
+}
+
+.custom-table tbody tr:hover {
+    background-color: #f8f9fa;
+    transform: scale(1.01);
+}
+
+.custom-table td {
+    padding: 12px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+/* Custom Elements */
+.custom-tag {
+    background: #e3f2fd;
+    color: #1976d2;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.custom-text {
+    color: #2c3e50;
+}
+
+.custom-date {
+    background: #f8f9fa;
+    color: #6c757d;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+.custom-location {
+    color: #6c757d;
+}
+
+/* Action Buttons */
+.custom-btn-edit {
+    background: #e3f2fd;
+    color: #1976d2;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.custom-btn-edit:hover {
+    background: #bbdefb;
+    transform: translateY(-2px);
+}
+
+.custom-btn-delete {
+    background: #ffebee;
+    color: #d32f2f;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.custom-btn-delete:hover {
+    background: #ffcdd2;
+    transform: translateY(-2px);
+}
+
+/* Empty State */
+.custom-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px;
+    color: #6c757d;
+}
+
+.custom-empty-state i {
+    font-size: 48px;
+    margin-bottom: 16px;
+    color: #dee2e6;
+}
+
+/* Pagination */
+.custom-pagination {
+    margin-top: 20px;
+}
+
+.custom-pagination .page-item .page-link {
+    color: #3498db;
+    border: 1px solid #e9ecef;
+    padding: 8px 16px;
+    transition: all 0.3s ease;
+}
+
+.custom-pagination .page-item.active .page-link {
+    background: #3498db;
+    border-color: #3498db;
+    color: white;
+}
+
+.custom-pagination .page-item .page-link:hover {
+    background: #f8f9fa;
+    border-color: #3498db;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .custom-table {
+        display: block;
+        overflow-x: auto;
+    }
+    
+    .custom-btn-primary,
+    .custom-btn-success,
+    .custom-btn-warning {
+        padding: 6px 12px;
+        font-size: 0.9em;
+    }
+} 

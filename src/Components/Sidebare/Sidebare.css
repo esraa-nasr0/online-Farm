@@ -1,17 +1,17 @@
 .sidebar {
-  background-color: #eafae0;
+  background-color: #f6f1ea;
   height: 100vh;
-  width: 240px !important; /* أضفنا !important علشان نتأكد إنه بيتطبق */
+  width: 240px !important;
   position: fixed;
   left: 0;
   top: 0;
-  width: 280px;
   transition: transform 0.3s ease;
   z-index: 1000;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  border-right: 1px solid #f6f1ea;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  font-family: Arial, sans-serif;
 }
 
 .sidebar.closed {
@@ -21,7 +21,7 @@
 
 .sidebar-header {
   padding: 24px 20px 16px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid #f6f1ea;
   margin-top: 3.5rem;
 }
 
@@ -40,7 +40,7 @@
 
 .sidebar-section {
   padding: 16px 0;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid #f6f1ea;
 }
 
 .section-title {
@@ -48,7 +48,7 @@
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #95a5a6;
+  color: #888;
   font-weight: 600;
 }
 
@@ -66,15 +66,15 @@
   display: flex;
   align-items: center;
   padding: 10px 12px;
-  color: #34495e;
+  color: #333;
   text-decoration: none;
-  border-radius: 6px;
-  transition: all 0.2s ease;
+  border-radius: 4px;
+  transition: background 0.2s, color 0.2s;
 }
 
 .menu-item:hover {
-  background-color: #f8f9fa;
-  color: #778983;
+  background-color: #f6f1ea;
+  color: #333;
 }
 
 .menu-icon {
@@ -92,7 +92,7 @@
 .sidebar-footer {
   margin-top: auto;
   padding: 16px 20px;
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid #f6f1ea;
 }
 
 .system-info {
@@ -108,7 +108,7 @@
 }
 
 .sidebar-tags span {
-  background-color: #ecf0f1;
+  background-color: #f6f1ea;
   color: #7f8c8d;
   padding: 4px 8px;
   border-radius: 4px;
@@ -121,6 +121,7 @@
     width: 220px !important;
   }
 }
+
 .dropdown-menu-custom {
   list-style: none;
   padding-left: 1.5rem;
@@ -131,13 +132,14 @@
   display: block;
   padding: 8px 12px;
   font-size: 0.85rem;
-  color: #34495e;
+  color: #333;
   text-decoration: none;
   border-radius: 4px;
-  transition: all 0.2s ease;
+  transition: background 0.2s, color 0.2s;
 }
 
 .dropdown-item-custom:hover {
-  background-color: #f8f9fa;
-  color: #778983;
+  background-color: #f6f1ea;
+  color: #333;
 }
+

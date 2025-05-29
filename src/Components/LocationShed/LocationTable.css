@@ -1,0 +1,94 @@
+/* تصميم عصري لجدول LocationTable مماثل لجدول Vaccinebyanimalstable */
+
+.location-table-container {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px 0 rgba(60,72,100,.12);
+  padding: 2rem 2.5rem;
+  margin: 2rem auto;
+  max-width: 900px;
+}
+
+.location-table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.location-table-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #222;
+}
+
+.location-table-table-responsive {
+  width: 100%;
+}
+
+.location-table-table {
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 2px 12px 0 rgba(60,72,100,.08);
+  margin-bottom: 2rem;
+}
+.location-table-table thead th {
+  background: #f6f8fa;
+  color: #222;
+  font-size: 1.08rem;
+  font-weight: 700;
+  border: none;
+  padding: 18px 12px;
+}
+.location-table-table tbody td {
+  padding: 16px 12px;
+  vertical-align: middle;
+  border: none;
+  font-size: 1rem;
+}
+.location-table-table tbody tr {
+  transition: background 0.2s;
+}
+.location-table-table tbody tr:hover {
+  background: #f2f6fc;
+}
+
+.action-btn {
+  background: #f6f8fa;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 2px;
+  color: #555;
+  transition: background 0.2s, color 0.2s;
+  font-size: 1.1em;
+}
+.action-btn:hover {
+  background: #e3eafc;
+  color: #1976d2;
+}
+.action-btn.delete:hover {
+  background: #ffeaea;
+  color: #d32f2f;
+}
+.action-btn.edit:hover {
+  background: #eafaf1;
+  color: #388e3c;
+}
+
+@media (max-width: 900px) {
+  .location-table-container {
+    padding: 1rem 0.5rem;
+  }
+  .location-table-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+} 

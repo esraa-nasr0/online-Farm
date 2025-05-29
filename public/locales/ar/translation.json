@@ -627,7 +627,13 @@
   "Caesarean":"قيصرية",
   "Search Entry Type":"البحث باستخدام نوع الادخال",
   "Add New Vaccine":"إضافة لقاح جديد",
-  "showDescription-v":"ادخل بينات اللقاح"
+  "showDescription-v":"ادخل بينات اللقاح",
+  "Enter Doses Per Bottle":" أدخل عدد الجرعات في الزجاجة",
+  "Enter Number Of Bottles":"أدخل عدد الزجاجات",
+  "Enter Annual Dose":"أدخل الجرعة السنوية",
+  "Enter Booster Dose":"أدخل جرعة المعزّز",
+  "Enter vaccine name":"أدخل اسم اللقاح",
+   "Enter Bottle Price":"أدخل سعر الزجاجة"
 
 }
 

@@ -4,9 +4,10 @@ import { Rings } from 'react-loader-spinner';
 import { Link, useNavigate } from 'react-router-dom';
 import { MdOutlineAddToPhotos } from "react-icons/md";
 import Swal from 'sweetalert2';
-import { RiDeleteBin6Line } from "react-icons/ri";
+import { RiDeleteBin6Line, RiDeleteBinLine } from "react-icons/ri";
 import { FaRegEdit } from "react-icons/fa";
 import { useTranslation } from 'react-i18next';
+import "../Vaccine/styles.css"
 
 function TreatAnimalTable() {
     const { t } = useTranslation();
@@ -110,35 +111,42 @@ function TreatAnimalTable() {
                     <Rings visible={true} height="100" width="100" color="#9cbd81" ariaLabel="rings-loading" />
                 </div>
             ) : (
-                <div className="container">
-                    <div className="title2">{t('treatment_by_animal')}</div>
+                <div className="container mt-5 vaccine-table-container">
+                  
+ <h2 className="vaccine-table-title">{t('treatment_by_animal')}</h2>
+            
+                      <div className="row g-2 mb-3">
+        <div className="col-md-4">
+                                  <input type="text" className="form-control me-2 mb-2" placeholder={t('search_tag_id')} value={searchTagId} onChange={(e) => setSearchTagId(e.target.value)} style={{ flex: 1 }} />
 
-                    <div className="container mt-5">
-                        <div className="d-flex flex-column flex-md-row align-items-center gap-2" style={{ flexWrap: 'nowrap' }}>
-                            <input type="text" className="form-control me-2 mb-2" placeholder={t('search_tag_id')} value={searchTagId} onChange={(e) => setSearchTagId(e.target.value)} style={{ flex: 1 }} />
-                            <input type="text" className="form-control me-2 mb-2" placeholder={t('search_location_shed')} value={searchLocationShed} onChange={(e) => setSearchLocationShed(e.target.value)} style={{ flex: 1 }} />
-                            <input type="text" className="form-control me-2 mb-2" placeholder={t('search_date')} value={searchDate} onChange={(e) => setSearchDate(e.target.value)} style={{ flex: 1 }} />
-                            <button className="btn mb-2 me-2" onClick={handleSearch} style={{ backgroundColor: '#FAA96C',  color: 'white' }}>
-                                <i className="fas fa-search"></i> {t('search_button')}
-                            </button>
-                        </div>
-                    </div>
+        </div>
+        <div className="col-md-4">
+                                  <input type="text" className="form-control me-2 mb-2" placeholder={t('search_location_shed')} value={searchLocationShed} onChange={(e) => setSearchLocationShed(e.target.value)} style={{ flex: 1 }} />
+
+        </div>
+        <div className="col-md-4">
+                                    <input type="text" className="form-control me-2 mb-2" placeholder={t('search_date')} value={searchDate} onChange={(e) => setSearchDate(e.target.value)} style={{ flex: 1 }} />
+
+        </div>
+          <div className="d-flex justify-content-end mb-3">
+        <button className="btn btn-outline-secondary" onClick={handleSearch}>{t('search')}</button>
+      </div>
+      </div>
 
                     {error && <p className="text-danger mt-3">{error}</p>}
 
                     <div className="table-responsive">
                     <div className="full-width-table">
-                    <table className="table table-hover mt-4" aria-label={t('treatment_by_animal')}>
+                    <table className="table align-middle">
                         <thead>
                             <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">{t('tag_id')}</th>
-                                <th scope="col">{t('location_shed')}</th>
-                                <th scope="col">{t('treatment_name')}</th>
-                                <th scope="col">{t('volume')}</th>
-                                <th scope="col">{t('date')}</th>
-                                <th scope="col">{t('edit_treatment')}</th>
-                                <th scope="col">{t('remove_treatment')}</th>
+                                <th scope="col" className="text-center bg-color">#</th>
+                                <th scope="col" className="text-center bg-color">{t('tag_id')}</th>
+                                <th scope="col" className="text-center bg-color">{t('location_shed')}</th>
+                                <th scope="col" className="text-center bg-color">{t('treatment_name')}</th>
+                                <th scope="col" className="text-center bg-color">{t('volume')}</th>
+                                <th scope="col" className="text-center bg-color">{t('date')}</th>
+                              <th className="text-center bg-color">{t('actions')}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -151,11 +159,16 @@ function TreatAnimalTable() {
                                         <td>{item.treatments && item.treatments[0] ? item.treatments[0].treatmentName : "No Treatment"}</td>
                                         <td>{item.treatments && item.treatments[0] ? item.treatments[0].volume : "N/A"}</td>
                                         <td>{new Date(item.date).toLocaleDateString()}</td>
-                                        <td onClick={() => editTreatment(item._id)} className="text-success" style={{ cursor: 'pointer' }}>
-                                            <FaRegEdit /> {t('edit_treatment')}
-                                        </td>
-                                        <td onClick={() => confirmDelete(item._id)} className="text-danger" style={{ cursor: 'pointer' }}>
-                                            <RiDeleteBin6Line /> {t('remove_treatment')}
+                                       
+
+                                         <td className="text-center">
+                                                                                                                                                
+                                                          <button className="btn btn-link p-0 me-2" onClick={() => editTreatment(item._id)} title={t('edit')} style={{
+                                                            color:"#808080"
+                                                          }}><FaRegEdit /></button>
+                                                          <button className="btn btn-link  p-0" style={{
+                                                            color:"#808080"
+                                                          }} onClick={() => confirmDelete(item._id)} title={t('delete')}  ><RiDeleteBinLine/></button>
                                         </td>
                                     </tr>
                                 ))
@@ -168,7 +181,7 @@ function TreatAnimalTable() {
                     </table>
                     </div>
                     </div>
-                    {/* Pagination */}
+                  
                     <div className="d-flex justify-content-center mt-4">
                         <nav>
                             <ul className="pagination">

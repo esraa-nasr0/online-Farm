@@ -5,9 +5,9 @@ import { Feedbylocationcontext } from "../../Context/FeedbylocationContext.jsx";
 import { Rings } from "react-loader-spinner";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
-import { RiDeleteBin6Line } from "react-icons/ri";
+import { RiDeleteBin6Line, RiDeleteBinLine } from "react-icons/ri";
 import { FaRegEdit } from "react-icons/fa";
-
+import "../Vaccine/styles.css"
 
 function FeedingTable() {
   const navigate = useNavigate();
@@ -103,13 +103,17 @@ function FeedingTable() {
           />
         </div>
       ) : (
-        <div className="container">
-                    <div className="title2">Feed by location shed</div>
+        <div className="container mt-5 vaccine-table-container">
+                    <h2 className="vaccine-table-title">Feed by location shed</h2>
 
       
-          <div className="d-flex flex-column flex-md-row align-items-center gap-2 mt-4">
+                                          <div className="row g-2 mb-3">
+        <div className="col-md-4">
                         <input type="text" className="form-control" value={searchCriteria.locationShed} placeholder="Search locationShed" onChange={(e) => setSearchCriteria(prev => ({ ...prev, locationShed: e.target.value }))} />
-                        <input
+
+        </div>
+        <div className="col-md-4">
+  <input
   type="text"
   className="form-control"
   value={searchCriteria.date}
@@ -122,23 +126,22 @@ function FeedingTable() {
     });
   }}
 />
-
-                        <button className="btn" onClick={handleSearch} style={{ backgroundColor: '#FAA96C', color: 'white' }}>
-    <i className="fas fa-search"></i>
-</button>
-
-                    </div>
+        </div>
+  
+          <div className="d-flex justify-content-end mb-3">
+        <button className="btn btn-outline-secondary" onClick={handleSearch}>search</button>
+      </div>
+      </div>
        
           <table className="table table-striped text-center mt-4">
             <thead>
               <tr>
-                <th scope="col">Location Shed</th>
-                <th scope="col">Quantity</th>
-                <th scope="col">Date</th>
-                <th scope="col">Feed Name</th>
-                <th scope="col">Feed Price</th>
-                    <th>Edit</th>
-                    <th>Remove</th>
+                <th scope="col" className="text-center bg-color">Location Shed</th>
+                <th scope="col" className="text-center bg-color">Quantity</th>
+                <th scope="col" className="text-center bg-color">Date</th>
+                <th scope="col" className="text-center bg-color">Feed Name</th>
+                                <th scope="col" className="text-center bg-color">Feed Price</th>
+            <th className="text-center bg-color">actions</th>
               </tr>
             </thead>
             <tbody>
@@ -150,15 +153,17 @@ function FeedingTable() {
                     <td>{item.date ? item.date.split("T")[0] : "N/A"}</td>
                     <td>{item?.feeds?.[0]?.feedName}</td>
                     <td>{item?.feeds?.[0]?.feedPrice}</td>
-                    <td
-                                          style={{ cursor: "pointer", color: "#198754" }}
-                                          onClick={() => Editfeed(item._id)}
-                                        >
-                                          <FaRegEdit/> Edit
-                                        </td>
-                      <td onClick={() => handleDelete(item._id)} className="text-danger" style={{ cursor: "pointer" }}>
-                                        <RiDeleteBin6Line /> Remove
-                                      </td>
+                
+
+                                           <td className="text-center">
+                                                                                         
+ <button className="btn btn-link p-0 me-2"   onClick={() => Editfeed(item._id)} title='edit' style={{
+     color:"#808080"
+   }}><FaRegEdit /></button>
+   <button className="btn btn-link  p-0" style={{
+     color:"#808080"
+   }} onClick={() => handleDelete(item._id)} title='delete'  ><RiDeleteBinLine/></button>
+                                                                              </td>
                   </tr>
                 ))
               ) : (

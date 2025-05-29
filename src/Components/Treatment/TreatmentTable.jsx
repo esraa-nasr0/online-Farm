@@ -4,9 +4,10 @@ import { Rings } from 'react-loader-spinner';
 import { Link, useNavigate } from 'react-router-dom';
 import { MdOutlineAddToPhotos } from "react-icons/md";
 import Swal from 'sweetalert2';
-import { RiDeleteBin6Line } from "react-icons/ri";
+import { RiDeleteBin6Line, RiDeleteBinLine } from "react-icons/ri";
 import { FaRegEdit } from "react-icons/fa";
 import { useTranslation } from 'react-i18next';
+import "../Vaccine/styles.css"
 
 function TreatmentTable() {
     const { t } = useTranslation();
@@ -34,9 +35,9 @@ function TreatmentTable() {
 
         try {
             const { data } = await getTreatment(currentPage, treatmentPerPage, filters);
-            setTreatment(data?.data?.treatments || []); // Safely handle undefined data
-            setPagination(data.pagination || {}); // Safely handle pagination data
-            setTotalPages(data.pagination?.totalPages || 1); // Update total pages
+            setTreatment(data?.data?.treatments || []); 
+            setPagination(data.pagination || {});
+            setTotalPages(data.pagination?.totalPages || 1);
         } catch (error) {
             Swal.fire(t('error'), t('failed_to_fetch_data'), 'error');
         } finally {
@@ -98,8 +99,8 @@ function TreatmentTable() {
     };
 
     const handleSearch = () => {
-        setCurrentPage(1); // Reset to page 1 when search is triggered
-        fetchTreatment(); // Fetch data with the new search filters
+        setCurrentPage(1); 
+        fetchTreatment(); 
     };
 
     return (
@@ -109,12 +110,15 @@ function TreatmentTable() {
                     <Rings visible={true} height="100" width="100" color="#9cbd81" ariaLabel="rings-loading" />
                 </div>
             ) : (
-                <div className="container">
-                    <div className="title2">{t('treatment')}</div>
+                <div className="container mt-5 vaccine-table-container">
+                    <h2 className="vaccine-table-title">{t('treatment')}</h2>
 
                     <div className="container mt-5">
-                        <div className="d-flex flex-column flex-md-row align-items-center gap-2" style={{ flexWrap: 'nowrap' }}>
-                            <input
+            
+
+   <div className="row g-2 mb-3">
+        <div className="col-md-4">
+          <input
                                 type="text"
                                 className="form-control me-2 mb-2"
                                 placeholder={t('search_by_name')}
@@ -122,7 +126,9 @@ function TreatmentTable() {
                                 onChange={(e) => setSearchName(e.target.value)}
                                 style={{ flex: 1 }}
                             />
-                            <input
+        </div>
+        <div className="col-md-4">
+           <input
                                 type="text"
                                 className="form-control me-2 mb-2"
                                 placeholder={t('search_by_type')}
@@ -130,30 +136,39 @@ function TreatmentTable() {
                                 onChange={(e) => setSearchType(e.target.value)}
                                 style={{ flex: 1 }}
                             />
-                            <button
-                                className="btn mb-2 me-2"
-                                onClick={handleSearch}
-                                style={{ backgroundColor: '#FAA96C', color: 'white' }}
-                            >
-                                <i className="fas fa-search"></i>
-                            </button>
-                        </div>
+        </div>
+        <div className="col-md-4">
+            <input
+                                type="text"
+                                className="form-control me-2 mb-2"
+                                placeholder={t('search_by_type')}
+                                value={searchType}
+                                onChange={(e) => setSearchType(e.target.value)}
+                                style={{ flex: 1 }}
+                            />
+        </div>
+          <div className="d-flex justify-content-end mb-3">
+        <button className="btn btn-outline-secondary" onClick={handleSearch}>{t('search')}</button>
+      </div>
+      </div>
+
+
+                        
                     </div>
 
                     {error && <p className="text-danger mt-3">{error}</p>}
 
                     <div className="table-responsive">
                         <div className="full-width-table">
-                            <table className="table table-hover mt-4" aria-label={t('treatment_table')}>
+                            <table className="table align-middle" aria-label={t('treatment_table')}>
                                 <thead>
                                     <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">{t('name')}</th>
-                                        <th scope="col">{t('type')}</th>
-                                        <th scope="col">{t('volume')}</th>
-                                        <th scope="col">{t('price')}</th>
-                                        <th scope="col">{t('edit_treatment')}</th>
-                                        <th scope="col">{t('remove_treatment')}</th>
+                                        <th scope="col" className="text-center bg-color">#</th>
+                                        <th scope="col" className="text-center bg-color">{t('name')}</th>
+                                        <th scope="col" className="text-center bg-color">{t('type')}</th>
+                                        <th scope="col" className="text-center bg-color">{t('volume')}</th>
+                                        <th scope="col" className="text-center bg-color">{t('price')}</th>
+                                           <th className="text-center bg-color">{t('actions')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -165,21 +180,17 @@ function TreatmentTable() {
                                                 <td>{item.type}</td>
                                                 <td>{item.volume}</td>
                                                 <td>{item.price}</td>
-                                                <td
-                                                    onClick={() => editTreatment(item._id)}
-                                                    className="text-success"
-                                                    style={{ cursor: 'pointer' }}
-                                                >
-                                                    <FaRegEdit /> {t('edit_treatment')}
+                                              
 
-                                                </td>
-                                                <td
-                                                    onClick={() => confirmDelete(item._id)}
-                                                    className="text-danger"
-                                                    style={{ cursor: 'pointer' }}
-                                                >
-                                                    <RiDeleteBin6Line /> {t('remove_treatment')}
-                                                </td>
+                                                  <td className="text-center">
+                                                                                                                                                        
+ <button className="btn btn-link p-0 me-2"   onClick={() => editTreatment(item._id)} title={t('edit')} style={{
+   color:"#808080"
+ }}><FaRegEdit /></button>
+ <button className="btn btn-link  p-0" style={{
+   color:"#808080"
+ }}  onClick={() => confirmDelete(item._id)} title={t('delete')}  ><RiDeleteBinLine/></button>
+                                                                                                                                                                          </td>
                                             </tr>
                                         ))
                                     ) : (
