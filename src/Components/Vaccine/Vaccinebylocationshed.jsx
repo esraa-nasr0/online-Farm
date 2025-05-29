@@ -115,8 +115,19 @@ function Vaccinebylocationshed() {
     });
 
     return (
-        <div className="container">
-            <div className="title2">{t("addByLocationTitle")}</div>
+        <div className=' container mx-auto'>
+
+            <div 
+             className="big-card"   style={{
+                width: '100%',
+                // padding: '20px',
+                borderRadius: '15px',
+                boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
+            
+              }}
+            >
+            <div className="container">
+            <div className="title2" style={{paddingTop:"15px"}}>{t("addByLocationTitle")}</div>
             <form onSubmit={formik.handleSubmit} className="mt-5">
                 {isLoading ? (
                     <button type="submit" className="btn button2" disabled>
@@ -209,6 +220,9 @@ function Vaccinebylocationshed() {
                 </div>
             </form>
         </div>
+            </div>
+        </div>
+  
     );
 }
 

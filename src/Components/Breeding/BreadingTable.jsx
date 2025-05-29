@@ -1,17 +1,20 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { MdOutlineAddToPhotos } from "react-icons/md";
-import { RiDeleteBin6Line } from "react-icons/ri";
+import { RiDeleteBin6Line, RiDeleteBinLine } from "react-icons/ri";
 import { FaRegEdit } from "react-icons/fa";
 import { BreedingContext } from '../../Context/BreedingContext';
 import { Rings } from 'react-loader-spinner';
 import Swal from 'sweetalert2';
 import { useTranslation } from 'react-i18next';
+import axios from 'axios';
+import "../Vaccine/styles.css"
 
 function BreadingTable() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { getAllBreeding, deleteBreeding } = useContext(BreedingContext);
+
   const [breading, setBreading] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [searchCriteria, setSearchCriteria] = useState({ tagId: '', animalType: '', deliveryDate: '' });
@@ -93,6 +96,81 @@ function BreadingTable() {
     return buttons;
   };
 
+  const handleDownloadExcel = async () => {
+    const token = localStorage.getItem('Authorization');
+    const formattedToken = token?.startsWith("Bearer ") ? token : `Bearer ${token}`;
+
+    try {
+      const response = await axios.get(
+        'https://farm-project-bbzj.onrender.com/api/breeding/downloadBreedingTemplate',
+        {
+          responseType: 'blob',
+          headers: { Authorization: formattedToken },
+        }
+      );
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'breeding_data.xlsx');
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error('Download error:', error);
+      alert('Failed to download file.');
+    }
+  };
+
+  const handleExportTemplate = async () => {
+ const token = localStorage.getItem('Authorization');
+    const formattedToken = token?.startsWith("Bearer ") ? token : `Bearer ${token}`;
+
+    try {
+      const response = await axios.get(
+        'https://farm-project-bbzj.onrender.com/api/breeding/exportbreedingToExcel',
+        {
+          responseType: 'blob',
+          headers: { Authorization: formattedToken },
+        }
+      );
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'breeding_data.xlsx');
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error('Download error:', error);
+      alert('Failed to download file.');
+    }
+  };
+
+  const handleUploadExcel = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const token = localStorage.getItem('Authorization');
+    const formattedToken = token?.startsWith("Bearer ") ? token : `Bearer ${token}`;
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      await axios.post('https://farm-project-bbzj.onrender.com/api/breeding/import', formData, {
+        headers: {
+          Authorization: formattedToken,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      Swal.fire(t("Success!"), t("Excel data uploaded successfully."), "success");
+      getItem();
+    } catch (error) {
+      console.error("Upload error:", error);
+      Swal.fire(t("Error!"), t("Failed to upload file."), "error");
+    }
+  };
+
   return (
     <>
       {isLoading ? (
@@ -100,70 +178,110 @@ function BreadingTable() {
           <Rings visible={true} height="100" width="100" color="#9cbd81" ariaLabel="rings-loading" />
         </div>
       ) : (
-        <div>
+        <div className='container mt-5 vaccine-table-container'>
           <div className='container'>
-            <div className="title2">{t("Breeding")}</div>
-            <div className="d-flex flex-column flex-md-row align-items-center gap-2 mt-4" style={{ flexWrap: 'nowrap' }}>
-              <input type="text" className="form-control" value={searchCriteria.tagId} placeholder={t("Search Tag ID")} onChange={(e) => setSearchCriteria((prev) => ({ ...prev, tagId: e.target.value }))} style={{ flex: '1' }} />
-              <input type="text" className="form-control" value={searchCriteria.animalType} placeholder={t("Search Animal Type")} onChange={(e) => setSearchCriteria((prev) => ({ ...prev, animalType: e.target.value }))} style={{ flex: '1' }} />
-              <input type="text" className="form-control" value={searchCriteria.deliveryDate} placeholder={t("Search Delivery Date")} onChange={(e) => setSearchCriteria((prev) => ({ ...prev, deliveryDate: e.target.value }))} style={{ flex: '1' }} />
-              <button className="btn" onClick={handleSearch} style={{ backgroundColor: '#FAA96C', color: 'white' }}>
-                <i className="fas fa-search"></i>
-              </button>
-            </div>
+          
+
+                  <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mt-5 mb-3">
+        <h2 className="vaccine-table-title"> {t("Breeding")}</h2>
+
+
+
+
+        <div className="d-flex flex-wrap gap-2">
+          <button className="btn btn-outline-dark" onClick={handleExportTemplate} title={t('export_all_data')}>
+            <i className="fas fa-download me-1"></i> {t('export_all_data')}
+          </button>
+          <button className="btn btn-success" onClick={handleDownloadExcel} title={t('download_template')}>
+            <i className="fas fa-file-arrow-down me-1"></i> {t('download_template')}
+          </button>
+          <label className="btn btn-dark  btn-outline-dark mb-0 d-flex align-items-center" style={{ cursor: 'pointer', color:"white" }} title={t('import_from_excel')}>
+            <i className="fas fa-file-import me-1"></i> {t('import_from_excel')}
+            <input type="file" hidden accept=".xlsx,.xls" onChange={handleUploadExcel}/>
+          </label>
+        </div>
+
+
+
+
+
+
+
+      </div>
+           
+
+                  <div className="row g-2 mb-3">
+        <div className="col-md-4">
+                      <input type="text" className="form-control" value={searchCriteria.tagId} placeholder={t("Search Tag ID")} onChange={(e) => setSearchCriteria((prev) => ({ ...prev, tagId: e.target.value }))} />
+
+        </div>
+        <div className="col-md-4">
+                       <input type="text" className="form-control" value={searchCriteria.deliveryDate} placeholder={t("Search Delivery Date")} onChange={(e) => setSearchCriteria((prev) => ({ ...prev, deliveryDate: e.target.value }))} />
+
+        </div>
+        <div className="col-md-4">
+                      <input type="text" className="form-control" value={searchCriteria.animalType} placeholder={t("Search Animal Type")} onChange={(e) => setSearchCriteria((prev) => ({ ...prev, animalType: e.target.value }))} />
+
+        </div>
+          <div className="d-flex justify-content-end mb-3">
+        <button className="btn btn-outline-secondary" onClick={handleSearch}>{t('search')}</button>
+      </div>
+      </div>
           </div>
 
           <div className="table-responsive">
-            <div className="full-width-table">
-              <table className="table table-hover mt-3 p-2">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>{t('Tag ID')}</th>
-                    <th>{t('Delivery State')}</th>
-                    <th>{t('Delivery Date')}</th>
-                    <th>{t('Birth Entries')}</th>
-                    <th>{t('Mothering Ability')}</th>
-                    <th>{t('Milking')}</th>
-                    <th>{t('Edit')}</th>
-                    <th>{t('Delete')}</th>
+            <table className="table align-middle">
+              <thead>
+                <tr>
+                  <th className="text-center bg-color">#</th>
+                  <th className="text-center bg-color">{t('Tag ID')}</th>
+                  <th className="text-center bg-color">{t('Delivery State')}</th>
+                  <th className="text-center bg-color">{t('Delivery Date')}</th>
+                  <th className="text-center bg-color">{t('Birth Entries')}</th>
+                  <th className="text-center bg-color">{t('Mothering Ability')}</th>
+                  <th className="text-center bg-color">{t('Milking')}</th>
+                   <th className="text-center bg-color">{t('actions')}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {breading.map((breeding, index) => (
+                  <tr key={`${breeding._id}-${index}`}>
+                    <td>{(currentPage - 1) * animalsPerPage + index + 1}</td>
+                    <td>{breeding.tagId}</td>
+                    <td>{breeding.deliveryState}</td>
+                    <td>{breeding.deliveryDate ? breeding.deliveryDate.split('T')[0] : t("No Date")}</td>
+                    <td>
+                      {breeding.birthEntries?.length > 0 ? (
+                        <ul className="list-group">
+                          {breeding.birthEntries.map((entry, idx) => (
+                            <li key={idx} className="list-group-item">
+                              <strong>{t('Tag ID')}:</strong> {entry.tagId},
+                              <strong> {t('Gender')}:</strong> {entry.gender},
+                              <strong> {t('Birthweight')}:</strong> {entry.birthweight} kg
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <span className="text-muted">{t("No Birth Entries")}</span>
+                      )}
+                    </td>
+                    <td>{breeding.motheringAbility || "--"}</td>
+                    <td>{breeding.milking || "--"}</td>
+                 
+
+                        <td className="text-center">
+                    
+                                        <button className="btn btn-link p-0 me-2" onClick={() => editMating(breeding._id)} title={t('edit')} style={{
+                                          color:"#808080"
+                                        }}><FaRegEdit /></button>
+                                        <button className="btn btn-link  p-0" style={{
+                                          color:"#808080"
+                                        }} onClick={() => handleClick(breeding._id)} title={t('delete')}  ><RiDeleteBinLine/></button>
+                                      </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {breading.map((breeding, index) => (
-                    <tr key={`${breeding._id}-${index}`}>
-                      <td>{(currentPage - 1) * animalsPerPage + index + 1}</td>
-                      <td>{breeding.tagId}</td>
-                      <td>{breeding.deliveryState}</td>
-                      <td>{breeding.deliveryDate ? breeding.deliveryDate.split('T')[0] : t("No Date")}</td>
-                      <td>
-                        {breeding.birthEntries && breeding.birthEntries.length > 0 ? (
-                          <ul className="list-group">
-                            {breeding.birthEntries.map((entry, idx) => (
-                              <li key={idx} className="list-group-item">
-                                <strong>{t('Tag ID')}:</strong> {entry.tagId}, 
-                                <strong>{t('Gender')}:</strong> {entry.gender}, 
-                                <strong>{t('Birthweight')}:</strong> {entry.birthweight} kg
-                              </li>
-                            ))}
-                          </ul>
-                        ) : (
-                          <span className="text-muted">{t("No Birth Entries")}</span>
-                        )}
-                      </td>
-                      <td>{breeding.motheringAbility || "--"}</td>
-                      <td>{breeding.milking || "--"}</td>
-                      <td onClick={() => editMating(breeding._id)} style={{ cursor: 'pointer', color: "#198754" }}>
-                        <FaRegEdit /> {t('Edit')}
-                      </td>
-                      <td onClick={() => handleClick(breeding._id)} className="text-danger" style={{ cursor: "pointer" }}>
-                        <RiDeleteBin6Line /> {t('Remove')}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                ))}
+              </tbody>
+            </table>
             <div className="d-flex justify-content-center mt-4">
               <nav>
                 <ul className="pagination">{renderPaginationButtons()}</ul>

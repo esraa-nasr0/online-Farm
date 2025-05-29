@@ -4,9 +4,10 @@ import { MdOutlineAddToPhotos } from "react-icons/md";
 import { Feedcontext } from "../../Context/FeedContext";
 import { Rings } from "react-loader-spinner";
 import { FaRegEdit } from "react-icons/fa";
-import { RiDeleteBin6Line } from "react-icons/ri";
+import { RiDeleteBin6Line, RiDeleteBinLine } from "react-icons/ri";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import "../Vaccine/styles.css"
 
 function FeedingTable() {
   const navigate = useNavigate();
@@ -99,40 +100,48 @@ function FeedingTable() {
           <Rings visible={true} height="100" width="100" color="#9cbd81" ariaLabel="rings-loading" />
         </div>
       ) : (
-        <div className="container">
-        <div className="title2">Feed Records</div>
+        <div className="container mt-5 vaccine-table-container">
+       
+         <h2 className="vaccine-table-title">Feed Records</h2>
 
-          <div className="d-flex container flex-column flex-md-row align-items-center gap-2 mt-4" style={{ flexWrap: 'nowrap' }}>
-            <input
+       
+
+                          <div className="row g-2 mb-3">
+        <div className="col-md-4">
+   <input
               type="text"
               className="form-control"
               value={searchCriteria.type}
               placeholder="Search type"
               onChange={(e) => setSearchCriteria(prev => ({ ...prev, type: e.target.value }))}
             />
-            <input
+        </div>
+        <div className="col-md-4">
+  <input
               type="text"
               className="form-control"
               value={searchCriteria.name}
               placeholder="Search name"
               onChange={(e) => setSearchCriteria(prev => ({ ...prev, name: e.target.value }))}
             />
-            <button className="btn" onClick={handleSearch} style={{ backgroundColor: '#FAA96C', color: 'white' }}>
-              <i className="fas fa-search" ></i>
-            </button>
-          </div>
+        </div>
+   
+          <div className="d-flex justify-content-end mb-3">
+        <button className="btn btn-outline-secondary" onClick={handleSearch}>search</button>
+      </div>
+      </div>
+
 
           <div className="full-width-table"  >
         
-          <table className="table table-striped text-center mt-4">
+          <table className="table align-middle">
             <thead>
             <tr>
-                <th scope="col">Feed Name</th>
-                <th scope="col">Type</th>
-                <th scope="col">Price / ton</th>
-                <th scope="col">Concentration of Dry Matter (presentage %)</th>
-                <th scope="col">Edit</th>
-                <th scope="col">Delete</th>
+                <th scope="col" className="text-center bg-color">Feed Name</th>
+                <th scope="col" className="text-center bg-color">Type</th>
+                <th scope="col" className="text-center bg-color">Price / ton</th>
+                <th scope="col" className="text-center bg-color">Concentration of Dry Matter (presentage %)</th>
+             <th className="text-center bg-color">actions</th>
         
               </tr>
             </thead>
@@ -144,13 +153,15 @@ function FeedingTable() {
                     <td>{item.type}</td>
                     <td>{item.price}</td>
                     <td>{item.concentrationOfDryMatter}</td>
-                    <td style={{ cursor: "pointer", color: "#198754" }} onClick={() => Editfeed(item._id)}>
-                      <FaRegEdit /> Edit
-                    </td>
-                    <td onClick={() => handleDelete(item._id)} className="text-danger" style={{ cursor: "pointer" }}>
-                      <RiDeleteBin6Line /> Remove
-                    </td>
-                    
+                                             <td className="text-center">
+                                                                                                                                                                    
+                                                                              <button className="btn btn-link p-0 me-2" onClick={() => Editfeed(item._id)} title='edit' style={{
+                                                                                color:"#808080"
+                                                                              }}><FaRegEdit /></button>
+                                                                              <button className="btn btn-link  p-0" style={{
+                                                                                color:"#808080"
+                                                                              }} onClick={() => handleDelete(item._id)} title='delete'  ><RiDeleteBinLine/></button>
+                                                            </td>
                   </tr>
                 ))
               ) : (

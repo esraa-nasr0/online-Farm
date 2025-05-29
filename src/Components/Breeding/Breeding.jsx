@@ -93,8 +93,17 @@ export default function Breeding() {
     }
 
     return (
-        <div className="container">
-            <div className="title2">{t("breedingTitle")}</div>
+        <div className="container mx-auto">
+            <div className="big-card"   style={{
+    width: '100%',
+    // padding: '20px',
+    borderRadius: '15px',
+    boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
+
+  }}>
+
+    <div className="container">
+    <div className="title2" style={{paddingTop:"15px"}}>{t("breedingTitle")}</div>
             <form onSubmit={formik.handleSubmit} className="mt-5">
                 {isLoading ? (
                     <button type="submit" className="btn button2" disabled>
@@ -137,24 +146,7 @@ export default function Breeding() {
                         {formik.touched.deliveryDate && formik.errors.deliveryDate && <p className="text-danger">{formik.errors.deliveryDate}</p>}
                     </div>
 
-                    <div className="input-box">
-                        <label className="label" htmlFor="numberOfBirths">{t("Number Of Births")}</label>
-                        <input value={numberOfBirths} onChange={handleNumberOfBirthsChange} placeholder={t("Enter Birth Weight")} id="numberOfBirths" type="number" className="input2" name="numberOfBirths" />
-                        {formik.touched.numberOfBirths && formik.errors.numberOfBirths && <p className="text-danger">{formik.errors.numberOfBirths}</p>}
-                    </div>
-
-                    {birthEntries.map((entry, index) => (
-                        <div key={index} className="input-box">
-                            <label className="label" htmlFor={`tagId-${index}`}>{t("Calf Tag ID")} {index + 1}</label>
-                            <input value={entry.tagId} onChange={(e) => handleBirthEntriesChange(e, index)} placeholder={t("Enter Calf Tag ID")} id={`tagId-${index}`} name="tagId" type="text" className="input2" />
-
-                            <label className="label" htmlFor={`gender-${index}`}>{t("Gender")} {index + 1}</label>
-                            <input value={entry.gender} onChange={(e) => handleBirthEntriesChange(e, index)} placeholder={t("Enter Gender")} id={`gender-${index}`} name="gender" type="text" className="input2" />
-
-                            <label className="label" htmlFor={`birthweight-${index}`}>{t("Birth Weight")} {index + 1}</label>
-                            <input value={entry.birthweight} onChange={(e) => handleBirthEntriesChange(e, index)} placeholder={t("Enter Birth Weight")} id={`birthweight-${index}`} name="birthweight" type="number" className="input2" />
-                        </div>
-                    ))}
+                 
 
                     <div className="input-box">
                         <label className="label" htmlFor="milking">{t("Milking")}</label>
@@ -189,8 +181,113 @@ export default function Breeding() {
                         </select>
                     </div>
 
+                    <div className="input-box">
+                        <label className="label" htmlFor="numberOfBirths">{t("Number Of Births")}</label>
+                        <input value={numberOfBirths} onChange={handleNumberOfBirthsChange} placeholder={t("Enter Birth Weight")} id="numberOfBirths" type="number" className="input2" name="numberOfBirths" />
+                        {formik.touched.numberOfBirths && formik.errors.numberOfBirths && <p className="text-danger">{formik.errors.numberOfBirths}</p>}
+                    </div>
+
+                    {birthEntries.map((entry, index) => (
+    <div key={index} className="birth-entry-card" style={{
+        width: '50%',
+        marginBottom: '15px',
+        padding: '20px',
+        borderRadius: '10px',
+        boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+        backgroundColor: '#f9f9f9',
+    }}>
+        <div className="card-header" style={{
+            fontSize: '18px',
+            fontWeight: 'bold',
+            marginBottom: '15px',
+            color: '#333'
+        }}>
+            {t("Calf Entry")} {index + 1}
+        </div>
+
+        <div className="input-box" style={{ marginBottom: '10px' }}>
+            <label className="label" htmlFor={`tagId-${index}`} style={{ fontWeight: 'bold' }}>
+                {t("Calf Tag ID")} {index + 1}
+            </label>
+            <input
+                value={entry.tagId}
+                onChange={(e) => handleBirthEntriesChange(e, index)}
+                placeholder={t("Enter Calf Tag ID")}
+                id={`tagId-${index}`}
+                name="tagId"
+                type="text"
+                className="input2"
+                style={{
+                    width: '100%',
+                    padding: '10px',
+                    borderRadius: '5px',
+                    border: '1px solid #ccc',
+                    marginTop: '5px',
+                    fontSize: '14px'
+                }}
+            />
+        </div>
+
+        <div className="input-box" style={{ marginBottom: '10px' }}>
+            <label className="label" htmlFor={`gender-${index}`} style={{ fontWeight: 'bold' }}>
+                {t("Gender")} {index + 1}
+            </label>
+            <select
+                value={entry.gender}
+                onChange={(e) => handleBirthEntriesChange(e, index)}
+                id={`gender-${index}`}
+                name="gender"
+                className="input2"
+                style={{
+                    width: '100%',
+                    padding: '10px',
+                    borderRadius: '5px',
+                    border: '1px solid #ccc',
+                    marginTop: '5px',
+                    fontSize: '14px'
+                }}
+            >
+                <option value="male">{t("Male")}</option>
+                <option value="female">{t("Female")}</option>
+            </select>
+        </div>
+
+        <div className="input-box" style={{ marginBottom: '10px' }}>
+            <label className="label" htmlFor={`birthweight-${index}`} style={{ fontWeight: 'bold' }}>
+                {t("Birth Weight")} {index + 1}
+            </label>
+            <input
+                value={entry.birthweight}
+                onChange={(e) => handleBirthEntriesChange(e, index)}
+                placeholder={t("Enter Birth Weight")}
+                id={`birthweight-${index}`}
+                name="birthweight"
+                type="number"
+                className="input2"
+                style={{
+                    width: '100%',
+                    padding: '10px',
+                    borderRadius: '5px',
+                    border: '1px solid #ccc',
+                    marginTop: '5px',
+                    fontSize: '14px'
+                }}
+            />
+        </div>
+    </div>
+))}
+
+
+<div>
+    
+</div>
+
                 </div>
             </form>
+            </div>
+           
+    </div>
+          
         </div>
     );
 }

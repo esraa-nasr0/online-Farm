@@ -1,14 +1,12 @@
 import axios from "axios";
 import { createContext } from "react";
 
-// Creating the ExclutedContext
 export let ExcludedContext = createContext();
 
-// Helper function to generate headers with the latest token
 const getHeaders = () => {
     const Authorization = localStorage.getItem('Authorization');
   
-    // Ensure the token has only one "Bearer" prefix
+  
     const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
   
     return {
@@ -16,9 +14,8 @@ const getHeaders = () => {
     };
   };
 
-// Function to get excluded records
 function getExcluted(page, limit, filters = {}) {
-    const headers = getHeaders(); // Get the latest headers
+    const headers = getHeaders(); 
 
     return axios.get(`https://farm-project-bbzj.onrender.com/api/excluded/getallexcludeds`, {
         params: {
@@ -31,23 +28,22 @@ function getExcluted(page, limit, filters = {}) {
     .then((response) => response)
     .catch((err) => {
         console.error("Error fetching excluded data:", err);
-        throw err; // Rethrow the error after logging it
+        throw err; 
     });
 }
 
-// Function to delete an excluded record
+
 export function deleteExcluted(id) {
-    const headers = getHeaders(); // Get the latest headers
+    const headers = getHeaders(); 
 
     return axios.delete(`https://farm-project-bbzj.onrender.com/api/excluded/deleteexcluded/${id}`, { headers })
         .then((response) => response)
         .catch((err) => {
             console.error("Error deleting excluded data:", err);
-            throw err; // Rethrow the error after logging it
+            throw err;
         });
 }
 
-// Context provider component to wrap the app and provide context values
 export default function ExcludedContextProvider(props) {
     return (
         <ExcludedContext.Provider value={{ getExcluted, deleteExcluted }}>

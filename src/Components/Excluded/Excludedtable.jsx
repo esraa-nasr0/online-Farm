@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaRegEdit } from "react-icons/fa";
-import { RiDeleteBin6Line } from "react-icons/ri";
-import { MdOutlineAddToPhotos } from "react-icons/md";
+import { RiDeleteBin6Line, RiDeleteBinLine } from "react-icons/ri";
 import { ExcludedContext } from '../../Context/ExcludedContext';
 import { Rings } from 'react-loader-spinner';
 import Swal from 'sweetalert2';
-import { useTranslation } from 'react-i18next'; // استيراد الترجمة
-
+import { useTranslation } from 'react-i18next'; 
+import axios from 'axios';
+import "../Vaccine/styles.css"
 const NO_DATE = 'No Date';
 
 function formatDate(date) {
@@ -19,68 +19,110 @@ function formatDate(date) {
     }
 }
 
-function Excludedtable() {
-    const { t } = useTranslation(); // استخدام الترجمة
+function ExcludedTable() {
+    const { t } = useTranslation(); 
     const navigate = useNavigate();
     const { getExcluted, deleteExcluted } = useContext(ExcludedContext);
 
     const [isLoading, setIsLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const [animalsPerPage] = useState(10);
-    const [totalPages, setTotalPages] = useState(1);
-    const [searchCriteria, setSearchCriteria] = useState({ tagId: '', animalType: '' });
+    const [totalPages, setTotalPages] = useState(0);
+    const excludedPerPage = 10;
+    const [searchCriteria, setSearchCriteria] = useState({
+        tagId: '',
+        excludedDate: '',
+        animalType: '',
+        locationShed: ''
+    });
     const [excluded, setExcluded] = useState([]);
+    const [pagination, setPagination] = useState({ totalPages: 1 }); 
 
-    async function fetchExcluted() {
+    async function fetchExcluded() {
         setIsLoading(true);
         try {
-            const filters = { tagId: searchCriteria.tagId, animalType: searchCriteria.animalType };
-            const { data } = await getExcluted(currentPage, animalsPerPage, filters);
-            setExcluded(data.data.excluded || []);
-            setTotalPages(data.pagination?.totalPages ?? 1);
+            const filters = {
+                tagId: searchCriteria.tagId,
+                excludedDate: searchCriteria.excludedDate,
+                animalType: searchCriteria.animalType,
+                locationShed: searchCriteria.locationShed
+            };
+            const { data } = await getExcluted(currentPage, excludedPerPage, filters);
+            setExcluded(data.data.excluded);
+            setPagination(data.pagination || { totalPages: 1 }); 
+            const total = data.pagination?.totalPages || 1;
+            setTotalPages(total); 
         } catch (error) {
-            Swal.fire('Error', 'Failed to fetch data', 'error');
+            Swal.fire(t('error'), t('fetch_error'), 'error');
         } finally {
             setIsLoading(false);
         }
     }
 
     useEffect(() => {
-        fetchExcluted();
+        fetchExcluded();
     }, [currentPage]);
 
-    function editMating(id) {
-        navigate(`/editExcluded/${id}`);
-    }
-
-    async function deleteItem(id) {
+    const deleteItem = async (id) => {
         try {
-            const response = await deleteExcluted(id);
-            if (response.data.status === "success") {
-                setExcluded(prevExcluded => prevExcluded.filter(item => item._id !== id));
-            } else {
-                console.error("Error deleting item:", response);
-            }
+            await deleteExcluted(id);
+            setExcluded((prevExcluded) => prevExcluded.filter((item) => item._id !== id));
+            Swal.fire({
+                icon: 'success',
+                title: t('deleted'),
+                text: t('excluded_deleted'),
+                timer: 1500
+            });
         } catch (error) {
-            Swal.fire('Error', 'Failed to delete item', 'error');
+            console.error("Delete error:", error);
+            Swal.fire({
+                icon: 'error',
+                title: t('error'),
+                text: error.message || t('delete_failed')
+            });
         }
-    }
+    };
 
-    function handleClick(id) {
+    const confirmDelete = (id) => {
         Swal.fire({
-            title: "Are you sure?",
-            text: "You won't be able to revert this!",
+            title: t('are_you_sure'),
+            text: t('cannot_undo'),
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!',
+            confirmButtonText: t('yes_delete'),
         }).then((result) => {
-            if (result.isConfirmed) {
-                deleteItem(id);
-            }
+            if (result.isConfirmed) deleteItem(id);
         });
-    }
+    };
+
+    const editExcluded = (id) => {
+        navigate(`/editExcluded/${id}`);
+    };
+
+    const handleSearch = () => {
+        setCurrentPage(1); 
+        fetchExcluded();
+    };
+
+    const paginate = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
+    const renderPaginationButtons = () => {
+        const buttons = [];
+        const total = pagination?.totalPages || 1; 
+        for (let i = 1; i <= total; i++) { 
+            buttons.push(
+                <li key={i} className={`page-item ${i === currentPage ? 'active' : ''}`}>
+                    <button className="page-link" onClick={() => paginate(i)}>
+                        {i}
+                    </button>
+                </li>
+            );
+        }
+        return buttons;
+    };
 
     return (
         <>
@@ -89,63 +131,65 @@ function Excludedtable() {
                     <Rings visible={true} height="100" width="100" color="#9cbd81" ariaLabel="rings-loading" />
                 </div>
             ) : (
-                <div className="container">
-                    <div className="title2">{t("Excluted Records")}</div>
+                <div className="container mt-5 vaccine-table-container">
+  
+                           <h2 className="vaccine-table-title">{t('Excluded Records')}</h2>
+                   
 
-                    <div className="d-flex flex-column flex-md-row align-items-center gap-2 mt-4">
-                        <input type="text" className="form-control" value={searchCriteria.tagId} placeholder={t("Search Tag ID")} onChange={(e) => setSearchCriteria(prev => ({ ...prev, tagId: e.target.value }))} />
-                        <input type="text" className="form-control" value={searchCriteria.animalType} placeholder={t("Search animalType")} onChange={(e) => setSearchCriteria(prev => ({ ...prev, animalType: e.target.value }))} />
-                        <button className="btn" onClick={fetchExcluted} style={{ backgroundColor: '#FAA96C', color: 'white' }}>
-                            <i className="fas fa-search"></i>
-                        </button>
-                    </div>
+                          <div className="row g-2 mb-3">
+        <div className="col-md-4">
+                                    <input type="text" className="form-control" placeholder={t('search_tag_id')} value={searchCriteria.tagId} onChange={(e) => setSearchCriteria(prev => ({ ...prev, tagId: e.target.value }))} style={{ flex: 1 }} />
 
-                    <div className="table-responsive">
-                        <table className="table table-hover mt-3 p-2">
+        </div>
+     
+          <div className="d-flex justify-content-end mb-3">
+        <button className="btn btn-outline-secondary" onClick={handleSearch}>{t('search')}</button>
+      </div>
+      </div>
+                    <div className="table-responsive mt-4">
+                        <table className="table align-middle">
                             <thead>
                                 <tr>
-                                    <th>#</th>
-                                    <th>{t("Date")}</th>
-                                    <th> {t("Tag Id")}</th>
-                                    <th>{t("Excluded Type")}</th>
-                                    <th>{t("Reason")}</th>
-                                    <th>{t("Price")}</th>
-                                    <th>{t("Weight")}</th>
-                                    <th>{t('edit_Excluded')}</th>
-                                    <th>{t('remove_Excluded')}</th>
+                                    <th className="text-center bg-color">{t('tag_id')}</th>
+                                    <th className="text-center bg-color">{t('excluded_reason')}</th>
+                                    <th className="text-center bg-color">{t('date')}</th>
+              <th className="text-center bg-color">{t('actions')}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {excluded.map((item, index) => (
-                                    <tr key={item._id}>
-                                        <td>{(currentPage - 1) * animalsPerPage + index + 1}</td>
-                                        <td>{formatDate(item.Date)}</td>
-                                        <td>{item.tagId}</td>
-                                        <td>{item.excludedType}</td>
-                                        <td>{item.reasoneOfDeath ? item.reasoneOfDeath : "_"}</td>
-                                        <td>{item.price ? item.price : "_"}</td>
-                                        <td>{item.weight}</td>
+                                {excluded.length > 0 ? (
+                                    excluded.map(item => (
+                                        <tr key={item._id}>
+                                            <td>{item.tagId}</td>
+                                            <td>{item.excludedType}</td>
+                                            <td>{formatDate(item.Date)}</td>
+                                          
 
-                                        <td onClick={() => editMating(item._id)} style={{ cursor: 'pointer' }} className='text-success'>
-                                            <FaRegEdit /> {t('edit_Excluded')}
-                                        </td>
-                                        <td onClick={() => handleClick(item._id)} className='text-danger' style={{ cursor: 'pointer' }}>
-                                            <RiDeleteBin6Line /> {t('remove_Excluded')}
-                                        </td>
+                                                       
+                                                            
+                                                              <td className="text-center">
+                                            
+                                                                <button className="btn btn-link p-0 me-2" onClick={() => editExcluded(item._id)}  title={t('edit')} style={{
+                                                                  color:"#808080"
+                                                                }}><FaRegEdit /></button>
+                                                                <button className="btn btn-link  p-0" style={{
+                                                                  color:"#808080"
+                                                                }} onClick={() => confirmDelete(item._id)} title={t('delete')}  ><RiDeleteBinLine/></button>
+                                                              </td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan="5" className="text-center py-4 text-muted">{t('no_excluded_records')}</td>
                                     </tr>
-                                ))}
+                                )}
                             </tbody>
                         </table>
                     </div>
-
                     <div className="d-flex justify-content-center mt-4">
                         <nav>
                             <ul className="pagination">
-                                {Array.from({ length: totalPages }, (_, i) => (
-                                    <li key={i + 1} className={`page-item ${i + 1 === currentPage ? 'active' : ''}`}>
-                                        <button className="page-link" onClick={() => setCurrentPage(i + 1)}>{i + 1}</button>
-                                    </li>
-                                ))}
+                                {renderPaginationButtons()}
                             </ul>
                         </nav>
                     </div>
@@ -155,4 +199,4 @@ function Excludedtable() {
     );
 }
 
-export default Excludedtable;
+export default ExcludedTable;

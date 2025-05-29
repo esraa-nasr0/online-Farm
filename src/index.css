@@ -945,44 +945,43 @@ margin: 10px;
 
 @media (max-width: 768px) {
 .card2 {
-  width: 90%; /* Full width for smaller tablets */
-  margin: 10px 0; /* Adjust margin for better spacing */
+  width: 90%;
+  margin: 10px 0; 
 }
 
 .icon {
-  font-size: 6em; /* Smaller icons for smaller screens */
+  font-size: 6em;
 }
 
 .info h3 {
-  font-size: 1.1em; /* Slightly smaller font size for smaller screens */
+  font-size: 1.1em; 
 }
 }
 
 @media (max-width: 576px) {
 .card2 {
-  padding: 13px; /* Less padding for mobile devices */
-  margin: 10px 0; /* Adjust margin for better spacing */
+  padding: 13px; 
+  margin: 10px 0;
 }
 
 .icon {
-  font-size: 5em; /* Even smaller icons for mobile */
+  font-size: 5em; 
 }
 
 .info h3 {
-  font-size: 1em; /* Smaller font size for mobile */
+  font-size: 1em; 
 }
 }
 
-/* Navbar styles */
 .navbar {
 padding: 0.75rem 2rem;
 }
 
 .navbar-brand {
-margin-right: auto; /* Pushes brand to the left */
+margin-right: auto;
 }
 
-/* Mobile menu styles */
+
 @media (max-width: 992px) {
 .navbar-collapse {
     position: fixed;
@@ -995,9 +994,9 @@ margin-right: auto; /* Pushes brand to the left */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Ensure toggles appear on the right */
+
 .navbar-toggler {
-    order: 2; /* This moves the toggle to the right */
+    order: 2; 
     margin-left: auto;
 }
 
@@ -1027,5 +1026,3 @@ align-items: center;
 .nav-item {
 margin: 0 0.5rem;
 }
-
-
