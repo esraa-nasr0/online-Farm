@@ -330,11 +330,8 @@ function MatingTable() {
                     <div className="container mt-5">
                       
 
-                                       <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mt-5 mb-3">
+        <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mt-5 mb-3">
         <h2 className="vaccine-table-title">{t('Mating Records')}</h2>
-
-
-
 
         <div className="d-flex flex-wrap gap-2">
           <button className="btn btn-outline-dark" onClick={handleExportToExcel} title={t('export_all_data')}>
@@ -348,98 +345,106 @@ function MatingTable() {
             <input type="file" hidden accept=".xlsx,.xls" onChange={handleImportFromExcel} />
           </label>
         </div>
-
-
-
-
-
-
-
       </div>
 
-
-
-      
       <div className="row g-2 mb-3">
         <div className="col-md-4">
-         <input
-                                type="text"
-                                className="form-control"
-                                value={searchCriteria.tagId}
-                                placeholder={t("search_tag_id")}
-                                onChange={(e) => setSearchCriteria(prev => ({ ...prev, tagId: e.target.value }))}
-                            />
+          <input
+            type="text"
+            className="form-control"
+            placeholder={t('search_by_tag_id')}
+            value={searchCriteria.tagId}
+            onChange={(e) => setSearchCriteria({ ...searchCriteria, tagId: e.target.value })}
+        />
         </div>
         <div className="col-md-4">
-             <input
-                                type="text"
-                                className="form-control"
-                                value={searchCriteria.locationShed}
-                                placeholder={t('search_by_location_shed')}
-                                onChange={(e) => setSearchCriteria(prev => ({ ...prev, locationShed: e.target.value }))}
-                            />
+         <select
+            value={searchCriteria.animalType}
+            className="form-select"
+            onChange={(e) => setSearchCriteria({ ...searchCriteria, animalType: e.target.value })}
+        >
+            <option value="">{t('animal_type')}</option>
+            <option value="goat">{t('goat')}</option>
+            <option value="sheep">{t('sheep')}</option>
+        </select>
+        </div>
+        <div className="col-md-4">
+         <input
+            type="text"
+            className="form-control"
+            placeholder={t('search_mating_date')}
+            value={searchCriteria.matingDate}
+            onChange={(e) => setSearchCriteria({ ...searchCriteria, matingDate: e.target.value })}
+        />
         </div>
         <div className="col-md-4">
             <input
-                                type="text"
-                                className="form-control"
-                                value={searchCriteria.entryType}
-                                placeholder={t('Search Entry Type')}
-                                onChange={(e) => setSearchCriteria(prev => ({ ...prev, entryType: e.target.value }))}
-                            />
+            type="text"
+            className="form-control"
+            placeholder={t('search_sonar_result')}
+            value={searchCriteria.sonarRsult}
+            onChange={(e) => setSearchCriteria({ ...searchCriteria, sonarRsult: e.target.value })}
+        />
+        </div>
+        <div className="col-md-4">
+            <input
+            type="text"
+            className="form-control"
+            placeholder={t('search_sonar_date')}
+            value={searchCriteria.sonarDate}
+            onChange={(e) => setSearchCriteria({ ...searchCriteria, sonarDate: e.target.value })}
+        />
         </div>
           <div className="d-flex justify-content-end mb-3">
         <button className="btn btn-outline-secondary" onClick={handleSearch}>{t('search')}</button>
       </div>
       </div>
+      </div>
 
-
-
-
-
-                    </div>
                     <div className="table-responsive">
                         <table className="table align-middle">
                             <thead>
                                 <tr>
-                                    <th className="text-center bg-color">{t('tag_id')}</th>
-                                    <th className="text-center bg-color">{t('mating_name')}</th>
-                                    <th className="text-center bg-color">{t('dose_price')}</th>
-                                    <th className="text-center bg-color">{t('Entry Type')}</th>
-                                    <th className="text-center bg-color">{t('date')}</th>
-                                    <th className="text-center bg-color">{t('location_shed')}</th>
-                                               <th className="text-center bg-color">{t('actions')}</th>
+                                <th className=" bg-color">#</th>
+                                <th className=" bg-color">{t('female_tag_id')}</th>
+                                <th className=" bg-color">{t('male_tag_id')}</th>
+                                <th className=" bg-color">{t('mating_type')}</th>
+                                <th className=" bg-color">{t('mating_date')}</th>
+                                <th className=" bg-color">{t('sonar_date')}</th>
+                                <th className=" bg-color">{t('sonar_result')}</th>
+                                <th className=" bg-color">{t('expected_delivery_date')}</th>
+                                <th className=" bg-color">{t('actions')}</th>
 
                                 </tr>
                             </thead>
                             <tbody>
-                                {matings.length > 0 ? (
-                                    matings.map(mating => (
-                                        <tr key={mating._id}>
-                                            <td>{mating.tagId}</td>
-                                            <td>{mating.Mating?.matingName || '--'}</td>
-                                            <td>{mating.Mating?.pricing?.dosePrice || '--'}</td>
-                                            <td>{mating.entryType}</td>
-                                            <td>{new Date(mating.date).toLocaleDateString()}</td>
-                                            <td>{mating.locationShed?.locationShedName || '--'}</td>
-                                      
-                                              <td className="text-center">
-                                            
-                                                                <button className="btn btn-link p-0 me-2" onClick={() => editMating(mating._id)}  title={t('edit')} style={{
-                                                                  color:"#808080"
-                                                                }}><FaRegEdit /></button>
-                                                                <button className="btn btn-link  p-0" style={{
-                                                                  color:"#808080"
-                                                                }} onClick={() => confirmDelete(mating._id)} title={t('delete')}  ><RiDeleteBinLine/></button>
-                                                              </td>
-                                        </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan="8" className="text-center py-4 text-muted">{t('no_mating_records')}</td>
-                                    </tr>
-                                )}
-                            </tbody>
+    {matings.length > 0 ? (
+        matings.map((mating, index) => (
+            <tr key={mating._id}>
+                <th scope="row">{(currentPage - 1) * animalsPerPage + index + 1}</th>
+                <td>{mating.tagId}</td>
+                <td>{mating.maleTag_id}</td>
+                <td>{mating.matingType}</td>
+                <td>{mating.matingDate ? mating.matingDate.split('T')[0] : NO_DATE}</td>
+                <td>{mating.sonarDate ? mating.sonarDate.split('T')[0] : NO_DATE}</td>
+                <td>{mating.sonarRsult}</td>
+                <td>{mating.expectedDeliveryDate ? mating.expectedDeliveryDate.split('T')[0] : NO_DATE}</td>
+                <td className="text-center">
+                    <button className="btn btn-link p-0 me-2" onClick={() => editMating(mating._id)} title={t('edit')} style={{ color:"#808080" }}>
+                        <FaRegEdit />
+                    </button>
+                    <button className="btn btn-link p-0" style={{ color:"#808080" }} onClick={() => confirmDelete(mating._id)} title={t('delete')}>
+                        <RiDeleteBinLine/>
+                    </button>
+                </td>
+            </tr>
+        ))
+    ) : (
+        <tr>
+            <td colSpan="9" className="text-center py-4 text-muted">{t('no_mating_records')}</td>
+        </tr>
+    )}
+</tbody>
                         </table>
                     </div>
                     <div className="d-flex justify-content-center mt-4">

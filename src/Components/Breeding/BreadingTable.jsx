@@ -233,14 +233,14 @@ function BreadingTable() {
             <table className="table align-middle">
               <thead>
                 <tr>
-                  <th className="text-center bg-color">#</th>
-                  <th className="text-center bg-color">{t('Tag ID')}</th>
-                  <th className="text-center bg-color">{t('Delivery State')}</th>
-                  <th className="text-center bg-color">{t('Delivery Date')}</th>
+                  <th className=" bg-color">#</th>
+                  <th className=" bg-color">{t('Tag ID')}</th>
+                  <th className=" bg-color">{t('Delivery State')}</th>
+                  <th className=" bg-color">{t('Delivery Date')}</th>
                   <th className="text-center bg-color">{t('Birth Entries')}</th>
-                  <th className="text-center bg-color">{t('Mothering Ability')}</th>
-                  <th className="text-center bg-color">{t('Milking')}</th>
-                   <th className="text-center bg-color">{t('actions')}</th>
+                  <th className=" bg-color">{t('Mothering Ability')}</th>
+                  <th className=" bg-color">{t('Milking')}</th>
+                   <th className=" bg-color">{t('actions')}</th>
                 </tr>
               </thead>
               <tbody>

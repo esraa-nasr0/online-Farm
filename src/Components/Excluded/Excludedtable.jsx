@@ -150,10 +150,10 @@ function ExcludedTable() {
                         <table className="table align-middle">
                             <thead>
                                 <tr>
-                                    <th className="text-center bg-color">{t('tag_id')}</th>
-                                    <th className="text-center bg-color">{t('excluded_reason')}</th>
-                                    <th className="text-center bg-color">{t('date')}</th>
-              <th className="text-center bg-color">{t('actions')}</th>
+                                    <th className=" bg-color">{t('tag_id')}</th>
+                                    <th className=" bg-color">{t('excluded_reason')}</th>
+                                    <th className=" bg-color">{t('date')}</th>
+                                    <th className=" bg-color">{t('actions')}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -163,19 +163,14 @@ function ExcludedTable() {
                                             <td>{item.tagId}</td>
                                             <td>{item.excludedType}</td>
                                             <td>{formatDate(item.Date)}</td>
-                                          
-
-                                                       
-                                                            
-                                                              <td className="text-center">
-                                            
-                                                                <button className="btn btn-link p-0 me-2" onClick={() => editExcluded(item._id)}  title={t('edit')} style={{
-                                                                  color:"#808080"
-                                                                }}><FaRegEdit /></button>
-                                                                <button className="btn btn-link  p-0" style={{
-                                                                  color:"#808080"
-                                                                }} onClick={() => confirmDelete(item._id)} title={t('delete')}  ><RiDeleteBinLine/></button>
-                                                              </td>
+                                            <td className="text-center">
+                                                <button className="btn btn-link p-0 me-2" onClick={() => editExcluded(item._id)}  title={t('edit')} style={{
+                                                color:"#808080"
+                                                }}><FaRegEdit /></button>
+                                                <button className="btn btn-link  p-0" style={{
+                                                color:"#808080"
+                                                }} onClick={() => confirmDelete(item._id)} title={t('delete')}  ><RiDeleteBinLine/></button>
+                                            </td>
                                         </tr>
                                     ))
                                 ) : (

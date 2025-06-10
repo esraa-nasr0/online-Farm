@@ -1,14 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaRegEdit } from "react-icons/fa";
-import { RiDeleteBin6Line, RiDeleteBinLine } from "react-icons/ri";
-import { MdOutlineAddToPhotos } from "react-icons/md";
+import { RiDeleteBinLine } from "react-icons/ri";
 import { WeightContext } from '../../Context/WeightContext';
 import { Rings } from 'react-loader-spinner';
 import Swal from 'sweetalert2';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
-import "../Vaccine/styles.css"
+import "../Vaccine/styles.css";
 
 function WeightTable() {
     const navigate = useNavigate();
@@ -17,16 +16,17 @@ function WeightTable() {
 
     const [isLoading, setIsLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(0);
-    const weightsPerPage = 10;
+    const [weightsPerPage] = useState(10);
     const [searchCriteria, setSearchCriteria] = useState({
         tagId: '',
         weightDate: '',
         animalType: '',
-        locationShed: ''
+        locationShed: '',
+        weightType: '',
+        Date: ''
     });
     const [weights, setWeights] = useState([]);
-    const [pagination, setPagination] = useState({ totalPages: 1 }); 
+    const [pagination, setPagination] = useState({ totalPages: 1 });
 
     async function fetchWeights() {
         setIsLoading(true);
@@ -35,13 +35,13 @@ function WeightTable() {
                 tagId: searchCriteria.tagId,
                 weightDate: searchCriteria.weightDate,
                 animalType: searchCriteria.animalType,
-                locationShed: searchCriteria.locationShed
+                locationShed: searchCriteria.locationShed,
+                weightType: searchCriteria.weightType,
+                Date: searchCriteria.Date
             };
             const { data } = await getWeight(currentPage, weightsPerPage, filters);
             setWeights(data.data.weight);
-            setPagination(data.pagination || { totalPages: 1 }); 
-            const total = data.pagination?.totalPages || 1;
-            setTotalPages(total); 
+            setPagination(data.pagination || { totalPages: 1 });
         } catch (error) {
             Swal.fire(t('error'), t('fetch_error'), 'error');
         } finally {
@@ -92,7 +92,7 @@ function WeightTable() {
     };
 
     const handleSearch = () => {
-        setCurrentPage(1); 
+        setCurrentPage(1);
         fetchWeights();
     };
 
@@ -102,8 +102,8 @@ function WeightTable() {
 
     const renderPaginationButtons = () => {
         const buttons = [];
-        const total = pagination?.totalPages || 1; 
-        for (let i = 1; i <= total; i++) { 
+        const total = pagination?.totalPages || 1;
+        for (let i = 1; i <= total; i++) {
             buttons.push(
                 <li key={i} className={`page-item ${i === currentPage ? 'active' : ''}`}>
                     <button className="page-link" onClick={() => paginate(i)}>
@@ -115,7 +115,6 @@ function WeightTable() {
         return buttons;
     };
 
-    // Helper function to get headers with token
     const getHeaders = () => {
         const token = localStorage.getItem('Authorization');
         if (!token) {
@@ -127,7 +126,6 @@ function WeightTable() {
         };
     };
 
-    // Handle download template
     const handleDownloadTemplate = async () => {
         const headers = getHeaders();
         try {
@@ -159,7 +157,6 @@ function WeightTable() {
         }
     };
 
-    // Handle export to Excel
     const handleExportToExcel = async () => {
         const headers = getHeaders();
         try {
@@ -191,7 +188,6 @@ function WeightTable() {
         }
     };
 
-    // Handle import from Excel
     const handleImportFromExcel = async (event) => {
         const file = event.target.files[0];
         if (!file) {
@@ -211,7 +207,6 @@ function WeightTable() {
             return;
         }
 
-        // Check file extension
         const fileName = file.name.toLowerCase();
         if (!fileName.endsWith('.xlsx') && !fileName.endsWith('.xls')) {
             Swal.fire({
@@ -253,7 +248,6 @@ function WeightTable() {
                     text: t('weights_imported_successfully'),
                     icon: 'success'
                 });
-                // Refresh data if needed
                 fetchWeights();
             } else {
                 throw new Error(response.data?.message || 'Import failed');
@@ -266,7 +260,6 @@ function WeightTable() {
             if (error.response?.data?.message) {
                 const message = error.response.data.message;
                 
-                // Check if it's a date format error
                 if (message.includes('Invalid date format in row')) {
                     const row = message.match(/row (\d+)/)?.[1] || '';
                     errorMessage = t('date_format_error');
@@ -294,7 +287,7 @@ function WeightTable() {
             });
         } finally {
             setIsLoading(false);
-            event.target.value = ''; // Reset file input
+            event.target.value = '';
         }
     };
 
@@ -307,50 +300,54 @@ function WeightTable() {
             ) : (
                 <div className="container mt-5 vaccine-table-container">
                     <div className="container mt-5">
-                   
-   <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mt-5 mb-3">
-        <h2 className="vaccine-table-title">{t('Weight Records')}</h2>
+                        <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mt-5 mb-3">
+                            <h2 className="vaccine-table-title">{t('Weight Records')}</h2>
+                            <div className="d-flex flex-wrap gap-2">
+                                <button className="btn btn-outline-dark" onClick={handleExportToExcel} title={t('export_all_data')}>
+                                    <i className="fas fa-download me-1"></i> {t('export_all_data')}
+                                </button>
+                                <button className="btn btn-success" onClick={handleDownloadTemplate} title={t('download_template')}>
+                                    <i className="fas fa-file-arrow-down me-1"></i> {t('download_template')}
+                                </button>
+                                <label className="btn btn-dark btn-outline-dark mb-0 d-flex align-items-center" style={{ cursor: 'pointer', color:"white" }} title={t('import_from_excel')}>
+                                    <i className="fas fa-file-import me-1"></i> {t('import_from_excel')}
+                                    <input type="file" hidden accept=".xlsx,.xls" onChange={handleImportFromExcel} />
+                                </label>
+                            </div>
+                        </div>
 
-
-
-
-        <div className="d-flex flex-wrap gap-2">
-          <button className="btn btn-outline-dark" onClick={handleExportToExcel} title={t('export_all_data')}>
-            <i className="fas fa-download me-1"></i> {t('export_all_data')}
-          </button>
-          <button className="btn btn-success" onClick={handleDownloadTemplate} title={t('download_template')}>
-            <i className="fas fa-file-arrow-down me-1"></i> {t('download_template')}
-          </button>
-          <label className="btn btn-dark  btn-outline-dark mb-0 d-flex align-items-center" style={{ cursor: 'pointer', color:"white" }} title={t('import_from_excel')}>
-            <i className="fas fa-file-import me-1"></i> {t('import_from_excel')}
-            <input type="file" hidden accept=".xlsx,.xls" onChange={handleImportFromExcel} />
-          </label>
-        </div>
-
-
-
-
-
-
-
-      </div>
-
-                            
-      <div className="row g-2 mb-3">
-        <div className="col-md-4">
-           <input
-                                type="text"
-                                className="form-control"
-                                value={searchCriteria.tagId}
-                                placeholder={t("search_tag_id")}
-                                onChange={(e) => setSearchCriteria(prev => ({ ...prev, tagId: e.target.value }))}
-                            />
-        </div>
-     
-          <div className="d-flex justify-content-end mb-3">
-        <button className="btn btn-outline-secondary" onClick={handleSearch}>{t('search')}</button>
-      </div>
-      </div>
+                        <div className="row g-2 mb-3">
+                            <div className="col-md-4">
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder={t('search_by_tag_id')}
+                                    value={searchCriteria.tagId}
+                                    onChange={(e) => setSearchCriteria({ ...searchCriteria, tagId: e.target.value })}
+                                />
+                            </div>
+                            <div className="col-md-4">
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder={t('search_by_weight_type')}
+                                    value={searchCriteria.weightType}
+                                    onChange={(e) => setSearchCriteria({ ...searchCriteria, weightType: e.target.value })}
+                                />
+                            </div>
+                            <div className="col-md-4">
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder={t('search_by_date')}
+                                    value={searchCriteria.Date}
+                                    onChange={(e) => setSearchCriteria({ ...searchCriteria, Date: e.target.value })}
+                                />
+                            </div>
+                            <div className="d-flex justify-content-end mb-3">
+                                <button className="btn btn-outline-secondary" onClick={handleSearch}>{t('search')}</button>
+                            </div>
+                        </div>
                     </div>
 
                     <div className="table-responsive">
@@ -358,38 +355,38 @@ function WeightTable() {
                             <table className="table align-middle">
                                 <thead>
                                     <tr>
-                                        <th className="text-center bg-color">{t('tag_id')}</th>
-                                        <th className="text-center bg-color">{t('weight')}</th>
-                                        <th className="text-center bg-color">{t('date')}</th>
-                                        <th className="text-center bg-color">{t('location_shed')}</th>
-                                                   <th className="text-center bg-color">{t('actions')}</th>
-
+                                        <th className="bg-color">#</th>
+                                        <th className="bg-color">{t('tag_id')}</th>
+                                        <th className="bg-color">{t('weight_type')}</th>
+                                        <th className="bg-color">{t('weight')}</th>
+                                        <th className="bg-color">{t('height')}</th>
+                                        <th className="bg-color">{t('date')}</th>
+                                        <th className="bg-color">{t('actions')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {weights.length > 0 ? (
-                                        weights.map(weight => (
+                                        weights.map((weight, index) => (
                                             <tr key={weight._id}>
+                                                <td>{(currentPage - 1) * weightsPerPage + index + 1}</td>
                                                 <td>{weight.tagId}</td>
+                                                <td>{weight.weightType}</td>
                                                 <td>{weight.weight}</td>
-                                                <td>{new Date(weight.date).toLocaleDateString()}</td>
-                                                <td>{weight.locationShed?.locationShedName || '--'}</td>
-                                           
-
-                                                    <td className="text-center">
-                                                
-                                                                    <button className="btn btn-link p-0 me-2" onClick={() => editWeight(weight._id)} title={t('edit')} style={{
-                                                                      color:"#808080"
-                                                                    }}><FaRegEdit /></button>
-                                                                    <button className="btn btn-link  p-0" style={{
-                                                                      color:"#808080"
-                                                                    }}  onClick={() => confirmDelete(weight._id)} title={t('delete')}  ><RiDeleteBinLine/></button>
-                                                                  </td>
+                                                <td>{weight.height}</td>
+                                                <td>{weight.Date ? weight.Date.split('T')[0] : t('no_date')}</td>
+                                                <td className="text-center">
+                                                    <button className="btn btn-link p-0 me-2" onClick={() => editWeight(weight._id)} title={t('edit')} style={{ color:"#808080" }}>
+                                                        <FaRegEdit />
+                                                    </button>
+                                                    <button className="btn btn-link p-0" style={{ color:"#808080" }} onClick={() => confirmDelete(weight._id)} title={t('delete')}>
+                                                        <RiDeleteBinLine/>
+                                                    </button>
+                                                </td>
                                             </tr>
                                         ))
                                     ) : (
                                         <tr>
-                                            <td colSpan="6" className="text-center py-4 text-muted">{t('no_weight_records')}</td>
+                                            <td colSpan="7" className="text-center py-4 text-muted">{t('no_weight_records')}</td>
                                         </tr>
                                     )}
                                 </tbody>
@@ -404,8 +401,6 @@ function WeightTable() {
                             </ul>
                         </nav>
                     </div>
-
-                 
                 </div>
             )}
         </>
