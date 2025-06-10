@@ -133,11 +133,11 @@ export default function FodderTable() {
                     <table className="table align-middle">
                         <thead>
                             <tr>
-                                <th scope="col" className="text-center bg-color">{t('fodder.table.index')}</th>
-                                <th scope="col" className="text-center bg-color">{t('fodder.table.name')}</th>
-                                <th scope="col" className="text-center bg-color">{t('fodder.table.components')}</th>
-                                <th scope="col" className="text-center bg-color">{t('fodder.table.totalQuantity')}</th>
-                                <th scope="col" className="text-center bg-color">{t('fodder.table.totalPrice')}</th>
+                                <th scope="col" className=" bg-color">{t('fodder.table.index')}</th>
+                                <th scope="col" className=" bg-color">{t('fodder.table.name')}</th>
+                                <th scope="col" className=" bg-color">{t('fodder.table.components')}</th>
+                                <th scope="col" className=" bg-color">{t('fodder.table.totalQuantity')}</th>
+                                <th scope="col" className=" bg-color">{t('fodder.table.totalPrice')}</th>
                               <th className="text-center bg-color">{t('actions')}</th>
 
                             </tr>

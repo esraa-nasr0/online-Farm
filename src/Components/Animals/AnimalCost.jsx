@@ -78,7 +78,7 @@ function AnimalCost() {
                      <h2 className="vaccine-table-title">Animals Cost</h2>
                  
 
-                 <div className="row g-2 mb-3">
+                 <div className="row g-2 mb-3 mt-4">
         <div className="col-md-4">
     <input
                             type="text"
@@ -98,12 +98,12 @@ function AnimalCost() {
                     <table className="table table-hover mt-4 p-2">
                         <thead>
                             <tr>
-                                <th scope="col"className="text-center bg-color" >#</th>
-                                <th scope="col" className="text-center bg-color">Animal Tag ID</th>
-                                <th scope="col" className="text-center bg-color">Feed Cost</th>
-                                <th scope="col" className="text-center bg-color">Treatment Cost</th>
-                                <th scope="col" className="text-center bg-color">Date</th>
-                                <th scope="col" className="text-center bg-color">Total Cost</th>
+                                <th scope="col"className=" bg-color" >#</th>
+                                <th scope="col" className=" bg-color">Animal Tag ID</th>
+                                <th scope="col" className=" bg-color">Feed Cost</th>
+                                <th scope="col" className=" bg-color">Treatment Cost</th>
+                                <th scope="col" className=" bg-color">Date</th>
+                                <th scope="col" className=" bg-color">Total Cost</th>
                             </tr>
                         </thead>
                         <tbody>
