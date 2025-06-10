@@ -9,32 +9,32 @@ function ExcludedServices() {
 
     return (
         <div className='section'>
-            <h2>{t('excluded_services')}</h2>
+            <h2>{t('Vaccine_services')}</h2>
             <div className="content">
                 <div className="card2">
-                    <Link className='Link' to="/excludedtable">
+                    <Link className='Link' to="/vaccineTable">
                         <div className="icon">
                             <GoTable />
                         </div>
                         <div className="info">
                             <h3>{t('show_data')}</h3>
-                            <p>{t('all_excluded_details')}</p>
+                            <p>{t('all_Vaccine_details')}</p>
                             <button className='btn mb-2 me-2' style={{ backgroundColor: '#FAA96C', color: 'white' }}>
-                                {t('go_to_excluded_data')}
+                                {t('go_to_Vaccine_data')}
                             </button>
                         </div>
                     </Link>
                 </div>
                 <div className="card2">
-                    <Link className='Link' to='/excluded'>
+                    <Link className='Link' to='/addVaccine'>
                         <div className="icon">
                             <IoAddCircleOutline />
                         </div>
                         <div className="info">
-                            <h3>{t('add_excluded')}</h3>
-                            <p>{t('add_excluded_details')}</p>
+                            <h3>{t('add_Vaccine')}</h3>
+                            <p>{t('add_Vaccine_details')}</p>
                             <button className='btn mb-2 me-2' style={{ backgroundColor: '#FAA96C', color: 'white' }}>
-                                {t('go_to_add_excluded')}
+                                {t('go_to_add_Vaccine')}
                             </button>
                         </div>
                     </Link>

@@ -195,16 +195,16 @@ function VaccineTable() {
                         <table className="table table-hover mt-3 p-2">
                             <thead >
                                 <tr>
-                                    <th scope="col" className="text-center bg-color">#</th>
-                                    <th scope="col" className="text-center bg-color">  {t('Vaccine Name')}</th>
-                                    <th scope="col" className="text-center bg-color">  {t('Bottles')}</th>
-                                    <th scope="col" className="text-center bg-color">  {t('Doses Per Bottle')}</th>
-                                    <th scope="col"  className="text-center bg-color">  {t('Total Doses')}</th>
-                                    <th scope="col" className="text-center bg-color">  {t('Bottle Price')}</th>
-                                    <th scope="col" className="text-center bg-color">  {t('Dose Price')}</th>
-                                    <th scope="col" className="text-center bg-color">  {t('Booster Dose')}</th>
-                                    <th scope="col " className="text-center bg-color">  {t('Annual Dose')}</th>
-                                     <th scope="col " className="text-center bg-color">  Expiry Date</th>
+                                    <th scope="col" className=" bg-color">#</th>
+                                    <th scope="col" className=" bg-color">  {t('Vaccine Name')}</th>
+                                    <th scope="col" className=" bg-color">  {t('Bottles')}</th>
+                                    <th scope="col" className=" bg-color">  {t('Doses Per Bottle')}</th>
+                                    <th scope="col"  className=" bg-color">  {t('Total Doses')}</th>
+                                    <th scope="col" className=" bg-color">  {t('Bottle Price')}</th>
+                                    <th scope="col" className=" bg-color">  {t('Dose Price')}</th>
+                                    <th scope="col" className=" bg-color">  {t('Booster Dose')}</th>
+                                    <th scope="col " className=" bg-color">  {t('Annual Dose')}</th>
+                                     <th scope="col " className=" bg-color">  Expiry Date</th>
                                                 <th className="text-center bg-color">{t('actions')}</th>
 
                                 </tr>
