@@ -24,6 +24,7 @@ function TreatAnimalTable() {
     const [searchLocationShed, setSearchLocationShed] = useState('');
     const [searchDate, setSearchDate] = useState('');
     const [searchTagId, setSearchTagId] = useState('');
+    
 
     const fetchTreatment = async () => {
         setIsLoading(true);
@@ -84,20 +85,52 @@ function TreatAnimalTable() {
     };
     
 
-    const renderPaginationButtons = () => {
-    const buttons = [];
-    for (let i = 1; i <= totalPages; i++) {
-        buttons.push(
-            <li key={i} className={`page-item ${i === currentPage ? 'active' : ''}`}>
-                <button className="page-link" onClick={() => paginate(i)}>
-                    {i}
-                </button>
-            </li>
+    const renderModernPagination = () => {
+        const total = totalPages;
+        const pageButtons = [];
+        const maxButtons = 5;
+        const addPage = (page) => {
+            pageButtons.push(
+                <li key={page} className={`page-item${page === currentPage ? ' active' : ''}`}>
+                    <button className="page-link" onClick={() => paginate(page)}>{page}</button>
+                </li>
+            );
+        };
+        if (total <= maxButtons) {
+            for (let i = 1; i <= total; i++) addPage(i);
+        } else {
+            addPage(1);
+            if (currentPage > 3) {
+                pageButtons.push(<li key="start-ellipsis" className="pagination-ellipsis">...</li>);
+            }
+            let start = Math.max(2, currentPage - 1);
+            let end = Math.min(total - 1, currentPage + 1);
+            if (currentPage <= 3) end = 4;
+            if (currentPage >= total - 2) start = total - 3;
+            for (let i = start; i <= end; i++) {
+                if (i > 1 && i < total) addPage(i);
+            }
+            if (currentPage < total - 2) {
+                pageButtons.push(<li key="end-ellipsis" className="pagination-ellipsis">...</li>);
+            }
+            addPage(total);
+        }
+        return (
+            <ul className="pagination">
+                <li className={`page-item${currentPage === 1 ? ' disabled' : ''}`}>
+                    <button className="page-link pagination-arrow" onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
+                        &lt; Back
+                    </button>
+                </li>
+                {pageButtons}
+                <li className={`page-item${currentPage === total ? ' disabled' : ''}`}>
+                    <button className="page-link pagination-arrow" onClick={() => paginate(currentPage + 1)} disabled={currentPage === total}>
+                        Next &gt;
+                    </button>
+                </li>
+            </ul>
         );
-    }
-    return buttons;
-};
-
+    };
 
     const handleSearch = () => {
         setCurrentPage(1);
@@ -184,9 +217,7 @@ function TreatAnimalTable() {
                   
                     <div className="d-flex justify-content-center mt-4">
                         <nav>
-                            <ul className="pagination">
-                                {renderPaginationButtons()}
-                            </ul>
+                            {renderModernPagination()}
                         </nav>
                     </div>
                 </div>

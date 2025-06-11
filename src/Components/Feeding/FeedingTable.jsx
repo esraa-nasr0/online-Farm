@@ -91,6 +91,53 @@ function FeedingTable() {
     setCurrentPage(pageNumber);
 };
 
+// Modern pagination rendering function
+const renderModernPagination = () => {
+    const total = totalPages;
+    const pageButtons = [];
+    const maxButtons = 5;
+    const addPage = (page) => {
+        pageButtons.push(
+            <li key={page} className={`page-item${page === currentPage ? ' active' : ''}`}>
+                <button className="page-link" onClick={() => handlePageChange(page)}>{page}</button>
+            </li>
+        );
+    };
+    if (total <= maxButtons) {
+        for (let i = 1; i <= total; i++) addPage(i);
+    } else {
+        addPage(1);
+        if (currentPage > 3) {
+            pageButtons.push(<li key="start-ellipsis" className="pagination-ellipsis">...</li>);
+        }
+        let start = Math.max(2, currentPage - 1);
+        let end = Math.min(total - 1, currentPage + 1);
+        if (currentPage <= 3) end = 4;
+        if (currentPage >= total - 2) start = total - 3;
+        for (let i = start; i <= end; i++) {
+            if (i > 1 && i < total) addPage(i);
+        }
+        if (currentPage < total - 2) {
+            pageButtons.push(<li key="end-ellipsis" className="pagination-ellipsis">...</li>);
+        }
+        addPage(total);
+    }
+    return (
+        <ul className="pagination">
+            <li className={`page-item${currentPage === 1 ? ' disabled' : ''}`}>
+                <button className="page-link pagination-arrow" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
+                    &lt; Back
+                </button>
+            </li>
+            {pageButtons}
+            <li className={`page-item${currentPage === total ? ' disabled' : ''}`}>
+                <button className="page-link pagination-arrow" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === total}>
+                    Next &gt;
+                </button>
+            </li>
+        </ul>
+    );
+};
 
   
   return (
@@ -174,15 +221,7 @@ function FeedingTable() {
           </div>
           <div className="d-flex justify-content-center mt-4">
     <nav>
-        <ul className="pagination">
-            {Array.from({ length: totalPages }, (_, i) => (
-                <li key={i + 1} className={`page-item ${i + 1 === currentPage ? 'active' : ''}`}>
-                    <button className="page-link" onClick={() => handlePageChange(i + 1)}>
-                        {i + 1}
-                    </button>
-                </li>
-            ))}
-        </ul>
+        {renderModernPagination()}
     </nav>
 </div>
 </div>

@@ -37,6 +37,17 @@ function ExcludedTable() {
     const [excluded, setExcluded] = useState([]);
     const [pagination, setPagination] = useState({ totalPages: 1 }); 
 
+    const getHeaders = () => {
+        const token = localStorage.getItem('Authorization');
+        if (!token) {
+            navigate('/login');
+            throw new Error('No authorization token found');
+        }
+        return {
+            Authorization: token.startsWith("Bearer ") ? token : `Bearer ${token}`
+        };
+    };
+
     async function fetchExcluded() {
         setIsLoading(true);
         try {
@@ -109,19 +120,199 @@ function ExcludedTable() {
         setCurrentPage(pageNumber);
     };
 
-    const renderPaginationButtons = () => {
-        const buttons = [];
-        const total = pagination?.totalPages || 1; 
-        for (let i = 1; i <= total; i++) { 
-            buttons.push(
-                <li key={i} className={`page-item ${i === currentPage ? 'active' : ''}`}>
-                    <button className="page-link" onClick={() => paginate(i)}>
-                        {i}
-                    </button>
+    const renderModernPagination = () => {
+        const total = pagination?.totalPages || 1;
+        const pageButtons = [];
+        const maxButtons = 5;
+        const addPage = (page) => {
+            pageButtons.push(
+                <li key={page} className={`page-item${page === currentPage ? ' active' : ''}`}>
+                    <button className="page-link" onClick={() => paginate(page)}>{page}</button>
                 </li>
             );
+        };
+        if (total <= maxButtons) {
+            for (let i = 1; i <= total; i++) addPage(i);
+        } else {
+            addPage(1);
+            if (currentPage > 3) {
+                pageButtons.push(<li key="start-ellipsis" className="pagination-ellipsis">...</li>);
+            }
+            let start = Math.max(2, currentPage - 1);
+            let end = Math.min(total - 1, currentPage + 1);
+            if (currentPage <= 3) end = 4;
+            if (currentPage >= total - 2) start = total - 3;
+            for (let i = start; i <= end; i++) {
+                if (i > 1 && i < total) addPage(i);
+            }
+            if (currentPage < total - 2) {
+                pageButtons.push(<li key="end-ellipsis" className="pagination-ellipsis">...</li>);
+            }
+            addPage(total);
         }
-        return buttons;
+        return (
+            <ul className="pagination">
+                <li className={`page-item${currentPage === 1 ? ' disabled' : ''}`}>
+                    <button className="page-link pagination-arrow" onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
+                        &lt; Back
+                    </button>
+                </li>
+                {pageButtons}
+                <li className={`page-item${currentPage === total ? ' disabled' : ''}`}>
+                    <button className="page-link pagination-arrow" onClick={() => paginate(currentPage + 1)} disabled={currentPage === total}>
+                        Next &gt;
+                    </button>
+                </li>
+            </ul>
+        );
+    };
+
+    const handleDownloadTemplate = async () => {
+        const headers = getHeaders();
+        try {
+            setIsLoading(true);
+            const response = await axios.get(
+                'https://farm-project-bbzj.onrender.com/api/excluded/template',
+                {
+                    responseType: 'blob',
+                    headers: {
+                        ...headers,
+                        'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                    }
+                }
+            );
+
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'excluded_template.xlsx');
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error("Error downloading template:", error);
+            Swal.fire(t('error'), t('failed_to_download_template'), 'error');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleExportToExcel = async () => {
+        const headers = getHeaders();
+        try {
+            setIsLoading(true);
+            const response = await axios.get(
+                'https://farm-project-bbzj.onrender.com/api/excluded/export',
+                {
+                    responseType: 'blob',
+                    headers: {
+                        ...headers,
+                        'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                    }
+                }
+            );
+
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'excluded_records.xlsx');
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error("Error exporting to Excel:", error);
+            Swal.fire(t('error'), t('failed_to_export_to_excel'), 'error');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleImportFromExcel = async (event) => {
+        const file = event.target.files[0];
+        if (!file) {
+            Swal.fire({
+                title: t('error'),
+                html: `
+                    <div>
+                        <p>${t('please_select_file')}</p>
+                        <p style="color: #666; margin-top: 10px; font-size: 0.9em;">
+                            ${t('supported_formats')}: .xlsx, .xls
+                        </p>
+                    </div>
+                `,
+                icon: 'error'
+            });
+            return;
+        }
+
+        const fileName = file.name.toLowerCase();
+        if (!fileName.endsWith('.xlsx') && !fileName.endsWith('.xls')) {
+            Swal.fire({
+                title: t('error'),
+                html: `
+                    <div>
+                        <p>${t('please_upload_valid_excel')}</p>
+                        <p style="color: #666; margin-top: 10px; font-size: 0.9em;">
+                            ${t('supported_formats')}: .xlsx, .xls
+                        </p>
+                    </div>
+                `,
+                icon: 'error'
+            });
+            return;
+        }
+
+        const headers = getHeaders();
+        const formData = new FormData();
+        
+        try {
+            setIsLoading(true);
+            formData.append('file', file);
+
+            const response = await axios.post(
+                'https://farm-project-bbzj.onrender.com/api/excluded/import',
+                formData,
+                {
+                    headers: {
+                        ...headers,
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }
+            );
+
+            if (response.data && response.data.status === 'success') {
+                Swal.fire({
+                    title: t('success'),
+                    text: t('excluded_records_imported_successfully'),
+                    icon: 'success'
+                });
+                fetchExcluded();
+            } else {
+                throw new Error(response.data?.message || 'Import failed');
+            }
+        } catch (error) {
+            console.error("Error details:", error);
+            let errorMessage = t('failed_to_import_from_excel');
+            
+            if (error.response?.data?.message) {
+                errorMessage = error.response.data.message;
+            }
+
+            Swal.fire({
+                title: t('error'),
+                html: `
+                    <div>
+                        <p>${errorMessage}</p>
+                    </div>
+                `,
+                icon: 'error'
+            });
+        } finally {
+            setIsLoading(false);
+            event.target.value = '';
+        }
     };
 
     return (
@@ -132,61 +323,87 @@ function ExcludedTable() {
                 </div>
             ) : (
                 <div className="container mt-5 vaccine-table-container">
-  
-                           <h2 className="vaccine-table-title">{t('Excluded Records')}</h2>
-                   
+                    <div className="container mt-5">
+                        <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mt-5 mb-3">
+                            <h2 className="vaccine-table-title">{t('Excluded Records')}</h2>
+                            <div className="d-flex flex-wrap gap-2">
+                                <button className="btn btn-outline-dark" onClick={handleExportToExcel} title={t('export_all_data')}>
+                                    <i className="fas fa-download me-1"></i> {t('export_all_data')}
+                                </button>
+                                <button className="btn btn-success" onClick={handleDownloadTemplate} title={t('download_template')}>
+                                    <i className="fas fa-file-arrow-down me-1"></i> {t('download_template')}
+                                </button>
+                                <label className="btn btn-dark btn-outline-dark mb-0 d-flex align-items-center" style={{ cursor: 'pointer', color:"white" }} title={t('import_from_excel')}>
+                                    <i className="fas fa-file-import me-1"></i> {t('import_from_excel')}
+                                    <input type="file" hidden accept=".xlsx,.xls" onChange={handleImportFromExcel} />
+                                </label>
+                            </div>
+                        </div>
 
-                          <div className="row g-2 mb-3">
-        <div className="col-md-4">
-                                    <input type="text" className="form-control" placeholder={t('search_tag_id')} value={searchCriteria.tagId} onChange={(e) => setSearchCriteria(prev => ({ ...prev, tagId: e.target.value }))} style={{ flex: 1 }} />
+                        <div className="row g-2 mb-3">
+                            <div className="col-md-4">
+                                <input 
+                                    type="text" 
+                                    className="form-control" 
+                                    placeholder={t('search_tag_id')} 
+                                    value={searchCriteria.tagId} 
+                                    onChange={(e) => setSearchCriteria(prev => ({ ...prev, tagId: e.target.value }))} 
+                                    style={{ flex: 1 }} 
+                                />
+                            </div>
+                            <div className="d-flex justify-content-end mb-3">
+                                <button className="btn btn-outline-secondary" onClick={handleSearch}>{t('search')}</button>
+                            </div>
+                        </div>
 
-        </div>
-     
-          <div className="d-flex justify-content-end mb-3">
-        <button className="btn btn-outline-secondary" onClick={handleSearch}>{t('search')}</button>
-      </div>
-      </div>
-                    <div className="table-responsive mt-4">
-                        <table className="table align-middle">
-                            <thead>
-                                <tr>
-                                    <th className=" bg-color">{t('tag_id')}</th>
-                                    <th className=" bg-color">{t('excluded_reason')}</th>
-                                    <th className=" bg-color">{t('date')}</th>
-                                    <th className=" bg-color">{t('actions')}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {excluded.length > 0 ? (
-                                    excluded.map(item => (
-                                        <tr key={item._id}>
-                                            <td>{item.tagId}</td>
-                                            <td>{item.excludedType}</td>
-                                            <td>{formatDate(item.Date)}</td>
-                                            <td className="text-center">
-                                                <button className="btn btn-link p-0 me-2" onClick={() => editExcluded(item._id)}  title={t('edit')} style={{
-                                                color:"#808080"
-                                                }}><FaRegEdit /></button>
-                                                <button className="btn btn-link  p-0" style={{
-                                                color:"#808080"
-                                                }} onClick={() => confirmDelete(item._id)} title={t('delete')}  ><RiDeleteBinLine/></button>
-                                            </td>
-                                        </tr>
-                                    ))
-                                ) : (
+                        <div className="table-responsive mt-4">
+                            <table className="table align-middle">
+                                <thead>
                                     <tr>
-                                        <td colSpan="5" className="text-center py-4 text-muted">{t('no_excluded_records')}</td>
+                                    <th className="text-center bg-color">#</th>
+                                    <th className="text-center bg-color"> {t("Tag Id")}</th>
+                                    <th className="text-center bg-color">{t("Date")}</th>
+                                    <th className="text-center bg-color">{t("Excluded Type")}</th>
+                                    <th className="text-center bg-color">{t('excluded_reason')}</th>
+                                    <th className="text-center bg-color">{t("Price")}</th>
+                                    <th className="text-center bg-color">{t("Weight")}</th>
+                                    <th className="text-center bg-color">{t('actions')}</th>
                                     </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-                    <div className="d-flex justify-content-center mt-4">
-                        <nav>
-                            <ul className="pagination">
-                                {renderPaginationButtons()}
-                            </ul>
-                        </nav>
+                                </thead>
+                                <tbody>
+    {excluded.length > 0 ? (
+        excluded.map((item, index) => (
+            <tr key={item._id}>
+                <td className="text-center ">{(currentPage - 1) * excludedPerPage + index + 1}</td>
+                <td className="text-center ">{item.tagId}</td>
+                <td className="text-center ">{formatDate(item.Date)}</td>
+                <td className="text-center ">{item.excludedType}</td>
+                <td className="text-center ">{item.reasoneOfDeath ? item.reasoneOfDeath : "_"}</td>
+                <td className="text-center ">{item.price ? item.price : "_"}</td>
+                <td className="text-center ">{item.weight}</td>
+                <td className="text-center">
+                    <button className="btn btn-link p-0 me-2" onClick={() => editExcluded(item._id)}  title={t('edit')} style={{
+                    color:"#808080"
+                    }}><FaRegEdit /></button>
+                    <button className="btn btn-link  p-0" style={{
+                    color:"#808080"
+                    }} onClick={() => confirmDelete(item._id)} title={t('delete')}  ><RiDeleteBinLine/></button>
+                </td>
+            </tr>
+        ))
+    ) : (
+        <tr>
+            <td colSpan="5" className="text-center py-4 text-muted">{t('no_excluded_records')}</td>
+        </tr>
+    )}
+</tbody>
+                            </table>
+                        </div>
+                        <div className="d-flex justify-content-center mt-4">
+                            <nav>
+                                {renderModernPagination()}
+                            </nav>
+                        </div>
                     </div>
                 </div>
             )}

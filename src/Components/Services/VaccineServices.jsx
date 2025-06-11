@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { GoTable } from "react-icons/go";
 import { IoAddCircleOutline } from "react-icons/io5";
 import { Link } from 'react-router-dom';
+import { CiViewTable } from "react-icons/ci";
+
 
 function ExcludedServices() {
     const { t } = useTranslation();
@@ -39,6 +41,19 @@ function ExcludedServices() {
                         </div>
                     </Link>
                 </div>
+                <div className="card2">
+                        <Link className='Link' to='/Vaccinebyanimalsstable'>
+                        <div className="icon">
+                        <CiViewTable />
+                        </div>
+                        <div className="info">
+                            <h3>{t("show_data")}</h3>
+                            <p>{t("Vaccine_details_by_animal")}</p>
+                            <button className='btn mb-2 me-2 ' style={{ backgroundColor: '#FAA96C', color: 'white' }}>{t("go_to_data_by_animal")}</button>
+                        </div>
+                        </Link>
+                        </div>
+                        
             </div>
         </div>
     );

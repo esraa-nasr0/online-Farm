@@ -125,18 +125,52 @@ function VaccineTable() {
         setCurrentPage(pageNumber);
     };
 
-    const renderPaginationButtons = () => {
-        const buttons = [];
-        for (let i = 1; i <= pagination.totalPages; i++) {
-            buttons.push(
-                <li key={i} className={`page-item ${i === currentPage ? 'active' : ''}`}>
-                    <button className="page-link" onClick={() => paginate(i)}>
-                        {i}
-                    </button>
+    // Modern pagination rendering function
+    const renderModernPagination = () => {
+        const total = pagination.totalPages;
+        const pageButtons = [];
+        const maxButtons = 5;
+        const addPage = (page) => {
+            pageButtons.push(
+                <li key={page} className={`page-item${page === currentPage ? ' active' : ''}`}>
+                    <button className="page-link" onClick={() => paginate(page)}>{page}</button>
                 </li>
             );
+        };
+        if (total <= maxButtons) {
+            for (let i = 1; i <= total; i++) addPage(i);
+        } else {
+            addPage(1);
+            if (currentPage > 3) {
+                pageButtons.push(<li key="start-ellipsis" className="pagination-ellipsis">...</li>);
+            }
+            let start = Math.max(2, currentPage - 1);
+            let end = Math.min(total - 1, currentPage + 1);
+            if (currentPage <= 3) end = 4;
+            if (currentPage >= total - 2) start = total - 3;
+            for (let i = start; i <= end; i++) {
+                if (i > 1 && i < total) addPage(i);
+            }
+            if (currentPage < total - 2) {
+                pageButtons.push(<li key="end-ellipsis" className="pagination-ellipsis">...</li>);
+            }
+            addPage(total);
         }
-        return buttons;
+        return (
+            <ul className="pagination">
+                <li className={`page-item${currentPage === 1 ? ' disabled' : ''}`}>
+                    <button className="page-link pagination-arrow" onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
+                        &lt; {t('Back')}
+                    </button>
+                </li>
+                {pageButtons}
+                <li className={`page-item${currentPage === total ? ' disabled' : ''}`}>
+                    <button className="page-link pagination-arrow" onClick={() => paginate(currentPage + 1)} disabled={currentPage === total}>
+                        {t('Next')} &gt;
+                    </button>
+                </li>
+            </ul>
+        );
     };
 
     return (
@@ -248,31 +282,9 @@ function VaccineTable() {
                         </table>
                     </div>
 
-                    {pagination.totalPages > 1 && (
-                        <nav className="mt-4">
-                            <ul className="pagination justify-content-center">
-                                <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                                    <button 
-                                        className="page-link" 
-                                        onClick={() => paginate(currentPage - 1)}
-                                    >
-                                        
-                                        {t('Previous')}
-                                    </button>
-                                </li>
-                                {renderPaginationButtons()}
-                                <li className={`page-item ${currentPage === pagination.totalPages ? 'disabled' : ''}`}>
-                                    <button 
-                                        className="page-link" 
-                                        onClick={() => paginate(currentPage + 1)}
-                                    >
-                                        
-                                        {t('Next')}
-                                    </button>
-                                </li>
-                            </ul>
-                        </nav>
-                    )}
+                    <nav className="mt-4">
+                        {renderModernPagination()}
+                    </nav>
                 </div>
             )}
         </>
