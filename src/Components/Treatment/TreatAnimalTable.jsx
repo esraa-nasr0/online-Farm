@@ -24,6 +24,7 @@ function TreatAnimalTable() {
     const [searchLocationShed, setSearchLocationShed] = useState('');
     const [searchDate, setSearchDate] = useState('');
     const [searchTagId, setSearchTagId] = useState('');
+    
 
     const fetchTreatment = async () => {
         setIsLoading(true);
