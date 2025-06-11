@@ -277,19 +277,57 @@ export default function Animals() {
         setCurrentPage(pageNumber);
     };
 
-    const renderPaginationButtons = () => {
-        const buttons = [];
+    // Modern pagination rendering function
+    const renderModernPagination = () => {
         const total = pagination.totalPages;
-        for (let i = 1; i <= total; i++) {
-            buttons.push(
-                <li key={i} className={`page-item ${i === currentPage ? 'active' : ''}`}>
-                    <button className="page-link" onClick={() => paginate(i)}>
-                        {i}
-                    </button>
+        const pageButtons = [];
+        const maxButtons = 5; // How many page numbers to show (excluding ellipsis)
+
+        // Helper to add a page button
+        const addPage = (page) => {
+            pageButtons.push(
+                <li key={page} className={`page-item${page === currentPage ? ' active' : ''}`}>
+                    <button className="page-link" onClick={() => paginate(page)}>{page}</button>
                 </li>
             );
+        };
+
+        // Always show first, last, current, and neighbors
+        if (total <= maxButtons) {
+            for (let i = 1; i <= total; i++) addPage(i);
+        } else {
+            addPage(1);
+            if (currentPage > 3) {
+                pageButtons.push(<li key="start-ellipsis" className="pagination-ellipsis">...</li>);
+            }
+            let start = Math.max(2, currentPage - 1);
+            let end = Math.min(total - 1, currentPage + 1);
+            if (currentPage <= 3) end = 4;
+            if (currentPage >= total - 2) start = total - 3;
+            for (let i = start; i <= end; i++) {
+                if (i > 1 && i < total) addPage(i);
+            }
+            if (currentPage < total - 2) {
+                pageButtons.push(<li key="end-ellipsis" className="pagination-ellipsis">...</li>);
+            }
+            addPage(total);
         }
-        return buttons;
+
+        return (
+            <ul className="pagination">
+                <li className={`page-item${currentPage === 1 ? ' disabled' : ''}`}>
+                    <button className="page-link pagination-arrow" onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
+                        &lt; {t('Back')}
+                    </button>
+                </li>
+                {pageButtons}
+                <li className={`page-item${currentPage === total ? ' disabled' : ''}`}>
+                    <button className="page-link pagination-arrow" onClick={() => paginate(currentPage + 1)} disabled={currentPage === total}>
+                        {t('Next')} &gt;
+                    </button>
+                </li>
+            </ul>
+        );
     };
 
     return (
@@ -385,9 +423,7 @@ export default function Animals() {
 
                         <div className="d-flex justify-content-center mt-4">
                             <nav>
-                                <ul className="pagination">
-                                    {renderPaginationButtons()}
-                                </ul>
+                                {renderModernPagination()}
                             </nav>
                         </div>
                     </div>

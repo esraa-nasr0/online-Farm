@@ -490,34 +490,102 @@ font-size: 18px;
 color:#3f5c40; /* Darker shade on hover */
 }
 
-/* Pagination Controls */
-
+/* Modern Pagination Controls */
 .pagination {
-list-style: none;
-padding: 0;
-margin: 0;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 2px 8px rgba(80, 80, 160, 0.04);
 }
 
 .page-item {
-margin: 0 5px;
+    margin: 0;
+    display: flex;
+    align-items: center;
 }
 
 .page-link {
-color:#FAA96C; 
-background-color: transparent;
-border: 1px solid #FAA96C; 
+    color: #21763e;
+    background-color: #f4fbf5;
+    border: none;
+    border-radius: 12px;
+    padding: 8px 16px;
+    font-weight: 500;
+    font-size: 1.1rem;
+    transition: all 0.2s;
+    text-decoration: none;
+    min-width: 40px;
+    text-align: center;
+    outline: none;
+    box-shadow: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .page-link:hover {
-background-color: #FAA96C; 
-color: #fff; 
+    background-color: #f4fbf5;
+    color: #21763e;
 }
 
 .page-item.active .page-link {
-border: 1px solid #FAA96C;
-background-color: #FAA96C;
-color: #fff;
-} 
+    background-color: #21763e;
+    color: #fff;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(108, 76, 244, 0.10);
+}
+
+.page-item.disabled .page-link {
+    color: #bdbdbd;
+    background-color: #f4fbf5;
+    cursor: not-allowed;
+}
+
+.pagination-ellipsis {
+    color: #f4fbf5;
+    font-size: 1.3rem;
+    padding: 0 8px;
+    user-select: none;
+}
+
+.pagination-arrow {
+    font-size: 1.2rem;
+    margin: 0 2px;
+    color: #21763e;
+    background: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 0 6px;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.pagination-arrow:disabled {
+    color: #bdbdbd;
+    cursor: not-allowed;
+    background: transparent;
+}
+
+@media (max-width: 768px) {
+    .pagination {
+        gap: 4px;
+    }
+    .page-link {
+        padding: 6px 10px;
+        font-size: 1rem;
+        min-width: 32px;
+    }
+}
+
 /* report */
 .form1-container {
 margin-top: 100px;
