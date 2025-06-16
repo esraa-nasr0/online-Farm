@@ -5,6 +5,8 @@ import { IoIosSave } from "react-icons/io";
 import axios from "axios";
 import {  useParams } from "react-router-dom";
 import Swal from "sweetalert2";
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -13,6 +15,8 @@ function EditLocation() {
     const [isLoading, setIsLoading] = useState(false);
     const { id } = useParams(); // Get the animal ID from the URL params
     
+    const { t } = useTranslation();
+    const navigate = useNavigate();
 
     // Helper function to generate headers with the latest token
     const getHeaders = () => {
@@ -44,7 +48,7 @@ function EditLocation() {
                     icon: "success",
                     confirmButtonText: "OK",
                 });
-                // navigate("/");
+                navigate("/locationTable"); // Redirect to the location table after successful submission
             }
         } catch (err) {
             setIsLoading(false);

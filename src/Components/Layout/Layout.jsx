@@ -5,7 +5,7 @@ import Sidebare from "../Sidebare/Sidebare";
 import "./Layout.css";
 
 export default function Layout() {
-    const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 768);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const location = useLocation();
 
     const toggleSidebar = () => {
@@ -13,7 +13,7 @@ export default function Layout() {
     };
 
     const shouldShowSidebar = !['/', '/home', '/register', '/login', '/dashboard' , '/forgetpassword','/verifyotp','/resetpassword'].includes(location.pathname);
-    const shouldHideNavbar = ['/login', '/register' ,'/forgetpassword','/verifyotp','/resetpassword'].includes(location.pathname);
+    const shouldHideNavbar = location.pathname !== '/home';
 
     useEffect(() => {
         if (window.innerWidth <= 768) {

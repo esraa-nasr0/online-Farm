@@ -1,81 +1,78 @@
-// EditFeed.jsx
 import axios from 'axios';
 import { useFormik } from 'formik';
-import React, {useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { LocationContext } from '../../Context/LocationContext';
 import { IoIosSave } from 'react-icons/io';
 import { Feedcontext } from '../../Context/FeedContext';
-
+import './Feeding.css';
 
 export default function EditFeedbyLocation() {
   const { id } = useParams();
   const navigate = useNavigate();
-    const {LocationMenue} = useContext(LocationContext)
-    const [feeds, setFeeds] = useState([]);
+  const { LocationMenue } = useContext(LocationContext);
+  const [locationSheds, setLocationSheds] = useState([]);
+  const [feedOptions, setFeedOptions] = useState([]);
   const { getFodderMenue } = useContext(Feedcontext);
-
-  
-  // Helper function to generate headers with the latest token
-  const getHeaders = () => {
-    const Authorization = localStorage.getItem('Authorization');
-  
-    // Ensure the token has only one "Bearer" prefix
-    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-  
-    return {
-        Authorization: formattedToken
-    };
-  };
-
-  const fetchLocation = async () => {
-              try {
-                  const { data } = await LocationMenue();
-                  if (data.status === 'success' && Array.isArray(data.data.locationSheds)) {
-                    setFeeds(data.data.locationSheds);
-                  } else {
-                    setFeeds([]); 
-                  }
-              } catch (err) {
-                  setError('Failed to load treatment data');
-                  setFeeds([]); 
-              }
-          };
-      
-          useEffect(() => {
-              fetchLocation();
-          }, [LocationMenue]);
-  
-          const fetchFeeds = async () => {
-            try {
-              const { data } = await getFodderMenue();
-              if (data.status === 'success') {
-                setFeeds(data.data);
-              }
-            } catch (err) {
-              setError('Failed to load Feed data');
-            }
-          };
-
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const getHeaders = () => {
+    const Authorization = localStorage.getItem('Authorization');
+    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+    return { Authorization: formattedToken };
+  };
+
+  const fetchLocationSheds = async () => {
+    try {
+      const { data } = await LocationMenue();
+      if (data.status === 'success' && Array.isArray(data.data.locationSheds)) {
+        setLocationSheds(data.data.locationSheds);
+      } else {
+        setLocationSheds([]);
+      }
+    } catch (err) {
+      setError('Failed to load location data');
+      setLocationSheds([]);
+    }
+  };
+
+  const fetchFeedOptions = async () => {
+    try {
+      const { data } = await getFodderMenue();
+      console.log('Feed API Response:', data); // For debugging
+      if (data.status === 'success' && Array.isArray(data.data)) {
+        setFeedOptions(data.data);
+      } else {
+        setFeedOptions([]);
+      }
+    } catch (err) {
+      console.error('Feed fetch error:', err);
+      setError('Failed to load Feed data');
+      setFeedOptions([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchLocationSheds();
+    fetchFeedOptions();
+  }, []);
 
   const formik = useFormik({
     initialValues: {
       locationShed: '',
-      feeds: [{ feedName: '', quantity: 0 }],
+      feeds: [{ feedId: '', quantity: '' }],
       date: '',
     },
     onSubmit: async (values) => {
-      const headers = getHeaders(); // Get the latest headers
+      const headers = getHeaders();
       try {
         setIsLoading(true);
-        const req = await axios.patch(
+        await axios.patch(
           `https://farm-project-bbzj.onrender.com/api/feed/updatefeedByShed/${id}`,
           values,
           { headers }
         );
-        console.log(req);
         navigate('/feedlocationtable');
       } catch (err) {
         setError('Failed to update the feed');
@@ -88,35 +85,35 @@ export default function EditFeedbyLocation() {
 
   useEffect(() => {
     async function fetchFeedData() {
-      const headers = getHeaders(); // Get the latest headers
+      const headers = getHeaders();
       try {
         const { data } = await axios.get(
           `https://farm-project-bbzj.onrender.com/api/feed/getsingleFeedByShed/${id}`,
           { headers }
         );
+        
+        console.log('API Response:', data); // للتصحيح
+        
         if (data.data.feedShed) {
-            formik.setValues({
-              locationShed: data.data.feedShed.locationShed || '',
-              feeds: [
-                {
-                  feedName: data.data.feedShed.feedName || '',
-                  quantity: data.data.feedShed.quantity || 0,
-                },
-              ],
-              date: data.data.feedShed.date
-                ? new Date(data.data.feedShed.date).toISOString().slice(0, 16)
-                : '',
-            });
-          }
-          
+          const feedShed = data.data.feedShed;
+          formik.setValues({
+            locationShed: feedShed.locationShed?._id || '',
+            feeds: feedShed.feeds.map(feed => ({
+              feedId: feed._id || feed.feedId || '',
+              quantity: feed.quantity || ''
+            })),
+            date: feedShed.date
+              ? new Date(feedShed.date).toISOString().slice(0, 10)
+              : '',
+          });
+        }
       } catch (err) {
         setError('Failed to fetch feed data');
         console.error(err);
       }
     }
-
     fetchFeedData();
-  }, [id]);
+  }, [id, feedOptions]);
 
   const handleFeedChange = (index, field, value) => {
     const newFeeds = [...formik.values.feeds];
@@ -129,99 +126,98 @@ export default function EditFeedbyLocation() {
   };
 
   return (
-    <div className="container">
-        <div className="title2">Feed by location shed</div>
-          <form onSubmit={formik.handleSubmit} className="mt-5">
-            {isLoading ? (
-                    <button type="submit" className="btn button2">
-                        <i className="fas fa-spinner fa-spin"></i>
-                    </button>
-                    ) : (
-                    <button type="submit" className="btn button2">
-                        <IoIosSave /> Save
-                    </button>
-                    )}
-    
-            <div className="animaldata">
-            <div className="input-box">
-    <label className="label" htmlFor="locationShed">Location Shed</label>
-    <select
-        id="locationShed"
-        name="locationShed"
-        className="input2"
-        value={formik.values.locationShed}
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-    >
-        <option value="">select location shed</option>
-        {feeds && feeds.map((shed) => (
-            <option key={shed._id} value={shed._id}>{shed.locationShedName}</option>
-        ))}
-    </select>
-    {formik.errors.locationShed && formik.touched.locationShed && <p className="text-danger">{formik.errors.locationShed}</p>}
-</div>
-    
-              <div className="input-box">
-                <label className="label" htmlFor="date">Date</label>
-                <input
-                  id="date"
-                  name="date"
-                  type="date"
-                  className="input2"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.date}
-                />
-                {formik.errors.date && formik.touched.date && (
-                  <p className="text-danger">{formik.errors.date}</p>
-                )}
-              </div>
+    <div className="feeding-container">
+      <div className="feeding-header">
+        <h1>Edit Feed by Location</h1>
+      </div>
+
+      {error && <div className="error-message">{error}</div>}
+
+      <form onSubmit={formik.handleSubmit} className="feeding-form">
+        <div className="form-grid">
+          <div className="form-section">
+            <h2>Location Information</h2>
+            <div className="input-group">
+              <label htmlFor="locationShed">Location Shed</label>
+              <select
+                id="locationShed"
+                name="locationShed"
+                value={formik.values.locationShed}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              >
+                <option value="">Select location shed</option>
+                {locationSheds.map((shed) => (
+                  <option key={shed._id} value={shed._id}>
+                    {shed.locationShedName}
+                  </option>
+                ))}
+              </select>
             </div>
-    
-            {/* Loop through the feeds array to create a dynamic dropdown for each feed */}
+
+            <div className="input-group">
+              <label htmlFor="date">Date</label>
+              <input
+                id="date"
+                name="date"
+                type="date"
+                value={formik.values.date}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              />
+            </div>
+          </div>
+
+          <div className="form-section">
+            <h2>Feed Details</h2>
             {formik.values.feeds.map((feed, index) => (
-              <div key={index} >
-                <div className="input-box">
-                  <label className="label" htmlFor={`feeds[${index}].feedId`}>Feed Name</label>
-                  <select
-                    id={`feeds[${index}].feedId`}
-                    name={`feeds[${index}].feedId`}
-                    className="input2"
-                    value={feed.feedId}
-                    onChange={(e) => handleFeedChange(index, 'feedId', e.target.value)}
-                    onBlur={formik.handleBlur}
-                  >
-                    <option value="">Select Feed</option>
-                    {feeds.map((feedOption) => (
-                      <option key={feedOption._id} value={feedOption._id}>
-                        {feedOption.name}
-                      </option>
-                    ))}
-                  </select>
-                  {formik.errors.feeds && formik.errors.feeds[index] && formik.errors.feeds[index].feedId && (
-                    <p className="text-danger">{formik.errors.feeds[index].feedId}</p>
-                  )}
-    
-                  <label className="label" htmlFor={`feeds[${index}].quantity`}>Quantity</label>
-                  <input
-                    type="number"
-                    id={`feeds[${index}].quantity`}
-                    name={`feeds[${index}].quantity`}
-                    className="input2"
-                    value={feed.quantity}
-                    onChange={(e) => handleFeedChange(index, 'quantity', e.target.value)}
-                    onBlur={formik.handleBlur}
-                    placeholder="Enter quantity"
-                  />
-                  {formik.errors.feeds && formik.errors.feeds[index] && formik.errors.feeds[index].quantity && (
-                    <p className="text-danger">{formik.errors.feeds[index].quantity}</p>
-                  )}
-                </div>
+              <div key={index} className="input-group">
+                <label htmlFor={`feeds[${index}].feedId`}>Feed Name</label>
+                <select
+                  id={`feeds[${index}].feedId`}
+                  name={`feeds[${index}].feedId`}
+                  value={feed.feedId}
+                  onChange={(e) => handleFeedChange(index, 'feedId', e.target.value)}
+                  onBlur={formik.handleBlur}
+                >
+                  <option value="">Select Feed</option>
+                  {feedOptions.map((feedOption) => (
+                    <option key={feedOption._id} value={feedOption._id}>
+                      {feedOption.name}
+                    </option>
+                  ))}
+                </select>
+
+                <label htmlFor={`feeds[${index}].quantity`}>Quantity</label>
+                <input
+                  type="number"
+                  id={`feeds[${index}].quantity`}
+                  name={`feeds[${index}].quantity`}
+                  value={feed.quantity}
+                  onChange={(e) => handleFeedChange(index, 'quantity', e.target.value)}
+                  onBlur={formik.handleBlur}
+                  placeholder="Enter quantity"
+                />
               </div>
             ))}
-    
-            <button type="button" onClick={addFeed} className="btn button2">+</button>
-          </form>
+            <button type="button" onClick={addFeed} className="add-feed-button">
+              +
+            </button>
+          </div>
         </div>
+
+        <div className="form-actions">
+          <button type="submit" className="save-button" disabled={isLoading}>
+            {isLoading ? (
+              <span className="loading-spinner"></span>
+            ) : (
+              <>
+                <IoIosSave /> Save
+              </>
+            )}
+          </button>
+        </div>
+      </form>
+    </div>
   );
 }

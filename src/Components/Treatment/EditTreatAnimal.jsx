@@ -4,13 +4,15 @@ import React, { useContext, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { IoIosSave } from "react-icons/io";
 import * as Yup from "yup";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { TreatmentContext } from "../../Context/TreatmentContext";
 import { LocationContext } from "../../Context/LocationContext";
 import { useTranslation } from "react-i18next";
+import './Treatment.css';
+
 
 function EditTreatAnimal() {
-  const { id } = useParams(); // Extract id from URL
+  const { id } = useParams();
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [locationSheds, setLocationSheds] = useState([]);
@@ -19,8 +21,8 @@ function EditTreatAnimal() {
   const { getTreatmentMenue } = useContext(TreatmentContext);
   const { LocationMenue } = useContext(LocationContext);
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
-  // Helper function to generate headers with the latest token
   const getHeaders = () => {
     const Authorization = localStorage.getItem("Authorization");
     if (!Authorization) return {};
@@ -29,7 +31,6 @@ function EditTreatAnimal() {
     };
   };
 
-  // Fetch location sheds
   useEffect(() => {
     const fetchLocation = async () => {
       try {
@@ -44,7 +45,6 @@ function EditTreatAnimal() {
     fetchLocation();
   }, []);
 
-  // Fetch treatment options
   useEffect(() => {
     const fetchTreatments = async () => {
       try {
@@ -59,10 +59,8 @@ function EditTreatAnimal() {
     fetchTreatments();
   }, []);
 
-  // Format date from ISO to YYYY-MM-DD
   const formatDate = (isoString) => (isoString ? isoString.split("T")[0] : "");
 
-  // Validation schema
   const validationSchema = Yup.object({
     tagId: Yup.string().required(t("tagId_required")),
     locationShed: Yup.string().required(t("location_shed_required")),
@@ -80,7 +78,6 @@ function EditTreatAnimal() {
       .min(1, t("at_least_one_treatment")),
   });
 
-  // Formik initialization
   const formik = useFormik({
     initialValues: {
       tagId: "",
@@ -106,6 +103,7 @@ function EditTreatAnimal() {
             icon: "success",
             confirmButtonText: t("ok"),
           });
+          navigate("/treatAnimalTable");
         }
       } catch (err) {
         console.error("Error updating treatment:", err);
@@ -116,7 +114,6 @@ function EditTreatAnimal() {
     },
   });
 
-  // Fetch the treatment data
   useEffect(() => {
     const fetchTreatment = async () => {
       setError(null);
@@ -130,7 +127,7 @@ function EditTreatAnimal() {
           const treatment = data.data.treatmentShed;
           formik.setValues({
             tagId: treatment.tagId || "",
-            locationShed: treatment.locationShed?._id || "", // Ensure correct value format
+            locationShed: treatment.locationShed?._id || "",
             date: formatDate(treatment.date) || "",
             treatments:
               treatment.treatments?.map((comp) => ({
@@ -150,7 +147,6 @@ function EditTreatAnimal() {
     fetchTreatment();
   }, [id]);
 
-  // Add new treatment row
   const addTreat = () => {
     formik.setFieldValue("treatments", [
       ...formik.values.treatments,
@@ -158,7 +154,6 @@ function EditTreatAnimal() {
     ]);
   };
 
-  // Handle treatment change
   const handleTreatmentChange = (e, index) => {
     const { name, value } = e.target;
     const treatments = [...formik.values.treatments];
@@ -167,72 +162,116 @@ function EditTreatAnimal() {
   };
 
   return (
-    <div className="container">
-      <div className="title2">{t("edit_treatment")}</div>
-      {error && <p className="text-danger">{error}</p>}
-      <form onSubmit={formik.handleSubmit} className="mt-5">
-        <button type="submit" className="btn button2" disabled={isLoading}>
-          {isLoading ? <i className="fas fa-spinner fa-spin"></i> : <IoIosSave />} {t("save")}
-        </button>
+    <div className="treatment-container">
+      <div className="treatment-header">
+        <h1>{t("edit_treatment")}</h1>
+      </div>
 
-        <div className="animaldata">
-          <div className="input-box">
-            <label className="label" htmlFor="tagId">
-              {t("tag_id")}
-            </label>
-            <input
-              autoComplete="off"
-              {...formik.getFieldProps("tagId")}
-              id="tagId"
-              type="text"
-              className="input2"
-            />
-          </div>
+      {error && <div className="error-message">{error}</div>}
 
-          <div className="input-box">
-            <label className="label" htmlFor="locationShed">{t("location_shed")}</label>
-            <select {...formik.getFieldProps("locationShed")} id="locationShed" className="input2">
-              <option value="">{t("select_location_shed")}</option>
-              {locationSheds?.map((shed) => (
-                <option key={shed._id} value={shed._id}>{shed.locationShedName}</option>
-              ))}
-            </select>
-          </div>
+      <form onSubmit={formik.handleSubmit} className="treatment-form">
+        <div className="form-grid">
+          <div className="form-section">
+            <h2>{t("animal_details")}</h2>
+            <div className="input-group">
+              <label htmlFor="tagId">{t("tag_id")}</label>
+              <input
+                id="tagId"
+                type="text"
+                {...formik.getFieldProps("tagId")}
+                placeholder={t("enter_tag_id")}
+              />
+              {formik.errors.tagId && formik.touched.tagId && (
+                <p className="error-message">{formik.errors.tagId}</p>
+              )}
+            </div>
 
-          {formik.values.treatments.map((treatment, index) => (
-            <div key={index} className="input-box">
-              <label className="label" htmlFor={`treatment-${index}`}>
-                {t("treatment_name")}
-              </label>
+            <div className="input-group">
+              <label htmlFor="locationShed">{t("location_shed")}</label>
               <select
-                id={`treatment-${index}`}
-                name="treatmentId"
-                className="input2"
-                value={treatment.treatmentId}
-                onChange={(e) => handleTreatmentChange(e, index)}
+                id="locationShed"
+                {...formik.getFieldProps("locationShed")}
+                className="input-group"
               >
-                <option value="">{t("select_treatment")}</option>
-                {treatmentOptions.map((option) => (
-                  <option key={option._id} value={option._id}>{option.name}</option>
+                <option value="">{t("select_location_shed")}</option>
+                {locationSheds?.map((shed) => (
+                  <option key={shed._id} value={shed._id}>
+                    {shed.locationShedName}
+                  </option>
                 ))}
               </select>
-
-              <label className="label" htmlFor={`volume-${index}`}>
-                {t("volume")}
-              </label>
-              <input
-                type="number"
-                id={`volume-${index}`}
-                className="input2"
-                name="volume"
-                value={treatment.volume}
-                onChange={(e) => handleTreatmentChange(e, index)}
-              />
+              {formik.errors.locationShed && formik.touched.locationShed && (
+                <p className="error-message">{formik.errors.locationShed}</p>
+              )}
             </div>
-          ))}
+
+            <div className="input-group">
+              <label htmlFor="date">{t("date")}</label>
+              <input
+                id="date"
+                type="date"
+                {...formik.getFieldProps("date")}
+              />
+              {formik.errors.date && formik.touched.date && (
+                <p className="error-message">{formik.errors.date}</p>
+              )}
+            </div>
+          </div>
+
+          <div className="form-section">
+            <h2>{t("treatments")}</h2>
+            {formik.values.treatments.map((treatment, index) => (
+              <div key={index} className="input-group">
+                <label htmlFor={`treatment-${index}`}>{t("treatment_name")}</label>
+                <select
+                  id={`treatment-${index}`}
+                  name="treatmentId"
+                  value={treatment.treatmentId}
+                  onChange={(e) => handleTreatmentChange(e, index)}
+                  className="input-group"
+                >
+                  <option value="">{t("select_treatment")}</option>
+                  {treatmentOptions.map((option) => (
+                    <option key={option._id} value={option._id}>
+                      {option.name}
+                    </option>
+                  ))}
+                </select>
+
+                <label htmlFor={`volume-${index}`}>{t("volume")}</label>
+                <input
+                  type="number"
+                  id={`volume-${index}`}
+                  name="volume"
+                  value={treatment.volume}
+                  onChange={(e) => handleTreatmentChange(e, index)}
+                  placeholder={t("enter_volume")}
+                />
+                {formik.errors.treatments?.[index]?.treatmentId && (
+                  <p className="error-message">{formik.errors.treatments[index].treatmentId}</p>
+                )}
+                {formik.errors.treatments?.[index]?.volume && (
+                  <p className="error-message">{formik.errors.treatments[index].volume}</p>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
 
-        <button type="button" onClick={addTreat} className="btn button2"> + </button>
+        <div className="form-actions">
+          <button type="button" onClick={addTreat} className="add-treatment-button">
+            +
+          </button>
+          {isLoading ? (
+            <button type="submit" className="save-button" disabled>
+              <span className="loading-spinner"></span>
+            </button>
+          ) : (
+            <button type="submit" className="save-button">
+              <IoIosSave /> {t("save")}
+            </button>
+          )}
+        </div>
       </form>
     </div>
   );

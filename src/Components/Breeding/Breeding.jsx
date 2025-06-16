@@ -1,33 +1,32 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
-import { UserContext } from "../../Context/UserContext";
 import { IoIosSave } from "react-icons/io";
 import Swal from 'sweetalert2';
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import './Breeding.css';
 
 export default function Breeding() {
     const { t } = useTranslation();
     const [numberOfBirths, setNumberOfBirths] = useState(1);
     const [birthEntries, setBirthEntries] = useState([{ tagId: "", gender: "", birthweight: "" }]);
     const [isLoading, setIsLoading] = useState(false);
-    const { Authorization } = useContext(UserContext);
+    const [error, setError] = useState(null);
     const navigate = useNavigate();
 
     const getHeaders = () => {
         const Authorization = localStorage.getItem('Authorization');
-        const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-        return { Authorization: formattedToken };
+        return Authorization ? { Authorization: Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}` } : {};
     };
 
     async function handleSubmit(values) {
-        const headers = getHeaders(); 
+        const headers = getHeaders();
+        setIsLoading(true);
+        setError(null);
         try {
-            setIsLoading(true);
             const dataToSubmit = { ...values, birthEntries };
-
             const { data } = await axios.post(
                 "https://farm-project-bbzj.onrender.com/api/breeding/AddBreeding",
                 dataToSubmit,
@@ -36,18 +35,19 @@ export default function Breeding() {
 
             if (data.status === "success") {
                 Swal.fire({
-                    title: t("successTitle"),
-                    text: t("successMessage-breeding"),
+                    title: t("success"),
+                    text: t("breeding_added_successfully"),
                     icon: "success",
-                    confirmButtonText: t("OK")
+                    confirmButtonText: t("ok")
                 }).then(() => navigate('/breadingTable'));
             }
         } catch (err) {
+            setError(err.response?.data?.message || t("error_occurred"));
             Swal.fire({
-                title: t("errorTitle"),
-                text: err.response?.data?.message || t("submitError"),
+                title: t("error"),
+                text: err.response?.data?.message || t("error_occurred"),
                 icon: "error",
-                confirmButtonText: t("OK")
+                confirmButtonText: t("ok")
             });
         } finally {
             setIsLoading(false);
@@ -55,15 +55,22 @@ export default function Breeding() {
     }
 
     const validationSchema = Yup.object({
-        tagId: Yup.string().required(t("tagIdRequired")),
-        deliveryState: Yup.string().required(t("deliveryStateRequired")).max(50, t("deliveryStateMax")),
-        deliveryDate: Yup.date().required(t("deliveryDateRequired")).typeError(t("invalidDate")),
-        numberOfBirths: Yup.number().required(t("numberOfBirthsRequired")).min(1, t("minBirths")).max(4, t("maxBirths")),
-        milking: Yup.string().required(t("milkingRequired"))
+        tagId: Yup.string().required(t("tag_id_required")),
+        deliveryState: Yup.string().required(t("delivery_state_required")),
+        deliveryDate: Yup.date().required(t("delivery_date_required")),
+        numberOfBirths: Yup.number().required(t("number_of_births_required")).min(1, t("min_births")).max(4, t("max_births")),
+        milking: Yup.string().required(t("milking_required"))
     });
 
     const formik = useFormik({
-        initialValues: { tagId: "", deliveryState: "", deliveryDate: "", numberOfBirths: 1, milking: '', motheringAbility: "" },
+        initialValues: {
+            tagId: "",
+            deliveryState: "",
+            deliveryDate: "",
+            numberOfBirths: 1,
+            milking: '',
+            motheringAbility: ""
+        },
         validationSchema,
         onSubmit: handleSubmit
     });
@@ -71,7 +78,6 @@ export default function Breeding() {
     function handleNumberOfBirthsChange(e) {
         const newNumberOfBirths = Math.max(1, Math.min(4, parseInt(e.target.value, 10) || 1));
         setNumberOfBirths(newNumberOfBirths);
-
         setBirthEntries((prev) => {
             const newEntries = prev.slice(0, newNumberOfBirths);
             while (newEntries.length < newNumberOfBirths) {
@@ -79,7 +85,6 @@ export default function Breeding() {
             }
             return newEntries;
         });
-
         formik.setFieldValue("numberOfBirths", newNumberOfBirths);
     }
 
@@ -93,201 +98,180 @@ export default function Breeding() {
     }
 
     return (
-        <div className="container mx-auto">
-            <div className="big-card"   style={{
-    width: '100%',
-    // padding: '20px',
-    borderRadius: '15px',
-    boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
+        <div className="breeding-details-container">
+            <div className="breeding-details-header">
+                <h1>{t("breeding")}</h1>
+            </div>
 
-  }}>
+            {error && <div className="error-message">{error}</div>}
 
-    <div className="container">
-    <div className="title2" style={{paddingTop:"15px"}}>{t("breedingTitle")}</div>
-            <form onSubmit={formik.handleSubmit} className="mt-5">
-                {isLoading ? (
-                    <button type="submit" className="btn button2" disabled>
-                        <i className="fas fa-spinner fa-spin"></i>
-                    </button>
-                ) : (
-                    <button type="submit" className="btn button2">
-                        <IoIosSave /> {t("save")}
-                    </button>
-                )}
+            <form onSubmit={formik.handleSubmit} className="breeding-form">
+                <div className="form-grid">
+                    <div className="form-section">
+                        <h2>{t("basic_info")}</h2>
+                        <div className="input-group">
+                            <label htmlFor="tagId">{t("tag_id")}</label>
+                            <input
+                                type="text"
+                                id="tagId"
+                                name="tagId"
+                                value={formik.values.tagId}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                placeholder={t("enter_tag_id")}
+                            />
+                            {formik.errors.tagId && formik.touched.tagId && (
+                                <p className="text-danger">{formik.errors.tagId}</p>
+                            )}
+                        </div>
 
-                <div className="animaldata">
-                    <div className="input-box">
-                        <label className="label" htmlFor="tagId">{t("tagId")}</label>
-                        <input {...formik.getFieldProps("tagId")} placeholder={t("Enter Tag Id")} id="tagId" type="text" className="input2" />
-                        {formik.touched.tagId && formik.errors.tagId && <p className="text-danger">{formik.errors.tagId}</p>}
+                        <div className="input-group">
+                            <label htmlFor="deliveryState">{t("delivery_state")}</label>
+                            <select
+                                id="deliveryState"
+                                name="deliveryState"
+                                value={formik.values.deliveryState}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                            >
+                                <option value="">{t("select_delivery_state")}</option>
+                                <option value="normal">{t("normal")}</option>
+                                <option value="difficult">{t("difficult")}</option>
+                                <option value="assisted">{t("assisted")}</option>
+                                <option value="caesarean">{t("caesarean")}</option>
+                            </select>
+                            {formik.errors.deliveryState && formik.touched.deliveryState && (
+                                <p className="text-danger">{formik.errors.deliveryState}</p>
+                            )}
+                        </div>
+
+                        <div className="input-group">
+                            <label htmlFor="deliveryDate">{t("delivery_date")}</label>
+                            <input
+                                type="date"
+                                id="deliveryDate"
+                                name="deliveryDate"
+                                value={formik.values.deliveryDate}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                            />
+                            {formik.errors.deliveryDate && formik.touched.deliveryDate && (
+                                <p className="text-danger">{formik.errors.deliveryDate}</p>
+                            )}
+                        </div>
                     </div>
 
-                
-                    <div className="input-box">
-                        <label className="label" htmlFor="deliveryState">{t("Delivery State")}</label>
-                        <select
-                            id="deliveryState"
-                            name="deliveryState"
-                            className="input2"
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            value={formik.values.deliveryState}
-                        >
-                            <option value="">{t("Select milking")}</option>
-                            <option value="normal">{t("Normal")}</option>
-                            <option value="difficult">{t("Difficult")}</option>
-                            <option value="assisted">{t("Assisted")}</option>
-                            <option value="caesarean">{t("Caesarean")}</option>
-                        </select>
-                    </div>
-                    <div className="input-box">
-                        <label className="label" htmlFor="deliveryDate">{t("Delivery Date")}</label>
-                        <input {...formik.getFieldProps("deliveryDate")} placeholder={t("Enter your delivery date")} id="deliveryDate" type="date" className="input2" />
-                        {formik.touched.deliveryDate && formik.errors.deliveryDate && <p className="text-danger">{formik.errors.deliveryDate}</p>}
-                    </div>
+                    <div className="form-section">
+                        <h2>{t("breeding_details")}</h2>
+                        <div className="input-group">
+                            <label htmlFor="milking">{t("milking")}</label>
+                            <select
+                                id="milking"
+                                name="milking"
+                                value={formik.values.milking}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                            >
+                                <option value="">{t("select_milking")}</option>
+                                <option value="no milk">{t("no_milk")}</option>
+                                <option value="one teat">{t("one_teat")}</option>
+                                <option value="two teat">{t("two_teat")}</option>
+                            </select>
+                            {formik.errors.milking && formik.touched.milking && (
+                                <p className="text-danger">{formik.errors.milking}</p>
+                            )}
+                        </div>
 
-                 
+                        <div className="input-group">
+                            <label htmlFor="motheringAbility">{t("mothering_ability")}</label>
+                            <select
+                                id="motheringAbility"
+                                name="motheringAbility"
+                                value={formik.values.motheringAbility}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                            >
+                                <option value="good">{t("good")}</option>
+                                <option value="bad">{t("bad")}</option>
+                                <option value="medium">{t("medium")}</option>
+                            </select>
+                        </div>
 
-                    <div className="input-box">
-                        <label className="label" htmlFor="milking">{t("Milking")}</label>
-                        <select
-                            id="milking"
-                            name="milking"
-                            className="input2"
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            value={formik.values.milking}
-                        >
-                            <option value="">{t("Select milking")}</option>
-                            <option value="no milk">{t("No Milk")}</option>
-                            <option value="one teat">{t("One Teat")}</option>
-                            <option value="two teat">{t("Two Teat")}</option>
-                        </select>
+                        <div className="input-group">
+                            <label htmlFor="numberOfBirths">{t("number_of_births")}</label>
+                            <input
+                                type="number"
+                                id="numberOfBirths"
+                                name="numberOfBirths"
+                                value={numberOfBirths}
+                                onChange={handleNumberOfBirthsChange}
+                                min="1"
+                                max="4"
+                            />
+                            {formik.errors.numberOfBirths && formik.touched.numberOfBirths && (
+                                <p className="text-danger">{formik.errors.numberOfBirths}</p>
+                            )}
+                        </div>
                     </div>
+                </div>
 
-                    <div className="input-box">
-                        <label className="label" htmlFor="motheringAbility">{t("Mothering Ability")}</label>
-                        <select
-                            id="motheringAbility"
-                            name="motheringAbility"
-                            className="input2"
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            value={formik.values.motheringAbility}
-                        >
-                            <option value="good">{t("Good")}</option>
-                            <option value="bad">{t("Bad")}</option>
-                            <option value="medium">{t("Medium")}</option>
-                        </select>
-                    </div>
-
-                    <div className="input-box">
-                        <label className="label" htmlFor="numberOfBirths">{t("Number Of Births")}</label>
-                        <input value={numberOfBirths} onChange={handleNumberOfBirthsChange} placeholder={t("Enter Birth Weight")} id="numberOfBirths" type="number" className="input2" name="numberOfBirths" />
-                        {formik.touched.numberOfBirths && formik.errors.numberOfBirths && <p className="text-danger">{formik.errors.numberOfBirths}</p>}
-                    </div>
-
+                <div className="form-section">
+                    <h2>{t("birth_entries")}</h2>
                     {birthEntries.map((entry, index) => (
-    <div key={index} className="birth-entry-card" style={{
-        width: '50%',
-        marginBottom: '15px',
-        padding: '20px',
-        borderRadius: '10px',
-        boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
-        backgroundColor: '#f9f9f9',
-    }}>
-        <div className="card-header" style={{
-            fontSize: '18px',
-            fontWeight: 'bold',
-            marginBottom: '15px',
-            color: '#333'
-        }}>
-            {t("Calf Entry")} {index + 1}
-        </div>
+                        <div key={index} className="birth-entry-card">
+                            <h3>{t("calf")} {index + 1}</h3>
+                            <div className="input-group">
+                                <label htmlFor={`tagId-${index}`}>{t("calf_tag_id")}</label>
+                                <input
+                                    type="text"
+                                    id={`tagId-${index}`}
+                                    name="tagId"
+                                    value={entry.tagId}
+                                    onChange={(e) => handleBirthEntriesChange(e, index)}
+                                    placeholder={t("enter_calf_tag_id")}
+                                />
+                            </div>
 
-        <div className="input-box" style={{ marginBottom: '10px' }}>
-            <label className="label" htmlFor={`tagId-${index}`} style={{ fontWeight: 'bold' }}>
-                {t("Calf Tag ID")} {index + 1}
-            </label>
-            <input
-                value={entry.tagId}
-                onChange={(e) => handleBirthEntriesChange(e, index)}
-                placeholder={t("Enter Calf Tag ID")}
-                id={`tagId-${index}`}
-                name="tagId"
-                type="text"
-                className="input2"
-                style={{
-                    width: '100%',
-                    padding: '10px',
-                    borderRadius: '5px',
-                    border: '1px solid #ccc',
-                    marginTop: '5px',
-                    fontSize: '14px'
-                }}
-            />
-        </div>
+                            <div className="input-group">
+                                <label htmlFor={`gender-${index}`}>{t("gender")}</label>
+                                <select
+                                    id={`gender-${index}`}
+                                    name="gender"
+                                    value={entry.gender}
+                                    onChange={(e) => handleBirthEntriesChange(e, index)}
+                                >
+                                    <option value="male">{t("male")}</option>
+                                    <option value="female">{t("female")}</option>
+                                </select>
+                            </div>
 
-        <div className="input-box" style={{ marginBottom: '10px' }}>
-            <label className="label" htmlFor={`gender-${index}`} style={{ fontWeight: 'bold' }}>
-                {t("Gender")} {index + 1}
-            </label>
-            <select
-                value={entry.gender}
-                onChange={(e) => handleBirthEntriesChange(e, index)}
-                id={`gender-${index}`}
-                name="gender"
-                className="input2"
-                style={{
-                    width: '100%',
-                    padding: '10px',
-                    borderRadius: '5px',
-                    border: '1px solid #ccc',
-                    marginTop: '5px',
-                    fontSize: '14px'
-                }}
-            >
-                <option value="male">{t("Male")}</option>
-                <option value="female">{t("Female")}</option>
-            </select>
-        </div>
+                            <div className="input-group">
+                                <label htmlFor={`birthweight-${index}`}>{t("birth_weight")}</label>
+                                <input
+                                    type="number"
+                                    id={`birthweight-${index}`}
+                                    name="birthweight"
+                                    value={entry.birthweight}
+                                    onChange={(e) => handleBirthEntriesChange(e, index)}
+                                    placeholder={t("enter_birth_weight")}
+                                />
+                            </div>
+                        </div>
+                    ))}
+                </div>
 
-        <div className="input-box" style={{ marginBottom: '10px' }}>
-            <label className="label" htmlFor={`birthweight-${index}`} style={{ fontWeight: 'bold' }}>
-                {t("Birth Weight")} {index + 1}
-            </label>
-            <input
-                value={entry.birthweight}
-                onChange={(e) => handleBirthEntriesChange(e, index)}
-                placeholder={t("Enter Birth Weight")}
-                id={`birthweight-${index}`}
-                name="birthweight"
-                type="number"
-                className="input2"
-                style={{
-                    width: '100%',
-                    padding: '10px',
-                    borderRadius: '5px',
-                    border: '1px solid #ccc',
-                    marginTop: '5px',
-                    fontSize: '14px'
-                }}
-            />
-        </div>
-    </div>
-))}
-
-
-<div>
-    
-</div>
-
+                <div className="form-actions">
+                    <button type="submit" className="save-button" disabled={isLoading}>
+                        {isLoading ? (
+                            <span className="loading-spinner"></span>
+                        ) : (
+                            <>
+                                <IoIosSave /> {t("save")}
+                            </>
+                        )}
+                    </button>
                 </div>
             </form>
-            </div>
-           
-    </div>
-          
         </div>
     );
 }

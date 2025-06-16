@@ -20,7 +20,7 @@ function BreedingServices() {
                         <div className="info">
                             <h3>{t('breeding')}</h3>
                             <p>{t('enter_breeding_data')}</p>
-                            <button className='btn mb-2 me-2' style={{ backgroundColor: '#FAA96C', color: 'white' }}>
+                            <button className='btn mb-2 me-2' style={{ backgroundColor: '#21763e', color: 'white' }}>
                                 {t('go_to_breeding')}
                             </button>
                         </div>
@@ -35,7 +35,7 @@ function BreedingServices() {
                         <div className="info">
                             <h3>{t('add_breeding')}</h3>
                             <p>{t('enter_breeding_data')}</p>
-                            <button className='btn mb-2 me-2' style={{ backgroundColor: '#FAA96C', color: 'white' }}>
+                            <button className='btn mb-2 me-2' style={{ backgroundColor: '#21763e', color: 'white' }}>
                                 {t('go_to_add_breeding')}
                             </button>
                         </div>

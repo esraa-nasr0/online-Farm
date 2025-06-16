@@ -21,7 +21,7 @@ function MatingServices() {
                         <div className="info">
                             <h3>{t('show_data')}</h3>
                             <p>{t('mating_details')}</p>
-                            <button className='btn mb-2 me-2' style={{ backgroundColor: '#FAA96C', color: 'white' }}>
+                            <button className='btn mb-2 me-2' style={{ backgroundColor: '#21763e', color: 'white' }}>
                                 {t('go_to_mating_data')}
                             </button>
                         </div>
@@ -36,7 +36,7 @@ function MatingServices() {
                         <div className="info">
                             <h3>{t('add_mating')}</h3>
                             <p>{t('add_mating_details')}</p>
-                            <button className='btn mb-2 me-2' style={{ backgroundColor: '#FAA96C', color: 'white' }}>
+                            <button className='btn mb-2 me-2' style={{ backgroundColor: '#21763e', color: 'white' }}>
                                 {t('go_to_add_mating')}
                             </button>
                         </div>
@@ -51,7 +51,7 @@ function MatingServices() {
                         <div className="info">
                             <h3>{t('add_by_location_shed')}</h3>
                             <p>{t('add_details_by_location_shed')}</p>
-                            <button className='btn mb-2 me-2' style={{ backgroundColor: '#FAA96C', color: 'white' }}>
+                            <button className='btn mb-2 me-2' style={{ backgroundColor: '#21763e', color: 'white' }}>
                                 {t('go_to_add_by_location_shed')}
                             </button>
                         </div>

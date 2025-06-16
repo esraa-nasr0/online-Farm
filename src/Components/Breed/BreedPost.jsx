@@ -5,6 +5,7 @@ import { IoIosSave } from "react-icons/io";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from "react-router-dom";
 
 // Breed data from your Excel file
 const breedData = [
@@ -51,6 +52,7 @@ function BreedPost() {
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [inputLanguage, setInputLanguage] = useState('english'); // Track input language
     const { t } = useTranslation();
+    const navigate = useNavigate();
 
     // Helper function to generate headers with the latest token
     const getHeaders = () => {
@@ -82,6 +84,7 @@ function BreedPost() {
                     icon: "success",
                     confirmButtonText: "OK",
                 });
+                navigate("/breedTable"); // Redirect to the breed table after successful submission
             }
         } catch (err) {
             setIsLoading(false);

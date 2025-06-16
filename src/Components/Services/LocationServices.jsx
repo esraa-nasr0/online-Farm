@@ -19,7 +19,7 @@ function LocationServices() {
                         <div className="info">
                             <h3>{t('show_data')}</h3>
                             <p>{t('location_details')}</p>
-                            <button className='btn mb-2 me-2' style={{ backgroundColor: '#FAA96C', color: 'white' }}>
+                            <button className='btn mb-2 me-2' style={{ backgroundColor: '#21763e', color: 'white' }}>
                                 {t('go_to_location_data')}
                             </button>
                         </div>
@@ -34,7 +34,7 @@ function LocationServices() {
                         <div className="info">
                             <h3>{t('add_location')}</h3>
                             <p>{t('add_location_details')}</p>
-                            <button className='btn mb-2 me-2' style={{ backgroundColor: '#FAA96C', color: 'white' }}>
+                            <button className='btn mb-2 me-2' style={{ backgroundColor: '#21763e', color: 'white' }}>
                                 {t('go_to_add_location')}
                             </button>
                         </div>

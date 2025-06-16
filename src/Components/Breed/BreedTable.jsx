@@ -120,7 +120,7 @@ function BreedTable() {
                                     visible={true}
                                     height="100"
                                     width="100"
-                                    color="#9cbd81"
+                                    color="#21763e"
                                     ariaLabel="rings-loading"
                                 />
                             </div>

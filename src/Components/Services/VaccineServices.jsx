@@ -21,7 +21,7 @@ function ExcludedServices() {
                         <div className="info">
                             <h3>{t('show_data')}</h3>
                             <p>{t('all_Vaccine_details')}</p>
-                            <button className='btn mb-2 me-2' style={{ backgroundColor: '#FAA96C', color: 'white' }}>
+                            <button className='btn mb-2 me-2' style={{ backgroundColor: '#21763e', color: 'white' }}>
                                 {t('go_to_Vaccine_data')}
                             </button>
                         </div>
@@ -35,7 +35,7 @@ function ExcludedServices() {
                         <div className="info">
                             <h3>{t('add_Vaccine')}</h3>
                             <p>{t('add_Vaccine_details')}</p>
-                            <button className='btn mb-2 me-2' style={{ backgroundColor: '#FAA96C', color: 'white' }}>
+                            <button className='btn mb-2 me-2' style={{ backgroundColor: '#21763e', color: 'white' }}>
                                 {t('go_to_add_Vaccine')}
                             </button>
                         </div>
@@ -49,7 +49,7 @@ function ExcludedServices() {
                         <div className="info">
                             <h3>{t("show_data")}</h3>
                             <p>{t("Vaccine_details_by_animal")}</p>
-                            <button className='btn mb-2 me-2 ' style={{ backgroundColor: '#FAA96C', color: 'white' }}>{t("go_to_data_by_animal")}</button>
+                            <button className='btn mb-2 me-2 ' style={{ backgroundColor: '#21763e', color: 'white' }}>{t("go_to_data_by_animal")}</button>
                         </div>
                         </Link>
                         </div>

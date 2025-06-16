@@ -1,27 +1,17 @@
-/* .big-card {
-    width: 100%;
-    padding: 20px;
-    border-radius: 15px;
-    background-color: #c66b6b !important;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    padding-top: 30px;
-  }
-   */
-
-.breeding-details-container {
+.excluded-details-container {
     padding: 2rem;
     background-color: #f8f9fa;
     min-height: 100vh;
 }
 
-.breeding-details-header {
+.excluded-details-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
 }
 
-.breeding-details-header h1 {
+.excluded-details-header h1 {
     font-size: 1.75rem;
     color: #2c3e50;
     margin: 0;
@@ -35,7 +25,7 @@
     margin-bottom: 1.5rem;
 }
 
-.breeding-form {
+.excluded-form {
     background-color: white;
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.05);
@@ -163,27 +153,12 @@
     margin: 0;
 }
 
-.birth-entry-card {
-    background-color: white;
-    border-radius: 8px;
-    padding: 1.5rem;
-    margin-bottom: 1rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-
-.birth-entry-card h3 {
-    font-size: 1.125rem;
-    color: #2c3e50;
-    margin-bottom: 1rem;
-    font-weight: 600;
-}
-
 @media (max-width: 768px) {
-    .breeding-details-container {
+    .excluded-details-container {
         padding: 1rem;
     }
 
-    .breeding-details-header {
+    .excluded-details-header {
         flex-direction: column;
         align-items: flex-start;
         gap: 1rem;
@@ -196,4 +171,4 @@
     .form-section {
         padding: 1rem;
     }
-}
+} 

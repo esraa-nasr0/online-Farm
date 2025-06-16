@@ -6,13 +6,14 @@ import { IoIosSave } from "react-icons/io";
 import * as Yup from 'yup';
 import { TreatmentContext } from '../../Context/TreatmentContext';
 import { useTranslation } from 'react-i18next';
+import './Treatment.css';
 
 function TreatmentAnimal() {
     const { t } = useTranslation();
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
-    const [treatmentOptions, setTreatmentOptions] = useState([]); // تغيير الاسم لتجنب الخلط
-    const [isSubmitted, setIsSubmitted] = useState(false); // حالة جديدة لتتبع الإرسال
+    const [treatmentOptions, setTreatmentOptions] = useState([]);
+    const [isSubmitted, setIsSubmitted] = useState(false);
     const { getTreatmentMenue } = useContext(TreatmentContext);
 
     const getHeaders = () => {
@@ -40,10 +41,7 @@ function TreatmentAnimal() {
     }, [getTreatmentMenue]);
 
     async function submitTreatment(values) {
-        // إذا كانت البيانات قد أرسلت بالفعل، لا تفعل شيئاً
-        if (isSubmitted) {
-            return;
-        }
+        if (isSubmitted) return;
 
         const headers = getHeaders();
         setIsLoading(true);
@@ -57,8 +55,8 @@ function TreatmentAnimal() {
 
             if (data.status === "SUCCESS") {
                 setIsLoading(false);
-                setIsSubmitted(true); // تحديث حالة الإرسال
-                formik.resetForm(); // إعادة تعيين النموذج
+                setIsSubmitted(true);
+                formik.resetForm();
                 
                 Swal.fire({
                     title: t('success'),
@@ -73,19 +71,19 @@ function TreatmentAnimal() {
         }
     }
 
-    const validationSchema = Yup.object({
-        tagId: Yup.string().required(t('tag_id_required')),
-        date: Yup.date().required(t('date_required')),
-        treatments: Yup.array().of(
-            Yup.object({
-                treatmentId: Yup.string().required(t('treatment_required')),
-                volume: Yup.number()
-                    .required(t('volume_required'))
-                    .positive(t('volume_positive'))
-                    .typeError(t('volume_number')),
-            })
-        ).min(1, t('at_least_one_treatment')),
-    });
+    // const validationSchema = Yup.object({
+    //     tagId: Yup.string().required(t('tag_id_required')),
+    //     date: Yup.date().required(t('date_required')),
+    //     treatments: Yup.array().of(
+    //         Yup.object({
+    //             treatmentId: Yup.string().required(t('treatment_required')),
+    //             volume: Yup.number()
+    //                 .required(t('volume_required'))
+    //                 .positive(t('volume_positive'))
+    //                 .typeError(t('volume_number')),
+    //         })
+    //     ).min(1, t('at_least_one_treatment')),
+    // });
 
     const formik = useFormik({
         initialValues: {
@@ -93,12 +91,12 @@ function TreatmentAnimal() {
             treatments: [{ treatmentId: "", volume: "" }],
             date: "",
         },
-        validationSchema,
+        // validationSchema,
         onSubmit: submitTreatment,
     });
 
     const addTreat = () => {
-        if (!isSubmitted) { // لا تسمح بإضافة علاجات جديدة إذا تم الإرسال
+        if (!isSubmitted) {
             formik.setFieldValue('treatments', [
                 ...formik.values.treatments,
                 { treatmentId: '', volume: '' },
@@ -107,7 +105,7 @@ function TreatmentAnimal() {
     };
 
     const handleTreatmentChange = (e, index) => {
-        if (!isSubmitted) { // لا تسمح بتعديل البيانات إذا تم الإرسال
+        if (!isSubmitted) {
             const { name, value } = e.target;
             const updatedTreatments = [...formik.values.treatments];
             updatedTreatments[index][name] = name === 'volume' ? Number(value) : value;
@@ -115,7 +113,6 @@ function TreatmentAnimal() {
         }
     };
 
-    // دالة لإعادة تعيين النموذج والسماح بإدخال جديد
     const resetForm = () => {
         formik.resetForm({
             values: {
@@ -128,148 +125,128 @@ function TreatmentAnimal() {
     };
 
     return (
-        <div className='container'>
-            <div className="title2">{t('treatment_by_animal')}</div>
-            {error && <p className="text-danger">{error}</p>}
+        <div className="treatment-container">
+            <div className="treatment-header">
+                <h1>{t('treatment_by_animal')}</h1>
+            </div>
+
+            {error && <div className="error-message">{error}</div>}
             
             {isSubmitted && (
-                <div className="alert alert-success mt-3">
-                    {t('treatment_saved_successfully')}
+                <div className="success-message">
+                    <h3>{t('treatment_saved_successfully')}</h3>
                 </div>
             )}
 
-            <form onSubmit={formik.handleSubmit} className='mt-5'>
-                <div className='d-flex justify-content-between mb-4'>
+            <form onSubmit={formik.handleSubmit} className="treatment-form">
+                <div className="form-grid">
+                    <div className="form-section">
+                        <h2>{t('animal_details')}</h2>
+                        <div className="input-group">
+                            <label htmlFor="tagId">{t('tag_id')}</label>
+                            <input
+                                id="tagId"
+                                type="text"
+                                {...formik.getFieldProps('tagId')}
+                                disabled={isSubmitted}
+                                placeholder={t('enter_tag_id')}
+                            />
+                            {formik.errors.tagId && formik.touched.tagId && (
+                                <p className="error-message">{formik.errors.tagId}</p>
+                            )}
+                        </div>
+
+                        <div className="input-group">
+                            <label htmlFor="date">{t('date')}</label>
+                            <input
+                                id="date"
+                                type="date"
+                                {...formik.getFieldProps('date')}
+                                disabled={isSubmitted}
+                            />
+                            {formik.errors.date && formik.touched.date && (
+                                <p className="error-message">{formik.errors.date}</p>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="form-section">
+                        <h2>{t('treatments')}</h2>
+                        {formik.values.treatments.map((treatment, index) => (
+                            <div key={index} className="input-group">
+                                <label htmlFor={`treatment-${index}`}>{t('treatment_name')}</label>
+                                <select
+                                    id={`treatment-${index}`}
+                                    name="treatmentId"
+                                    value={treatment.treatmentId}
+                                    onChange={(e) => handleTreatmentChange(e, index)}
+                                    disabled={isSubmitted}
+                                >
+                                    <option value="">{t('select_treatment')}</option>
+                                    {treatmentOptions.map((option) => (
+                                        <option key={option._id} value={option._id}>
+                                            {option.name}
+                                        </option>
+                                    ))}
+                                </select>
+                                {formik.errors.treatments?.[index]?.treatmentId && (
+                                    <p className="error-message">{formik.errors.treatments[index].treatmentId}</p>
+                                )}
+
+                                <label htmlFor={`volume-${index}`}>{t('volume')}</label>
+                                <input
+                                    type="number"
+                                    id={`volume-${index}`}
+                                    name="volume"
+                                    value={treatment.volume}
+                                    onChange={(e) => handleTreatmentChange(e, index)}
+                                    disabled={isSubmitted}
+                                    placeholder={t('enter_volume')}
+                                />
+                                {formik.errors.treatments?.[index]?.volume && (
+                                    <p className="error-message">{formik.errors.treatments[index].volume}</p>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                <div className="form-actions">
+                    {!isSubmitted && (
+                        <button 
+                            type="button" 
+                            onClick={addTreat} 
+                            className="add-treatment-button"
+                            disabled={isSubmitted}
+                        >
+                            +
+                        </button>
+                    )}
+
                     {isLoading ? (
-                        <button type="submit" className="btn button2" disabled>
-                            <i className="fas fa-spinner fa-spin"></i> {t('saving')}
+                        <button type="submit" className="save-button" disabled>
+                            <span className="loading-spinner"></span>
                         </button>
                     ) : (
                         <button 
                             type="submit" 
-                            className="btn button2"
+                            className="save-button"
                             disabled={isLoading || isSubmitted || !formik.isValid}
                         >
                             <IoIosSave /> {t('save')}
                         </button>
                     )}
 
-                    {/* زر إضافة علاج جديد */}
                     {isSubmitted && (
                         <button 
                             type="button" 
-                            className="btn button2"
+                            className="save-button"
                             onClick={resetForm}
                         >
                             {t('add_new_treatment')}
                         </button>
                     )}
                 </div>
-
-                <div className='animaldata'>
-                    <div className="input-box">
-                        <label className="label" htmlFor="tagId">{t('tag_id')}</label>
-                        <input
-                            autoComplete="off"
-                            onBlur={formik.handleBlur}
-                            onChange={formik.handleChange}
-                            value={formik.values.tagId}
-                            id="tagId"
-                            placeholder={t('enter_tag_id')}
-                            type="text"
-                            className="input2"
-                            name="tagId"
-                            disabled={isSubmitted}
-                            aria-label={t('tag_id')}
-                        />
-                        {formik.errors.tagId && formik.touched.tagId && (
-                            <p className="text-danger">{formik.errors.tagId}</p>
-                        )}
-                    </div>
-
-                    <div className="input-box">
-                        <label className="label" htmlFor="date">{t('date')}</label>
-                        <input
-                            autoComplete="off"
-                            onBlur={formik.handleBlur}
-                            onChange={formik.handleChange}
-                            value={formik.values.date}
-                            placeholder={t('enter_treatment_date')}
-                            id="date"
-                            type="date"
-                            className="input2"
-                            name="date"
-                            disabled={isSubmitted}
-                            aria-label={t('treatment_date')}
-                        />
-                        {formik.errors.date && formik.touched.date && (
-                            <p className="text-danger">{formik.errors.date}</p>
-                        )}
-                    </div>
-
-                    {formik.values.treatments.map((treatment, index) => (
-                        <div key={index} className="input-box">
-                            <div>
-                                <label className="label" htmlFor={`treatmentName-${index}`}>
-                                    {t('treatment_name')}
-                                </label>
-                                <select
-                                    id={`treatmentName-${index}`}
-                                    name="treatmentId"
-                                    className="input2"
-                                    value={treatment.treatmentId}
-                                    onChange={(e) => handleTreatmentChange(e, index)}
-                                    onBlur={formik.handleBlur}
-                                    disabled={isSubmitted}
-                                    aria-label={t('treatment_name')}
-                                >
-                                    <option value="">{t('select_treatment')}</option>
-                                    {treatmentOptions.map((treatmentOption) => (
-                                        <option key={treatmentOption._id} value={treatmentOption._id}>
-                                            {treatmentOption.name}
-                                        </option>
-                                    ))}
-                                </select>
-                                {formik.errors.treatments?.[index]?.treatmentId && (
-                                    <p className="text-danger">{formik.errors.treatments[index].treatmentId}</p>
-                                )}
-                            </div>
-
-                            <div>
-                                <label className="label" htmlFor={`volume-${index}`}>
-                                    {t('volume')}
-                                </label>
-                                <input
-                                    autoComplete="off"
-                                    onBlur={formik.handleBlur}
-                                    onChange={(e) => handleTreatmentChange(e, index)}
-                                    value={treatment.volume}
-                                    placeholder={t('enter_volume')}
-                                    id={`volume-${index}`}
-                                    type="number"
-                                    className="input2"
-                                    name="volume"
-                                    disabled={isSubmitted}
-                                    aria-label={t('treatment_volume')}
-                                />
-                                {formik.errors.treatments?.[index]?.volume && (
-                                    <p className="text-danger">{formik.errors.treatments[index].volume}</p>
-                                )}
-                            </div>
-                        </div>
-                    ))}
-                </div>
-                
-                {!isSubmitted && (
-                    <button 
-                        type="button" 
-                        onClick={addTreat} 
-                        className="btn button2"
-                        disabled={isSubmitted}
-                    >
-                        {t('add_treatment')} (+)
-                    </button>
-                )}
             </form>
         </div>
     );

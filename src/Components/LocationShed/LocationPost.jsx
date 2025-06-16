@@ -5,12 +5,15 @@ import { IoIosSave } from "react-icons/io";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useTranslation } from 'react-i18next';
+import {  useNavigate} from "react-router-dom";
+
 
 
 function LocationPost() {
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
         const { t } = useTranslation();
+    const navigate = useNavigate();
     
 
     // Helper function to generate headers with the latest token
@@ -43,7 +46,7 @@ function LocationPost() {
                     icon: "success",
                     confirmButtonText: "OK",
                 });
-                // navigate("/");
+                navigate("/locationTable"); // Redirect to the location table after successful submission
             }
         } catch (err) {
             setIsLoading(false);

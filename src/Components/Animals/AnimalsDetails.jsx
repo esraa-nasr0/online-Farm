@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import { useTranslation } from 'react-i18next';
 import { LocationContext } from '../../Context/LocationContext';
 import { BreedContext } from '../../Context/BreedContext';
+import { jwtDecode } from 'jwt-decode';
 import './AnimalsDetails.css';
 
 function AnimalsDetails() {
@@ -18,6 +19,19 @@ function AnimalsDetails() {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const { LocationMenue } = useContext(LocationContext);
     const { BreedMenue } = useContext(BreedContext);
+    const [isFattening, setIsFattening] = useState(false);
+
+    useEffect(() => {
+        const token = localStorage.getItem('Authorization');
+        if (token) {
+            try {
+                const decoded = jwtDecode(token);
+                setIsFattening(decoded.registerationType === 'fattening');
+            } catch (error) {
+                console.error('Error decoding token:', error);
+            }
+        }
+    }, []);
 
     const getHeaders = () => {
         const Authorization = localStorage.getItem('Authorization');
@@ -204,7 +218,7 @@ function AnimalsDetails() {
                             </select>
                         </div>
 
-                        {formik.values.gender === 'female' && (
+                        {formik.values.gender === 'female' && !isFattening && (
                             <div className="input-group">
                                 <label htmlFor="female_Condition">{t('female_condition')}</label>
                                 <input
@@ -235,7 +249,9 @@ function AnimalsDetails() {
                             >
                                 <option value="">{t('select_condition')}</option>
                                 <option value="purchase">{t('purchase')}</option>
-                                <option value="born at farm">{t('born_at_farm')}</option>
+                                {!isFattening && (
+                                    <option value="born at farm">{t('born_at_farm')}</option>
+                                )}
                             </select>
                         </div>
 
@@ -299,7 +315,7 @@ function AnimalsDetails() {
                                     </select>
                                 </div>
                             </>
-                        ) : formik.values.animaleCondation === 'born at farm' && (
+                        ) : formik.values.animaleCondation === 'born at farm' && !isFattening && (
                             <>
                                 <div className="input-group">
                                     <label htmlFor="motherId">{t('mother_id')}</label>

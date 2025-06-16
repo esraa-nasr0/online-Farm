@@ -136,7 +136,7 @@ background-color: #778983 !important;
 .button2{
 float: right;
 cursor: pointer;
-background-color: #FAA96C !important;
+background-color: #21763e !important;
 color: #ffffff;
 border: none;
 }
@@ -447,7 +447,7 @@ color: #778983 !important;
 display: flex;
 align-items: center;
 
-background-color: #FAA96C; /* Blue button */
+background-color: #21763e; /* Blue button */
 
 background-color: #778983; /* Blue button */
 
@@ -982,7 +982,7 @@ transform: scale(1.1);
 }
 
 .icon {
-color: #9cbd81;
+color: #778983;
 font-size: 8em;
 text-align: center;
 }
