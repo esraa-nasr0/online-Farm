@@ -7,6 +7,8 @@ import * as Yup from 'yup';
 import { TreatmentContext } from '../../Context/TreatmentContext';
 import { useTranslation } from 'react-i18next';
 import './Treatment.css';
+import { useNavigate } from 'react-router-dom';
+
 
 function TreatmentAnimal() {
     const { t } = useTranslation();
@@ -15,6 +17,7 @@ function TreatmentAnimal() {
     const [treatmentOptions, setTreatmentOptions] = useState([]);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const { getTreatmentMenue } = useContext(TreatmentContext);
+    const navigate = useNavigate();
 
     const getHeaders = () => {
         const Authorization = localStorage.getItem('Authorization');
@@ -64,6 +67,7 @@ function TreatmentAnimal() {
                     icon: 'success',
                     confirmButtonText: t('ok'),
                 });
+                navigate('/treatAnimalTable');
             }
         } catch (error) {
             setIsLoading(false);

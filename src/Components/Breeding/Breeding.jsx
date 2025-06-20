@@ -11,7 +11,7 @@ import './Breeding.css';
 export default function Breeding() {
     const { t } = useTranslation();
     const [numberOfBirths, setNumberOfBirths] = useState(1);
-    const [birthEntries, setBirthEntries] = useState([{ tagId: "", gender: "", birthweight: "" }]);
+    const [birthEntries, setBirthEntries] = useState([{ tagId: "", gender: "male", birthweight: "" }]); // Set default gender to "male"
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
@@ -26,9 +26,15 @@ export default function Breeding() {
         setIsLoading(true);
         setError(null);
         try {
-            const dataToSubmit = { ...values, birthEntries };
+            const dataToSubmit = { 
+                ...values, 
+                birthEntries: birthEntries.map(entry => ({
+                    ...entry,
+                    birthweight: entry.birthweight ? parseFloat(entry.birthweight) : 0
+                }))
+            };
             const { data } = await axios.post(
-                "https://farm-project-bbzj.onrender.com/api/breeding/AddBreeding",
+                `https://farm-project-bbzj.onrender.com/api/breeding/AddBreeding`,
                 dataToSubmit,
                 { headers }
             );
@@ -59,7 +65,8 @@ export default function Breeding() {
         deliveryState: Yup.string().required(t("delivery_state_required")),
         deliveryDate: Yup.date().required(t("delivery_date_required")),
         numberOfBirths: Yup.number().required(t("number_of_births_required")).min(1, t("min_births")).max(4, t("max_births")),
-        milking: Yup.string().required(t("milking_required"))
+        milking: Yup.string().required(t("milking_required")),
+        motheringAbility: Yup.string().required(t("mothering_ability_required")) // Added validation
     });
 
     const formik = useFormik({
@@ -69,7 +76,7 @@ export default function Breeding() {
             deliveryDate: "",
             numberOfBirths: 1,
             milking: '',
-            motheringAbility: ""
+            motheringAbility: "good" // Set default value to match your first option
         },
         validationSchema,
         onSubmit: handleSubmit
@@ -81,7 +88,7 @@ export default function Breeding() {
         setBirthEntries((prev) => {
             const newEntries = prev.slice(0, newNumberOfBirths);
             while (newEntries.length < newNumberOfBirths) {
-                newEntries.push({ tagId: "", gender: "", birthweight: "" });
+                newEntries.push({ tagId: "", gender: "male", birthweight: "" }); // Set default gender to "male"
             }
             return newEntries;
         });

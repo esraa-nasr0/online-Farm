@@ -1,11 +1,13 @@
-import axios from 'axios';
-import { useFormik } from 'formik';
-import React, { useContext, useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { LocationContext } from '../../Context/LocationContext';
-import { IoIosSave } from 'react-icons/io';
-import { Feedcontext } from '../../Context/FeedContext';
-import './Feeding.css';
+import axios from "axios";
+import { useFormik } from "formik";
+import React, { useContext, useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { LocationContext } from "../../Context/LocationContext";
+import { IoIosSave } from "react-icons/io";
+import { Feedcontext } from "../../Context/FeedContext";
+import "./Feeding.css";
+import Swal from "sweetalert2";
+import { useTranslation } from "react-i18next";
 
 export default function EditFeedbyLocation() {
   const { id } = useParams();
@@ -16,23 +18,26 @@ export default function EditFeedbyLocation() {
   const { getFodderMenue } = useContext(Feedcontext);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const { t } = useTranslation();
 
   const getHeaders = () => {
-    const Authorization = localStorage.getItem('Authorization');
-    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+    const Authorization = localStorage.getItem("Authorization");
+    const formattedToken = Authorization.startsWith("Bearer ")
+      ? Authorization
+      : `Bearer ${Authorization}`;
     return { Authorization: formattedToken };
   };
 
   const fetchLocationSheds = async () => {
     try {
       const { data } = await LocationMenue();
-      if (data.status === 'success' && Array.isArray(data.data.locationSheds)) {
+      if (data.status === "success" && Array.isArray(data.data.locationSheds)) {
         setLocationSheds(data.data.locationSheds);
       } else {
         setLocationSheds([]);
       }
     } catch (err) {
-      setError('Failed to load location data');
+      setError("Failed to load location data");
       setLocationSheds([]);
     }
   };
@@ -40,15 +45,15 @@ export default function EditFeedbyLocation() {
   const fetchFeedOptions = async () => {
     try {
       const { data } = await getFodderMenue();
-      console.log('Feed API Response:', data); // For debugging
-      if (data.status === 'success' && Array.isArray(data.data)) {
+      console.log("Feed API Response:", data);
+      if (data.status === "success" && Array.isArray(data.data)) {
         setFeedOptions(data.data);
       } else {
         setFeedOptions([]);
       }
     } catch (err) {
-      console.error('Feed fetch error:', err);
-      setError('Failed to load Feed data');
+      console.error("Feed fetch error:", err);
+      setError("Failed to load Feed data");
       setFeedOptions([]);
     }
   };
@@ -60,22 +65,41 @@ export default function EditFeedbyLocation() {
 
   const formik = useFormik({
     initialValues: {
-      locationShed: '',
-      feeds: [{ feedId: '', quantity: '' }],
-      date: '',
+      locationShed: "",
+      feeds: [{ feedId: "", quantity: "" }],
+      date: "",
     },
     onSubmit: async (values) => {
       const headers = getHeaders();
       try {
         setIsLoading(true);
-        await axios.patch(
+        // Transform the data to match API expectations
+        const requestData = {
+          locationShed: values.locationShed,
+          date: values.date,
+          feeds: values.feeds.map((feed) => ({
+            feedId: feed.feedId,
+            quantity: Number(feed.quantity), // Ensure quantity is a number
+          })),
+        };
+        const response = await axios.patch(
           `https://farm-project-bbzj.onrender.com/api/feed/updatefeedByShed/${id}`,
-          values,
+          requestData,
           { headers }
         );
-        navigate('/feedlocationtable');
+
+        if (response.data.status === "SUCCESS") {
+          await Swal.fire({
+            title: t("success_title"),
+            text: response.data.message || t("animal_update_success"),
+            icon: "success",
+            confirmButtonText: t("ok"),
+          });
+          navigate("/feedlocationtable");
+          return;
+        }
       } catch (err) {
-        setError('Failed to update the feed');
+        setError("Failed to update the feed");
         console.error(err);
       } finally {
         setIsLoading(false);
@@ -91,24 +115,24 @@ export default function EditFeedbyLocation() {
           `https://farm-project-bbzj.onrender.com/api/feed/getsingleFeedByShed/${id}`,
           { headers }
         );
-        
-        console.log('API Response:', data); // للتصحيح
-        
+
+        console.log("API Response:", data);
+
         if (data.data.feedShed) {
           const feedShed = data.data.feedShed;
           formik.setValues({
-            locationShed: feedShed.locationShed?._id || '',
-            feeds: feedShed.feeds.map(feed => ({
-              feedId: feed._id || feed.feedId || '',
-              quantity: feed.quantity || ''
+            locationShed: feedShed.locationShed?._id || "",
+            feeds: feedShed.feeds.map((feed) => ({
+              feedId: feed._id || feed.feedId || "",
+              quantity: feed.quantity || "",
             })),
             date: feedShed.date
               ? new Date(feedShed.date).toISOString().slice(0, 10)
-              : '',
+              : "",
           });
         }
       } catch (err) {
-        setError('Failed to fetch feed data');
+        setError("Failed to fetch feed data");
         console.error(err);
       }
     }
@@ -122,7 +146,10 @@ export default function EditFeedbyLocation() {
   };
 
   const addFeed = () => {
-    formik.setFieldValue("feeds", [...formik.values.feeds, { feedId: "", quantity: "" }]);
+    formik.setFieldValue("feeds", [
+      ...formik.values.feeds,
+      { feedId: "", quantity: "" },
+    ]);
   };
 
   return (
@@ -177,7 +204,9 @@ export default function EditFeedbyLocation() {
                   id={`feeds[${index}].feedId`}
                   name={`feeds[${index}].feedId`}
                   value={feed.feedId}
-                  onChange={(e) => handleFeedChange(index, 'feedId', e.target.value)}
+                  onChange={(e) =>
+                    handleFeedChange(index, "feedId", e.target.value)
+                  }
                   onBlur={formik.handleBlur}
                 >
                   <option value="">Select Feed</option>
@@ -194,7 +223,9 @@ export default function EditFeedbyLocation() {
                   id={`feeds[${index}].quantity`}
                   name={`feeds[${index}].quantity`}
                   value={feed.quantity}
-                  onChange={(e) => handleFeedChange(index, 'quantity', e.target.value)}
+                  onChange={(e) =>
+                    handleFeedChange(index, "quantity", e.target.value)
+                  }
                   onBlur={formik.handleBlur}
                   placeholder="Enter quantity"
                 />

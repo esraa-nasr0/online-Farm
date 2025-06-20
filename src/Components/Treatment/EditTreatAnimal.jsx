@@ -8,8 +8,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { TreatmentContext } from "../../Context/TreatmentContext";
 import { LocationContext } from "../../Context/LocationContext";
 import { useTranslation } from "react-i18next";
-import './Treatment.css';
-
+import "./Treatment.css";
 
 function EditTreatAnimal() {
   const { id } = useParams();
@@ -24,40 +23,60 @@ function EditTreatAnimal() {
   const navigate = useNavigate();
 
   const getHeaders = () => {
-    const Authorization = localStorage.getItem("Authorization");
-    if (!Authorization) return {};
+    const token = localStorage.getItem("Authorization");
+    if (!token) return {};
     return {
-      Authorization: Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`,
+      Authorization: token.startsWith("Bearer ") ? token : `Bearer ${token}`,
+      "Content-Type": "application/json",
     };
   };
 
   useEffect(() => {
-    const fetchLocation = async () => {
+    const fetchInitialData = async () => {
       try {
-        const { data } = await LocationMenue();
-        setLocationSheds(data?.status === "success" ? data.data.locationSheds || [] : []);
-      } catch (err) {
-        console.error("Error loading location sheds:", err);
-        setError("Failed to load location sheds");
+        // Fetch location sheds
+        const locationResponse = await LocationMenue();
+        if (locationResponse?.data?.status === "success") {
+          setLocationSheds(locationResponse.data.data.locationSheds || []);
+        }
+
+        // Fetch treatment options
+        const treatmentResponse = await getTreatmentMenue();
+        if (treatmentResponse?.data?.status === "success") {
+          setTreatmentOptions(treatmentResponse.data.data || []);
+        }
+
+        // Fetch existing treatment data
+        const treatmentData = await axios.get(
+          `https://farm-project-bbzj.onrender.com/api/treatment/getsingletreatmentforAnimals/${id}`,
+          { headers: getHeaders() }
+        );
+
+        if (treatmentData?.data?.data?.treatmentShed) {
+          const treatment = treatmentData.data.data.treatmentShed;
+          formik.setValues({
+            tagId: treatment.tagId || "",
+            locationShed: treatment.locationShed?._id || "",
+            date: formatDate(treatment.date) || "",
+            treatments: treatment.treatments?.map((comp) => ({
+              treatmentId: comp.treatmentId || "",
+              volume: comp.volume || "",
+            })) || [{ treatmentId: "", volume: "" }],
+          });
+        }
+      } catch (error) {
+        console.error("Error loading initial data:", error);
+        setError(t("failed_to_load_data"));
+        Swal.fire({
+          title: t("error_title"),
+          text: t("failed_to_load_data"),
+          icon: "error",
+        });
       }
     };
 
-    fetchLocation();
-  }, []);
-
-  useEffect(() => {
-    const fetchTreatments = async () => {
-      try {
-        const { data } = await getTreatmentMenue();
-        setTreatmentOptions(data?.status === "success" ? data.data || [] : []);
-      } catch (err) {
-        console.error("Error loading treatment data:", err);
-        setError("Failed to load treatment data");
-      }
-    };
-
-    fetchTreatments();
-  }, []);
+    fetchInitialData();
+  }, [id]);
 
   const formatDate = (isoString) => (isoString ? isoString.split("T")[0] : "");
 
@@ -87,65 +106,45 @@ function EditTreatAnimal() {
     },
     validationSchema,
     onSubmit: async (values) => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const { data } = await axios.patch(
-          `https://farm-project-bbzj.onrender.com/api/treatment/updatetreatmentforAnimals/${id}`,
-          values,
-          { headers: getHeaders() }
-        );
+  setIsLoading(true);
+  setError(null);
+  try {
+    const response = await axios.patch(
+      `https://farm-project-bbzj.onrender.com/api/treatment/updatetreatmentforAnimals/${id}`,
+      values,
+      { headers: getHeaders() }
+    );
 
-        if (data.status === "success") {
-          Swal.fire({
-            title: t("success_title"),
-            text: t("success_text"),
-            icon: "success",
-            confirmButtonText: t("ok"),
-          });
-          navigate("/treatAnimalTable");
-        }
-      } catch (err) {
-        console.error("Error updating treatment:", err);
-        setError(err.response?.data?.message || t("error_occurred"));
-      } finally {
-        setIsLoading(false);
-      }
-    },
+    console.log("response:", response.data); // شوفي شكل الداتا الراجعة
+
+    if (response.data.status === "SUCCESS") {
+      await Swal.fire({
+        title: t("success_title"),
+        text: response.data.message || t("animal_update_success"),
+        icon: "success",
+        confirmButtonText: t("ok"),
+      });
+      navigate("/treatAnimalTable");
+      return; // ده مهم عشان يمنع تكملة الكود
+    }
+
+    // لو مش success، اعملي throw
+    throw new Error(response.data.message || "Update failed");
+
+  } catch (err) {
+    console.error("Error updating treatment:", err);
+    setError(err.response?.data?.message || err.message || t("error_occurred"));
+    Swal.fire({
+      title: t("error_title"),
+      text: err.response?.data?.message || err.message || t("error_occurred"),
+      icon: "error",
+      confirmButtonText: t("ok"),
+    });
+  } finally {
+    setIsLoading(false);
+  }
+}
   });
-
-  useEffect(() => {
-    const fetchTreatment = async () => {
-      setError(null);
-      try {
-        const { data } = await axios.get(
-          `https://farm-project-bbzj.onrender.com/api/treatment/getsingletreatmentforAnimals/${id}`,
-          { headers: getHeaders() }
-        );
-
-        if (data?.data?.treatmentShed) {
-          const treatment = data.data.treatmentShed;
-          formik.setValues({
-            tagId: treatment.tagId || "",
-            locationShed: treatment.locationShed?._id || "",
-            date: formatDate(treatment.date) || "",
-            treatments:
-              treatment.treatments?.map((comp) => ({
-                treatmentId: comp.treatmentId || "",
-                volume: comp.volume || "",
-              })) || [{ treatmentId: "", volume: "" }],
-          });
-        } else {
-          throw new Error("Unexpected API response structure");
-        }
-      } catch (error) {
-        console.error("Failed to fetch treatment data:", error);
-        setError(t("failed_to_fetch_treatment_details"));
-      }
-    };
-
-    fetchTreatment();
-  }, [id]);
 
   const addTreat = () => {
     formik.setFieldValue("treatments", [
@@ -156,9 +155,7 @@ function EditTreatAnimal() {
 
   const handleTreatmentChange = (e, index) => {
     const { name, value } = e.target;
-    const treatments = [...formik.values.treatments];
-    treatments[index][name] = value;
-    formik.setFieldValue("treatments", treatments);
+    formik.setFieldValue(`treatments[${index}].${name}`, value);
   };
 
   return (
@@ -180,6 +177,7 @@ function EditTreatAnimal() {
                 type="text"
                 {...formik.getFieldProps("tagId")}
                 placeholder={t("enter_tag_id")}
+                readOnly
               />
               {formik.errors.tagId && formik.touched.tagId && (
                 <p className="error-message">{formik.errors.tagId}</p>
@@ -191,10 +189,10 @@ function EditTreatAnimal() {
               <select
                 id="locationShed"
                 {...formik.getFieldProps("locationShed")}
-                className="input-group"
+                disabled={isLoading}
               >
                 <option value="">{t("select_location_shed")}</option>
-                {locationSheds?.map((shed) => (
+                {locationSheds.map((shed) => (
                   <option key={shed._id} value={shed._id}>
                     {shed.locationShedName}
                   </option>
@@ -211,6 +209,7 @@ function EditTreatAnimal() {
                 id="date"
                 type="date"
                 {...formik.getFieldProps("date")}
+                disabled={isLoading}
               />
               {formik.errors.date && formik.touched.date && (
                 <p className="error-message">{formik.errors.date}</p>
@@ -222,13 +221,15 @@ function EditTreatAnimal() {
             <h2>{t("treatments")}</h2>
             {formik.values.treatments.map((treatment, index) => (
               <div key={index} className="input-group">
-                <label htmlFor={`treatment-${index}`}>{t("treatment_name")}</label>
+                <label htmlFor={`treatment-${index}`}>
+                  {t("treatment_name")}
+                </label>
                 <select
                   id={`treatment-${index}`}
                   name="treatmentId"
                   value={treatment.treatmentId}
                   onChange={(e) => handleTreatmentChange(e, index)}
-                  className="input-group"
+                  disabled={isLoading}
                 >
                   <option value="">{t("select_treatment")}</option>
                   {treatmentOptions.map((option) => (
@@ -246,12 +247,17 @@ function EditTreatAnimal() {
                   value={treatment.volume}
                   onChange={(e) => handleTreatmentChange(e, index)}
                   placeholder={t("enter_volume")}
+                  disabled={isLoading}
                 />
                 {formik.errors.treatments?.[index]?.treatmentId && (
-                  <p className="error-message">{formik.errors.treatments[index].treatmentId}</p>
+                  <p className="error-message">
+                    {formik.errors.treatments[index].treatmentId}
+                  </p>
                 )}
                 {formik.errors.treatments?.[index]?.volume && (
-                  <p className="error-message">{formik.errors.treatments[index].volume}</p>
+                  <p className="error-message">
+                    {formik.errors.treatments[index].volume}
+                  </p>
                 )}
               </div>
             ))}
@@ -259,18 +265,23 @@ function EditTreatAnimal() {
         </div>
 
         <div className="form-actions">
-          <button type="button" onClick={addTreat} className="add-treatment-button">
+          <button
+            type="button"
+            onClick={addTreat}
+            className="add-treatment-button"
+            disabled={isLoading}
+          >
             +
           </button>
-          {isLoading ? (
-            <button type="submit" className="save-button" disabled>
+          <button type="submit" className="save-button" disabled={isLoading}>
+            {isLoading ? (
               <span className="loading-spinner"></span>
-            </button>
-          ) : (
-            <button type="submit" className="save-button">
-              <IoIosSave /> {t("save")}
-            </button>
-          )}
+            ) : (
+              <>
+                <IoIosSave /> {t("save")}
+              </>
+            )}
+          </button>
         </div>
       </form>
     </div>
