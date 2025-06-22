@@ -31,7 +31,7 @@ function VaccineServices() {
 
 
                 <div className="card2">
-                    <Link className='Link' to="/addVaccine">
+                    <Link className='Link' to='/Vaccinebyanimalsstable' >
                         <div className="icon">
                             <GoTable />
                         </div>
@@ -45,7 +45,7 @@ function VaccineServices() {
                     </Link>
                 </div>
                 <div className="card2">
-                    <Link className='Link' to='/Vaccinebyanimalsstable'>
+                    <Link className='Link' to="/addVaccine">
                         <div className="icon">
                             <IoAddCircleOutline />
                         </div>

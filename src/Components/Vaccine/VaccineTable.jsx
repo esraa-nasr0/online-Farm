@@ -5,10 +5,11 @@ import { RiDeleteBin6Line, RiDeleteBinLine } from "react-icons/ri";
 import { VaccineanimalContext } from '../../Context/VaccineanimalContext';
 import { Rings } from 'react-loader-spinner';
 import Swal from 'sweetalert2';
-import { useTranslation } from 'react-i18next';
+       import { useTranslation } from 'react-i18next';
+
 import "./styles.css"
 function VaccineTable() {
-    const { t } = useTranslation();
+       const { i18n, t } = useTranslation();
     let navigate = useNavigate();
     let { getallVaccineanimal, DeletVaccineanimal } = useContext(VaccineanimalContext);
     const [vaccines, setVaccines] = useState([]);
@@ -17,7 +18,7 @@ function VaccineTable() {
         tagId: '', 
         animalType: '', 
         vaccineName: '',
-        locationShed: ''
+
     });
     const [currentPage, setCurrentPage] = useState(1);
     const [animalsPerPage] = useState(10);
@@ -29,7 +30,6 @@ function VaccineTable() {
             const filters = {
                 vaccineName: searchCriteria.vaccineName,
                 tagId: searchCriteria.tagId,
-                locationShed: searchCriteria.locationShed
             };
 
             let { data } = await getallVaccineanimal(currentPage, animalsPerPage, filters);
@@ -125,59 +125,25 @@ function VaccineTable() {
         setCurrentPage(pageNumber);
     };
 
-    // Modern pagination rendering function
-    const renderModernPagination = () => {
-        const total = pagination.totalPages;
-        const pageButtons = [];
-        const maxButtons = 5;
-        const addPage = (page) => {
-            pageButtons.push(
-                <li key={page} className={`page-item${page === currentPage ? ' active' : ''}`}>
-                    <button className="page-link" onClick={() => paginate(page)}>{page}</button>
+    const renderPaginationButtons = () => {
+        const buttons = [];
+        for (let i = 1; i <= pagination.totalPages; i++) {
+            buttons.push(
+                <li key={i} className={`page-item ${i === currentPage ? 'active' : ''}`}>
+                    <button className="page-link" onClick={() => paginate(i)}>
+                        {i}
+                    </button>
                 </li>
             );
-        };
-        if (total <= maxButtons) {
-            for (let i = 1; i <= total; i++) addPage(i);
-        } else {
-            addPage(1);
-            if (currentPage > 3) {
-                pageButtons.push(<li key="start-ellipsis" className="pagination-ellipsis">...</li>);
-            }
-            let start = Math.max(2, currentPage - 1);
-            let end = Math.min(total - 1, currentPage + 1);
-            if (currentPage <= 3) end = 4;
-            if (currentPage >= total - 2) start = total - 3;
-            for (let i = start; i <= end; i++) {
-                if (i > 1 && i < total) addPage(i);
-            }
-            if (currentPage < total - 2) {
-                pageButtons.push(<li key="end-ellipsis" className="pagination-ellipsis">...</li>);
-            }
-            addPage(total);
         }
-        return (
-            <ul className="pagination">
-                <li className={`page-item${currentPage === 1 ? ' disabled' : ''}`}>
-                    <button className="page-link pagination-arrow" onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
-                        &lt; {t('Back')}
-                    </button>
-                </li>
-                {pageButtons}
-                <li className={`page-item${currentPage === total ? ' disabled' : ''}`}>
-                    <button className="page-link pagination-arrow" onClick={() => paginate(currentPage + 1)} disabled={currentPage === total}>
-                        {t('Next')} &gt;
-                    </button>
-                </li>
-            </ul>
-        );
+        return buttons;
     };
 
     return (
         <>
             {isLoading ? (
                 <div className='d-flex justify-content-center align-items-center' style={{ height: '100vh' }}>
-                    <Rings visible={true} height="100" width="100" color="#21763e" ariaLabel="rings-loading" />
+                    <Rings visible={true} height="100" width="100" color="#9cbd81" ariaLabel="rings-loading" />
                 </div>
             ) : (
                 <div className="container mt-5 vaccine-table-container">
@@ -211,15 +177,7 @@ function VaccineTable() {
             onChange={e => setSearchCriteria(prev => ({ ...prev, vaccineName: e.target.value }))}
           />
         </div>
-        <div className="col-md-4">
-          <input
-            type="text"
-            className="form-control"
-            placeholder={t('search_by_location_shed')}
-            value={searchCriteria.locationShed}
-            onChange={e => setSearchCriteria(prev => ({ ...prev, locationShed: e.target.value }))}
-          />
-        </div>
+     
           <div className="d-flex justify-content-end mb-3">
         <button className="btn btn-outline-secondary" onClick={handleSearch}>{t('search')}</button>
       </div>
@@ -229,16 +187,16 @@ function VaccineTable() {
                         <table className="table table-hover mt-3 p-2">
                             <thead >
                                 <tr>
-                                    <th scope="col" className=" bg-color">#</th>
-                                    <th scope="col" className=" bg-color">  {t('Vaccine Name')}</th>
-                                    <th scope="col" className=" bg-color">  {t('Bottles')}</th>
-                                    <th scope="col" className=" bg-color">  {t('Doses Per Bottle')}</th>
-                                    <th scope="col"  className=" bg-color">  {t('Total Doses')}</th>
-                                    <th scope="col" className=" bg-color">  {t('Bottle Price')}</th>
-                                    <th scope="col" className=" bg-color">  {t('Dose Price')}</th>
-                                    <th scope="col" className=" bg-color">  {t('Booster Dose')}</th>
-                                    <th scope="col " className=" bg-color">  {t('Annual Dose')}</th>
-                                     <th scope="col " className=" bg-color">  Expiry Date</th>
+                                    <th scope="col" className="text-center bg-color">#</th>
+                                    <th scope="col" className="text-center bg-color">  {t('Vaccine Name')}</th>
+                                    <th scope="col" className="text-center bg-color">  {t('Bottles')}</th>
+                                    <th scope="col" className="text-center bg-color">  {t('Doses Per Bottle')}</th>
+                                    <th scope="col"  className="text-center bg-color">  {t('Total Doses')}</th>
+                                    <th scope="col" className="text-center bg-color">  {t('Bottle Price')}</th>
+                                    <th scope="col" className="text-center bg-color">  {t('Dose Price')}</th>
+                                    <th scope="col" className="text-center bg-color">  {t('Booster Dose')}</th>
+                                    <th scope="col " className="text-center bg-color">  {t('Annual Dose')}</th>
+                                     <th scope="col " className="text-center bg-color"> {t('Expiry Date')} </th>
                                                 <th className="text-center bg-color">{t('actions')}</th>
 
                                 </tr>
@@ -252,7 +210,8 @@ function VaccineTable() {
                                     vaccines.map((vaccine, index) => (
                                         <tr key={vaccine._id}>
                                             <td>{index + 1}</td>
-                                            <td>{vaccine.vaccineName || 'N/A'}</td>
+                                          <td>{i18n.language === "ar" ? vaccine.vaccineType.arabicName : vaccine.vaccineType.englishName}</td>
+
                                             <td>{vaccine.stock?.bottles || 'N/A'}</td>
                                             <td>{vaccine.stock?.dosesPerBottle || 'N/A'}</td>
                                             <td>{vaccine.stock?.totalDoses || 'N/A'}</td>
@@ -282,9 +241,31 @@ function VaccineTable() {
                         </table>
                     </div>
 
-                    <nav className="mt-4">
-                        {renderModernPagination()}
-                    </nav>
+                    {pagination.totalPages > 1 && (
+                        <nav className="mt-4">
+                            <ul className="pagination justify-content-center">
+                                <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                                    <button 
+                                        className="page-link" 
+                                        onClick={() => paginate(currentPage - 1)}
+                                    >
+                                        
+                                        {t('Previous')}
+                                    </button>
+                                </li>
+                                {renderPaginationButtons()}
+                                <li className={`page-item ${currentPage === pagination.totalPages ? 'disabled' : ''}`}>
+                                    <button 
+                                        className="page-link" 
+                                        onClick={() => paginate(currentPage + 1)}
+                                    >
+                                        
+                                        {t('Next')}
+                                    </button>
+                                </li>
+                            </ul>
+                        </nav>
+                    )}
                 </div>
             )}
         </>

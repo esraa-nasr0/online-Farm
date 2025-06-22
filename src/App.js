@@ -93,6 +93,7 @@ import Use from "./Components/Home/Usefullto.jsx";
 import Features from "./Components/LastSection/LastSection.jsx"
 import Manageemployee from "./Components/Section/Section.jsx";
 import { SidebarProvider, useSidebar } from './Context/SidebarContext.jsx';
+import NewvaccineContextProvider from "./Context/NewvaccineContext.jsx";
 
 
 let routers = createBrowserRouter([
@@ -200,7 +201,9 @@ export default function App() {
   },[]);
 
   return <>
+ return <>
       <SidebarProvider>
+        <NewvaccineContextProvider>
     <VaccinetableentriescontextProvider>
   <BreedContextProvider>
   <LocationContextshedProvider>
@@ -235,7 +238,10 @@ export default function App() {
   </LocationContextshedProvider>
   </BreedContextProvider>
   </VaccinetableentriescontextProvider>
+        </NewvaccineContextProvider>
+
   </SidebarProvider>
+  </>
   </>
 }
 
