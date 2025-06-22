@@ -177,7 +177,7 @@ function VaccineTable() {
         <>
             {isLoading ? (
                 <div className='d-flex justify-content-center align-items-center' style={{ height: '100vh' }}>
-                    <Rings visible={true} height="100" width="100" color="#9cbd81" ariaLabel="rings-loading" />
+                    <Rings visible={true} height="100" width="100" color="#21763e" ariaLabel="rings-loading" />
                 </div>
             ) : (
                 <div className="container mt-5 vaccine-table-container">

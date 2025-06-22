@@ -19,7 +19,7 @@ function ExcludedServices() {
                         <div className="info">
                             <h3>{t('show_data')}</h3>
                             <p>{t('all_excluded_details')}</p>
-                            <button className='btn mb-2 me-2' style={{ backgroundColor: '#FAA96C', color: 'white' }}>
+                            <button className='btn mb-2 me-2' style={{ backgroundColor: '#21763e', color: 'white' }}>
                                 {t('go_to_excluded_data')}
                             </button>
                         </div>
@@ -33,7 +33,7 @@ function ExcludedServices() {
                         <div className="info">
                             <h3>{t('add_excluded')}</h3>
                             <p>{t('add_excluded_details')}</p>
-                            <button className='btn mb-2 me-2' style={{ backgroundColor: '#FAA96C', color: 'white' }}>
+                            <button className='btn mb-2 me-2' style={{ backgroundColor: '#21763e', color: 'white' }}>
                                 {t('go_to_add_excluded')}
                             </button>
                         </div>

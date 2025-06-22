@@ -15,7 +15,7 @@
 
 .button {  
     margin-top: 30px;
-    background-color: #FAA96C !important;
+    background-color: #21763e !important;
     color: #ffffff;  
     border: none;  
     padding: 10px 20px;  
@@ -26,7 +26,7 @@
 }  
 
 .button:hover {  
-    background-color: #FAA96C;  
+    background-color: #21763e;  
 }  
 
 .animalData {  
@@ -138,3 +138,18 @@
         flex-direction: column;  
     }  
 }  
+
+.buttonGroup {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.downloadButton {
+    border-radius: 5px ;
+    background-color: #21763e !important;
+}
+
+.downloadButton:hover {
+    background-color: #21763e;
+}

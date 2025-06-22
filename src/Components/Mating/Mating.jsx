@@ -5,14 +5,14 @@ import { IoIosSave } from "react-icons/io";
 import Swal from 'sweetalert2';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-
+import './Mating.css';
 
 function Mating() {
     const [showAlert, setShowAlert] = useState(false);
     const [error, setError] = useState(null);
     const [isLoading, setisLoading] = useState(false);
     const [matingData, setMatingData] = useState(null);
-    const [isSubmitted, setIsSubmitted] = useState(false); // حالة جديدة لتتبع الإرسال
+    const [isSubmitted, setIsSubmitted] = useState(false);
     const { t } = useTranslation();
     let navigate = useNavigate();
 
@@ -23,7 +23,6 @@ function Mating() {
     };
 
     async function submitMating(value) {
-        // إذا كانت البيانات قد أرسلت بالفعل، لا تفعل شيئاً
         if (isSubmitted) {
             return;
         }
@@ -42,9 +41,8 @@ function Mating() {
                 setisLoading(false);
                 setMatingData(data.data.mating);
                 setShowAlert(true);
-                setIsSubmitted(true); // تحديث حالة الإرسال
+                setIsSubmitted(true);
                 formik.setFieldValue('sonarDate', data.data.mating.sonarDate);
-                // إعادة تعيين النموذج
                 formik.resetForm();
                 
                 Swal.fire({
@@ -75,109 +73,127 @@ function Mating() {
     });
 
     return (
-        <div className="container">
-            <div className="title2">{t('mating')}</div>
-            <p className="text-danger">{error}</p>
+        <div className="mating-details-container">
+            <div className="mating-details-header">
+                <h1>{t('mating')}</h1>
+            </div>
+
+            {error && <div className="error-message">{error}</div>}
             
-    
-
             {showAlert && matingData && matingData.sonarDate && (
-    <div className="alert mt-5 p-4 alert-success">
-        {t('sonar_date')}: {new Date(matingData.sonarDate).toLocaleDateString()}
-    </div>
-)}
+                <div className="success-message">
+                    <h3>{t('sonar_date')}</h3>
+                    <p>{new Date(matingData.sonarDate).toLocaleDateString()}</p>
+                </div>
+            )}
 
-            <form onSubmit={formik.handleSubmit} className="mt-5">
-                
-                {isLoading ? (
-                    <button type="submit" className="btn button2" disabled>
-                        <i className="fas fa-spinner fa-spin"></i>
+            <form onSubmit={formik.handleSubmit} className="mating-form">
+                <div className="form-grid">
+                    <div className="form-section">
+                        <h2>{t('basic_info')}</h2>
+                        <div className="input-group">
+                            <label htmlFor="tagId">{t('female_tag_id')}</label>
+                            <input 
+                                type="text"
+                                id="tagId"
+                                name="tagId"
+                                value={formik.values.tagId}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                disabled={isSubmitted}
+                                placeholder={t('enter_tag_id')}
+                            />
+                            {formik.errors.tagId && formik.touched.tagId && (
+                                <p className="text-danger">{formik.errors.tagId}</p>
+                            )}
+                        </div>
+
+                        <div className="input-group">
+                            <label htmlFor="matingType">{t('mating_type')}</label>
+                            <select 
+                                id="matingType"
+                                name="matingType"
+                                value={formik.values.matingType}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                disabled={isSubmitted}
+                            >
+                                <option value="">{t('mating_type')}</option>
+                                <option value="Natural">{t('natural')}</option>
+                            </select>
+                            {formik.errors.matingType && formik.touched.matingType && (
+                                <p className="text-danger">{formik.errors.matingType}</p>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="form-section">
+                        <h2>{t('mating_details')}</h2>
+                        <div className="input-group">
+                            <label htmlFor="maleTag_id">{t('male_tag_id')}</label>
+                            <input 
+                                type="text"
+                                id="maleTag_id"
+                                name="maleTag_id"
+                                value={formik.values.maleTag_id}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                disabled={isSubmitted}
+                                placeholder={t('enter_male_tag_id')}
+                            />
+                            {formik.errors.maleTag_id && formik.touched.maleTag_id && (
+                                <p className="text-danger">{formik.errors.maleTag_id}</p>
+                            )}
+                        </div>
+
+                        <div className="input-group">
+                            <label htmlFor="matingDate">{t('mating_date')}</label>
+                            <input 
+                                type="date"
+                                id="matingDate"
+                                name="matingDate"
+                                value={formik.values.matingDate}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                disabled={isSubmitted}
+                            />
+                            {formik.errors.matingDate && formik.touched.matingDate && (
+                                <p className="text-danger">{formik.errors.matingDate}</p>
+                            )}
+                        </div>
+
+                        <div className="input-group">
+                            <label htmlFor="checkDays">{t('check_Days')}</label>
+                            <select 
+                                id="checkDays"
+                                name="checkDays"
+                                value={formik.values.checkDays}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                disabled={isSubmitted}
+                            >
+                                <option value="" disabled>{t('select_check_Days')}</option>
+                                <option value="45">{t('45')}</option>
+                                <option value="60">{t('60')}</option>
+                                <option value="90">{t('90')}</option>
+                            </select>
+                            {formik.errors.checkDays && formik.touched.checkDays && (
+                                <p className="text-danger">{formik.errors.checkDays}</p>
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                <div className="form-actions">
+                    <button type="submit" className="save-button" disabled={isLoading || isSubmitted}>
+                        {isLoading ? (
+                            <span className="loading-spinner"></span>
+                        ) : (
+                            <>
+                                <IoIosSave /> {t('save')}
+                            </>
+                        )}
                     </button>
-                ) : (
-                    <button 
-                        type="submit" 
-                        className="btn button2"
-                        disabled={isSubmitted} // تعطيل الزر إذا تم الإرسال
-                    >
-                        <IoIosSave /> {t('save')}
-                    </button>
-                )}
-                
-                <div className="animaldata">
-                    <div className="input-box">
-                        <label className="label" htmlFor="tagId">{t('female_tag_id')}</label>
-                        <input 
-                            onBlur={formik.handleBlur} 
-                            onChange={formik.handleChange} 
-                            value={formik.values.tagId} 
-                            placeholder={t('enter_tag_id')} 
-                            id="tagId" 
-                            type="text" 
-                            className="input2" 
-                            name="tagId" 
-                            disabled={isSubmitted} // تعطيل الحقل إذا تم الإرسال
-                        />
-                    </div>
-                    <div className="input-box">
-                        <label className="label" htmlFor="matingType">{t('mating_type')}</label>
-                        <select 
-                            value={formik.values.matingType} 
-                            onChange={formik.handleChange} 
-                            onBlur={formik.handleBlur} 
-                            className="input2" 
-                            name="matingType" 
-                            id="matingType"
-                            disabled={isSubmitted} // تعطيل الحقل إذا تم الإرسال
-                        >
-                            <option value="">{t('mating_type')}</option>
-                            <option value="Natural">{t('natural')}</option>
-                        </select>
-                    </div>
-                    <div className="input-box">
-                        <label className="label" htmlFor="maleTag_id">{t('male_tag_id')}</label>
-                        <input 
-                            onBlur={formik.handleBlur} 
-                            onChange={formik.handleChange} 
-                            value={formik.values.maleTag_id} 
-                            placeholder={t('enter_male_tag_id')} 
-                            id="maleTag_id" 
-                            type="text" 
-                            className="input2" 
-                            name="maleTag_id" 
-                            disabled={isSubmitted} // تعطيل الحقل إذا تم الإرسال
-                        />
-                    </div>
-                    <div className="input-box">
-                        <label className="label" htmlFor="matingDate">{t('mating_date')}</label>
-                        <input 
-                            onBlur={formik.handleBlur} 
-                            onChange={formik.handleChange} 
-                            value={formik.values.matingDate} 
-                            id="matingDate" 
-                            type="date" 
-                            className="input2" 
-                            name="matingDate" 
-                            disabled={isSubmitted} // تعطيل الحقل إذا تم الإرسال
-                        />
-                    </div>
-                    <div className="input-box">
-                        <label className="label" htmlFor="checkDays">{t('check_Days')}</label>
-                        <select 
-                            onBlur={formik.handleBlur} 
-                            onChange={formik.handleChange} 
-                            value={formik.values.checkDays} 
-                            id="checkDays" 
-                            className="input2" 
-                            name="checkDays"
-                            disabled={isSubmitted} // تعطيل الحقل إذا تم الإرسال
-                        >
-                            <option value="" disabled>{t('select_check_Days')}</option>
-                            <option value="45">{t('45')}</option>
-                            <option value="60">{t('60')}</option>
-                            <option value="90">{t('90')}</option>
-                        </select>
-                    </div>
-                    
                 </div>
             </form>
         </div>

@@ -6,6 +6,7 @@ import { IoIosSave } from 'react-icons/io';
 import { Feedcontext } from '../../Context/FeedContext';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import './Feeding.css';
 
 export default function EditFodder() {
   const { t } = useTranslation();
@@ -109,65 +110,77 @@ export default function EditFodder() {
   };
 
   return (
-    <div className="container">
-      <div className="title2">{t('editFodder')}</div>
-      {error && <p className="text-danger">{error}</p>}
+    <div className="feeding-container">
+      <div className="feeding-header">
+        <h1>{t('editFodder')}</h1>
+      </div>
 
-      <form onSubmit={formik.handleSubmit}>
-        <button type="submit" className="btn button2" disabled={isLoading}>
-          {isLoading ? <i className="fas fa-spinner fa-spin"></i> : <IoIosSave />} {t('save')}
-        </button>
+      {error && <div className="error-message">{error}</div>}
 
-        <div className="animaldata">
-          <div className="input-box">
-            <label className="label" htmlFor="name">{t('name')}</label>
-            <input
-              {...formik.getFieldProps('name')}
-              id="name"
-              type="text"
-              className="input2"
-              placeholder={t('enterFeedName')}
-            />
-            {formik.touched.name && formik.errors.name && (
-              <p className="text-danger">{formik.errors.name}</p>
-            )}
-          </div>
-
-          {formik.values.feeds.map((feed, index) => (
-            <div key={index} className="input-box">
-              <label className="label" htmlFor={`feeds[${index}].feedId`}>{t('feedName')}</label>
-              <select
-                id={`feeds[${index}].feedId`}
-                name={`feeds[${index}].feedId`}
-                className="input2"
-                value={feed.feedId}
-                onChange={(e) => handleFeedChange(index, 'feedId', e.target.value)}
-                onBlur={formik.handleBlur}
-              >
-                <option value="">{t('selectFeed')}</option>
-                {feeds.map((feedOption) => (
-                  <option key={feedOption._id} value={feedOption._id}>
-                    {feedOption.name}
-                  </option>
-                ))}
-              </select>
-
-              <label className="label" htmlFor={`feeds[${index}].quantity`}>{t('quantity')}</label>
+      <form onSubmit={formik.handleSubmit} className="feeding-form">
+        <div className="form-grid">
+          <div className="form-section">
+            <h2>{t('fodderDetails')}</h2>
+            <div className="input-group">
+              <label htmlFor="name">{t('name')}</label>
               <input
-                type="number"
-                id={`feeds[${index}].quantity`}
-                name={`feeds[${index}].quantity`}
-                className="input2"
-                value={feed.quantity}
-                onChange={(e) => handleFeedChange(index, 'quantity', e.target.value)}
-                onBlur={formik.handleBlur}
-                placeholder={t('enterQuantity')}
+                {...formik.getFieldProps('name')}
+                id="name"
+                type="text"
+                placeholder={t('enterFeedName')}
               />
             </div>
-          ))}
+          </div>
+
+          <div className="form-section">
+            <h2>{t('feedComponents')}</h2>
+            {formik.values.feeds.map((feed, index) => (
+              <div key={index} className="input-group">
+                <label htmlFor={`feeds[${index}].feedId`}>{t('feedName')}</label>
+                <select
+                  id={`feeds[${index}].feedId`}
+                  name={`feeds[${index}].feedId`}
+                  value={feed.feedId}
+                  onChange={(e) => handleFeedChange(index, 'feedId', e.target.value)}
+                  onBlur={formik.handleBlur}
+                >
+                  <option value="">{t('selectFeed')}</option>
+                  {feeds.map((feedOption) => (
+                    <option key={feedOption._id} value={feedOption._id}>
+                      {feedOption.name}
+                    </option>
+                  ))}
+                </select>
+
+                <label htmlFor={`feeds[${index}].quantity`}>{t('quantity')}</label>
+                <input
+                  type="number"
+                  id={`feeds[${index}].quantity`}
+                  name={`feeds[${index}].quantity`}
+                  value={feed.quantity}
+                  onChange={(e) => handleFeedChange(index, 'quantity', e.target.value)}
+                  onBlur={formik.handleBlur}
+                  placeholder={t('enterQuantity')}
+                />
+              </div>
+            ))}
+            <button type="button" onClick={addFeed} className="add-feed-button">
+              +
+            </button>
+          </div>
         </div>
 
-        <button type="button" onClick={addFeed} className="btn button2">+</button>
+        <div className="form-actions">
+          <button type="submit" className="save-button" disabled={isLoading}>
+            {isLoading ? (
+              <span className="loading-spinner"></span>
+            ) : (
+              <>
+                <IoIosSave /> {t('save')}
+              </>
+            )}
+          </button>
+        </div>
       </form>
     </div>
   );

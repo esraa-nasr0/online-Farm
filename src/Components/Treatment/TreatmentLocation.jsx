@@ -7,6 +7,8 @@ import * as Yup from 'yup';
 import { TreatmentContext } from '../../Context/TreatmentContext';
 import { LocationContext } from '../../Context/LocationContext';
 import { useTranslation } from 'react-i18next';
+import './Treatment.css';
+import { useNavigate } from 'react-router-dom';
 
 
 function TreatmentLocation() {
@@ -18,15 +20,14 @@ function TreatmentLocation() {
     const { getTreatmentMenue } = useContext(TreatmentContext);
     const { LocationMenue } = useContext(LocationContext);
     const { t } = useTranslation();
+    const navigate = useNavigate();
     
-// Helper function to generate headers with the latest token
-const getHeaders = () => {
-    const Authorization = localStorage.getItem('Authorization');
-    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-    return {
-        Authorization: formattedToken
+    const getHeaders = () => {
+        const Authorization = localStorage.getItem('Authorization');
+        const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+        return { Authorization: formattedToken };
     };
-    };
+
     const fetchLocation = async () => {
         try {
             const { data } = await LocationMenue();
@@ -41,7 +42,6 @@ const getHeaders = () => {
         }
     };
     
-    // Fetch treatment menu options when the component mounts
     const fetchTreatments = async () => {
         try {
             const { data } = await getTreatmentMenue();
@@ -63,10 +63,8 @@ const getHeaders = () => {
         fetchTreatments();
     }, [getTreatmentMenue]);
 
-
     async function submitTreatment(values) {
         const headers = getHeaders();
-        console.log('Form Values:', values);
         setIsLoading(true);
         setError(null);
         try {
@@ -78,37 +76,38 @@ const getHeaders = () => {
             if (data.status === "SUCCESS") {
                 setIsLoading(false);
                 Swal.fire({
-                    title: 'Success!',
-                    text: 'Treatment data added successfully!',
+                    title: t('success'),
+                    text: t('treatment_added_successfully'),
                     icon: 'success',
-                    confirmButtonText: 'OK',
+                    confirmButtonText: t('ok'),
                 });
+                navigate('/treatAnimalTable');
             } else {
                 setIsLoading(false);
-                setError('An error occurred during the submission.');
+                setError(t('error_occurred'));
             }
         } catch (err) {
-            console.log('Error occurred:', err);
+            console.error('Error occurred:', err);
             setIsLoading(false);
+            setError(err.response?.data?.message || t('error_occurred'));
         }
     }
     
-    const validationSchema = Yup.object({
-        locationShed: Yup.string().required('Location shed is required'),
-        date: Yup.date().required('Date is required'),
-        treatments: Yup.array()
-            .of(
-                Yup.object({
-                    treatmentId: Yup.string().required('Treatment ID is required'),
-                    volume: Yup.number()
-                        .required('Volume is required')
-                        .positive('Volume must be positive')
-                        .typeError('Volume must be a valid number'),
-                })
-            )
-            .min(1, 'At least one treatment must be selected'),
-    });
-
+    // const validationSchema = Yup.object({
+    //     locationShed: Yup.string().required(t('location_shed_required')),
+    //     date: Yup.date().required(t('date_required')),
+    //     treatments: Yup.array()
+    //         .of(
+    //             Yup.object({
+    //                 treatmentId: Yup.string().required(t('treatment_id_required')),
+    //                 volume: Yup.number()
+    //                     .required(t('volume_required'))
+    //                     .positive(t('volume_positive'))
+    //                     .typeError(t('volume_valid_number')),
+    //             })
+    //         )
+    //         .min(1, t('at_least_one_treatment')),
+    // });
 
     const formik = useFormik({
         initialValues: {
@@ -116,7 +115,7 @@ const getHeaders = () => {
             treatments: [{ treatmentId: "", volume: "" }],
             date: "",
         },
-        validationSchema,
+        // validationSchema,
         onSubmit: submitTreatment,
     });
 
@@ -127,7 +126,6 @@ const getHeaders = () => {
         ]);
     };
 
-    // Handling treatment change
     const handleTreatmentChange = (e, index) => {
         const { name, value } = e.target;
         const updatedTreatments = [...formik.values.treatments];
@@ -135,97 +133,102 @@ const getHeaders = () => {
         formik.setFieldValue('treatments', updatedTreatments);
     };
 
-
     return (
-        <div className='container'>
-            <div className="title2">Treatment by Location Shed</div>
-            {error && <p className="text-danger">{error}</p>}
-            <form onSubmit={formik.handleSubmit} className='mt-5'>
-                {isLoading ? (
-                    <button type="submit" className="btn button2" disabled>
-                        <i className="fas fa-spinner fa-spin"></i>
-                    </button>
-                ) : (
-                    <button type="submit" className="btn button2">
-                        <IoIosSave /> Save
-                    </button>
-                )}
+        <div className="treatment-container">
+            <div className="treatment-header">
+                <h1>{t('treatment_by_location')}</h1>
+            </div>
 
-                <div className='animaldata'>
-                    <div className="input-box">
-                        <label className="label" htmlFor="locationShed">{t('location_shed')}</label>
-                        <select
-                            id="locationShed"
-                            name="locationShed"
-                            className="input2"
-                            value={formik.values.locationShed}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                        >
-                            <option value="">{t('select_location_shed')}</option>
-                            {locationSheds?.map((shed) => (
-                                <option key={shed._id} value={shed._id}>{shed.locationShedName}</option>
-                            ))}
-                        </select>
-                        {formik.touched.locationShed && formik.errors.locationShed && (
-                            <p className="text-danger">{formik.errors.locationShed}</p>
-                        )}
-                    </div>
+            {error && <div className="error-message">{error}</div>}
 
-
-                    {/* Date Input */}
-                    <div className="input-box">
-                        <label className="label" htmlFor="date">Date</label>
-                        <input
-                            autoComplete="off"
-                            onBlur={formik.handleBlur}
-                            onChange={formik.handleChange}
-                            value={formik.values.date}
-                            placeholder="Enter The Treatment Date"
-                            id="date"
-                            type="date"
-                            className="input2"
-                            name="date"
-                            aria-label="Treatment Date"
-                        />
-                        {formik.errors.date && formik.touched.date && (
-                            <p className="text-danger">{formik.errors.date}</p>
-                        )}
-                    </div>
-
-                    {/* Loop through treatments and render form fields */}
-                    {formik.values.treatments.map((treatment, index) => (
-                        <div key={index} className="input-box">
-                            <label className="label" htmlFor={`treatment-${index}`}>{t('Treatment Name')}</label>
+            <form onSubmit={formik.handleSubmit} className="treatment-form">
+                <div className="form-grid">
+                    <div className="form-section">
+                        <h2>{t('location_details')}</h2>
+                        <div className="input-group">
+                            <label htmlFor="locationShed">{t('location_shed')}</label>
                             <select
-                                id={`treatment-${index}`}
-                                name="treatmentId"
-                                className="input2"
-                                value={treatment.treatmentId}
-                                onChange={(e) => handleTreatmentChange(e, index)}
+                                id="locationShed"
+                                {...formik.getFieldProps('locationShed')}
                             >
-                                <option value="">{t('Select Treatment')}</option>
-                                {treatmentOptions?.map((option) => (
-                                    <option key={option._id} value={option._id}>{option.name}</option>
+                                <option value="">{t('select_location_shed')}</option>
+                                {locationSheds?.map((shed) => (
+                                    <option key={shed._id} value={shed._id}>
+                                        {shed.locationShedName}
+                                    </option>
                                 ))}
                             </select>
-                            <label className="label" htmlFor={`volume-${index}`}>{t('Volume')}</label>
-                            <input
-                                type="number"
-                                placeholder={t('Enter The Volume')}
-                                className="input2"
-                                name="volume"
-                                value={treatment.volume}
-                                onChange={(e) => handleTreatmentChange(e, index)}
-                            />
+                            {formik.errors.locationShed && formik.touched.locationShed && (
+                                <p className="error-message">{formik.errors.locationShed}</p>
+                            )}
                         </div>
-                    ))}
 
+                        <div className="input-group">
+                            <label htmlFor="date">{t('date')}</label>
+                            <input
+                                id="date"
+                                type="date"
+                                {...formik.getFieldProps('date')}
+                            />
+                            {formik.errors.date && formik.touched.date && (
+                                <p className="error-message">{formik.errors.date}</p>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="form-section">
+                        <h2>{t('treatments')}</h2>
+                        {formik.values.treatments.map((treatment, index) => (
+                            <div key={index} className="input-group">
+                                <label htmlFor={`treatment-${index}`}>{t('treatment_name')}</label>
+                                <select
+                                    id={`treatment-${index}`}
+                                    name="treatmentId"
+                                    value={treatment.treatmentId}
+                                    onChange={(e) => handleTreatmentChange(e, index)}
+                                >
+                                    <option value="">{t('select_treatment')}</option>
+                                    {treatmentOptions?.map((option) => (
+                                        <option key={option._id} value={option._id}>
+                                            {option.name}
+                                        </option>
+                                    ))}
+                                </select>
+                                {formik.errors.treatments?.[index]?.treatmentId && (
+                                    <p className="error-message">{formik.errors.treatments[index].treatmentId}</p>
+                                )}
+
+                                <label htmlFor={`volume-${index}`}>{t('volume')}</label>
+                                <input
+                                    type="number"
+                                    id={`volume-${index}`}
+                                    name="volume"
+                                    value={treatment.volume}
+                                    onChange={(e) => handleTreatmentChange(e, index)}
+                                    placeholder={t('enter_volume')}
+                                />
+                                {formik.errors.treatments?.[index]?.volume && (
+                                    <p className="error-message">{formik.errors.treatments[index].volume}</p>
+                                )}
+                            </div>
+                        ))}
+                    </div>
                 </div>
 
-                <button type="button" onClick={addTreat} className="btn button2">
-                    +
-                </button>
+                <div className="form-actions">
+                    <button type="button" onClick={addTreat} className="add-treatment-button">
+                        +
+                    </button>
+                    {isLoading ? (
+                        <button type="submit" className="save-button" disabled>
+                            <span className="loading-spinner"></span>
+                        </button>
+                    ) : (
+                        <button type="submit" className="save-button">
+                            <IoIosSave /> {t('save')}
+                        </button>
+                    )}
+                </div>
             </form>
         </div>
     );

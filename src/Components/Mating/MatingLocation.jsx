@@ -6,19 +6,18 @@ import Swal from 'sweetalert2';
 import { useTranslation } from 'react-i18next';
 import { LocationContext } from '../../Context/LocationContext';
 import { useNavigate } from 'react-router-dom';
-
+import './Mating.css';
 
 function MatingLocation() {
     const [showAlert, setShowAlert] = useState(false);
     const [error, setError] = useState(null);
     const [isLoading, setisLoading] = useState(false);
     const [matingData, setMatingData] = useState(null);
-    const [locationSheds, setLocationSheds] = useState([]); // تغيير الاسم لتجنب الخلط
-    const [isSubmitted, setIsSubmitted] = useState(false); // حالة جديدة لتتبع الإرسال
+    const [locationSheds, setLocationSheds] = useState([]);
+    const [isSubmitted, setIsSubmitted] = useState(false);
     const { t } = useTranslation();
-    const {LocationMenue} = useContext(LocationContext);
-        let navigate = useNavigate();
-    
+    const { LocationMenue } = useContext(LocationContext);
+    let navigate = useNavigate();
 
     const getHeaders = () => {
         const Authorization = localStorage.getItem('Authorization');
@@ -30,7 +29,7 @@ function MatingLocation() {
         try {
             const { data } = await LocationMenue();
             if (data.status === 'success' && Array.isArray(data.data.locationSheds)) {
-                setLocationSheds(data.data.locationSheds); // استخدام setLocationSheds بدلاً من setMatingData
+                setLocationSheds(data.data.locationSheds);
             } else {
                 setLocationSheds([]); 
             }
@@ -45,7 +44,6 @@ function MatingLocation() {
     }, [LocationMenue]);
 
     async function submitMating(value) {
-        // إذا كانت البيانات قد أرسلت بالفعل، لا تفعل شيئاً
         if (isSubmitted) {
             return;
         }
@@ -65,8 +63,7 @@ function MatingLocation() {
                 setMatingData(data.data.matings);
                 formik.setFieldValue('sonarDate', data.data.matings[0]?.sonarDate);
                 setShowAlert(true);
-                setIsSubmitted(true); // تحديث حالة الإرسال
-                // إعادة تعيين النموذج
+                setIsSubmitted(true);
                 formik.resetForm();
                 
                 Swal.fire({
@@ -96,109 +93,130 @@ function MatingLocation() {
     });
 
     return (
-        <div className="container">
-            <div className="title2">{t('mating')}</div>
-            <p className="text-danger">{error}</p>
+        <div className="mating-details-container">
+            <div className="mating-details-header">
+                <h1>{t('mating')}</h1>
+            </div>
+
+            {error && <div className="error-message">{error}</div>}
             
             {showAlert && matingData && matingData.length > 0 && (
-    <div className="alert mt-5 p-4 alert-success">
-        {t('sonar_date')}: {new Date(matingData[0].sonarDate).toLocaleDateString()}
-    </div>
-)}
+                <div className="success-message">
+                    <h3>{t('sonar_date')}</h3>
+                    <p>{new Date(matingData[0].sonarDate).toLocaleDateString()}</p>
+                </div>
+            )}
 
-            <form onSubmit={formik.handleSubmit} className="mt-5">
-                
-                {isLoading ? (
-                    <button type="submit" className="btn button2" disabled>
-                        <i className="fas fa-spinner fa-spin"></i>
+            <form onSubmit={formik.handleSubmit} className="mating-form">
+                <div className="form-grid">
+                    <div className="form-section">
+                        <h2>{t('location_info')}</h2>
+                        <div className="input-group">
+                            <label htmlFor="locationShed">{t('location_shed')}</label>
+                            <select
+                                id="locationShed"
+                                name="locationShed"
+                                value={formik.values.locationShed}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                disabled={isSubmitted}
+                            >
+                                <option value="">{t('select_location_shed')}</option>
+                                {locationSheds.map((shed) => (
+                                    <option key={shed._id} value={shed._id}>{shed.locationShedName}</option>
+                                ))}
+                            </select>
+                            {formik.errors.locationShed && formik.touched.locationShed && (
+                                <p className="text-danger">{formik.errors.locationShed}</p>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="form-section">
+                        <h2>{t('mating_details')}</h2>
+                        <div className="input-group">
+                            <label htmlFor="matingType">{t('mating_type')}</label>
+                            <select 
+                                id="matingType"
+                                name="matingType"
+                                value={formik.values.matingType}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                disabled={isSubmitted}
+                            >
+                                <option value="">{t('mating_type')}</option>
+                                <option value="Natural">{t('natural')}</option>
+                            </select>
+                            {formik.errors.matingType && formik.touched.matingType && (
+                                <p className="text-danger">{formik.errors.matingType}</p>
+                            )}
+                        </div>
+
+                        <div className="input-group">
+                            <label htmlFor="maleTag_id">{t('male_tag_id')}</label>
+                            <input 
+                                type="text"
+                                id="maleTag_id"
+                                name="maleTag_id"
+                                value={formik.values.maleTag_id}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                disabled={isSubmitted}
+                                placeholder={t('enter_male_tag_id')}
+                            />
+                            {formik.errors.maleTag_id && formik.touched.maleTag_id && (
+                                <p className="text-danger">{formik.errors.maleTag_id}</p>
+                            )}
+                        </div>
+
+                        <div className="input-group">
+                            <label htmlFor="matingDate">{t('mating_date')}</label>
+                            <input 
+                                type="date"
+                                id="matingDate"
+                                name="matingDate"
+                                value={formik.values.matingDate}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                disabled={isSubmitted}
+                            />
+                            {formik.errors.matingDate && formik.touched.matingDate && (
+                                <p className="text-danger">{formik.errors.matingDate}</p>
+                            )}
+                        </div>
+
+                        <div className="input-group">
+                            <label htmlFor="checkDays">{t('check_Days')}</label>
+                            <select 
+                                id="checkDays"
+                                name="checkDays"
+                                value={formik.values.checkDays}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                disabled={isSubmitted}
+                            >
+                                <option value="" disabled>{t('select_check_Days')}</option>
+                                <option value="45">{t('45')}</option>
+                                <option value="60">{t('60')}</option>
+                                <option value="90">{t('90')}</option>
+                            </select>
+                            {formik.errors.checkDays && formik.touched.checkDays && (
+                                <p className="text-danger">{formik.errors.checkDays}</p>
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                <div className="form-actions">
+                    <button type="submit" className="save-button" disabled={isLoading || isSubmitted}>
+                        {isLoading ? (
+                            <span className="loading-spinner"></span>
+                        ) : (
+                            <>
+                                <IoIosSave /> {t('save')}
+                            </>
+                        )}
                     </button>
-                ) : (
-                    <button 
-                        type="submit" 
-                        className="btn button2"
-                        disabled={isSubmitted} // تعطيل الزر إذا تم الإرسال
-                    >
-                        <IoIosSave /> {t('save')}
-                    </button>
-                )}
-                <div className="animaldata">
-                    <div className="input-box">
-                        <label className="label" htmlFor="locationShed">{t('location_shed')}</label>
-                        <select
-                            id="locationShed"
-                            name="locationShed"
-                            className="input2"
-                            value={formik.values.locationShed}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            disabled={isSubmitted} // تعطيل الحقل إذا تم الإرسال
-                        >
-                            <option value="">{t('select_location_shed')}</option>
-                            {locationSheds.map((shed) => (
-                                <option key={shed._id} value={shed._id}>{shed.locationShedName}</option>
-                            ))}
-                        </select>
-                        {formik.errors.locationShed && formik.touched.locationShed && <p className="text-danger">{formik.errors.locationShed}</p>}
-                    </div>
-                    <div className="input-box">
-                        <label className="label" htmlFor="matingType">{t('mating_type')}</label>
-                        <select 
-                            value={formik.values.matingType} 
-                            onChange={formik.handleChange} 
-                            onBlur={formik.handleBlur} 
-                            className="input2" 
-                            name="matingType" 
-                            id="matingType"
-                            disabled={isSubmitted} // تعطيل الحقل إذا تم الإرسال
-                        >
-                            <option value="">{t('mating_type')}</option>
-                            <option value="Natural">{t('natural')}</option>
-                        </select>
-                    </div>
-                    <div className="input-box">
-                        <label className="label" htmlFor="maleTag_id">{t('male_tag_id')}</label>
-                        <input 
-                            onBlur={formik.handleBlur} 
-                            onChange={formik.handleChange} 
-                            value={formik.values.maleTag_id} 
-                            placeholder={t('enter_male_tag_id')} 
-                            id="maleTag_id" 
-                            type="text" 
-                            className="input2" 
-                            name="maleTag_id" 
-                            disabled={isSubmitted} // تعطيل الحقل إذا تم الإرسال
-                        />
-                    </div>
-                    <div className="input-box">
-                        <label className="label" htmlFor="matingDate">{t('mating_date')}</label>
-                        <input 
-                            onBlur={formik.handleBlur} 
-                            onChange={formik.handleChange} 
-                            value={formik.values.matingDate} 
-                            id="matingDate" 
-                            type="date" 
-                            className="input2" 
-                            name="matingDate" 
-                            disabled={isSubmitted} // تعطيل الحقل إذا تم الإرسال
-                        />
-                    </div>
-                    <div className="input-box">
-                        <label className="label" htmlFor="checkDays">{t('check_Days')}</label>
-                        <select 
-                            onBlur={formik.handleBlur} 
-                            onChange={formik.handleChange} 
-                            value={formik.values.checkDays} 
-                            id="checkDays" 
-                            className="input2" 
-                            name="checkDays"
-                            disabled={isSubmitted} // تعطيل الحقل إذا تم الإرسال
-                        >
-                            <option value="" disabled>{t('select_check_Days')}</option>
-                            <option value="45">{t('45')}</option>
-                            <option value="60">{t('60')}</option>
-                            <option value="90">{t('90')}</option>
-                        </select>
-                    </div>
                 </div>
             </form>
         </div>

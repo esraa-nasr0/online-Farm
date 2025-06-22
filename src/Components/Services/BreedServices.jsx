@@ -19,7 +19,7 @@ function BreedServices() {
                         <div className="info">
                             <h3>{t('show_data')}</h3>
                             <p>{t('all_breed_details')}</p>
-                            <button className='btn mb-2 me-2' style={{ backgroundColor: '#FAA96C', color: 'white' }}>
+                            <button className='btn mb-2 me-2' style={{ backgroundColor: '#21763e', color: 'white' }}>
                                 {t('go_to_breed_data')}
                             </button>
                         </div>
@@ -33,7 +33,7 @@ function BreedServices() {
                         <div className="info">
                             <h3>{t('add_breed')}</h3>
                             <p>{t('add_breed_details')}</p>
-                            <button className='btn mb-2 me-2' style={{ backgroundColor: '#FAA96C', color: 'white' }}>
+                            <button className='btn mb-2 me-2' style={{ backgroundColor: '#21763e', color: 'white' }}>
                                 {t('go_to_add_breed')}
                             </button>
                         </div>

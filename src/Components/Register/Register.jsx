@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import * as Yup from "yup";
 import style from "./Register.module.css";
-import { jwtDecode } from 'jwt-decode';
+import { jwtDecode } from "jwt-decode";
 import { CgShapeRhombus } from "react-icons/cg";
 
 export default function Register() {
@@ -40,9 +40,7 @@ export default function Register() {
       .max(50, "name maxlength is 50")
       .required("name is required"),
 
-    email: Yup.string()
-      .email("email is invalid")
-      .required("email is required"),
+    email: Yup.string().email("email is invalid").required("email is required"),
 
     phone: Yup.string()
       .matches(phoneRegExp, "Phone number is not valid")
@@ -71,29 +69,36 @@ export default function Register() {
       password: "",
       confirmpassword: "",
       country: "",
+      registerationType: null,
     },
     validationSchema: validation,
     onSubmit: submitRegister,
     validateOnMount: true,
   });
-  
+
   React.useEffect(() => {
     formik.resetForm();
-    localStorage.removeItem('formData');
-    sessionStorage.removeItem('formData');
+    localStorage.removeItem("formData");
+    sessionStorage.removeItem("formData");
   }, []);
 
   return (
     <div className={style.loginPageBg}>
       <div className={style.loginCard}>
-        <div className={style.logo}><CgShapeRhombus /></div>
+        <div className={style.logo}>
+          <CgShapeRhombus />
+        </div>
         <h2 className={style.title}>Create an account</h2>
-        <p className={style.subtitle}>Please fill in your details to register.</p>
+        <p className={style.subtitle}>
+          Please fill in your details to register.
+        </p>
         <p className="text-danger">{error}</p>
         <form onSubmit={formik.handleSubmit}>
           <div className={style.formGrid}>
             <div className={style.inputGroup}>
-              <label className={style.label} htmlFor="name">Username</label>
+              <label className={style.label} htmlFor="name">
+                Username
+              </label>
               <input
                 className={style.input}
                 id="name"
@@ -110,7 +115,9 @@ export default function Register() {
             </div>
 
             <div className={style.inputGroup}>
-              <label className={style.label} htmlFor="email">Email</label>
+              <label className={style.label} htmlFor="email">
+                Email
+              </label>
               <input
                 className={style.input}
                 id="email"
@@ -127,7 +134,9 @@ export default function Register() {
             </div>
 
             <div className={style.inputGroup}>
-              <label className={style.label} htmlFor="phone">Phone Number</label>
+              <label className={style.label} htmlFor="phone">
+                Phone Number
+              </label>
               <input
                 className={style.input}
                 id="phone"
@@ -144,7 +153,9 @@ export default function Register() {
             </div>
 
             <div className={style.inputGroup}>
-              <label className={style.label} htmlFor="country">Country</label>
+              <label className={style.label} htmlFor="country">
+                Country
+              </label>
               <input
                 className={style.input}
                 id="country"
@@ -161,7 +172,9 @@ export default function Register() {
             </div>
 
             <div className={style.inputGroup}>
-              <label className={style.label} htmlFor="password">Password</label>
+              <label className={style.label} htmlFor="password">
+                Password
+              </label>
               <input
                 className={style.input}
                 id="password"
@@ -178,7 +191,9 @@ export default function Register() {
             </div>
 
             <div className={style.inputGroup}>
-              <label className={style.label} htmlFor="confirmpassword">Confirm Password</label>
+              <label className={style.label} htmlFor="confirmpassword">
+                Confirm Password
+              </label>
               <input
                 className={style.input}
                 id="confirmpassword"
@@ -189,22 +204,40 @@ export default function Register() {
                 onBlur={formik.handleBlur}
                 value={formik.values.confirmpassword}
               />
-              {formik.errors.confirmpassword && formik.touched.confirmpassword ? (
+              {formik.errors.confirmpassword &&
+              formik.touched.confirmpassword ? (
                 <p className="text-danger">{formik.errors.confirmpassword}</p>
+              ) : null}
+            </div>
+            <div className={style.inputGroup}>
+              <label className={style.label} htmlFor="registerationType">
+                Farm Type
+              </label>
+              <select
+                id="registerationType"
+                name="registerationType"
+                value={formik.values.registerationType}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                className={style.input}
+              >
+                <option value="">select Farm Type</option>
+                <option value="fattening">fattening</option>
+                <option value="breeding">breeding</option>
+              </select>
+              {formik.errors.registerationType &&
+              formik.touched.registerationType ? (
+                <p className="text-danger">{formik.errors.registerationType}</p>
               ) : null}
             </div>
           </div>
 
-          <button 
-            className={style.signInBtn} 
+          <button
+            className={style.signInBtn}
             type="submit"
             disabled={!(formik.isValid && formik.dirty)}
           >
-            {isLoading ? (
-              <i className="fas fa-spinner fa-spin"></i>
-            ) : (
-              "Sign up"
-            )}
+            {isLoading ? <i className="fas fa-spinner fa-spin"></i> : "Sign up"}
           </button>
 
           <div className={style.signupPrompt}>

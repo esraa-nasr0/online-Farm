@@ -5,6 +5,7 @@ import Swal from 'sweetalert2';
 import { IoIosSave } from 'react-icons/io';
 import { Feedcontext } from '../../Context/FeedContext';
 import { useTranslation } from 'react-i18next';
+import './Feeding.css';
 
 export default function Fodder() {
   const { t } = useTranslation();
@@ -13,8 +14,7 @@ export default function Fodder() {
   const [fooderData, setFooderData] = useState(null);
   const [feeds, setFeeds] = useState([]);
   const { getFodderMenue } = useContext(Feedcontext);
-  const [isSubmitted, setIsSubmitted] = useState(false); // حالة جديدة لتتبع الإرسال
-
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const getHeaders = () => {
     const Authorization = localStorage.getItem('Authorization');
@@ -38,8 +38,6 @@ export default function Fodder() {
   }, [getFodderMenue]);
 
   async function submitFodder(value) {
-    
-    // إذا كانت البيانات قد أرسلت بالفعل، لا تفعل شيئاً
     if (isSubmitted) {
       return;
     }
@@ -55,9 +53,8 @@ export default function Fodder() {
 
       if (data.status === 'success') {
         setIsLoading(false);
-        setIsSubmitted(true); // تحديث حالة الإرسال
-        formik.resetForm(); // إعادة تعيين النموذج
-        
+        setIsSubmitted(true);
+        formik.resetForm();
         setFooderData(data.data.fodder);
         Swal.fire({
           title: t('successTitle'),
@@ -82,21 +79,20 @@ export default function Fodder() {
   });
 
   const addFeed = () => {
-    if (!isSubmitted) { // لا تسمح بإضافة علف إذا تم الإرسال
+    if (!isSubmitted) {
       formik.setFieldValue('feeds', [...formik.values.feeds, { feedId: '', quantity: '' }]);
     }
   };
 
   const handleFeedChange = (index, field, value) => {
-    if (!isSubmitted) { // لا تسمح بتعديل البيانات إذا تم الإرسال
+    if (!isSubmitted) {
       const newFeeds = [...formik.values.feeds];
       newFeeds[index][field] = field === 'quantity' ? Number(value) : value;
       formik.setFieldValue('feeds', newFeeds);
     }
   };
 
-   // دالة لإعادة تعيين النموذج والسماح بإدخال جديد
-    const resetForm = () => {
+  const resetForm = () => {
     formik.resetForm({
       values: {
         name: '',
@@ -107,93 +103,92 @@ export default function Fodder() {
   };
 
   return (
-    <div className="container">
-      <div className="title2">{t('fodderTitle')}</div>
-      <p className="text-danger">{error}</p>
+    <div className="feeding-container">
+      <div className="feeding-header">
+        <h1>{t('fodderTitle')}</h1>
+      </div>
+
+      {error && <div className="error-message">{error}</div>}
+
       {isSubmitted && (
-        <div className="alert alert-success mt-3">
-          {t('fodderAddedSuccessfully')}
+        <div className="success-message">
+          <h3>{t('fodderAddedSuccessfully')}</h3>
         </div>
       )}
 
-      <form onSubmit={formik.handleSubmit}>
-        {isLoading ? (
-          <button type="submit" className="btn button2" disabled>
-            <i className="fas fa-spinner fa-spin"></i>
-          </button>
-        ) : (
-          <button type="submit" className="btn button2" disabled={isLoading || isSubmitted || !formik.isValid}>
-            <IoIosSave /> {t('save')}
-          </button>
-        )}
-
-        <div className="animaldata">
-          <div className="input-box">
-            <label className="label" htmlFor="name">
-              {t('foddernames')}
-            </label>
-            <input
-              {...formik.getFieldProps('name')}
-              placeholder={t('enterFeedName')}
-              id="name"
-              type="text"
-              className="input2"
-              disabled={isSubmitted}
-
-            />
-            {formik.touched.name && formik.errors.name && (
-              <p className="text-danger">{formik.errors.name}</p>
-            )}
+      <form onSubmit={formik.handleSubmit} className="feeding-form">
+        <div className="form-grid">
+          <div className="form-section">
+            <h2>{t('fodderDetails')}</h2>
+            <div className="input-group">
+              <label htmlFor="name">{t('foddernames')}</label>
+              <input
+                {...formik.getFieldProps('name')}
+                placeholder={t('enterFeedName')}
+                id="name"
+                type="text"
+                disabled={isSubmitted}
+              />
+              {formik.touched.name && formik.errors.name && (
+                <p className="text-danger">{formik.errors.name}</p>
+              )}
+            </div>
           </div>
 
-          {formik.values.feeds.map((feed, index) => (
-            <div key={index} className="input-box">
-              <label className="label" htmlFor={`feeds[${index}].feedId`}>
-                {t('feedName')}
-              </label>
-              <select
-                id={`feeds[${index}].feedId`}
-                name={`feeds[${index}].feedId`}
-                className="input2"
-                value={feed.feedId}
-                onChange={(e) => handleFeedChange(index, 'feedId', e.target.value)}
-                onBlur={formik.handleBlur}
-                disabled={isSubmitted}
+          <div className="form-section">
+            <h2>{t('feedComponents')}</h2>
+            {formik.values.feeds.map((feed, index) => (
+              <div key={index} className="input-group">
+                <label htmlFor={`feeds[${index}].feedId`}>{t('feedName')}</label>
+                <select
+                  id={`feeds[${index}].feedId`}
+                  name={`feeds[${index}].feedId`}
+                  value={feed.feedId}
+                  onChange={(e) => handleFeedChange(index, 'feedId', e.target.value)}
+                  onBlur={formik.handleBlur}
+                  disabled={isSubmitted}
+                >
+                  <option value="">{t('selectFeed')}</option>
+                  {feeds.map((feedOption) => (
+                    <option key={feedOption._id} value={feedOption._id}>
+                      {feedOption.name}
+                    </option>
+                  ))}
+                </select>
+                {formik.errors.feeds && formik.touched.feeds && (
+                  <p className="text-danger">{formik.errors.feeds}</p>
+                )}
 
-              >
-                <option value="">{t('selectFeed')}</option>
-                {feeds.map((feedOption) => (
-                  <option key={feedOption._id} value={feedOption._id}>
-                    {feedOption.name}
-                  </option>
-                ))}
-              </select>
-              {formik.errors.feeds && formik.touched.feeds && (
-                <p className="text-danger">{formik.errors.feeds}</p>
-              )}
-
-              <label className="label" htmlFor={`feeds[${index}].quantity`}>
-                {t('quantity')}
-              </label>
-              <input
-                type="number"
-                id={`feeds[${index}].quantity`}
-                name={`feeds[${index}].quantity`}
-                className="input2"
-                value={feed.quantity}
-                onChange={(e) => handleFeedChange(index, 'quantity', e.target.value)}
-                onBlur={formik.handleBlur}
-                placeholder={t('enterQuantity')}
-                disabled={isSubmitted}
-
-              />
-            </div>
-          ))}
+                <label htmlFor={`feeds[${index}].quantity`}>{t('quantity')}</label>
+                <input
+                  type="number"
+                  id={`feeds[${index}].quantity`}
+                  name={`feeds[${index}].quantity`}
+                  value={feed.quantity}
+                  onChange={(e) => handleFeedChange(index, 'quantity', e.target.value)}
+                  onBlur={formik.handleBlur}
+                  placeholder={t('enterQuantity')}
+                  disabled={isSubmitted}
+                />
+              </div>
+            ))}
+            <button type="button" onClick={addFeed} className="add-feed-button" disabled={isSubmitted}>
+              +
+            </button>
+          </div>
         </div>
 
-        <button type="button" onClick={addFeed} className="btn button2">
-          +
-        </button>
+        <div className="form-actions">
+          <button type="submit" className="save-button" disabled={isLoading || isSubmitted || !formik.isValid}>
+            {isLoading ? (
+              <span className="loading-spinner"></span>
+            ) : (
+              <>
+                <IoIosSave /> {t('save')}
+              </>
+            )}
+          </button>
+        </div>
       </form>
     </div>
   );

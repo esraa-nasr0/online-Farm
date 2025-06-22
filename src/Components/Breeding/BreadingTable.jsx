@@ -209,7 +209,7 @@ function BreadingTable() {
     <>
       {isLoading ? (
         <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
-          <Rings visible={true} height="100" width="100" color="#9cbd81" ariaLabel="rings-loading" />
+          <Rings visible={true} height="100" width="100" color="#21763e" ariaLabel="rings-loading" />
         </div>
       ) : (
         <div className='container mt-5 vaccine-table-container'>
@@ -267,24 +267,24 @@ function BreadingTable() {
             <table className="table align-middle">
               <thead>
                 <tr>
-                  <th className=" bg-color">#</th>
-                  <th className=" bg-color">{t('Tag ID')}</th>
-                  <th className=" bg-color">{t('Delivery State')}</th>
-                  <th className=" bg-color">{t('Delivery Date')}</th>
+                  <th className="text-center bg-color">#</th>
+                  <th className="text-center bg-color">{t('Tag ID')}</th>
+                  <th className="text-center bg-color">{t('Delivery State')}</th>
+                  <th className="text-center bg-color">{t('Delivery Date')}</th>
                   <th className="text-center bg-color">{t('Birth Entries')}</th>
-                  <th className=" bg-color">{t('Mothering Ability')}</th>
-                  <th className=" bg-color">{t('Milking')}</th>
-                   <th className=" bg-color">{t('actions')}</th>
+                  <th className="text-center bg-color">{t('Mothering Ability')}</th>
+                  <th className="text-center bg-color">{t('Milking')}</th>
+                   <th className="text-center bg-color">{t('actions')}</th>
                 </tr>
               </thead>
               <tbody>
                 {breading.map((breeding, index) => (
-                  <tr key={`${breeding._id}-${index}`}>
-                    <td>{(currentPage - 1) * animalsPerPage + index + 1}</td>
-                    <td>{breeding.tagId}</td>
-                    <td>{breeding.deliveryState}</td>
-                    <td>{breeding.deliveryDate ? breeding.deliveryDate.split('T')[0] : t("No Date")}</td>
-                    <td>
+                  <tr className="text-center" key={`${breeding._id}-${index}`}>
+                    <td className="text-center">{(currentPage - 1) * animalsPerPage + index + 1}</td>
+                    <td className="text-center">{breeding.tagId}</td>
+                    <td className="text-center">{breeding.deliveryState}</td>
+                    <td className="text-center">{breeding.deliveryDate ? breeding.deliveryDate.split('T')[0] : t("No Date")}</td>
+                    <td className="text-center">
                       {breeding.birthEntries?.length > 0 ? (
                         <ul className="list-group">
                           {breeding.birthEntries.map((entry, idx) => (
@@ -299,8 +299,8 @@ function BreadingTable() {
                         <span className="text-muted">{t("No Birth Entries")}</span>
                       )}
                     </td>
-                    <td>{breeding.motheringAbility || "--"}</td>
-                    <td>{breeding.milking || "--"}</td>
+                    <td className="text-center">{breeding.motheringAbility || "--"}</td>
+                    <td className="text-center">{breeding.milking || "--"}</td>
                  
 
                         <td className="text-center">

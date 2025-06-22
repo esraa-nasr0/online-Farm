@@ -446,7 +446,7 @@ function VaccineTable() {
             {isLoading ? (
               <tr>
                 <td colSpan="8" className="text-center py-5">
-                  <Rings visible={true} height="60" width="60" color="#9cbd81" ariaLabel="rings-loading" />
+                  <Rings visible={true} height="60" width="60" color="#21763e" ariaLabel="rings-loading" />
                 </td>
               </tr>
             ) : vaccines.length > 0 ? (

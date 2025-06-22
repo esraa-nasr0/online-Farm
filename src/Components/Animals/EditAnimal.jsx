@@ -1,393 +1,530 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { useFormik } from 'formik';
-import axios from 'axios';
+import React, { useContext, useEffect, useState } from "react";
+import { useFormik } from "formik";
+import axios from "axios";
 import { IoIosSave } from "react-icons/io";
-import { useParams } from 'react-router-dom';
-import Swal from 'sweetalert2';
-import { useTranslation } from 'react-i18next';
-import { LocationContext } from '../../Context/LocationContext';
-import { BreedContext } from '../../Context/BreedContext';
+import { useNavigate, useParams } from "react-router-dom";
+import Swal from "sweetalert2";
+import { useTranslation } from "react-i18next";
+import { LocationContext } from "../../Context/LocationContext";
+import { BreedContext } from "../../Context/BreedContext";
+import { jwtDecode } from "jwt-decode";
+import "./AnimalsDetails.css";
 
 function EditAnimal() {
-    const { t } = useTranslation();
-    const [error, setError] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
-    const [isDataLoaded, setIsDataLoaded] = useState(false);
-    const [forceUpdate, setForceUpdate] = useState(false);
-    const [locationSheds, setLocationSheds] = useState([]);
-    const [breeds, setBreeds] = useState([]);
-    const { LocationMenue } = useContext(LocationContext);
-    const { BreedMenue } = useContext(BreedContext);
-    const { id } = useParams();
+  const { t } = useTranslation();
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [animalData, setAnimalData] = useState(null);
+  const [locationSheds, setLocationSheds] = useState([]);
+  const [breeds, setBreeds] = useState([]);
+  const [isFattening, setIsFattening] = useState(false);
+  const { LocationMenue } = useContext(LocationContext);
+  const { BreedMenue } = useContext(BreedContext);
+  const { id } = useParams();
+  const navigate = useNavigate();
 
-    const getHeaders = () => {
-        const Authorization = localStorage.getItem('Authorization');
-        return Authorization ? { Authorization: Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}` } : {};
+  useEffect(() => {
+    const token = localStorage.getItem("Authorization");
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        setIsFattening(decoded.registerationType === "fattening");
+      } catch (error) {
+        console.error("Error decoding token:", error);
+      }
+    }
+  }, []);
+
+  const getHeaders = () => {
+    const Authorization = localStorage.getItem("Authorization");
+    return Authorization
+      ? {
+          Authorization: Authorization.startsWith("Bearer ")
+            ? Authorization
+            : `Bearer ${Authorization}`,
+        }
+      : {};
+  };
+
+  useEffect(() => {
+    const fetchLocation = async () => {
+      try {
+        const { data } = await LocationMenue();
+        if (
+          data.status === "success" &&
+          Array.isArray(data.data.locationSheds)
+        ) {
+          setLocationSheds(data.data.locationSheds);
+        }
+      } catch {
+        setError("Failed to load location sheds");
+      }
     };
+    fetchLocation();
+  }, [LocationMenue]);
 
-    useEffect(() => {
-        const fetchLocation = async () => {
-            try {
-                const { data } = await LocationMenue();
-                if (data.status === 'success' && Array.isArray(data.data.locationSheds)) {
-                    setLocationSheds(data.data.locationSheds);
-                }
-            } catch {
-                setError('Failed to load location sheds');
-            }
-        };
-        fetchLocation();
-    }, [LocationMenue]);
-
-    useEffect(() => {
-        const fetchBreed = async () => {
-            try {
-                const { data } = await BreedMenue();
-                if (data.status === 'success' && Array.isArray(data.data.breeds)) {
-                    setBreeds(data.data.breeds);
-                }
-            } catch {
-                setError('Failed to load breeds data');
-            }
-        };
-        fetchBreed();
-    }, [BreedMenue]);
-
-    useEffect(() => {
-        async function fetchAnimal() {
-            try {
-                let { data } = await axios.get(
-                    `https://farm-project-bbzj.onrender.com/api/animal/getsinglanimals/${id}`,
-                    { headers: getHeaders() }
-                );
-                if (data?.data?.animal) {
-                    const animal = data.data.animal;
-                    
-                    // Determine animal condition based on available fields
-                    let animaleCondation = '';
-                    if (animal.purchaseDate || animal.traderName) {
-                        animaleCondation = 'purchase';
-                    } else if (animal.birthDate || animal.motherId || animal.fatherId) {
-                        animaleCondation = 'born at farm';
-                    }
-    
-                    formik.setValues({
-                        tagId: animal.tagId || "",
-                        breed: animal.breed?._id || "",
-                        animalType: animal.animalType || "",
-                        gender: animal.gender?.toLowerCase() || "",
-                        female_Condition: animal.female_Condition || "",
-                        motherId: animal.motherId || "",
-                        fatherId: animal.fatherId || "",
-                        birthDate: animal.birthDate ? new Date(animal.birthDate).toISOString().split("T")[0] : "",
-                        locationShed: animal.locationShed?._id || "",
-                        animaleCondation: animaleCondation,
-                        traderName: animal.traderName || "",
-                        purchaseDate: animal.purchaseDate ? new Date(animal.purchaseDate).toISOString().split("T")[0] : "",
-                        purchasePrice: animal.purchasePrice || "",
-                        teething: animal.Teething || "",  // Note the capital T here to match API response
-                    });
-                    setIsDataLoaded(true);
-                }
-            } catch (error) {
-                setError("Failed to fetch animal details.");
-            }
+  useEffect(() => {
+    const fetchBreed = async () => {
+      try {
+        const { data } = await BreedMenue();
+        if (data.status === "success" && Array.isArray(data.data.breeds)) {
+          setBreeds(data.data.breeds);
         }
-        fetchAnimal();
-    }, [id, forceUpdate]);
+      } catch {
+        setError("Failed to load breeds data");
+      }
+    };
+    fetchBreed();
+  }, [BreedMenue]);
 
-    async function editAnimals(values) {
-        setIsLoading(true);
-        try {
-            let { data } = await axios.patch(
-                `https://farm-project-bbzj.onrender.com/api/animal/updateanimal/${id}`,
-                values,
-                { headers: getHeaders() }
-            );
-            console.log("Response from API:", data);
-            if (data.status === "success") {
-                formik.setValues(values);
-                setForceUpdate(prev => !prev);
-                setIsLoading(false);
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'Animal data updated successfully!',
-                    icon: 'success',
-                    confirmButtonText: 'OK',
-                });
-            }
-        } catch (error) {
-            console.error("Failed to edit animal:", error);
-            setError("Failed to update animal. Please try again.");
-            setIsLoading(false);
-        }
+  async function editAnimal(values) {
+    const headers = getHeaders();
+    setIsLoading(true);
+    try {
+      const convertToISO = (dateString) => {
+        if (!dateString) return undefined;
+        const date = new Date(dateString);
+        return isNaN(date) ? undefined : date.toISOString();
+      };
+
+      const updatedValues = {
+        ...values,
+        birthDate: convertToISO(values.birthDate),
+        purchaseDate: convertToISO(values.purchaseDate),
+        // Ensure locationShed is sent as an object with _id if it's selected
+        locationShed: values.locationShedName
+          ? { _id: values.locationShedName }
+          : undefined,
+        // Ensure breed is sent as an object with _id if it's selected
+        breed: values.breed ? { _id: values.breed } : undefined,
+      };
+
+      // Remove undefined values and the locationShedName field
+      const payload = Object.fromEntries(
+        Object.entries(updatedValues).filter(
+          ([_, v]) => v !== undefined && !["locationShedName"].includes(_)
+        )
+      );
+
+      console.log("Submitting form with values:", payload);
+      let { data } = await axios.patch(
+        `https://farm-project-bbzj.onrender.com/api/animal/updateanimal/${id}`,
+        payload,
+        { headers }
+      );
+
+      if (data.status === "success") {
+        setIsLoading(false);
+        setAnimalData(data.data.animal);
+        Swal.fire({
+          title: t("success_title"),
+          text: t("animal_update_success"),
+          icon: "success",
+          confirmButtonText: t("ok"),
+        });
+        navigate("/animals");
+      }
+    } catch (err) {
+      const errorMessage =
+        err.response?.data?.message ||
+        "An error occurred while processing your request";
+      setError(errorMessage);
+      console.log(err.response?.data);
+      setIsLoading(false);
     }
+  }
 
-    const formik = useFormik({
-        initialValues: {
-            tagId: '',
-            animalType: '',
-            breed: '',
-            gender: '',
-            motherId: '',
-            fatherId: '',
-            birthDate: '',
-            locationShedName: '',
-            female_Condition: '',
-            animaleCondation: '',
-            traderName: '',
-            purchaseDate: '',
-            purchasePrice: '',
-            teething: '',
-        },
-        onSubmit: editAnimals
-    });
-
-    if (!isDataLoaded) {
-        return <div>Loading...</div>;
-    }
-
-    return (
-        <div className="container">
-            <div className="title2">Edit Animal</div>
-            <p className="text-danger">{error}</p>
-            <form onSubmit={formik.handleSubmit} className='mt-5'>
-                <button type="submit" className="btn button2" disabled={isLoading}>
-                    {isLoading ? <i className="fas fa-spinner fa-spin"></i> : <IoIosSave />} {t('save')}
-                </button>
-
-                <div className="animaldata">
-                    <div className="input-box">
-                        <label className="label" htmlFor="tagId">{t('tag_id')}</label>
-                        <input 
-                            onBlur={formik.handleBlur} 
-                            onChange={formik.handleChange} 
-                            value={formik.values.tagId} 
-                            placeholder="Enter your Tag ID" 
-                            id="tagId" 
-                            type="text" 
-                            className="input2" 
-                            name="tagId"
-                        />
-                        {formik.errors.tagId && formik.touched.tagId && ( 
-                            <p className="text-danger">{formik.errors.tagId}</p> 
-                        )}
-                    </div>
-
-                    <div className="input-box">
-                        <label className="label" htmlFor="breed">{t('breed')}</label>
-                        <select
-                            id="breed"
-                            name="breed"
-                            className="input2"
-                            value={formik.values.breed}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                        >
-                            <option value="">{t('select_breed')}</option>
-                            {breeds.map((breed) => (
-                                <option key={breed._id} value={breed._id}>{breed.breedName}</option>
-                            ))}
-                        </select>
-                    </div>
-
-                    <div className="input-box">
-                        <label className="label" htmlFor="animalType">{t('animal_type')}</label>
-                        <select
-                            value={formik.values.animalType}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            className="input2"
-                            name="animalType"
-                            id="animalType"
-                        >
-                            <option value="">{t('animal_type')}</option>
-                            <option value="goat">{t('goat')}</option>
-                            <option value="sheep">{t('sheep')}</option>
-                        </select>
-                        {formik.errors.animalType && formik.touched.animalType && (
-                            <p className="text-danger">{formik.errors.animalType}</p>
-                        )}
-                    </div>
-
-                    <div className="input-box">
-                        <label className="label" htmlFor="gender">{t('gender')}</label>
-                        <select
-                            value={formik.values.gender}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            className="input2"
-                            name="gender"
-                            id="gender"
-                        >
-                            <option value="">{t('gender')}</option>
-                            <option value="female">{t('female')}</option>  
-                            <option value="male">{t('male')}</option>
-                        </select>
-                        {formik.errors.gender && formik.touched.gender && (
-                            <p className="text-danger">{formik.errors.gender}</p>
-                        )}
-                    </div>
-
-                    {formik.values.gender === 'female' && (
-                        <div className="input-box">
-                            <label className="label" htmlFor="female_Condition">{t('female_condition')}</label>
-                            <input 
-                                onBlur={formik.handleBlur} 
-                                onChange={formik.handleChange} 
-                                value={formik.values.female_Condition} 
-                                placeholder="Enter your Female Condition" 
-                                id="female_Condition" 
-                                type="text" 
-                                className="input2" 
-                                name="female_Condition"
-                            />
-                            {formik.errors.female_Condition && formik.touched.female_Condition && (
-                                <p className="text-danger">{formik.errors.female_Condition}</p>
-                            )}
-                        </div>
-                    )}
-                    
-                    <div className="input-box">
-                        <label className="label" htmlFor="animaleCondation">{t('animal_condition')}</label>
-                        <select
-                            value={formik.values.animaleCondation}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            className="input2"
-                            name="animaleCondation"
-                            id="animaleCondation">
-                            <option value="">{t('animal_condition')}</option>
-                            <option value="purchase">{t('purchase')}</option>
-                            <option value="born at farm">{t('born_at_farm')}</option>
-                        </select>
-                        {formik.errors.animaleCondation && formik.touched.animaleCondation && (<p className="text-danger">{formik.errors.animaleCondation}</p>)}
-                    </div>
-
-                    {formik.values.animaleCondation === 'purchase' && (<>
-                        <div className="input-box">
-                            <label className="label" htmlFor="traderName">{t('trader_name')}</label>
-                            <input
-                                onBlur={formik.handleBlur}
-                                onChange={formik.handleChange}
-                                value={formik.values.traderName}
-                                placeholder="Enter Trader Name"
-                                id="traderName"
-                                type="text"
-                                className="input2"
-                                name="traderName"/>
-                            {formik.errors.traderName && formik.touched.traderName && (<p className="text-danger">{formik.errors.traderName}</p>)}
-                        </div>
-
-                        <div className="input-box">
-                            <label className="label" htmlFor="purchaseDate">{t('purchase_date')}</label>
-                            <input
-                                onBlur={formik.handleBlur}
-                                onChange={formik.handleChange}
-                                value={formik.values.purchaseDate}
-                                id="purchaseDate"
-                                type="date"
-                                className="input2"
-                                name="purchaseDate"/>
-                            {formik.errors.purchaseDate && formik.touched.purchaseDate && (<p className="text-danger">{formik.errors.purchaseDate}</p>)}
-                        </div>
-
-                        <div className="input-box">
-                            <label className="label" htmlFor="purchasePrice">{t('purchase_price')}</label>
-                            <input
-                                onBlur={formik.handleBlur}
-                                onChange={formik.handleChange}
-                                value={formik.values.purchasePrice}
-                                placeholder="Enter Purchase Price"
-                                id="purchasePrice"
-                                type="number"
-                                className="input2"
-                                name="purchasePrice"
-                            />
-                            {formik.errors.purchasePrice && formik.touched.purchasePrice && (<p className="text-danger">{formik.errors.purchasePrice}</p>)}
-                        </div>
-
-                        <div className="input-box">
-                            <label className="label" htmlFor="teething">{t('teething')}</label>
-                            <select
-                                value={formik.values.teething}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur} className="input2" name="teething" id="teething">
-                                <option value="">{t('teething')}</option>
-                                <option value="two">{t('two')}</option>
-                                <option value="four">{t('four')}</option>
-                                <option value="six">{t('six')}</option>
-                            </select>
-                            {formik.errors.teething && formik.touched.teething && (<p className="text-danger">{formik.errors.teething}</p>)}
-                        </div>
-                    </>)}
-
-                    {formik.values.animaleCondation === 'born at farm' && (<>
-                        <div className="input-box">
-                            <label className="label" htmlFor="motherId">{t('mother_id')}</label>
-                            <input 
-                                onBlur={formik.handleBlur} 
-                                onChange={formik.handleChange} 
-                                value={formik.values.motherId} 
-                                placeholder="Enter your Mother ID" 
-                                id="motherId" 
-                                type="text" 
-                                className="input2" 
-                                name="motherId"
-                            />
-                            {formik.errors.motherId && formik.touched.motherId ? <p className="text-danger">{formik.errors.motherId}</p> : ""}
-                        </div>
-
-                        <div className="input-box">
-                            <label className="label" htmlFor="fatherId">{t('father_id')}</label>
-                            <input 
-                                onBlur={formik.handleBlur} 
-                                onChange={formik.handleChange} 
-                                value={formik.values.fatherId} 
-                                placeholder="Enter your Father ID" 
-                                id="fatherId" 
-                                type="text" 
-                                className="input2" 
-                                name="fatherId"
-                            />
-                            {formik.errors.fatherId && formik.touched.fatherId ? <p className="text-danger">{formik.errors.fatherId}</p> : ""}
-                        </div>
-
-                        <div className="input-box">
-                            <label className="label" htmlFor="birthDate">{t('birth_date')}</label>
-                            <input 
-                                onBlur={formik.handleBlur} 
-                                onChange={formik.handleChange} 
-                                value={formik.values.birthDate}  
-                                id="birthDate" 
-                                type="date" 
-                                className="input2" 
-                                name="birthDate"
-                            />
-                            {formik.errors.birthDate && formik.touched.birthDate ? <p className="text-danger">{formik.errors.birthDate}</p> : ""}
-                        </div>
-                    </>)}
-
-                    <div className="input-box">
-                        <label className="label" htmlFor="locationShedName">{t('location_shed')}</label>
-                        <select
-                            id="locationShedName"
-                            name="locationShedName"
-                            className="input2"
-                            value={formik.values.locationShedName}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                        >
-                            <option value="">{t('select_location_shed')}</option>
-                            {locationSheds.map((shed) => (
-                                <option key={shed._id} value={shed.locationShedName}>{shed.locationShedName}</option>
-                            ))}
-                        </select>
-                    </div>
-                </div>
-            </form>
-        </div>
+  async function fetchAnimal() {
+  const headers = getHeaders();
+  try {
+    let { data } = await axios.get(
+      `https://farm-project-bbzj.onrender.com/api/animal/getsinglanimals/${id}`,
+      { headers }
     );
+
+    if (data.status === "success") {
+      const animal = data.data.animal;
+      console.log("Full animal data:", animal);
+
+      const formatDate = (dateString) =>
+        dateString ? new Date(dateString).toISOString().split("T")[0] : "";
+
+      // Calculate age from birthDate
+      let age = { years: 0, months: 0, days: 0 };
+      if (animal.birthDate) {
+        const birthDate = new Date(animal.birthDate);
+        const today = new Date();
+        
+        let years = today.getFullYear() - birthDate.getFullYear();
+        let months = today.getMonth() - birthDate.getMonth();
+        let days = today.getDate() - birthDate.getDate();
+        
+        if (days < 0) {
+          months--;
+          days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+        }
+        
+        if (months < 0) {
+          years--;
+          months += 12;
+        }
+        
+        age = { years, months, days };
+      }
+
+      formik.setValues({
+        tagId: animal.tagId || "",
+        animalType: animal.animalType || "",
+        breed: animal.breed?._id || "",
+        gender: animal.gender || "",
+        motherId: animal.motherId || "",
+        fatherId: animal.fatherId || "",
+        birthDate: formatDate(animal.birthDate),
+        locationShedName: animal.locationShed?._id || "",
+        female_Condition: animal.female_Condition || "",
+        animaleCondation: animal.animaleCondation || "",
+        traderName: animal.traderName || "",
+        purchaseDate: formatDate(animal.purchaseDate),
+        purchasePrice: animal.purchasePrice || "",
+        teething: animal.teething || "",
+        age: age, // Set the calculated age
+      });
+
+      setAnimalData(animal);
+    } else {
+      throw new Error(data.message || "Failed to fetch animal");
+    }
+  } catch (error) {
+    console.error("Error fetching animal:", error);
+    setError(error.response?.data?.message || "Failed to load animal data");
+  }
+}
+
+  useEffect(() => {
+    if (!id || !/^[0-9a-fA-F]{24}$/.test(id)) {
+      setError("Invalid animal ID");
+      return;
+    }
+    fetchAnimal();
+  }, [id]);
+
+  const formik = useFormik({
+    initialValues: {
+      tagId: "",
+      animalType: "",
+      breed: "",
+      gender: "",
+      motherId: "",
+      fatherId: "",
+      birthDate: "",
+      locationShedName: "",
+      female_Condition: "",
+      animaleCondation: "",
+      traderName: "",
+      purchaseDate: "",
+      purchasePrice: "",
+      teething: "",
+      age: {
+        years: 0,
+        months: 0,
+        days: 0,
+      },
+    },
+    onSubmit: (values) => editAnimal(values),
+  });
+
+  return (
+    <div className="animal-details-container">
+      <div className="animal-details-header">
+        <h1>{t("edit_animal")}</h1>
+      </div>
+
+      {error && <div className="error-message">{error}</div>}
+
+      <form onSubmit={formik.handleSubmit} className="animal-form">
+        <div className="form-grid">
+          <div className="form-section">
+            <h2>{t("basic_info")}</h2>
+            <div className="input-group">
+              <label htmlFor="tagId">{t("tag_id")}</label>
+              <input
+                type="text"
+                id="tagId"
+                name="tagId"
+                value={formik.values.tagId}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                placeholder={t("enter_tag_id")}
+              />
+            </div>
+
+            <div className="input-group">
+              <label htmlFor="breed">{t("breed")}</label>
+              <select
+                id="breed"
+                name="breed"
+                value={formik.values.breed}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              >
+                <option value="">{t("select_breed")}</option>
+                {breeds.map((breed) => (
+                  <option key={breed._id} value={breed._id}>
+                    {breed.breedName}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="input-group">
+              <label htmlFor="locationShedName">{t("location_shed")}</label>
+              <select
+                id="locationShedName"
+                name="locationShedName"
+                value={formik.values.locationShedName}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              >
+                <option value="">{t("select_location_shed")}</option>
+                {locationSheds.map((shed) => (
+                  <option key={shed._id} value={shed._id}>
+                    {shed.locationShedName}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="input-group">
+              <label>{t("age")}</label>
+              <div className="age-input-container">
+                <div className="age-input">
+                  <label htmlFor="age-years">{t("years")}</label>
+                  <input
+                    type="number"
+                    id="age-years"
+                    name="age.years"
+                    min="0"
+                    value={formik.values.age.years}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  />
+                </div>
+                <div className="age-input">
+                  <label htmlFor="age-months">{t("months")}</label>
+                  <input
+                    type="number"
+                    id="age-months"
+                    name="age.months"
+                    min="0"
+                    max="11"
+                    value={formik.values.age.months}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  />
+                </div>
+                <div className="age-input">
+                  <label htmlFor="age-days">{t("days")}</label>
+                  <input
+                    type="number"
+                    id="age-days"
+                    name="age.days"
+                    min="0"
+                    max="30"
+                    value={formik.values.age.days}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  />
+                </div>
+              </div>
+            </div> {/* This closing div was missing */}
+          </div>
+
+          <div className="form-section">
+            <h2>{t("animal_details")}</h2>
+            <div className="input-group">
+              <label htmlFor="animalType">{t("animal_type")}</label>
+              <select
+                id="animalType"
+                name="animalType"
+                value={formik.values.animalType}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              >
+                <option value="">{t("select_animal_type")}</option>
+                <option value="goat">{t("goat")}</option>
+                <option value="sheep">{t("sheep")}</option>
+              </select>
+            </div>
+
+            <div className="input-group">
+              <label htmlFor="gender">{t("gender")}</label>
+              <select
+                id="gender"
+                name="gender"
+                value={formik.values.gender}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              >
+                <option value="">{t("select_gender")}</option>
+                <option value="female">{t("female")}</option>
+                <option value="male">{t("male")}</option>
+              </select>
+            </div>
+
+            {formik.values.gender === "female" && !isFattening && (
+              <div className="input-group">
+                <label htmlFor="female_Condition">
+                  {t("female_condition")}
+                </label>
+                <input
+                  type="text"
+                  id="female_Condition"
+                  name="female_Condition"
+                  value={formik.values.female_Condition}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  placeholder={t("enter_female_condition")}
+                />
+              </div>
+            )}
+          </div>
+
+          <div className="form-section">
+            <h2>{t("acquisition_details")}</h2>
+            <div className="input-group">
+              <label htmlFor="animaleCondation">{t("animal_condition")}</label>
+              <select
+                id="animaleCondation"
+                name="animaleCondation"
+                value={formik.values.animaleCondation}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              >
+                <option value="">{t("select_condition")}</option>
+                <option value="purchase">{t("purchase")}</option>
+                {!isFattening && (
+                  <option value="born at farm">{t("born_at_farm")}</option>
+                )}
+              </select>
+            </div>
+
+            {formik.values.animaleCondation === "purchase" ? (
+              <>
+                <div className="input-group">
+                  <label htmlFor="traderName">{t("trader_name")}</label>
+                  <input
+                    type="text"
+                    id="traderName"
+                    name="traderName"
+                    value={formik.values.traderName}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    placeholder={t("enter_trader_name")}
+                  />
+                </div>
+
+                <div className="input-group">
+                  <label htmlFor="purchaseDate">{t("purchase_date")}</label>
+                  <input
+                    type="date"
+                    id="purchaseDate"
+                    name="purchaseDate"
+                    value={formik.values.purchaseDate}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  />
+                </div>
+
+                <div className="input-group">
+                  <label htmlFor="purchasePrice">{t("purchase_price")}</label>
+                  <input
+                    type="number"
+                    id="purchasePrice"
+                    name="purchasePrice"
+                    value={formik.values.purchasePrice}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    placeholder={t("enter_purchase_price")}
+                  />
+                </div>
+
+                <div className="input-group">
+                  <label htmlFor="teething">{t("teething")}</label>
+                  <select
+                    id="teething"
+                    name="teething"
+                    value={formik.values.teething}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  >
+                    <option value="">{t("select_teething")}</option>
+                    <option value="two">{t("two")}</option>
+                    <option value="four">{t("four")}</option>
+                    <option value="six">{t("six")}</option>
+                  </select>
+                </div>
+              </>
+            ) : (
+              formik.values.animaleCondation === "born at farm" &&
+              !isFattening && (
+                <>
+                  <div className="input-group">
+                    <label htmlFor="motherId">{t("mother_id")}</label>
+                    <input
+                      type="text"
+                      id="motherId"
+                      name="motherId"
+                      value={formik.values.motherId}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      placeholder={t("enter_mother_id")}
+                    />
+                  </div>
+
+                  <div className="input-group">
+                    <label htmlFor="fatherId">{t("father_id")}</label>
+                    <input
+                      type="text"
+                      id="fatherId"
+                      name="fatherId"
+                      value={formik.values.fatherId}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      placeholder={t("enter_father_id")}
+                    />
+                  </div>
+
+                  <div className="input-group">
+                    <label htmlFor="birthDate">{t("birth_date")}</label>
+                    <input
+                      type="date"
+                      id="birthDate"
+                      name="birthDate"
+                      value={formik.values.birthDate}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                    />
+                  </div>
+                </>
+              )
+            )}
+          </div>
+        </div>
+
+        <div className="form-actions">
+          <button type="submit" className="save-button" disabled={isLoading}>
+            {isLoading ? (
+              <span className="loading-spinner"></span>
+            ) : (
+              <>
+                <IoIosSave /> {t("save")}
+              </>
+            )}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
 }
 
 export default EditAnimal;

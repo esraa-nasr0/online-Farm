@@ -1,47 +1,20 @@
-.animal-details-container {
+.treatment-container {
     padding: 2rem;
     background-color: #f8f9fa;
     min-height: 100vh;
 }
 
-.animal-details-header {
+.treatment-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
 }
 
-.animal-details-header h1 {
+.treatment-header h1 {
     font-size: 1.75rem;
     color: #2c3e50;
     margin: 0;
-}
-.current-value {
-    margin-top: 5px;
-    padding: 5px;
-    background-color: #f0f0f0;
-    border-radius: 3px;
-    font-size: 0.9em;
-    color: #555;
-}
-.weather-info {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    background-color: white;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-
-.temperature {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #2c3e50;
-}
-
-.weather-desc {
-    color: #6c757d;
 }
 
 .error-message {
@@ -52,7 +25,7 @@
     margin-bottom: 1.5rem;
 }
 
-.animal-form {
+.treatment-form {
     background-color: white;
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.05);
@@ -119,6 +92,7 @@
     margin-top: 2rem;
     display: flex;
     justify-content: flex-end;
+    gap: 1rem;
 }
 
 .save-button {
@@ -155,24 +129,6 @@
     animation: spin 1s linear infinite;
 }
 
-.age-input-container {
-    display: flex;
-    gap: 10px;
-}
-
-.age-input {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-}
-
-.age-input input {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
 @keyframes spin {
     to {
         transform: rotate(360deg);
@@ -198,12 +154,36 @@
     margin: 0;
 }
 
+.add-treatment-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    background-color: #9cbd81;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.add-treatment-button:hover {
+    background-color: #8baf6d;
+}
+
+.add-treatment-button:disabled {
+    background-color: #d1d5db;
+    cursor: not-allowed;
+}
+
 @media (max-width: 768px) {
-    .animal-details-container {
+    .treatment-container {
         padding: 1rem;
     }
 
-    .animal-details-header {
+    .treatment-header {
         flex-direction: column;
         align-items: flex-start;
         gap: 1rem;
@@ -216,4 +196,4 @@
     .form-section {
         padding: 1rem;
     }
-} 
+}

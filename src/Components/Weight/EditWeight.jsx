@@ -4,38 +4,31 @@ import * as Yup from 'yup';
 import { IoIosSave } from 'react-icons/io';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next'; // import
-
+import { useTranslation } from 'react-i18next';
+import Swal from 'sweetalert2';
+import './Weight.css';
 
 function EditWeight() {
-    const { t } = useTranslation(); // hook
+    const { t } = useTranslation();
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
-    const { id } = useParams(); // Get the animal ID from the URL params
+    const { id } = useParams();
     let navigate = useNavigate();
 
-
-// Helper function to generate headers with the latest token
-const getHeaders = () => {
-    const Authorization = localStorage.getItem('Authorization');
-    // Ensure the token has only one "Bearer" prefix
-    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-    return {
-        Authorization: formattedToken
+    const getHeaders = () => {
+        const Authorization = localStorage.getItem('Authorization');
+        return Authorization ? { Authorization: Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}` } : {};
     };
-};
-
 
     async function editWeight(values) {
-        const headers = getHeaders(); // Get the latest headers
-        setIsLoading(true); 
+        const headers = getHeaders();
+        setIsLoading(true);
         try {
-            // Convert 'yyyy-MM-dd' to ISO format if needed, or keep it empty if no valid date is provided
             const convertToISO = (dateString) => {
                 if (dateString && !isNaN(new Date(dateString))) {
                     return new Date(dateString).toISOString();
                 }
-                return null;  // Ensure you're not sending invalid data to the server
+                return null;
             };
             const updatedValues = {
                 ...values,
@@ -47,32 +40,37 @@ const getHeaders = () => {
                 { headers }
             );
             console.log('Submitting form with values:', updatedValues);
-    
+
             if (data.status === "success") {
                 setIsLoading(false);
-                navigate('/weightTable');
+                Swal.fire({
+                    title: t('success'),
+                    text: t('weight_updated_successfully'),
+                    icon: 'success',
+                    confirmButtonText: t('ok')
+                }).then(() => {
+                    navigate('/weightTable');
+                });
             }
         } catch (err) {
             const errorMessage = err.response?.data?.message || "An error occurred while processing your request";
             setError(errorMessage);
             console.log(err.response?.data);
+            setIsLoading(false);
         }
     }
 
-    
     useEffect(() => {
         async function fetchAnimal() {
-            const headers = getHeaders(); // Get the latest headers
+            const headers = getHeaders();
             try {
                 let { data } = await axios.get(
-                    `https://farm-project-bbzj.onrender.com/api/weight/GetSingleWeight/${id}`, 
+                    `https://farm-project-bbzj.onrender.com/api/weight/GetSingleWeight/${id}`,
                     { headers }
                 );
-                console.log("API response:", data); // Log the entire response
-                // Check if the structure matches your expectation
+                console.log("API response:", data);
                 if (data && data.data && data.data.weight) {
                     const weight = data.data.weight;
-                    // Convert ISO date strings to yyyy-MM-dd format
                     const formatDate = (dateString) => dateString ? new Date(dateString).toISOString().split('T')[0] : '';
                     formik.setValues({
                         tagId: weight.tagId || '',
@@ -91,161 +89,151 @@ const getHeaders = () => {
         }
         fetchAnimal();
     }, [id]);
-    
 
     const validationSchema = Yup.object({
-
-    tagId: Yup.string().max(10, 'Tag ID max length is 10').required('Tag ID is required'),
-    weightType: Yup.string().required('Weight Type is required'),
-    weight: Yup.string().max(10, 'Weight max length is 10').required('Weight is required'),
-    height: Yup.string().max(10, 'Height max length is 10').required('Height is required'),
-    Date: Yup.date().required('Date is required'),
+        tagId: Yup.string().max(10, t('tag_id_max')).required(t('tag_id_required')),
+        weightType: Yup.string().required(t('weight_type_required')),
+        weight: Yup.number()
+            .max(1000, t('weight_max'))
+            .positive(t('weight_positive'))
+            .required(t('weight_required')),
+        height: Yup.number()
+            .max(300, t('height_max'))
+            .positive(t('height_positive'))
+            .required(t('height_required')),
+        Date: Yup.date()
+            .required(t('date_required'))
+            .max(new Date(), t('date_cannot_be_future')),
     });
 
     const formik = useFormik({
-    initialValues: {
-        tagId: '',
-        weightType: '',
-        weight: '',
-        height: '',
-        Date: '',
-    },
-    validationSchema,
-    onSubmit: editWeight,
-});
+        initialValues: {
+            tagId: '',
+            weightType: '',
+            weight: '',
+            height: '',
+            Date: '',
+        },
+        validationSchema,
+        onSubmit: editWeight,
+    });
 
-return (
-    <>
-    <div className='container'>
-    <div className='title2'>{t('edit_weight')}</div>
-    <p className='text-danger'>{error}</p>
-
-        <form onSubmit={formik.handleSubmit} className='mt-5'>
-        {isLoading ? (
-            <button type='submit' className='btn  button2'>
-            <i className='fas fa-spinner fa-spin'></i>
-            </button>
-        ) : (
-            <button type='submit' className='btn btn-dark button2'>
-    <IoIosSave /> {t('save')}
-    </button>
-        )}
-
-        <div className='animaldata'>
-            <div className='input-box'>
-            <label className='label' htmlFor='tagId'>
-            {t('tag_id')}            
-            </label>
-            <input
-                onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
-                value={formik.values.tagId}
-                placeholder={t('enter_tag_id')}
-                id='tagId'
-                type='text'
-                className='input2'
-                name='tagId'
-            />
-            {formik.errors.tagId && formik.touched.tagId ? (
-                <p className='text-danger'>{formik.errors.tagId}</p>
-            ) : (
-                ''
-            )}
+    return (
+        <div className="weight-details-container">
+            <div className="weight-details-header">
+                <h1>{t('edit_weight')}</h1>
             </div>
 
-            <div className='input-box'>
-            <label className='label' htmlFor='weightType'>
-            {t('weight_type')}
-            </label>
-            <select
-                value={formik.values.weightType}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                className='input2'
-                name='weightType'
-                id='weightType'
-                aria-label='Default select example'
-            >
-                <option value='' disabled>
-                {t('select_weight_type')}
-                </option>
-                <option value='birth'>{t('birth')}</option>
-                <option value='weaning'>{t('weaning')}</option>
-                <option value='regular'>{t('regular')}</option>
-            </select>
-            {formik.errors.weightType && formik.touched.weightType ? (
-                <p className='text-danger'>{formik.errors.weightType}</p>
-            ) : (
-                ''
-            )}
-            </div>
+            {error && <div className="error-message">{error}</div>}
 
-            <div className='input-box'>
-            <label className='label' htmlFor='weight'>
-            {t('weight')}
-            </label>
-            <input
-                onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
-                value={formik.values.weight}
-                placeholder={t('enter_weight')}
-                id='weight'
-                type='text'
-                className='input2'
-                name='weight'
-            />
-            {formik.errors.weight && formik.touched.weight ? (
-                <p className='text-danger'>{formik.errors.weight}</p>
-            ) : (
-                ''
-            )}
-            </div>
+            <form onSubmit={formik.handleSubmit} className="weight-form">
+                <div className="form-grid">
+                    <div className="form-section">
+                        <h2>{t('basic_info')}</h2>
+                        <div className="input-group">
+                            <label htmlFor="tagId">{t('tag_id')}</label>
+                            <input
+                                type="text"
+                                id="tagId"
+                                name="tagId"
+                                value={formik.values.tagId}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                placeholder={t('enter_tag_id')}
+                            />
+                            {formik.errors.tagId && formik.touched.tagId && (
+                                <p className="text-danger">{formik.errors.tagId}</p>
+                            )}
+                        </div>
 
-            <div className='input-box'>
-            <label className='label' htmlFor='height'>
-            {t('height')}
-            </label>
-            <input
-                onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
-                value={formik.values.height}
-                placeholder={t('enter_height')}
-                id='height'
-                type='text'
-                className='input2'
-                name='height'
-            />
-            {formik.errors.height && formik.touched.height ? (
-                <p className='text-danger'>{formik.errors.height}</p>
-            ) : (
-                ''
-            )}
-            </div>
+                        <div className="input-group">
+                            <label htmlFor="weightType">{t('weight_type')}</label>
+                            <select
+                                id="weightType"
+                                name="weightType"
+                                value={formik.values.weightType}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                            >
+                                <option value="">{t('select_weight_type')}</option>
+                                <option value="birth">{t('birth')}</option>
+                                <option value="weaning">{t('weaning')}</option>
+                                <option value="regular">{t('regular')}</option>
+                            </select>
+                            {formik.errors.weightType && formik.touched.weightType && (
+                                <p className="text-danger">{formik.errors.weightType}</p>
+                            )}
+                        </div>
+                    </div>
 
-            <div className='input-box'>
-            <label className='label' htmlFor='Date'>
-            {t('date')}
-            </label>
-            <input
-                onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
-                value={formik.values.Date}
-                id='Date'
-                type='date'
-                className='input2'
-                name='Date'
-            />
-            {formik.errors.Date && formik.touched.Date ? (
-                <p className='text-danger'>{formik.errors.Date}</p>
-            ) : (
-                ''
-            )}
-            </div>
+                    <div className="form-section">
+                        <h2>{t('measurements')}</h2>
+                        <div className="input-group">
+                            <label htmlFor="weight">{t('weight')} (kg)</label>
+                            <input
+                                type="number"
+                                step="0.01"
+                                id="weight"
+                                name="weight"
+                                value={formik.values.weight}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                placeholder={t('enter_weight')}
+                            />
+                            {formik.errors.weight && formik.touched.weight && (
+                                <p className="text-danger">{formik.errors.weight}</p>
+                            )}
+                        </div>
+
+                        <div className="input-group">
+                            <label htmlFor="height">{t('height')} (cm)</label>
+                            <input
+                                type="number"
+                                step="0.1"
+                                id="height"
+                                name="height"
+                                value={formik.values.height}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                placeholder={t('enter_height')}
+                            />
+                            {formik.errors.height && formik.touched.height && (
+                                <p className="text-danger">{formik.errors.height}</p>
+                            )}
+                        </div>
+
+                        <div className="input-group">
+                            <label htmlFor="Date">{t('date')}</label>
+                            <input
+                                type="date"
+                                id="Date"
+                                name="Date"
+                                value={formik.values.Date}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                max={new Date().toISOString().split('T')[0]}
+                            />
+                            {formik.errors.Date && formik.touched.Date && (
+                                <p className="text-danger">{formik.errors.Date}</p>
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                <div className="form-actions">
+                    <button type="submit" className="save-button" disabled={isLoading}>
+                        {isLoading ? (
+                            <span className="loading-spinner"></span>
+                        ) : (
+                            <>
+                                <IoIosSave /> {t('save')}
+                            </>
+                        )}
+                    </button>
+                </div>
+            </form>
         </div>
-        </form>
-    </div>
-    </>
-);
+    );
 }
 
 export default EditWeight;
