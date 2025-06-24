@@ -37,7 +37,7 @@ export default function EditFeedbyLocation() {
         setLocationSheds([]);
       }
     } catch (err) {
-      setError("Failed to load location data");
+      setError(t("error_fetch_location"));
       setLocationSheds([]);
     }
   };
@@ -45,7 +45,6 @@ export default function EditFeedbyLocation() {
   const fetchFeedOptions = async () => {
     try {
       const { data } = await getFodderMenue();
-      console.log("Feed API Response:", data);
       if (data.status === "success" && Array.isArray(data.data)) {
         setFeedOptions(data.data);
       } else {
@@ -53,7 +52,7 @@ export default function EditFeedbyLocation() {
       }
     } catch (err) {
       console.error("Feed fetch error:", err);
-      setError("Failed to load Feed data");
+      setError(t("error_fetch_feed"));
       setFeedOptions([]);
     }
   };
@@ -73,13 +72,12 @@ export default function EditFeedbyLocation() {
       const headers = getHeaders();
       try {
         setIsLoading(true);
-        // Transform the data to match API expectations
         const requestData = {
           locationShed: values.locationShed,
           date: values.date,
           feeds: values.feeds.map((feed) => ({
             feedId: feed.feedId,
-            quantity: Number(feed.quantity), // Ensure quantity is a number
+            quantity: Number(feed.quantity),
           })),
         };
         const response = await axios.patch(
@@ -96,10 +94,9 @@ export default function EditFeedbyLocation() {
             confirmButtonText: t("ok"),
           });
           navigate("/feedlocationtable");
-          return;
         }
       } catch (err) {
-        setError("Failed to update the feed");
+        setError(t("error_update_feed"));
         console.error(err);
       } finally {
         setIsLoading(false);
@@ -116,8 +113,6 @@ export default function EditFeedbyLocation() {
           { headers }
         );
 
-        console.log("API Response:", data);
-
         if (data.data.feedShed) {
           const feedShed = data.data.feedShed;
           formik.setValues({
@@ -132,7 +127,7 @@ export default function EditFeedbyLocation() {
           });
         }
       } catch (err) {
-        setError("Failed to fetch feed data");
+        setError(t("error_fetch_feed_data"));
         console.error(err);
       }
     }
@@ -155,7 +150,7 @@ export default function EditFeedbyLocation() {
   return (
     <div className="feeding-container">
       <div className="feeding-header">
-        <h1>Edit Feed by Location</h1>
+        <h1>{t("edit_feed_by_location")}</h1>
       </div>
 
       {error && <div className="error-message">{error}</div>}
@@ -163,9 +158,10 @@ export default function EditFeedbyLocation() {
       <form onSubmit={formik.handleSubmit} className="feeding-form">
         <div className="form-grid">
           <div className="form-section">
-            <h2>Location Information</h2>
+            <h2>{t("location_info")}</h2>
+
             <div className="input-group">
-              <label htmlFor="locationShed">Location Shed</label>
+              <label htmlFor="locationShed">{t("location_shed")}</label>
               <select
                 id="locationShed"
                 name="locationShed"
@@ -173,7 +169,7 @@ export default function EditFeedbyLocation() {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               >
-                <option value="">Select location shed</option>
+                <option value="">{t("select_location_shed")}</option>
                 {locationSheds.map((shed) => (
                   <option key={shed._id} value={shed._id}>
                     {shed.locationShedName}
@@ -183,7 +179,7 @@ export default function EditFeedbyLocation() {
             </div>
 
             <div className="input-group">
-              <label htmlFor="date">Date</label>
+              <label htmlFor="date">{t("date")}</label>
               <input
                 id="date"
                 name="date"
@@ -196,10 +192,12 @@ export default function EditFeedbyLocation() {
           </div>
 
           <div className="form-section">
-            <h2>Feed Details</h2>
+            <h2>{t("feed_details")}</h2>
             {formik.values.feeds.map((feed, index) => (
               <div key={index} className="input-group">
-                <label htmlFor={`feeds[${index}].feedId`}>Feed Name</label>
+                <label htmlFor={`feeds[${index}].feedId`}>
+                  {t("feed_name")}
+                </label>
                 <select
                   id={`feeds[${index}].feedId`}
                   name={`feeds[${index}].feedId`}
@@ -209,7 +207,7 @@ export default function EditFeedbyLocation() {
                   }
                   onBlur={formik.handleBlur}
                 >
-                  <option value="">Select Feed</option>
+                  <option value="">{t("select_feed")}</option>
                   {feedOptions.map((feedOption) => (
                     <option key={feedOption._id} value={feedOption._id}>
                       {feedOption.name}
@@ -217,7 +215,9 @@ export default function EditFeedbyLocation() {
                   ))}
                 </select>
 
-                <label htmlFor={`feeds[${index}].quantity`}>Quantity</label>
+                <label htmlFor={`feeds[${index}].quantity`}>
+                  {t("quantity")}
+                </label>
                 <input
                   type="number"
                   id={`feeds[${index}].quantity`}
@@ -227,12 +227,12 @@ export default function EditFeedbyLocation() {
                     handleFeedChange(index, "quantity", e.target.value)
                   }
                   onBlur={formik.handleBlur}
-                  placeholder="Enter quantity"
+                  placeholder={t("enter_quantity")}
                 />
               </div>
             ))}
             <button type="button" onClick={addFeed} className="add-feed-button">
-              +
+              {t("+")}
             </button>
           </div>
         </div>
@@ -240,10 +240,10 @@ export default function EditFeedbyLocation() {
         <div className="form-actions">
           <button type="submit" className="save-button" disabled={isLoading}>
             {isLoading ? (
-              <span className="loading-spinner"></span>
+              <span className="loading-spinner">{t("loading")}</span>
             ) : (
               <>
-                <IoIosSave /> Save
+                <IoIosSave /> {t("save")}
               </>
             )}
           </button>

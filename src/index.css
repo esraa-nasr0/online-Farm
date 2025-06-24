@@ -341,6 +341,15 @@ border-radius: 100%;
 object-fit: cover;
 margin:0 30px  25px 30px;
 }
+.card_icon {
+color: #ac0202;
+width: 120px;
+height: 120px;
+margin-bottom: 20px;
+border-radius: 100%;
+object-fit: cover;
+margin:0 30px  25px 30px;
+}
 .card h3{
 color: #778983 !important ;
 

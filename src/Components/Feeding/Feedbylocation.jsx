@@ -7,6 +7,7 @@ import Swal from 'sweetalert2';
 import { useNavigate } from "react-router-dom";
 import { LocationContext } from '../../Context/LocationContext';
 import './Feeding.css';
+import { useTranslation } from "react-i18next";
 
 export default function Feedbylocation() {
   const [error, setError] = useState(null);
@@ -17,6 +18,7 @@ export default function Feedbylocation() {
   const { LocationMenue } = useContext(LocationContext);
   const [feedName, setFeedName] = useState([]);
   const [locationSheds, setLocationSheds] = useState([]);
+  const { t } = useTranslation();
 
   const getHeaders = () => {
     const Authorization = localStorage.getItem('Authorization');
@@ -33,7 +35,7 @@ export default function Feedbylocation() {
         setFeeds([]);
       }
     } catch (err) {
-      setError('Failed to load location data');
+      setError(t("error_fetch_location"));
       setFeeds([]);
     }
   };
@@ -49,7 +51,7 @@ export default function Feedbylocation() {
         setFeedName(data.data);
       }
     } catch (err) {
-      setError('Failed to load Feed data');
+      setError(t("error_fetch_feed"));
     }
   };
 
@@ -69,18 +71,18 @@ export default function Feedbylocation() {
       );
       if (response.data.status === "SUCCESS") {
         Swal.fire({
-          title: "Success!",
-          text: `Data has been submitted successfully!\nTotal Feed Cost: ${response.data.totalFeedCost}\nPer Animal Feed Cost: ${response.data.perAnimalFeedCost}`,
+          title: t("success_title"),
+          text: `${t("submit_success_message")}\n${t("total_feed_cost")}: ${response.data.totalFeedCost}\n${t("per_animal_feed_cost")}: ${response.data.perAnimalFeedCost}`,
           icon: "success",
-          confirmButtonText: "OK",
+          confirmButtonText: t("ok"),
         }).then(() => navigate('/feedlocationtable'));
       }
     } catch (err) {
       Swal.fire({
-        title: "Error!",
-        text: err.response?.data?.message || "An error occurred while submitting data.",
+        title: t("error_title"),
+        text: err.response?.data?.message || t("submit_error_message"),
         icon: "error",
-        confirmButtonText: "OK",
+        confirmButtonText: t("ok"),
       });
     } finally {
       setIsLoading(false);
@@ -95,28 +97,7 @@ export default function Feedbylocation() {
     },
     onSubmit: (values) => {
       post(values);
-    },
-    // validate: (values) => {
-    //   const errors = {};
-    //   if (!values.locationShed) {
-    //     errors.locationShed = 'Location Shed is required';
-    //   }
-    //   if (!values.date) {
-    //     errors.date = 'Date is required';
-    //   }
-    //   values.feeds.forEach((feed, index) => {
-    //     if (!feed.feedId) {
-    //       if (!errors.feeds) errors.feeds = [];
-    //       errors.feeds[index] = { feedId: 'Feed is required' };
-    //     }
-    //     if (!feed.quantity) {
-    //       if (!errors.feeds) errors.feeds = [];
-    //       if (!errors.feeds[index]) errors.feeds[index] = {};
-    //       errors.feeds[index].quantity = 'Quantity is required';
-    //     }
-    //   });
-    //   return errors;
-    // }
+    }
   });
 
   const handleFeedChange = (index, field, value) => {
@@ -132,7 +113,7 @@ export default function Feedbylocation() {
   return (
     <div className="feeding-container">
       <div className="feeding-header">
-        <h1>Feed by Location Shed</h1>
+        <h1>{t("feed_by_location_shed")}</h1>
       </div>
 
       {error && <div className="error-message">{error}</div>}
@@ -140,9 +121,9 @@ export default function Feedbylocation() {
       <form onSubmit={formik.handleSubmit} className="feeding-form">
         <div className="form-grid">
           <div className="form-section">
-            <h2>Location Information</h2>
+            <h2>{t("location_info")}</h2>
             <div className="input-group">
-              <label htmlFor="locationShed">Location Shed</label>
+              <label htmlFor="locationShed">{t("location_shed")}</label>
               <select
                 id="locationShed"
                 name="locationShed"
@@ -150,20 +131,17 @@ export default function Feedbylocation() {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               >
-                <option value="">Select location shed</option>
+                <option value="">{t("select_location_shed")}</option>
                 {locationSheds && locationSheds.map((shed) => (
                   <option key={shed._id} value={shed._id}>
                     {shed.locationShedName}
                   </option>
                 ))}
               </select>
-              {formik.errors.locationShed && formik.touched.locationShed && (
-                <p className="text-danger">{formik.errors.locationShed}</p>
-              )}
             </div>
 
             <div className="input-group">
-              <label htmlFor="date">Date</label>
+              <label htmlFor="date">{t("date")}</label>
               <input
                 id="date"
                 name="date"
@@ -172,17 +150,14 @@ export default function Feedbylocation() {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               />
-              {formik.errors.date && formik.touched.date && (
-                <p className="text-danger">{formik.errors.date}</p>
-              )}
             </div>
           </div>
 
           <div className="form-section">
-            <h2>Feed Details</h2>
+            <h2>{t("feed_details")}</h2>
             {formik.values.feeds.map((feed, index) => (
               <div key={index} className="input-group">
-                <label htmlFor={`feeds[${index}].feedId`}>Feed Name</label>
+                <label htmlFor={`feeds[${index}].feedId`}>{t("feed_name")}</label>
                 <select
                   id={`feeds[${index}].feedId`}
                   name={`feeds[${index}].feedId`}
@@ -190,18 +165,15 @@ export default function Feedbylocation() {
                   onChange={(e) => handleFeedChange(index, 'feedId', e.target.value)}
                   onBlur={formik.handleBlur}
                 >
-                  <option value="">Select Feed</option>
+                  <option value="">{t("select_feed")}</option>
                   {feedName.map((feedOption) => (
                     <option key={feedOption._id} value={feedOption._id}>
                       {feedOption.name}
                     </option>
                   ))}
                 </select>
-                {formik.errors.feeds && formik.errors.feeds[index] && formik.errors.feeds[index].feedId && (
-                  <p className="text-danger">{formik.errors.feeds[index].feedId}</p>
-                )}
 
-                <label htmlFor={`feeds[${index}].quantity`}>Quantity</label>
+                <label htmlFor={`feeds[${index}].quantity`}>{t("quantity")}</label>
                 <input
                   type="number"
                   id={`feeds[${index}].quantity`}
@@ -209,15 +181,12 @@ export default function Feedbylocation() {
                   value={feed.quantity}
                   onChange={(e) => handleFeedChange(index, 'quantity', e.target.value)}
                   onBlur={formik.handleBlur}
-                  placeholder="Enter quantity"
+                  placeholder={t("enter_quantity")}
                 />
-                {formik.errors.feeds && formik.errors.feeds[index] && formik.errors.feeds[index].quantity && (
-                  <p className="text-danger">{formik.errors.feeds[index].quantity}</p>
-                )}
               </div>
             ))}
             <button type="button" onClick={addFeed} className="add-feed-button">
-              +
+              {t("+")}
             </button>
           </div>
         </div>
@@ -228,7 +197,7 @@ export default function Feedbylocation() {
               <span className="loading-spinner"></span>
             ) : (
               <>
-                <IoIosSave /> Save
+                <IoIosSave /> {t("save")}
               </>
             )}
           </button>

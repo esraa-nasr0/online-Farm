@@ -94,6 +94,7 @@ import Features from "./Components/LastSection/LastSection.jsx"
 import Manageemployee from "./Components/Section/Section.jsx";
 import { SidebarProvider, useSidebar } from './Context/SidebarContext.jsx';
 import NewvaccineContextProvider from "./Context/NewvaccineContext.jsx";
+import ReportServices from "./Components/Services/ReportServices.jsx";
 
 
 let routers = createBrowserRouter([
@@ -160,6 +161,7 @@ let routers = createBrowserRouter([
       { path: "editVaccineanimals/:id", element: <ProtectedRoute><EditVaccineanimals/></ProtectedRoute> },
       { path: "vaccinebytagid", element: <ProtectedRoute><Vaccinebytagid/></ProtectedRoute> },
 
+      { path: "reportServices", element: <ProtectedRoute><ReportServices/></ProtectedRoute> },
       { path: "animalServices", element: <ProtectedRoute><AnimalServices/></ProtectedRoute> },
       { path: "matingServices", element: <ProtectedRoute><MatingServices/></ProtectedRoute> },
       { path: "weightServices", element: <ProtectedRoute><WeightServices/></ProtectedRoute> },
@@ -201,7 +203,6 @@ export default function App() {
   },[]);
 
   return <>
- return <>
       <SidebarProvider>
         <NewvaccineContextProvider>
     <VaccinetableentriescontextProvider>
@@ -241,7 +242,7 @@ export default function App() {
         </NewvaccineContextProvider>
 
   </SidebarProvider>
-  </>
+
   </>
 }
 

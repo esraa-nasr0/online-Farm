@@ -8,6 +8,7 @@ import { RiDeleteBin6Line, RiDeleteBinLine } from "react-icons/ri";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import "../Vaccine/styles.css"
+import { useTranslation } from 'react-i18next';
 
 function FeedingTable() {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ function FeedingTable() {
   const [searchCriteria, setSearchCriteria] = useState({ name: "", type: "" });
   const [currentPage, setCurrentPage] = useState(1); 
   const animalsPerPage = 10; 
+  const { t } = useTranslation();
   
   const [totalPages, setTotalPages] = useState(1); 
 
@@ -47,8 +49,7 @@ function FeedingTable() {
     } finally {
         setIsLoading(false);
     }
-};
-
+  };
 
   useEffect(() => {
     fetchFeedData();
@@ -61,23 +62,23 @@ function FeedingTable() {
 
   const handleDelete = async (id) => {
     Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
+      title: t('delete_confirmation_title'),
+      text: t('delete_confirmation_text'),
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
-      confirmButtonText: "Yes, delete it!",
-      cancelButtonText: "Cancel",
+      confirmButtonText: t('yes_delete_it'),
+      cancelButtonText: t('cancel'),
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
           await Deletfeed(id);
           setFeedData(feedData.filter((feed) => feed._id !== id));
-          Swal.fire("Deleted!", "Your feed has been deleted.", "success");
+          Swal.fire(t('deleted'), t('feed_deleted_success'), "success");
         } catch (error) {
           console.error("Error deleting feed:", error);
-          Swal.fire("Error!", "Failed to delete the feed. Please try again.", "error");
+          Swal.fire(t('error'), t('delete_feed_error'), "error");
         }
       }
     });
@@ -89,10 +90,9 @@ function FeedingTable() {
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
-};
+  };
 
-// Modern pagination rendering function
-const renderModernPagination = () => {
+  const renderModernPagination = () => {
     const total = totalPages;
     const pageButtons = [];
     const maxButtons = 5;
@@ -126,19 +126,18 @@ const renderModernPagination = () => {
         <ul className="pagination">
             <li className={`page-item${currentPage === 1 ? ' disabled' : ''}`}>
                 <button className="page-link pagination-arrow" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
-                    &lt; Back
+                    &lt; {t('back')}
                 </button>
             </li>
             {pageButtons}
             <li className={`page-item${currentPage === total ? ' disabled' : ''}`}>
                 <button className="page-link pagination-arrow" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === total}>
-                    Next &gt;
+                    {t('next')} &gt;
                 </button>
             </li>
         </ul>
     );
-};
-
+  };
   
   return (
     <>
@@ -148,95 +147,78 @@ const renderModernPagination = () => {
         </div>
       ) : (
         <div className="container mt-5 vaccine-table-container">
-       
-         <h2 className="vaccine-table-title">Feed Records</h2>
+          <h2 className="vaccine-table-title">{t('feed_records')}</h2>
 
-       
+          <div className="row g-2 mb-3">
+            <div className="col-md-4">
+              <input
+                type="text"
+                className="form-control"
+                value={searchCriteria.type}
+                placeholder={t('search_type_placeholder')}
+                onChange={(e) => setSearchCriteria(prev => ({ ...prev, type: e.target.value }))}
+              />
+            </div>
+            <div className="col-md-4">
+              <input
+                type="text"
+                className="form-control"
+                value={searchCriteria.name}
+                placeholder={t('search_name_placeholder')}
+                onChange={(e) => setSearchCriteria(prev => ({ ...prev, name: e.target.value }))}
+              />
+            </div>
+            <div className="d-flex justify-content-end mb-3">
+              <button className="btn btn-outline-secondary" onClick={handleSearch}>{t('search')}</button>
+            </div>
+          </div>
 
-                          <div className="row g-2 mb-3">
-        <div className="col-md-4">
-   <input
-              type="text"
-              className="form-control"
-              value={searchCriteria.type}
-              placeholder="Search type"
-              onChange={(e) => setSearchCriteria(prev => ({ ...prev, type: e.target.value }))}
-            />
-        </div>
-        <div className="col-md-4">
-  <input
-              type="text"
-              className="form-control"
-              value={searchCriteria.name}
-              placeholder="Search name"
-              onChange={(e) => setSearchCriteria(prev => ({ ...prev, name: e.target.value }))}
-            />
-        </div>
-   
-          <div className="d-flex justify-content-end mb-3">
-        <button className="btn btn-outline-secondary" onClick={handleSearch}>search</button>
-      </div>
-      </div>
-
-
-          <div className="full-width-table"  >
-        
-          <table className="table align-middle">
-            <thead>
-            <tr>
-                <th scope="col" className="text-center bg-color">Feed Name</th>
-                <th scope="col" className="text-center bg-color">Type</th>
-                <th scope="col" className="text-center bg-color">Price / ton</th>
-                <th scope="col" className="text-center bg-color">Concentration of Dry Matter (presentage %)</th>
-             <th className="text-center bg-color">actions</th>
-        
-              </tr>
-            </thead>
-            <tbody>
-              {feedData.length > 0 ? (
-                feedData.map((item) => (
-                  <tr key={item._id}>
-                    <td>{item.name}</td>
-                    <td>{item.type}</td>
-                    <td>{item.price}</td>
-                    <td>{item.concentrationOfDryMatter}</td>
-                                             <td className="text-center">
-                                                                                                                                                                    
-                                                                              <button className="btn btn-link p-0 me-2" onClick={() => Editfeed(item._id)} title='edit' style={{
-                                                                                color:"#808080"
-                                                                              }}><FaRegEdit /></button>
-                                                                              <button className="btn btn-link  p-0" style={{
-                                                                                color:"#808080"
-                                                                              }} onClick={() => handleDelete(item._id)} title='delete'  ><RiDeleteBinLine/></button>
-                                                            </td>
-                  </tr>
-                ))
-              ) : (
+          <div className="full-width-table">
+            <table className="table align-middle">
+              <thead>
                 <tr>
-                  <td colSpan="6">No matching records found.</td>
+                  <th scope="col" className="text-center bg-color">{t('feed_name')}</th>
+                  <th scope="col" className="text-center bg-color">{t('feed_type')}</th>
+                  <th scope="col" className="text-center bg-color">{t('price_per_ton')}</th>
+                  <th scope="col" className="text-center bg-color">{t('dry_matter_concentration')}</th>
+                  <th className="text-center bg-color">{t('actions')}</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {feedData.length > 0 ? (
+                  feedData.map((item) => (
+                    <tr key={item._id}>
+                      <td>{item.name}</td>
+                      <td>{item.type}</td>
+                      <td>{item.price}</td>
+                      <td>{item.concentrationOfDryMatter}</td>
+                      <td className="text-center">
+                        <button className="btn btn-link p-0 me-2" onClick={() => Editfeed(item._id)} title={t('edit')} style={{ color:"#808080" }}>
+                          <FaRegEdit />
+                        </button>
+                        <button className="btn btn-link p-0" style={{ color:"#808080" }} onClick={() => handleDelete(item._id)} title={t('delete')}>
+                          <RiDeleteBinLine/>
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="6">{t('no_records_found')}</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
           <div className="d-flex justify-content-center mt-4">
-    <nav>
-        {renderModernPagination()}
-    </nav>
-</div>
-</div>
-
+            <nav>
+              {renderModernPagination()}
+            </nav>
+          </div>
+        </div>
       )}
     </>
   );
 }
 
 export default FeedingTable;
-
-
-
-
-
-
-
-

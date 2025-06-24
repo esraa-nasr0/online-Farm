@@ -9,18 +9,16 @@ import Swal from 'sweetalert2';
 import { useTranslation } from 'react-i18next';
 import { VaccineanimalContext } from '../../Context/VaccineanimalContext';
 import axios from 'axios';
-import "./styles.css"
+import "./styles.css";
 import { RiDeleteBinLine } from "react-icons/ri";
-
 
 if (typeof document !== 'undefined' && !document.getElementById('vaccine-modern-table-style')) {
   const style = document.createElement('style');
   style.id = 'vaccine-modern-table-style';
- 
   document.head.appendChild(style);
 }
 
-function VaccineTable() {
+function Vaccinebyanimaltable() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { getallVaccineanimalEntries, DeletVaccineanimal } = useContext(Vaccinetableentriescontext);
@@ -31,7 +29,8 @@ function VaccineTable() {
   const [searchCriteria, setSearchCriteria] = useState({
     tagId: '',
     vaccineName: '',
-    locationShed: ''
+    locationShed: '',
+    entryType: ''
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [animalsPerPage] = useState(10);
@@ -120,7 +119,7 @@ function VaccineTable() {
         tagId: searchCriteria.tagId,
         vaccineName: searchCriteria.vaccineName,
         locationShed: searchCriteria.locationShed,
-        entryType:searchCriteria.entryType
+        entryType: searchCriteria.entryType
       };
 
       const { data } = await getallVaccineanimalEntries(currentPage, animalsPerPage, filters);
@@ -178,7 +177,6 @@ function VaccineTable() {
     }
   };
 
-  // Helper function to get headers with token
   const getHeaders = () => {
     const token = localStorage.getItem('Authorization');
     if (!token) {
@@ -190,7 +188,6 @@ function VaccineTable() {
     };
   };
 
-  // Handle download template
   const handleDownloadTemplate = async () => {
     const headers = getHeaders();
     try {
@@ -222,7 +219,6 @@ function VaccineTable() {
     }
   };
 
-  // Handle export to Excel
   const handleExportToExcel = async () => {
     const headers = getHeaders();
     try {
@@ -254,7 +250,6 @@ function VaccineTable() {
     }
   };
 
-  // Handle import from Excel
   const handleImportFromExcel = async (event) => {
     const file = event.target.files[0];
     if (!file) {
@@ -274,7 +269,6 @@ function VaccineTable() {
       return;
     }
 
-    // Check file extension
     const fileName = file.name.toLowerCase();
     if (!fileName.endsWith('.xlsx') && !fileName.endsWith('.xls')) {
       Swal.fire({
@@ -316,7 +310,6 @@ function VaccineTable() {
           text: t('vaccines_imported_successfully'),
           icon: 'success'
         });
-        // Refresh data if needed
         getallVaccineanimal();
       } else {
         throw new Error(response.data?.message || 'Import failed');
@@ -329,7 +322,6 @@ function VaccineTable() {
       if (error.response?.data?.message) {
         const message = error.response.data.message;
         
-        // Check if it's a date format error
         if (message.includes('Invalid date format in row')) {
           const row = message.match(/row (\d+)/)?.[1] || '';
           errorMessage = t('date_format_error');
@@ -362,129 +354,110 @@ function VaccineTable() {
   };
 
   return (
-    <div className="container mt-5 vaccine-table-container">
-      <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mt-5 mb-3">
-        <h2 className="vaccine-table-title">{t('Vaccines')}</h2>
-
-
-
-
-        <div className="d-flex flex-wrap gap-2">
-          <button className="btn btn-outline-dark" onClick={handleExportToExcel} title={t('export_all_data')}>
-            <i className="fas fa-download me-1"></i> {t('export_all_data')}
-          </button>
-          <button className="btn btn-success" onClick={handleDownloadTemplate} title={t('download_template')}>
-            <i className="fas fa-file-arrow-down me-1"></i> {t('download_template')}
-          </button>
-          <label className="btn btn-dark  btn-outline-dark mb-0 d-flex align-items-center" style={{ cursor: 'pointer', color:"white" }} title={t('import_from_excel')}>
-            <i className="fas fa-file-import me-1"></i> {t('import_from_excel')}
-            <input type="file" hidden accept=".xlsx,.xls" onChange={handleImportFromExcel} />
-          </label>
-        </div>
-
-
-
-
-
-
-
+    isLoading ? (
+      <div className='d-flex justify-content-center align-items-center' style={{ height: '100vh' }}>
+        <Rings visible={true} height="100" width="100" color="#21763e" ariaLabel="rings-loading" />
       </div>
-
-
-
-
-
-
-      
-      <div className="row g-2 mb-3">
-        <div className="col-md-4">
-          <input
-            type="text"
-            className="form-control"
-            placeholder={t('search_tag_id')}
-            value={searchCriteria.tagId}
-            onChange={e => setSearchCriteria(prev => ({ ...prev, tagId: e.target.value }))}
-          />
+    ) : (
+      <div className="container mt-5 vaccine-table-container">
+        <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mt-5 mb-3">
+          <h2 className="vaccine-table-title">{t('Vaccines')}</h2>
+          <div className="d-flex flex-wrap gap-2">
+            <button className="btn btn-outline-dark" onClick={handleExportToExcel} title={t('export_all_data')}>
+              <i className="fas fa-download me-1"></i> {t('export_all_data')}
+            </button>
+            <button className="btn btn-success" onClick={handleDownloadTemplate} title={t('download_template')}>
+              <i className="fas fa-file-arrow-down me-1"></i> {t('download_template')}
+            </button>
+            <label className="btn btn-dark btn-outline-dark mb-0 d-flex align-items-center" style={{ cursor: 'pointer', color:"white" }} title={t('import_from_excel')}>
+              <i className="fas fa-file-import me-1"></i> {t('import_from_excel')}
+              <input type="file" hidden accept=".xlsx,.xls" onChange={handleImportFromExcel} />
+            </label>
+          </div>
         </div>
-        <div className="col-md-4">
-          <input
-            type="text"
-            className="form-control"
-            placeholder={t('search_by_vaccine_name')}
-            value={searchCriteria.vaccineName}
-            onChange={e => setSearchCriteria(prev => ({ ...prev, vaccineName: e.target.value }))}
-          />
-        </div>
-        <div className="col-md-4">
-          <input
-            type="text"
-            className="form-control"
-            placeholder={t('search_by_location_shed')}
-            value={searchCriteria.locationShed}
-            onChange={e => setSearchCriteria(prev => ({ ...prev, locationShed: e.target.value }))}
-          />
-        </div>
+        <div className="row g-2 mb-3">
+          <div className="col-md-4">
+            <input
+              type="text"
+              className="form-control"
+              placeholder={t('search_tag_id')}
+              value={searchCriteria.tagId}
+              onChange={e => setSearchCriteria(prev => ({ ...prev, tagId: e.target.value }))}
+            />
+          </div>
+          <div className="col-md-4">
+            <input
+              type="text"
+              className="form-control"
+              placeholder={t('search_by_vaccine_name')}
+              value={searchCriteria.vaccineName}
+              onChange={e => setSearchCriteria(prev => ({ ...prev, vaccineName: e.target.value }))}
+            />
+          </div>
+          <div className="col-md-4">
+            <input
+              type="text"
+              className="form-control"
+              placeholder={t('search_by_location_shed')}
+              value={searchCriteria.locationShed}
+              onChange={e => setSearchCriteria(prev => ({ ...prev, locationShed: e.target.value }))}
+            />
+          </div>
           <div className="d-flex justify-content-end mb-3">
-        <button className="btn btn-outline-secondary" onClick={handleSearch}>{t('search')}</button>
-      </div>
-      </div>
-    
-      <div className="table-responsive">
-        <table className="table table-hover align-middle bg-white">
-          <thead className=' bg-color' >
-            <tr className=' bg-color'>  
-              <th className="bg-color">{t('tag_id')}</th>
-              <th className="bg-color">{t('vaccine_name')}</th>
-              <th className="bg-color">{t('dose_price')}</th>
-              <th className="bg-color">{t('Entry Type')}</th>
-              <th className="bg-color">{t('date')}</th>
-              <th className="bg-color">{t('location_shed')}</th>
-              <th className="text-center bg-color">{t('actions')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {isLoading ? (
-              <tr>
-                <td colSpan="8" className="text-center py-5">
-                  <Rings visible={true} height="60" width="60" color="#21763e" ariaLabel="rings-loading" />
-                </td>
+            <button className="btn btn-outline-secondary" onClick={handleSearch}>{t('search')}</button>
+          </div>
+        </div>
+      
+        <div className="table-responsive">
+          <table className="table table-hover align-middle bg-white">
+            <thead className='bg-color'>
+              <tr className='bg-color'>  
+                <th className="bg-color">{t('tag_id')}</th>
+                <th className="bg-color">{t('vaccine_name')}</th>
+                <th className="bg-color">{t('dose_price')}</th>
+                <th className="bg-color">{t('Entry Type')}</th>
+                <th className="bg-color">{t('date')}</th>
+                <th className="bg-color">{t('location_shed')}</th>
+                <th className="text-center bg-color">{t('actions')}</th>
               </tr>
-            ) : vaccines.length > 0 ? (
-              vaccines.map(vaccine => (
-                <tr key={vaccine._id}>
-                  <td>{vaccine.tagId}</td>
-                  <td>{vaccine.Vaccine?.vaccineName || '--'}</td>
-                  <td>{vaccine.Vaccine?.pricing?.dosePrice || '--'}</td>
-                  <td>{vaccine.entryType}</td>
-                  <td>{new Date(vaccine.date).toLocaleDateString()}</td>
-                  <td>{vaccine.locationShed?.locationShedName || '--'}</td>
-                
-                  <td className="text-center">
-
-                    <button className="btn btn-link p-0 me-2" onClick={() => editVaccine(vaccine._id)} title={t('edit')} style={{
-                      color:"#808080"
-                    }}><FaRegEdit /></button>
-                    <button className="btn btn-link  p-0" style={{
-                      color:"#808080"
-                    }} onClick={() => handleClick(vaccine._id)} title={t('delete')}  ><RiDeleteBinLine /></button>
-                  </td>
+            </thead>
+            <tbody>
+              {vaccines.length > 0 ? (
+                vaccines.map(vaccine => (
+                  <tr key={vaccine._id}>
+                    <td>{vaccine.tagId}</td>
+                    <td>{vaccine.Vaccine?.vaccineName || '--'}</td>
+                    <td>{vaccine.Vaccine?.pricing?.dosePrice || '--'}</td>
+                    <td>{vaccine.entryType}</td>
+                    <td>{new Date(vaccine.date).toLocaleDateString()}</td>
+                    <td>{vaccine.locationShed?.locationShedName || '--'}</td>
+                  
+                    <td className="text-center">
+                      <button className="btn btn-link p-0 me-2" onClick={() => editVaccine(vaccine._id)} title={t('edit')} style={{ color:"#808080" }}>
+                        <FaRegEdit />
+                      </button>
+                      <button className="btn btn-link p-0" style={{ color:"#808080" }} onClick={() => handleClick(vaccine._id)} title={t('delete')}>
+                        <RiDeleteBinLine />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="7" className="text-center py-4 text-muted">{t('no_vaccine_records')}</td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="8" className="text-center py-4 text-muted">{t('no_vaccine_records')}</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
+        </div>
+        <div className="d-flex justify-content-center mt-4">
+          <nav>
+            {renderModernPagination()}
+          </nav>
+        </div>
       </div>
-      <div className="d-flex justify-content-center mt-4">
-        <nav>
-          {renderModernPagination()}
-        </nav>
-      </div>
-    </div>
+    )
   );
 }
 
-export default VaccineTable;
+export default Vaccinebyanimaltable;

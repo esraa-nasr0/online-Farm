@@ -9,38 +9,36 @@ import { LocationContext } from '../../Context/Locationshedcontext';
 import { number } from 'yup';
 import { useTranslation } from 'react-i18next';
 
+
 function VaccinebytagId() {
-    const { t } = useTranslation();
-    const { getallVaccineanimal } = useContext(VaccineanimalContext); 
-    const { getLocationtMenue, getVaccineMenue } = useContext(LocationContext); 
+    const { t, i18n } = useTranslation();
+    const { getallVaccineanimal, getVaccineMenue  } = useContext(VaccineanimalContext); 
+    // const { getLocationtMenue} = useContext(LocationContext); 
     const [isLoading, setIsLoading] = useState(false);
     const [locations, setLocations] = useState([]);
     const [Vaccine, setVaccine] = useState([]);
     const [isLoadingLocations, setIsLoadingLocations] = useState(true);
     const navigate = useNavigate();
   
-    useEffect(() => {
-        const fetchLocations = async () => {
-            setIsLoadingLocations(true);
-            try {
-                const { data } = await getLocationtMenue();
-            
-                
-                if (data.status === 'success') {
-                
-                    const locationsData = data.data.tagIds || data.data;
-                    setLocations(Array.isArray(locationsData) ? locationsData : []);
-                }
-            } catch (err) {
-                console.error("Error details:", err);
-                Swal.fire("Error!", "Failed to load locations data", "error");
-                setLocations([]);
-            } finally {
-                setIsLoadingLocations(false);
-            }
-        };
-        fetchLocations();
-    }, [getLocationtMenue]);
+    // useEffect(() => {
+    //     const fetchLocations = async () => {
+    //         setIsLoadingLocations(true);
+    //         try {
+    //             const { data } = await getLocationtMenue();
+    //             if (data.status === 'success') {
+    //                 const locationsData = data.data.tagIds || data.data;
+    //                 setLocations(Array.isArray(locationsData) ? locationsData : []);
+    //             }
+    //         } catch (err) {
+    //             console.error("Error details:", err);
+    //             Swal.fire("Error!", "Failed to load locations data", "error");
+    //             setLocations([]);
+    //         } finally {
+    //             setIsLoadingLocations(false);
+    //         }
+    //     };
+    //     fetchLocations();
+    // }, [getLocationtMenue]);
 
     useEffect(() => {
         const fetchVaccine = async () => {
@@ -148,29 +146,27 @@ function VaccinebytagId() {
 
                         <div className="animaldata">
                         <div className="input-box">
-                                <label className="label" htmlFor="tagId"> {t('Vaccine Name')}</label>
-                                <select
-                                    id="vaccineId"
-                                    name="vaccineId"
-                                    className="input2"
-                                    onChange={formik.handleChange}
-                                    value={formik.values.vaccineId}
-                                    required
-                                    type="number"
-                                >
-                                    <option value=""> {t('Select Vaccine Name')}</option>
-                                    {isLoadingLocations ? (
-                                        <option disabled> {t('Loading locations...')}</option>
-                                    ) : (
-                                        Vaccine.map((Vaccine) => (
-                                            <option key={Vaccine._id} value={Vaccine._id}>
-                                                {Vaccine.vaccineName}
-                                            </option>
-                                        ))
-                                    )}
-                                </select>
-                            </div>
-
+    <label className="label" htmlFor="tagId"> {t('Vaccine Name')}</label>
+    <select
+        id="vaccineId"
+        name="vaccineId"
+        className="input2"
+        onChange={formik.handleChange}
+        value={formik.values.vaccineId}
+        required
+    >
+        <option value=""> {t('Select Vaccine Name')}</option>
+        {isLoadingLocations ? (
+            <option disabled> {t('Loading locations...')}</option>
+        ) : (
+            Vaccine.map((item) => (
+                <option key={item._id} value={item._id}>
+                    {i18n.language === "ar" ? item.vaccineType?.arabicName : item.vaccineType?.englishName}
+                </option>
+            ))
+        )}
+    </select>
+</div>
                             <div className="input-box">
                                 <label className="label" htmlFor="date"> {t('Date')}</label>
                                 <input

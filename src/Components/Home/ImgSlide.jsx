@@ -1,6 +1,7 @@
 import React from "react";
 import gardenImg from "../../Assets/Img/vecteezy_goat-animals-in-mountain-pastures-with-amazing-landscape-views_46816048.jpg"; 
 import "./imgslide.css";
+import { Link } from "react-router-dom";
 
 export default function HomeHero() {
   return (
@@ -17,8 +18,8 @@ export default function HomeHero() {
 
 
         <div className=" d-flex align-items-center gap-5 justify-content-center">
-          <button className="log-btn">Login</button>
-                    <button className="reg-btn">Register</button>
+         <Link className='Link' to="/login"> <button className="log-btn">Login</button></Link>
+         <Link className='Link' to="/register"> <button className="reg-btn">Register</button></Link>
         </div>
           </div>
      
@@ -31,29 +32,6 @@ export default function HomeHero() {
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         {/* <div className="hero-content">
