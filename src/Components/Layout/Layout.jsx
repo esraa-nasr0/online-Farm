@@ -5,41 +5,34 @@ import Sidebare from "../Sidebare/Sidebare";
 import "./Layout.css";
 
 export default function Layout() {
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const location = useLocation();
 
-    const toggleSidebar = () => {
-        setIsSidebarOpen(!isSidebarOpen);
-    };
+    
+    // الصفحات التي نريد إخفاء الـ Sidebar فيها (صفحات المصادقة)
+    const authPaths = [
+        '/',
+        '/login',
+        '/register',
+        '/forgetpassword',
+        '/verifyotp',
+        '/resetpassword'
+    ];
 
-    const shouldShowSidebar = !['/', '/home', '/register', '/login', '/dashboard' , '/forgetpassword','/verifyotp','/resetpassword'].includes(location.pathname);
-    const shouldHideNavbar = location.pathname !== '/home';
-
-    useEffect(() => {
-        if (window.innerWidth <= 768) {
-            setIsSidebarOpen(false);
-        }
-    }, [location.pathname]);
+    const isHomePage = location.pathname === '/home';
+    const shouldShowSidebar = !authPaths.includes(location.pathname);
+    const shouldShowNavbar = isHomePage;
 
     return (
         <div className="app-container">
-            {!shouldHideNavbar && (
-                <Navbar 
-                    toggleSidebar={toggleSidebar} 
-                    isSidebarOpen={isSidebarOpen} 
-                />
-            )}
+            {shouldShowNavbar && <Navbar />}
+            
             <div className="content-wrapper">
                 {shouldShowSidebar && (
-                    <Sidebare 
-                        isOpen={isSidebarOpen} 
-                        toggleSidebar={toggleSidebar} 
-                    />
+                    <Sidebare isOpen={!isHomePage} /> // Sidebar مفتوح في كل الصفحات ما عدا الهوم
                 )}
-                <main className={`main-content ${isSidebarOpen && shouldShowSidebar ? "sidebar-open" : ""}`}>
-                    <div className="content-container">
-                        <Outlet />
-                    </div>
+                
+                <main className={`main-content ${shouldShowSidebar && !isHomePage ? "with-sidebar" : ""}`}>
+                    <Outlet />
                 </main>
             </div>
         </div>

@@ -136,7 +136,7 @@ return (
 
         <li className='card'>
         <Link className='Link' to='/excludedServices'>
-            <MdOutlineReportOff className='card_icon' />
+            <img src={Img16} alt='excluded' />
             <h3>{t('excluded')}</h3>
             <p>{t('enter_excluded_data')}</p>
             <button className='btn mb-2 me-2' style={{ backgroundColor: '#21763e', color: 'white' }}>
