@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
+import { MdOutlineReportOff } from "react-icons/md";
+
 
 import Img1 from '../../Assets/Img/Goat-Kids-Care-and-Management-2.jpg';
 import Img2 from '../../Assets/Img/goat3.jpeg';
@@ -121,7 +123,7 @@ return (
         </li>
 
         <li className='card'>
-        <Link className='Link' to='/report'>
+        <Link className='Link' to='/reportServices'>
             <img src={Img14} alt='report' />
             <h3>{t('report')}</h3>
             <p>{t('enter_report_data')}</p>
@@ -131,20 +133,10 @@ return (
         </Link>
         </li>
 
-        <li className='card'>
-        <Link className='Link' to='/reportDaliy'>
-            <img src={Img15} alt='daily-report' />
-            <h3>{t('daily_report')}</h3>
-            <p>{t('enter_daily_report_data')}</p>
-            <button className='btn mb-2 me-2' style={{ backgroundColor: '#21763e', color: 'white' }}>
-            {t('go_to_daily_report')}
-            </button>
-        </Link>
-        </li>
 
         <li className='card'>
         <Link className='Link' to='/excludedServices'>
-            <img src={Img16} alt='excluded' />
+            <MdOutlineReportOff className='card_icon' />
             <h3>{t('excluded')}</h3>
             <p>{t('enter_excluded_data')}</p>
             <button className='btn mb-2 me-2' style={{ backgroundColor: '#21763e', color: 'white' }}>

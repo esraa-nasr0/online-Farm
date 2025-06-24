@@ -1,7 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Rings } from 'react-loader-spinner'; // Ensure this is installed via npm/yarn
+import { Rings } from 'react-loader-spinner';
 import { AnimalContext } from '../../Context/AnimalContext';
-import "../Vaccine/styles.css"
+import "../Vaccine/styles.css";
+import { useTranslation } from 'react-i18next';
 
 function AnimalCost() {
     const { costAnimal } = useContext(AnimalContext);
@@ -11,8 +12,8 @@ function AnimalCost() {
     const [CostAnimalsPerPage] = useState(10);
     const [totalPages, setTotalPages] = useState(1);
     const [searchAnimalTagId, setSearchAnimalTagId] = useState('');
+    const { t } = useTranslation();
 
-    // Function to fetch animal cost data
     const getCostAnimal = async () => {
         setIsLoading(true);
         const filters = {
@@ -21,7 +22,7 @@ function AnimalCost() {
         try {
             const { data } = await costAnimal(currentPage, CostAnimalsPerPage, filters);
             setAnimalCost(data.data.animalCost || []);
-            setTotalPages(data.pagination?.totalPages || 1); // Set totalPages based on the response
+            setTotalPages(data.pagination?.totalPages || 1);
         } catch (error) {
             console.error('Error fetching animal costs:', error);
         } finally {
@@ -29,23 +30,19 @@ function AnimalCost() {
         }
     };
 
-    // Fetch data when the component is mounted or currentPage changes
     useEffect(() => {
         getCostAnimal();
-    }, [currentPage]); // Remove searchAnimalTagId from dependency array
+    }, [currentPage]);
 
-    // Handle the search by animal tag ID
     const handleSearch = () => {
-        setCurrentPage(1); // Reset to the first page when searching
-        getCostAnimal(); // Fetch data with the new search filter
+        setCurrentPage(1);
+        getCostAnimal();
     };
 
-    // Pagination handler
     const paginate = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
 
-    // Modern pagination rendering function
     const renderModernPagination = () => {
         const total = totalPages;
         const pageButtons = [];
@@ -80,13 +77,13 @@ function AnimalCost() {
             <ul className="pagination">
                 <li className={`page-item${currentPage === 1 ? ' disabled' : ''}`}>
                     <button className="page-link pagination-arrow" onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
-                        &lt; Back
+                        {t("back")}
                     </button>
                 </li>
                 {pageButtons}
                 <li className={`page-item${currentPage === total ? ' disabled' : ''}`}>
                     <button className="page-link pagination-arrow" onClick={() => paginate(currentPage + 1)} disabled={currentPage === total}>
-                        Next &gt;
+                        {t("next")}
                     </button>
                 </li>
             </ul>
@@ -107,36 +104,35 @@ function AnimalCost() {
                 </div>
             ) : (
                 <div className="container mt-5 vaccine-table-container">
-                    
-                     <h2 className="vaccine-table-title">Animals Cost</h2>
-                 
+                    <h2 className="vaccine-table-title">{t("animals_cost")}</h2>
 
-                 <div className="row g-2 mb-3 mt-4">
-        <div className="col-md-4">
-    <input
-                            type="text"
-                            className="form-control me-2 mb-2"
-                            placeholder="Search by Animal Tag ID"
-                            value={searchAnimalTagId}
-                            onChange={(e) => setSearchAnimalTagId(e.target.value)}
-                            style={{ flex: 1 }}
-                        />
-        </div>
-    
-          <div className="d-flex justify-content-end mb-3">
-        <button className="btn btn-outline-secondary" onClick={handleSearch}>search</button>
-      </div>
-      </div>
+                    <div className="row g-2 mb-3 mt-4">
+                        <div className="col-md-4">
+                            <input
+                                type="text"
+                                className="form-control me-2 mb-2"
+                                placeholder={t("search_by_tag_id")}
+                                value={searchAnimalTagId}
+                                onChange={(e) => setSearchAnimalTagId(e.target.value)}
+                                style={{ flex: 1 }}
+                            />
+                        </div>
+                        <div className="d-flex justify-content-end mb-3">
+                            <button className="btn btn-outline-secondary" onClick={handleSearch}>
+                                {t("search")}
+                            </button>
+                        </div>
+                    </div>
 
                     <table className="table table-hover mt-4 p-2">
                         <thead>
                             <tr>
-                                <th scope="col"className=" bg-color" >#</th>
-                                <th scope="col" className=" bg-color">Animal Tag ID</th>
-                                <th scope="col" className=" bg-color">Feed Cost</th>
-                                <th scope="col" className=" bg-color">Treatment Cost</th>
-                                <th scope="col" className=" bg-color">Date</th>
-                                <th scope="col" className=" bg-color">Total Cost</th>
+                                <th scope="col" className="bg-color">{t("number")}</th>
+                                <th scope="col" className="bg-color">{t("animal_tag_id")}</th>
+                                <th scope="col" className="bg-color">{t("feed_cost")}</th>
+                                <th scope="col" className="bg-color">{t("treatment_cost")}</th>
+                                <th scope="col" className="bg-color">{t("date")}</th>
+                                <th scope="col" className="bg-color">{t("total_cost")}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -153,7 +149,6 @@ function AnimalCost() {
                         </tbody>
                     </table>
 
-                    {/* Pagination buttons */}
                     <div className="d-flex justify-content-center mt-4">
                         <nav>
                             {renderModernPagination()}

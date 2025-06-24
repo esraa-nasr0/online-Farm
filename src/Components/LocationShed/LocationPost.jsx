@@ -67,7 +67,7 @@ function LocationPost() {
 
     return (
         <div className="container">
-            <div className="title2">Location Shed</div>
+            <div className="title2">{t('location_shed')}</div>
             <p className="text-danger">{error}</p>
 
             <form onSubmit={formik.handleSubmit} className="mt-5">

@@ -95,25 +95,7 @@ export default function Register() {
         <p className="text-danger">{error}</p>
         <form onSubmit={formik.handleSubmit}>
           <div className={style.formGrid}>
-            <div className={style.inputGroup}>
-              <label className={style.label} htmlFor="name">
-                Username
-              </label>
-              <input
-                className={style.input}
-                id="name"
-                name="name"
-                type="text"
-                placeholder="Enter your username"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.name}
-              />
-              {formik.errors.name && formik.touched.name ? (
-                <p className="text-danger">{formik.errors.name}</p>
-              ) : null}
-            </div>
-
+            
             <div className={style.inputGroup}>
               <label className={style.label} htmlFor="email">
                 Email
@@ -130,6 +112,25 @@ export default function Register() {
               />
               {formik.errors.email && formik.touched.email ? (
                 <p className="text-danger">{formik.errors.email}</p>
+              ) : null}
+            </div>
+
+            <div className={style.inputGroup}>
+              <label className={style.label} htmlFor="name">
+                Username
+              </label>
+              <input
+                className={style.input}
+                id="name"
+                name="name"
+                type="text"
+                placeholder="Enter your username"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.name}
+              />
+              {formik.errors.name && formik.touched.name ? (
+                <p className="text-danger">{formik.errors.name}</p>
               ) : null}
             </div>
 

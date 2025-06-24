@@ -1,15 +1,16 @@
 import axios from 'axios';
 import { useFormik } from 'formik';
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom'; 
+import { useParams, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { IoIosSave } from 'react-icons/io';
 import './Feeding.css';
+import { useTranslation } from "react-i18next";
 
 export default function Editfeed() {
   let { id } = useParams();
   const navigate = useNavigate();
+  const { t } = useTranslation();
       
   const getHeaders = () => {
     const Authorization = localStorage.getItem('Authorization');
@@ -38,18 +39,18 @@ export default function Editfeed() {
         );
         if (response.data.status === "success") {
           Swal.fire({
-            title: "Success!",
-            text: "Data has been submitted successfully!",
+            title: t("success_title"),
+            text: t("submit_success_message"),
             icon: "success",
-            confirmButtonText: "OK",
+            confirmButtonText: t("ok"),
           }).then(() => navigate('/feedingTable'));
         }
       } catch (err) {
         Swal.fire({
-          title: "Error!",
-          text: err.response?.data?.message || "An error occurred while submitting data.",
+          title: t("error_title"),
+          text: err.response?.data?.message || t("submit_error_message"),
           icon: "error",
-          confirmButtonText: "OK",
+          confirmButtonText: t("ok"),
         });
       } finally {
         setIsLoading(false);
@@ -75,7 +76,7 @@ export default function Editfeed() {
           });
         }
       } catch (err) {
-        setError('Failed to fetch feed data');
+        setError(t("error_fetch_feed"));
         console.error(err);
       }
     }
@@ -85,7 +86,7 @@ export default function Editfeed() {
   return (
     <div className="feeding-container">
       <div className="feeding-header">
-        <h1>Edit Feed</h1>
+        <h1>{t("edit_feed")}</h1>
       </div>
       
       {error && <div className="error-message">{error}</div>}
@@ -93,15 +94,16 @@ export default function Editfeed() {
       <form onSubmit={formik.handleSubmit} className="feeding-form">
         <div className="form-grid">
           <div className="form-section">
-            <h2>Feed Information</h2>
+            <h2>{t("feed_info")}</h2>
+
             <div className="input-group">
-              <label htmlFor="name">Feed Name</label>
+              <label htmlFor="name">{t("feed_name")}</label>
               <input
                 id="name"
                 name="name"
                 type="text"
                 className="input2"
-                placeholder="Enter feed name"
+                placeholder={t("enter_feed_name")}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.name}
@@ -109,7 +111,7 @@ export default function Editfeed() {
             </div>
 
             <div className="input-group">
-              <label htmlFor="price">Price</label>
+              <label htmlFor="price">{t("price")}</label>
               <input
                 id="price"
                 name="price"
@@ -122,7 +124,7 @@ export default function Editfeed() {
             </div>
 
             <div className="input-group">
-              <label htmlFor="type">Type</label>
+              <label htmlFor="type">{t("type")}</label>
               <input
                 id="type"
                 name="type"
@@ -135,7 +137,7 @@ export default function Editfeed() {
             </div>
 
             <div className="input-group">
-              <label htmlFor="concentrationOfDryMatter">Concentration of Dry Matter</label>
+              <label htmlFor="concentrationOfDryMatter">{t("concentration")}</label>
               <input
                 id="concentrationOfDryMatter"
                 name="concentrationOfDryMatter"
@@ -155,7 +157,7 @@ export default function Editfeed() {
               <span className="loading-spinner"></span>
             ) : (
               <>
-                <IoIosSave /> Save
+                <IoIosSave /> {t("save")}
               </>
             )}
           </button>

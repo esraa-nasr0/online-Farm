@@ -15,6 +15,14 @@ const getHeaders = () => {
     };
 };
 
+function getVaccineMenue() {
+    const headers = getHeaders(); 
+    return axios
+        .get(`https://farm-project-bbzj.onrender.com/api/vaccine/GetVaccine-menue`, { headers })
+        .then((response) => response)
+        .catch((err) => err);
+}
+
 async function getallVaccineanimal(page, limit, filters = {}) {
     try {
         const headers = getHeaders(); // Get the latest headers
@@ -46,7 +54,7 @@ async function DeletVaccineanimal(id) {
 
 export default function VaccineanimalContextProvider(props) {
     return (
-        <VaccineanimalContext.Provider value={{ getallVaccineanimal, DeletVaccineanimal }}>
+        <VaccineanimalContext.Provider value={{ getallVaccineanimal, DeletVaccineanimal ,getVaccineMenue}}>
             {props.children}
         </VaccineanimalContext.Provider>
     );

@@ -4,6 +4,9 @@ import { IoAddCircleOutline } from "react-icons/io5";
 import { Link } from 'react-router-dom';
 import { MdOutlineAddToPhotos } from "react-icons/md";
 import { useTranslation } from 'react-i18next';
+import { CiViewTable } from "react-icons/ci";
+import { MdNoteAdd } from "react-icons/md";
+
 
 function VaccineServices() {
     const { t } = useTranslation();
@@ -22,7 +25,7 @@ function VaccineServices() {
                         <div className="info">
                             <h3>{t('showTitle')}</h3>
                             <p>{t('showDescription')}</p>
-                            <button className='btn mb-2 me-2' style={{ backgroundColor: '#FAA96C', color: 'white' }}>
+                            <button className='btn mb-2 me-2' style={{ backgroundColor: '#21763e', color: 'white' }}>
                                 {t('showButton')}
                             </button>
                         </div>
@@ -31,28 +34,28 @@ function VaccineServices() {
 
 
                 <div className="card2">
-                    <Link className='Link' to="/addVaccine">
-                        <div className="icon">
-                            <GoTable />
-                        </div>
-                        <div className="info">
-                            <h3>{t('Add New Vaccine')}</h3>
-                            <p>{t('showDescription-v')}</p>
-                            <button className='btn mb-2 me-2' style={{ backgroundColor: '#FAA96C', color: 'white' }}>
-                                {t('showButton')}
-                            </button>
-                        </div>
-                    </Link>
-                </div>
-                <div className="card2">
-                    <Link className='Link' to='/Vaccinebyanimalsstable'>
+                    <Link className='Link' to="/addVaccine" >
                         <div className="icon">
                             <IoAddCircleOutline />
                         </div>
                         <div className="info">
+                            <h3>{t('Add New Vaccine')}</h3>
+                            <p>{t('showDescription-v')}</p>
+                            <button className='btn mb-2 me-2' style={{ backgroundColor: '#21763e', color: 'white' }}>
+                                {t('showButton')}
+                            </button>
+                        </div>
+                    </Link>
+                </div>
+                <div className="card2">
+                    <Link className='Link'  to='/Vaccinebyanimalsstable' >
+                        <div className="icon">
+                        <CiViewTable />
+                        </div>
+                        <div className="info">
                         <h3>{t('showTitle')}</h3>
                         <p>{t('showDescription2')}</p>
-                            <button className='btn mb-2 me-2' style={{ backgroundColor: '#FAA96C', color: 'white' }}>
+                            <button className='btn mb-2 me-2' style={{ backgroundColor: '#21763e', color: 'white' }}>
                                 {t('addByAnimalButton')}
                             </button>
                         </div>
@@ -61,12 +64,12 @@ function VaccineServices() {
                 <div className="card2">
                     <Link className='Link' to='/vaccinebytagid'>
                         <div className="icon">
-                            <IoAddCircleOutline />
+                        <MdNoteAdd />
                         </div>
                         <div className="info">
                             <h3>{t('addByAnimalTitle')}</h3>
                             <p>{t('addByAnimalDescription')}</p>
-                            <button className='btn mb-2 me-2' style={{ backgroundColor: '#FAA96C', color: 'white' }}>
+                            <button className='btn mb-2 me-2' style={{ backgroundColor: '#21763e', color: 'white' }}>
                                 {t('addByAnimalButton')}
                             </button>
                         </div>
@@ -77,12 +80,12 @@ function VaccineServices() {
                 <div className="card2">
                     <Link className='Link' to="/vaccinebylocationshed">
                         <div className="icon">
-                            <MdOutlineAddToPhotos />
+                        <MdOutlineAddToPhotos />
                         </div>
                         <div className="info">
                             <h3>{t('addByLocationTitle')}</h3>
                             <p>{t('addByLocationDescription')}</p>
-                            <button className='btn mb-2 me-2' style={{ backgroundColor: '#FAA96C', color: 'white' }}>
+                            <button className='btn mb-2 me-2' style={{ backgroundColor: '#21763e', color: 'white' }}>
                                 {t('addByLocationButton')}
                             </button>
                         </div>
