@@ -41,7 +41,7 @@ export default function Navbar({ toggleSidebar, isSidebarOpen }) {
             <div className="container-fluid">
                 <div className="d-flex align-items-center w-100">
                     {/* Sidebar Toggle (only shown when authorized and on certain pages) */}
-                    {showSidebarToggle && (
+                     {showSidebarToggle && (
                         <button 
                             className="sidebar-toggle-btn me-3" 
                             onClick={toggleSidebar}
@@ -49,13 +49,14 @@ export default function Navbar({ toggleSidebar, isSidebarOpen }) {
                                 background: "none",
                                 border: "none",
                                 fontSize: "1.5rem",
-                                color: "#9cbd81"
+                                color: "#9cbd81",
+                                transition: "all 0.3s ease"
                             }}
                         >
                             {isSidebarOpen ? <FaTimes /> : <FaBars />}
                         </button>
                     )}
-
+                    
                     {/* Logo */}
                     <Link className="navbar-brand d-flex align-items-center me-auto" to="/">
                         <img src={logo} alt="Logo" style={{ width: "100px", height: "45px", marginRight: "10px" }} />
