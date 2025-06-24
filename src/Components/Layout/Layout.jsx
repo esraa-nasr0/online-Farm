@@ -7,6 +7,7 @@ import "./Layout.css";
 export default function Layout() {
     const location = useLocation();
 
+    
     // الصفحات التي نريد إخفاء الـ Sidebar فيها (صفحات المصادقة)
     const authPaths = [
         '/',
