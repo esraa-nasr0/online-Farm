@@ -6,11 +6,13 @@ import "./Layout.css";
 
 export default function Layout() {
     const location = useLocation();
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(!isMobile);
 
-    
-    // الصفحات التي نريد إخفاء الـ Sidebar فيها (صفحات المصادقة)
-    const authPaths = [
+    // الصفحات التي نريد إخفاء السايدبار فيها
+    const hideSidebarPaths = [
         '/',
+        '/home',
         '/login',
         '/register',
         '/forgetpassword',
@@ -18,20 +20,50 @@ export default function Layout() {
         '/resetpassword'
     ];
 
-    const isHomePage = location.pathname === '/home';
-    const shouldShowSidebar = !authPaths.includes(location.pathname);
-    const shouldShowNavbar = isHomePage;
+    useEffect(() => {
+        const handleResize = () => {
+            const mobile = window.innerWidth <= 768;
+            setIsMobile(mobile);
+            // إغلاق السايدبار تلقائياً عند التبديل إلى الهاتف
+            if (mobile) {
+                setIsSidebarOpen(false);
+            } else {
+                setIsSidebarOpen(true);
+            }
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    const toggleSidebar = () => {
+        setIsSidebarOpen(!isSidebarOpen);
+    };
+
+    const shouldShowSidebar = !hideSidebarPaths.includes(location.pathname);
+    const shouldShowNavbar = location.pathname === '/' || location.pathname === '/home';
 
     return (
         <div className="app-container">
-            {shouldShowNavbar && <Navbar />}
+            {shouldShowNavbar && (
+                <Navbar 
+                    toggleSidebar={toggleSidebar}
+                    isSidebarOpen={isSidebarOpen}
+                    showSidebarToggle={shouldShowSidebar}
+                />
+            )}
             
             <div className="content-wrapper">
                 {shouldShowSidebar && (
-                    <Sidebare isOpen={!isHomePage} /> // Sidebar مفتوح في كل الصفحات ما عدا الهوم
+                    <Sidebare 
+                        isOpen={isSidebarOpen} 
+                        isMobile={isMobile}
+                    />
                 )}
                 
-                <main className={`main-content ${shouldShowSidebar && !isHomePage ? "with-sidebar" : ""}`}>
+                <main className={`main-content ${
+                    shouldShowSidebar && isSidebarOpen && !isMobile ? "with-sidebar" : ""
+                }`}>
                     <Outlet />
                 </main>
             </div>
