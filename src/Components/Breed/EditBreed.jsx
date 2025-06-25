@@ -6,6 +6,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { useTranslation } from 'react-i18next';
 import {  useNavigate, useParams } from "react-router-dom";
+import '../LocationShed/LocationShed.css';
 
 
 
@@ -142,74 +143,75 @@ function EditBreed() {
     };
 
     return (
-        <div className="container">
-            <div className="title2">{t('breed')}</div>
-            <p className="text-danger">{error}</p>
-
-            <form onSubmit={formik.handleSubmit} className="mt-5">
-                {isLoading ? (
-                    <button type="submit" className="btn button2" disabled>
-                        <i className="fas fa-spinner fa-spin"></i>
-                    </button>
-                ) : (
-                    <button type="submit" className="btn button2">
-                        <IoIosSave /> Save
-                    </button>
-                )}
-
-                <div className="animaldata">
-                    <div className="input-box" style={{ position: 'relative' }}>
-                        <label className="label" htmlFor="breedName">{t('breed')}</label>
-                        <input 
-                            onBlur={() => setTimeout(() => setShowSuggestions(false), 200)} 
-                            onChange={handleInputChange} 
-                            value={formik.values.breedName} 
-                            placeholder={t('enter_breed')} 
-                            id="breedName" 
-                            type="text" 
-                            className="input2" 
-                            name="breedName"
-                            autoComplete="off"
-                        />
-                        {formik.errors.breedName && formik.touched.breedName && (
-                            <p className="text-danger">{formik.errors.breedName}</p>
-                        )}
-                        
-                        {showSuggestions && suggestions.length > 0 && (
-                            <ul style={{
-                                position: 'absolute',
-                                top: '100%',
-                                left: 0,
-                                right: 0,
-                                zIndex: 1000,
-                                backgroundColor: 'white',
-                                border: '1px solid #ddd',
-                                borderRadius: '4px',
-                                maxHeight: '200px',
-                                overflowY: 'auto',
-                                listStyle: 'none',
-                                padding: 0,
-                                margin: 0,
-                            }}>
-                                {suggestions.map((breed, index) => (
-                                    <li 
-                                        key={index}
-                                        style={{
-                                            padding: '8px 12px',
-                                            cursor: 'pointer',
-                                            borderBottom: '1px solid #eee',
-                                        }}
-                                        onMouseDown={() => handleSuggestionClick(breed)}
-                                    >
-                                        <div>{inputLanguage === 'arabic' ? breed.arabic : breed.english}</div>
-                                        <div style={{ fontSize: '0.8em', color: '#666' }}>
-                                            {inputLanguage === 'arabic' ? breed.english : breed.arabic}
-                                        </div>
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
+        <div className="animal-details-container">
+            <div className="animal-details-header">
+                <h1>{t('breed')}</h1>
+            </div>
+            {error && <div className="error-message">{error}</div>}
+            <form onSubmit={formik.handleSubmit} className="animal-form">
+                <div className="form-grid">
+                    <div className="form-section">
+                        <div className="input-group" style={{ position: 'relative' }}>
+                            <label className="label" htmlFor="breedName">{t('breed')}</label>
+                            <input 
+                                onBlur={() => setTimeout(() => setShowSuggestions(false), 200)} 
+                                onChange={handleInputChange} 
+                                value={formik.values.breedName} 
+                                placeholder={t('enter_breed')} 
+                                id="breedName" 
+                                type="text" 
+                                className="input2" 
+                                name="breedName"
+                                autoComplete="off"
+                            />
+                            {formik.errors.breedName && formik.touched.breedName && (
+                                <p className="text-danger">{formik.errors.breedName}</p>
+                            )}
+                            {showSuggestions && suggestions.length > 0 && (
+                                <ul style={{
+                                    position: 'absolute',
+                                    top: '100%',
+                                    left: 0,
+                                    right: 0,
+                                    zIndex: 1000,
+                                    backgroundColor: 'white',
+                                    border: '1px solid #ddd',
+                                    borderRadius: '4px',
+                                    maxHeight: '200px',
+                                    overflowY: 'auto',
+                                    listStyle: 'none',
+                                    padding: 0,
+                                    margin: 0,
+                                }}>
+                                    {suggestions.map((breed, index) => (
+                                        <li 
+                                            key={index}
+                                            style={{
+                                                padding: '8px 12px',
+                                                cursor: 'pointer',
+                                                borderBottom: '1px solid #eee',
+                                            }}
+                                            onMouseDown={() => handleSuggestionClick(breed)}
+                                        >
+                                            <div>{inputLanguage === 'arabic' ? breed.arabic : breed.english}</div>
+                                            <div style={{ fontSize: '0.8em', color: '#666' }}>
+                                                {inputLanguage === 'arabic' ? breed.english : breed.arabic}
+                                            </div>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                        </div>
                     </div>
+                </div>
+                <div className="form-actions">
+                    <button type="submit" className="save-button" disabled={isLoading}>
+                        {isLoading ? (
+                            <span className="loading-spinner"></span>
+                        ) : (
+                            <><IoIosSave /> {t('save')}</>
+                        )}
+                    </button>
                 </div>
             </form>
         </div>

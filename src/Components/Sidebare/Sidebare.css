@@ -167,3 +167,23 @@
 .sidebar.closed {
     transform: translateX(-100%);
 }
+.sidebar.ltr {
+  left: 0;
+  right: auto;
+}
+
+.sidebar.rtl {
+  right: 0;
+  left: auto;
+}
+
+@media (min-width: 769px) {
+  .main-content.with-sidebar {
+    margin-left: 250px; /* ده للإفتراضي الإنجليزي */
+  }
+
+  .content-wrapper.rtl .main-content.with-sidebar {
+    margin-left: 0;
+    margin-right: 250px;
+  }
+}

@@ -1103,3 +1103,13 @@ align-items: center;
 .nav-item {
 margin: 0 0.5rem;
 }
+
+html[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+}
+
+html[dir="ltr"] {
+  direction: ltr;
+  text-align: left;
+}
