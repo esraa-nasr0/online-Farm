@@ -78,7 +78,7 @@
 .input-group input:focus,
 .input-group select:focus {
     outline: none;
-    border-color: #9cbd81;
+    border-color: #2bb673;
     box-shadow: 0 0 0 3px rgba(156, 189, 129, 0.1);
 }
 
@@ -100,7 +100,7 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem 1.5rem;
-    background-color: #9cbd81;
+    background-color: #2bb673;
     color: white;
     border: none;
     border-radius: 6px;
@@ -111,7 +111,7 @@
 }
 
 .save-button:hover {
-    background-color: #8baf6d;
+    background-color: #2bb673;
 }
 
 .save-button:disabled {
@@ -140,7 +140,7 @@
     padding: 1.5rem;
     background-color: #ecfdf5;
     border-radius: 8px;
-    border: 1px solid #9cbd81;
+    border: 1px solid #2bb673;
 }
 
 .success-message h3 {
@@ -160,7 +160,7 @@
     justify-content: center;
     width: 2.5rem;
     height: 2.5rem;
-    background-color: #9cbd81;
+    background-color: #2bb673;
     color: white;
     border: none;
     border-radius: 50%;
@@ -170,7 +170,7 @@
 }
 
 .add-treatment-button:hover {
-    background-color: #8baf6d;
+    background-color: #2bb673;
 }
 
 .add-treatment-button:disabled {

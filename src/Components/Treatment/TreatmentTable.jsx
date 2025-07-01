@@ -359,6 +359,7 @@ function TreatmentTable() {
                                         <th scope="col" className="text-center bg-color">{t('name')}</th>
                                         <th scope="col" className="text-center bg-color">{t('type')}</th>
                                         <th scope="col" className="text-center bg-color">{t('volume')}</th>
+                                        <th scope="col" className="text-center bg-color">{t('expire_date')}</th>
                                         <th scope="col" className="text-center bg-color">{t('price')}</th>
                                            <th className="text-center bg-color">{t('actions')}</th>
                                     </tr>
@@ -371,6 +372,7 @@ function TreatmentTable() {
                                                 <td>{item.name}</td>
                                                 <td>{item.type}</td>
                                                 <td>{item.volume}</td>
+                                                <td>{new Date(item.expireDate).toLocaleDateString()}</td>
                                                 <td>{item.price}</td>
                                               
 
