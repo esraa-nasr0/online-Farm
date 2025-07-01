@@ -70,6 +70,7 @@ function Treatment() {
             name: "",
             type: "",
             volume: "",
+            expireDate: "",
             price: "",
         },
         validationSchema,
@@ -140,6 +141,18 @@ function Treatment() {
                             />
                             {formik.errors.volume && formik.touched.volume && (
                                 <p className="error-message">{formik.errors.volume}</p>
+                            )}
+                        </div>
+                        <div className="input-group">
+                            <label htmlFor="expireDate">{t('expire_date')}</label>
+                            <input
+                                id="expireDate"
+                                type="date"
+                                {...formik.getFieldProps('expireDate')}
+                                disabled={isSubmitted}
+                            />
+                            {formik.errors.expireDate && formik.touched.expireDate && (
+                                <p className="error-message">{formik.errors.expireDate}</p>
                             )}
                         </div>
 

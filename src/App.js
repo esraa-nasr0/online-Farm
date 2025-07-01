@@ -95,6 +95,7 @@ import Manageemployee from "./Components/Section/Section.jsx";
 import { SidebarProvider, useSidebar } from './Context/SidebarContext.jsx';
 import NewvaccineContextProvider from "./Context/NewvaccineContext.jsx";
 import ReportServices from "./Components/Services/ReportServices.jsx";
+import { useTranslation } from "react-i18next";
 
 
 let routers = createBrowserRouter([
@@ -194,6 +195,12 @@ let routers = createBrowserRouter([
 export default function App() {
 
   let {setAuthorization} = useContext(UserContext);
+   const { i18n } = useTranslation();
+
+  useEffect(() => {
+    const dir = i18n.language === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.dir = dir;
+  }, [i18n.language]);
   
   useEffect(()=>{
     if(localStorage.getItem('Authorization')!== null){

@@ -1,17 +1,17 @@
-.treatment-container {
+.animal-details-container {
     padding: 2rem;
     background-color: #f8f9fa;
     min-height: 100vh;
 }
 
-.treatment-header {
+.animal-details-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
 }
 
-.treatment-header h1 {
+.animal-details-header h1 {
     font-size: 1.75rem;
     color: #2c3e50;
     margin: 0;
@@ -25,7 +25,7 @@
     margin-bottom: 1.5rem;
 }
 
-.treatment-form {
+.animal-form {
     background-color: white;
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.05);
@@ -42,13 +42,6 @@
     padding: 1.5rem;
     background-color: #f8f9fa;
     border-radius: 8px;
-}
-
-.form-section h2 {
-    font-size: 1.25rem;
-    color: #2c3e50;
-    margin-bottom: 1.5rem;
-    font-weight: 600;
 }
 
 .input-group {
@@ -78,7 +71,7 @@
 .input-group input:focus,
 .input-group select:focus {
     outline: none;
-    border-color: #2bb673;
+    border-color: #9cbd81;
     box-shadow: 0 0 0 3px rgba(156, 189, 129, 0.1);
 }
 
@@ -92,7 +85,6 @@
     margin-top: 2rem;
     display: flex;
     justify-content: flex-end;
-    gap: 1rem;
 }
 
 .save-button {
@@ -100,7 +92,7 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem 1.5rem;
-    background-color: #2bb673;
+    background-color: #9cbd81;
     color: white;
     border: none;
     border-radius: 6px;
@@ -111,7 +103,7 @@
 }
 
 .save-button:hover {
-    background-color: #2bb673;
+    background-color: #8baf6d;
 }
 
 .save-button:disabled {
@@ -133,67 +125,4 @@
     to {
         transform: rotate(360deg);
     }
-}
-
-.success-message {
-    margin-top: 2rem;
-    padding: 1.5rem;
-    background-color: #ecfdf5;
-    border-radius: 8px;
-    border: 1px solid #2bb673;
-}
-
-.success-message h3 {
-    color: #065f46;
-    font-size: 1.125rem;
-    margin-bottom: 0.75rem;
-}
-
-.success-message p {
-    color: #047857;
-    margin: 0;
-}
-
-.add-treatment-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 2.5rem;
-    height: 2.5rem;
-    background-color: #2bb673;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    font-size: 1.5rem;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.add-treatment-button:hover {
-    background-color: #2bb673;
-}
-
-.add-treatment-button:disabled {
-    background-color: #d1d5db;
-    cursor: not-allowed;
-}
-
-@media (max-width: 768px) {
-    .treatment-container {
-        padding: 1rem;
-    }
-
-    .treatment-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-    }
-
-    .form-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .form-section {
-        padding: 1rem;
-    }
-}
+} 

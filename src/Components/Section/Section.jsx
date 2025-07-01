@@ -7,7 +7,7 @@ export default function Section() {
     <div className="section-container">
       <div className="section-content">
         <div className="text-area">
-          <h1>Manage employee, workers, team and network in farming.</h1>
+          <h1>Manage employee,<span>workers, team</span>  and network in farming.</h1>
           <ul>
             <li>Allow your employee, workers, team to perform restricted functions as per their role.</li>
             <li>Set reminders for team on upcoming task including vaccination, feed schedule, weighing schedule etc.</li>

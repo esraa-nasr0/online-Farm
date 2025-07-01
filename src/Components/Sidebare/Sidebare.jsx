@@ -20,7 +20,7 @@ import {
   FaChevronUp
 } from "react-icons/fa";
 
-export default function Sidebar({ isOpen }) {
+export default function Sidebar({ isOpen, isMobile, isRTL }) {
   const { t } = useTranslation();
 
   const [activeDropdown, setActiveDropdown] = useState(null);
@@ -61,7 +61,7 @@ export default function Sidebar({ isOpen }) {
           icon: <FaSyringe />,
           subItems: [
             { name: "vaccineData", path: "/vaccineTable" },
-            { name: "addByAnimal", path: "/vaccinebyanimal" },
+            { name: "addByAnimal", path: "/vaccinebytagid" },
             { name: "addVaccineByLocation", path: "/vaccinebylocationshed" }
           ]
         },
@@ -135,7 +135,7 @@ export default function Sidebar({ isOpen }) {
   ];
 
   return (
-    <aside className={`sidebar ${isOpen ? "open" : "closed"}`}>
+    <aside className={`sidebar ${isOpen ? "open" : "closed"} ${isRTL ? "rtl" : "ltr"}`}>
       <div className="sidebar-header">
         <div className="sidebar-title">
           <h3>ONLINE FARM</h3>

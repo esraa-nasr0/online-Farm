@@ -773,7 +773,8 @@
   "feed_cost": "تكلفة العلف",
   "treatment_cost": "تكلفة العلاج",
   "fodderDetails": "تفاصيل العلف",
-  "feedComponents": "مكونات العلف"
+  "feedComponents": "مكونات العلف",
+  "expire_date": "تاريخ الانتهاء"
 
 
 }

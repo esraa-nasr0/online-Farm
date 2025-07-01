@@ -6,7 +6,7 @@ import butchers from '../../Assets/Img/home.jpg';
 const GoatCard = () => {
   return (
     <div className='container usefull mx-auto'>
-        <h1 className=' text-center mb-4 color-text'>Free application useful to</h1>
+        <h1 className='section_heading text-center mb-4 color-text'>Free application <span>useful to</span> </h1>
   <div className='row  '>
       
       <div className="col-lg-4 px-3 mb-4">

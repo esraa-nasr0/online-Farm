@@ -6,6 +6,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { useTranslation } from 'react-i18next';
 import {  useNavigate} from "react-router-dom";
+import './LocationShed.css';
 
 
 
@@ -66,40 +67,42 @@ function LocationPost() {
     });
 
     return (
-        <div className="container">
-            <div className="title2">{t('location_shed')}</div>
-            <p className="text-danger">{error}</p>
-
-            <form onSubmit={formik.handleSubmit} className="mt-5">
-                {isLoading ? (
-                    <button type="submit" className="btn button2">
-                        <i className="fas fa-spinner fa-spin"></i>
-                    </button>
-                ) : (
-                    <button type="submit" className="btn button2">
-                        <IoIosSave /> Save
-                    </button>
-                )}
-
-                <div className="animaldata">
-                    <div className="input-box">
-                        <label className="label" htmlFor="locationShedName">
-                        {t('location_shed')}
-                        </label>
-                        <input
-                            onBlur={formik.handleBlur}
-                            onChange={formik.handleChange}
-                            value={formik.values.locationShedName} 
-                            placeholder="Enter Location Shed"
-                            id="locationShedName"
-                            type="text"
-                            className="input2"
-                            name="locationShedName" 
-                        />
-                        {formik.errors.locationShedName && formik.touched.locationShedName && (
-                            <p className="text-danger">{formik.errors.locationShedName}</p>
-                        )}
+        <div className="animal-details-container">
+            <div className="animal-details-header">
+                <h1>{t('location_shed')}</h1>
+            </div>
+            {error && <div className="error-message">{error}</div>}
+            <form onSubmit={formik.handleSubmit} className="animal-form">
+                <div className="form-grid">
+                    <div className="form-section">
+                        <div className="input-group">
+                            <label className="label" htmlFor="locationShedName">
+                                {t('location_shed')}
+                            </label>
+                            <input
+                                onBlur={formik.handleBlur}
+                                onChange={formik.handleChange}
+                                value={formik.values.locationShedName}
+                                placeholder="Enter Location Shed"
+                                id="locationShedName"
+                                type="text"
+                                className="input2"
+                                name="locationShedName"
+                            />
+                            {formik.errors.locationShedName && formik.touched.locationShedName && (
+                                <p className="text-danger">{formik.errors.locationShedName}</p>
+                            )}
+                        </div>
                     </div>
+                </div>
+                <div className="form-actions">
+                    <button type="submit" className="save-button" disabled={isLoading}>
+                        {isLoading ? (
+                            <span className="loading-spinner"></span>
+                        ) : (
+                            <><IoIosSave /> {t('save')}</>
+                        )}
+                    </button>
                 </div>
             </form>
         </div>

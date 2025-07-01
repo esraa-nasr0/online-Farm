@@ -706,7 +706,8 @@
   "feed_cost": "Feed Cost",
   "treatment_cost": "Treatment Cost",
   "fodderDetails": "Fodder Details",
-  "feedComponents": "Feed Components"
+  "feedComponents": "Feed Components",
+  "expire_date": "Expire Date"
 
 }
 
