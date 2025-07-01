@@ -44,7 +44,7 @@ export default function Navbar({ toggleSidebar, isSidebarOpen }) {
                 {/* Navigation Links - Center */}
                 <div className="navbar-links">
                     <Link to="/" className={location.pathname === '/' ? 'active' : ''}>Home</Link>
-                    <Link to="/about" className={location.pathname === '/about' ? 'active' : ''}>About Us</Link>
+                    {/* <Link to="/about" className={location.pathname === '/about' ? 'active' : ''}>About Us</Link> */}
                     <Link to="/homeServices" className={location.pathname === '/homeServices' ? 'active' : ''}>Services</Link>
                     {(userRole === "admin" || isAdmin) && (
                         <Link to="/dashboard" className={location.pathname === '/dashboard' ? 'active' : ''}>Dashboard</Link>
@@ -85,7 +85,7 @@ export default function Navbar({ toggleSidebar, isSidebarOpen }) {
             {mobileMenuOpen && (
                 <div className="mobile-menu">
                     <Link to="/" onClick={() => setMobileMenuOpen(false)}>Home</Link>
-                    <Link to="/about" onClick={() => setMobileMenuOpen(false)}>About Us</Link>
+                    {/* <Link to="/about" onClick={() => setMobileMenuOpen(false)}>About Us</Link> */}
                     <Link to="/homeServices" onClick={() => setMobileMenuOpen(false)}>Services</Link>
                     {(userRole === "admin" || isAdmin) && (
                         <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)}>Dashboard</Link>
