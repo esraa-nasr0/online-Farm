@@ -15,6 +15,7 @@ export default function HomeHero() {
     }
   };
 
+  
   return (
     <div className="hero-bg">
       <img src={gardenImg} className="background_img" alt="Farm background"/>
@@ -28,9 +29,18 @@ export default function HomeHero() {
           </p>
           <div className="hero-btn-group">
             <button className="hero-main-btn" onClick={handleGetStarted}>Get Started</button>
-            <Link  className="hero-link">
-            <button className="hero-outline-btn">Learn More</button>
-            </Link>
+            <button
+  className="hero-outline-btn"
+  onClick={() => {
+    const lastSection = document.getElementById("last-section");
+    if (lastSection) {
+      lastSection.scrollIntoView({ behavior: "smooth" });
+    }
+  }}
+>
+  Learn More
+</button>
+
           </div>
         </div>
       </div>

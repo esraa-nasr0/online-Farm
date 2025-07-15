@@ -4,6 +4,11 @@ import { Outlet, useLocation } from "react-router-dom";
 import Sidebare from "../Sidebare/Sidebare";
 import "./Layout.css";
 import { useTranslation } from "react-i18next";
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+
+const BASE_URL = 'https://farm-project-bbzj.onrender.com';
+
 
 export default function Layout() {
   const location = useLocation();
@@ -22,6 +27,26 @@ export default function Layout() {
     "/verifyotp",
     "/resetpassword",
   ];
+
+  const getHeaders = () => {
+  const token = localStorage.getItem("Authorization");
+  return token
+    ? { Authorization: token.startsWith("Bearer ") ? token : `Bearer ${token}` }
+    : {};
+};
+
+const { data: notifications = [] } = useQuery({
+  queryKey: ['notifications'],
+  queryFn: async () => {
+    const res = await axios.get(`${BASE_URL}/api/notifications`, {
+      headers: getHeaders()
+    });
+    return res.data.data.notifications;
+  }
+});
+
+const unreadCount = notifications.filter(n => !n.isRead).length;
+
 
   useEffect(() => {
     const handleResize = () => {
@@ -60,6 +85,7 @@ export default function Layout() {
       <div className={`content-wrapper ${isRTL ? "rtl" : "ltr"}`}>
         {shouldShowSidebar && (
           <Sidebare
+           notificationCount={unreadCount} 
             isOpen={isSidebarOpen}
             isMobile={isMobile}
             isRTL={isRTL} // نمررها للسايدبار

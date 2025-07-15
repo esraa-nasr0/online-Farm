@@ -1,10 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import "./Sidebare.css";
 import {
-  FaPlus, 
-  FaUsers,
   FaPaw,
   FaHeart,
   FaSyringe,
@@ -17,12 +14,14 @@ import {
   FaCalendarAlt,
   FaUserSlash,
   FaChevronDown,
-  FaChevronUp
+  FaChevronUp,
+  FaBell,
 } from "react-icons/fa";
 
-export default function Sidebar({ isOpen, isMobile, isRTL }) {
-  const { t } = useTranslation();
+import "./Sidebare.css";
 
+export default function Sidebar({ isOpen, isMobile, isRTL, notificationCount = 0 }) {
+  const { t } = useTranslation();
   const [activeDropdown, setActiveDropdown] = useState(null);
 
   const toggleDropdown = (dropdown) => {
@@ -30,6 +29,16 @@ export default function Sidebar({ isOpen, isMobile, isRTL }) {
   };
 
   const menuItems = [
+     {
+      title: "Notifications",
+      items: [
+        {
+          name: "Notifications",
+          icon: <FaBell />,
+          path: "/notificationPage",
+        },
+      ],
+    },
     {
       title: "Animal Management",
       items: [
@@ -39,10 +48,10 @@ export default function Sidebar({ isOpen, isMobile, isRTL }) {
           subItems: [
             { name: "animalsData", path: "/animals" },
             { name: "addAnimal", path: "/AnimalsDetails" },
-            { name: "animalCost", path: "/animalCost" }
-          ]
-        }
-      ]
+            { name: "animalCost", path: "/animalCost" },
+          ],
+        },
+      ],
     },
     {
       title: "Health and Breeding",
@@ -53,8 +62,8 @@ export default function Sidebar({ isOpen, isMobile, isRTL }) {
           subItems: [
             { name: "matingData", path: "/matingTable" },
             { name: "addMating", path: "/mating" },
-            { name: "addByLocationShed", path: "/matingLocation" }
-          ]
+            { name: "addByLocationShed", path: "/matingLocation" },
+          ],
         },
         {
           name: "vaccine",
@@ -62,8 +71,8 @@ export default function Sidebar({ isOpen, isMobile, isRTL }) {
           subItems: [
             { name: "vaccineData", path: "/vaccineTable" },
             { name: "addByAnimal", path: "/vaccinebytagid" },
-            { name: "addVaccineByLocation", path: "/vaccinebylocationshed" }
-          ]
+            { name: "addVaccineByLocation", path: "/vaccinebylocationshed" },
+          ],
         },
         {
           name: "treatment",
@@ -73,26 +82,26 @@ export default function Sidebar({ isOpen, isMobile, isRTL }) {
             { name: "addTreatment", path: "/treatment" },
             { name: "showByAnimal", path: "/treatAnimalTable" },
             { name: "addTreatmentByAnimal", path: "/treatmentAnimal" },
-            { name: "addTreatmentByLocation", path: "/treatmentLocation" }
-          ]
+            { name: "addTreatmentByLocation", path: "/treatmentLocation" },
+          ],
         },
         {
           name: "weight",
           icon: <FaWeight />,
           subItems: [
             { name: "weightData", path: "/weightTable" },
-            { name: "addWeight", path: "/weight" }
-          ]
+            { name: "addWeight", path: "/weight" },
+          ],
         },
         {
           name: "breeding",
           icon: <FaSeedling />,
           subItems: [
             { name: "breedingData", path: "/breadingTable" },
-            { name: "addBreeding", path: "/breeding" }
-          ]
-        }
-      ]
+            { name: "addBreeding", path: "/breeding" },
+          ],
+        },
+      ],
     },
     {
       title: "Feeding and Reports",
@@ -104,20 +113,20 @@ export default function Sidebar({ isOpen, isMobile, isRTL }) {
             { name: "feedingData", path: "/feedingTable" },
             { name: "addFeeding", path: "/feed" },
             { name: "dataByLocation", path: "/feedlocationtable" },
-            { name: "addFeedingByLocation", path: "/feedbylocation" }
-          ]
+            { name: "addFeedingByLocation", path: "/feedbylocation" },
+          ],
         },
         {
           name: "fodder",
           icon: <FaBreadSlice />,
           subItems: [
             { name: "fodderData", path: "/fodderTable" },
-            { name: "addFodder", path: "/fodder" }
-          ]
+            { name: "addFodder", path: "/fodder" },
+          ],
         },
         { name: "reports", icon: <FaChartBar />, path: "/report" },
-        { name: "dailyReports", icon: <FaCalendarAlt />, path: "/reportDaliy" }
-      ]
+        { name: "dailyReports", icon: <FaCalendarAlt />, path: "/reportDaliy" },
+      ],
     },
     {
       title: "System",
@@ -127,11 +136,12 @@ export default function Sidebar({ isOpen, isMobile, isRTL }) {
           icon: <FaUserSlash />,
           subItems: [
             { name: "excludedData", path: "/excludedtable" },
-            { name: "addExcluded", path: "/excluded" }
-          ]
-        }
-      ]
-    }
+            { name: "addExcluded", path: "/excluded" },
+          ],
+        },
+      ],
+    },
+   
   ];
 
   return (
@@ -140,7 +150,7 @@ export default function Sidebar({ isOpen, isMobile, isRTL }) {
         <div className="sidebar-title">
           <h3>ONLINE FARM</h3>
         </div>
-        
+
         <nav>
           {menuItems.map((section, sectionIndex) => (
             <div className="sidebar-section" key={sectionIndex}>
@@ -176,6 +186,9 @@ export default function Sidebar({ isOpen, isMobile, isRTL }) {
                       <Link to={item.path} className="menu-item">
                         <span className="menu-icon">{item.icon}</span>
                         <span className="menu-text">{t(item.name)}</span>
+                        {item.name === "Notifications" && notificationCount > 0 && (
+                          <span className="notif-badge">{notificationCount}</span>
+                        )}
                       </Link>
                     )}
                   </li>
