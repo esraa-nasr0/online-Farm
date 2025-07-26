@@ -20,8 +20,9 @@ function MatingTable() {
 
     const [isLoading, setIsLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(0);
-    const animalsPerPage = 10;
+    const [allMatings, setAllMatings] = useState([]);
+    const [displayedMatings, setDisplayedMatings] = useState([]);
+    const itemsPerPage = 10;
     const [searchCriteria, setSearchCriteria] = useState({
         tagId: '',
         matingDate: '',
@@ -32,8 +33,12 @@ function MatingTable() {
         locationShed: '',
         entryType: ''
     });
-    const [matings, setMatings] = useState([]);
-    const [pagination, setPagination] = useState({ totalPages: 1 }); 
+    const [pagination, setPagination] = useState({ 
+        total: 0,
+        page: 1,
+        limit: itemsPerPage,
+        totalPages: 1
+    });
 
     async function fetchMating() {
         setIsLoading(true);
@@ -48,11 +53,21 @@ function MatingTable() {
                 locationShed: searchCriteria.locationShed,
                 entryType: searchCriteria.entryType
             };
-            const { data } = await getMating(currentPage, animalsPerPage, filters);
-            setMatings(data.data.mating);
-            setPagination(data.pagination || { totalPages: 1 }); 
-            const total = data.pagination?.totalPages || 1;
-            setTotalPages(total); 
+            
+            // جلب جميع البيانات مع الباجينيشين
+            const { data } = await getMating(currentPage, itemsPerPage, filters);
+            
+            setAllMatings(data.data.mating);
+            setDisplayedMatings(data.data.mating);
+            
+            // تحديث معلومات الباجينيشين
+            setPagination(data.data.pagination || {
+                total: data.data.mating.length,
+                page: currentPage,
+                limit: itemsPerPage,
+                totalPages: Math.ceil(data.data.mating.length / itemsPerPage)
+            });
+            
         } catch (error) {
             Swal.fire(t('error'), t('fetch_error'), 'error');
         } finally {
@@ -67,7 +82,8 @@ function MatingTable() {
     const deleteItem = async (id) => {
         try {
             await deleteMating(id);
-            setMatings((prevMatings) => prevMatings.filter((mating) => mating._id !== id));
+            setAllMatings((prevMatings) => prevMatings.filter((mating) => mating._id !== id));
+            setDisplayedMatings((prevMatings) => prevMatings.filter((mating) => mating._id !== id));
             Swal.fire({
                 icon: 'success',
                 title: t('deleted'),
@@ -103,7 +119,7 @@ function MatingTable() {
     };
 
     const handleSearch = () => {
-        setCurrentPage(1); 
+        setCurrentPage(1);
         fetchMating();
     };
 
@@ -111,11 +127,11 @@ function MatingTable() {
         setCurrentPage(pageNumber);
     };
 
-    // Modern pagination rendering function
     const renderModernPagination = () => {
-        const total = pagination?.totalPages || 1;
+        const totalPages = pagination.totalPages || 1;
         const pageButtons = [];
         const maxButtons = 5;
+        
         const addPage = (page) => {
             pageButtons.push(
                 <li key={page} className={`page-item${page === currentPage ? ' active' : ''}`}>
@@ -123,52 +139,56 @@ function MatingTable() {
                 </li>
             );
         };
-        if (total <= maxButtons) {
-            for (let i = 1; i <= total; i++) addPage(i);
+
+        if (totalPages <= maxButtons) {
+            for (let i = 1; i <= totalPages; i++) addPage(i);
         } else {
             addPage(1);
             if (currentPage > 3) {
                 pageButtons.push(<li key="start-ellipsis" className="pagination-ellipsis">...</li>);
             }
+            
             let start = Math.max(2, currentPage - 1);
-            let end = Math.min(total - 1, currentPage + 1);
+            let end = Math.min(totalPages - 1, currentPage + 1);
+            
             if (currentPage <= 3) end = 4;
-            if (currentPage >= total - 2) start = total - 3;
+            if (currentPage >= totalPages - 2) start = totalPages - 3;
+            
             for (let i = start; i <= end; i++) {
-                if (i > 1 && i < total) addPage(i);
+                if (i > 1 && i < totalPages) addPage(i);
             }
-            if (currentPage < total - 2) {
+            
+            if (currentPage < totalPages - 2) {
                 pageButtons.push(<li key="end-ellipsis" className="pagination-ellipsis">...</li>);
             }
-            addPage(total);
+            addPage(totalPages);
         }
+
         return (
             <ul className="pagination">
                 <li className={`page-item${currentPage === 1 ? ' disabled' : ''}`}>
-                    <button className="page-link pagination-arrow" onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
-                        &lt; Back
+                    <button 
+                        className="page-link pagination-arrow" 
+                        onClick={() => paginate(currentPage - 1)} 
+                        disabled={currentPage === 1}
+                    >
+                        &lt; {t('back')}
                     </button>
                 </li>
                 {pageButtons}
-                <li className={`page-item${currentPage === total ? ' disabled' : ''}`}>
-                    <button className="page-link pagination-arrow" onClick={() => paginate(currentPage + 1)} disabled={currentPage === total}>
-                        Next &gt;
+                <li className={`page-item${currentPage === totalPages ? ' disabled' : ''}`}>
+                    <button 
+                        className="page-link pagination-arrow" 
+                        onClick={() => paginate(currentPage + 1)} 
+                        disabled={currentPage === totalPages}
+                    >
+                        {t('next')} &gt;
                     </button>
                 </li>
             </ul>
         );
     };
 
-    const addMatingData = (newMatings) => {  
-        setMatings((prevMatings) => {  
-            const updatedMatings = [...prevMatings, ...newMatings];  
-            localStorage.setItem('matings', JSON.stringify(updatedMatings)); // Update localStorage  
-            return updatedMatings;  
-        });  
-        fetchMating(); // Reload data from the API  
-    };
-
-    // Helper function to get headers with token
     const getHeaders = () => {
         const token = localStorage.getItem('Authorization');
         if (!token) {
@@ -180,7 +200,6 @@ function MatingTable() {
         };
     };
 
-    // Handle download template
     const handleDownloadTemplate = async () => {
         const headers = getHeaders();
         try {
@@ -212,7 +231,6 @@ function MatingTable() {
         }
     };
 
-    // Handle export to Excel
     const handleExportToExcel = async () => {
         const headers = getHeaders();
         try {
@@ -244,7 +262,6 @@ function MatingTable() {
         }
     };
 
-    // Handle import from Excel
     const handleImportFromExcel = async (event) => {
         const file = event.target.files[0];
         if (!file) {
@@ -264,7 +281,6 @@ function MatingTable() {
             return;
         }
 
-        // Check file extension
         const fileName = file.name.toLowerCase();
         if (!fileName.endsWith('.xlsx') && !fileName.endsWith('.xls')) {
             Swal.fire({
@@ -306,7 +322,6 @@ function MatingTable() {
                     text: t('matings_imported_successfully'),
                     icon: 'success'
                 });
-                // Refresh data if needed
                 fetchMating();
             } else {
                 throw new Error(response.data?.message || 'Import failed');
@@ -319,7 +334,6 @@ function MatingTable() {
             if (error.response?.data?.message) {
                 const message = error.response.data.message;
                 
-                // Check if it's a date format error
                 if (message.includes('Invalid date format in row')) {
                     const row = message.match(/row (\d+)/)?.[1] || '';
                     errorMessage = t('date_format_error');
@@ -347,7 +361,7 @@ function MatingTable() {
             });
         } finally {
             setIsLoading(false);
-            event.target.value = ''; // Reset file input
+            event.target.value = '';
         }
     };
 
@@ -360,123 +374,130 @@ function MatingTable() {
             ) : (
                 <div className="container mt-5 vaccine-table-container">
                     <div className="container mt-5">
-                      
+                        <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mt-5 mb-3">
+                            <h2 className="vaccine-table-title">{t('Mating Records')}</h2>
 
-        <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mt-5 mb-3">
-        <h2 className="vaccine-table-title">{t('Mating Records')}</h2>
+                            <div className="d-flex flex-wrap gap-2">
+                                <button className="btn btn-outline-dark" onClick={handleExportToExcel} title={t('export_all_data')}>
+                                    <i className="fas fa-download me-1"></i> {t('export_all_data')}
+                                </button>
+                                <button className="btn btn-success" onClick={handleDownloadTemplate} title={t('download_template')}>
+                                    <i className="fas fa-file-arrow-down me-1"></i> {t('download_template')}
+                                </button>
+                                <label className="btn btn-dark btn-outline-dark mb-0 d-flex align-items-center" style={{ cursor: 'pointer', color:"white" }} title={t('import_from_excel')}>
+                                    <i className="fas fa-file-import me-1"></i> {t('import_from_excel')}
+                                    <input type="file" hidden accept=".xlsx,.xls" onChange={handleImportFromExcel} />
+                                </label>
+                            </div>
+                        </div>
 
-        <div className="d-flex flex-wrap gap-2">
-          <button className="btn btn-outline-dark" onClick={handleExportToExcel} title={t('export_all_data')}>
-            <i className="fas fa-download me-1"></i> {t('export_all_data')}
-          </button>
-          <button className="btn btn-success" onClick={handleDownloadTemplate} title={t('download_template')}>
-            <i className="fas fa-file-arrow-down me-1"></i> {t('download_template')}
-          </button>
-          <label className="btn btn-dark  btn-outline-dark mb-0 d-flex align-items-center" style={{ cursor: 'pointer', color:"white" }} title={t('import_from_excel')}>
-            <i className="fas fa-file-import me-1"></i> {t('import_from_excel')}
-            <input type="file" hidden accept=".xlsx,.xls" onChange={handleImportFromExcel} />
-          </label>
-        </div>
-      </div>
-
-      <div className="row g-2 mb-3">
-        <div className="col-md-4">
-          <input
-            type="text"
-            className="form-control"
-            placeholder={t('search_by_tag_id')}
-            value={searchCriteria.tagId}
-            onChange={(e) => setSearchCriteria({ ...searchCriteria, tagId: e.target.value })}
-        />
-        </div>
-        <div className="col-md-4">
-         <select
-            value={searchCriteria.animalType}
-            className="form-select"
-            onChange={(e) => setSearchCriteria({ ...searchCriteria, animalType: e.target.value })}
-        >
-            <option value="">{t('animal_type')}</option>
-            <option value="goat">{t('goat')}</option>
-            <option value="sheep">{t('sheep')}</option>
-        </select>
-        </div>
-        <div className="col-md-4">
-         <input
-            type="text"
-            className="form-control"
-            placeholder={t('search_mating_date')}
-            value={searchCriteria.matingDate}
-            onChange={(e) => setSearchCriteria({ ...searchCriteria, matingDate: e.target.value })}
-        />
-        </div>
-        <div className="col-md-4">
-            <input
-            type="text"
-            className="form-control"
-            placeholder={t('search_sonar_result')}
-            value={searchCriteria.sonarRsult}
-            onChange={(e) => setSearchCriteria({ ...searchCriteria, sonarRsult: e.target.value })}
-        />
-        </div>
-        <div className="col-md-4">
-            <input
-            type="text"
-            className="form-control"
-            placeholder={t('search_sonar_date')}
-            value={searchCriteria.sonarDate}
-            onChange={(e) => setSearchCriteria({ ...searchCriteria, sonarDate: e.target.value })}
-        />
-        </div>
-          <div className="d-flex justify-content-end mb-3">
-        <button className="btn btn-outline-secondary" onClick={handleSearch}>{t('search')}</button>
-      </div>
-      </div>
-      </div>
+                        <div className="row g-2 mb-3">
+                            <div className="col-md-4">
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder={t('search_by_tag_id')}
+                                    value={searchCriteria.tagId}
+                                    onChange={(e) => setSearchCriteria({ ...searchCriteria, tagId: e.target.value })}
+                                />
+                            </div>
+                            <div className="col-md-4">
+                                <select
+                                    value={searchCriteria.animalType}
+                                    className="form-select"
+                                    onChange={(e) => setSearchCriteria({ ...searchCriteria, animalType: e.target.value })}
+                                >
+                                    <option value="">{t('animal_type')}</option>
+                                    <option value="goat">{t('goat')}</option>
+                                    <option value="sheep">{t('sheep')}</option>
+                                </select>
+                            </div>
+                            <div className="col-md-4">
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder={t('search_mating_date')}
+                                    value={searchCriteria.matingDate}
+                                    onChange={(e) => setSearchCriteria({ ...searchCriteria, matingDate: e.target.value })}
+                                />
+                            </div>
+                            <div className="col-md-4">
+                                <select
+                                    className="form-control"
+                                    value={searchCriteria.sonarRsult}
+                                    onChange={(e) => setSearchCriteria({ ...searchCriteria, sonarRsult: e.target.value })}
+                                >
+                                    <option value="">{t('all_sonar_results')}</option>
+                                    <option value="positive">{t('positive')}</option>
+                                    <option value="negative">{t('negative')}</option>
+                                </select>
+                            </div>
+                            <div className="col-md-4">
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder={t('search_sonar_date')}
+                                    value={searchCriteria.sonarDate}
+                                    onChange={(e) => setSearchCriteria({ ...searchCriteria, sonarDate: e.target.value })}
+                                />
+                            </div>
+                            <div className="d-flex justify-content-end mb-3">
+                                <button className="btn btn-outline-secondary" onClick={handleSearch}>{t('search')}</button>
+                            </div>
+                        </div>
+                    </div>
 
                     <div className="table-responsive">
                         <table className="table align-middle">
                             <thead>
                                 <tr>
-                                <th className=" bg-color">#</th>
-                                <th className=" bg-color">{t('female_tag_id')}</th>
-                                <th className=" bg-color">{t('male_tag_id')}</th>
-                                <th className=" bg-color">{t('mating_type')}</th>
-                                <th className=" bg-color">{t('mating_date')}</th>
-                                <th className=" bg-color">{t('sonar_date')}</th>
-                                <th className=" bg-color">{t('sonar_result')}</th>
-                                <th className=" bg-color">{t('expected_delivery_date')}</th>
-                                <th className=" bg-color">{t('actions')}</th>
-
+                                    <th className="bg-color">#</th>
+                                    <th className="bg-color">{t('female_tag_id')}</th>
+                                    <th className="bg-color">{t('male_tag_id')}</th>
+                                    <th className="bg-color">{t('mating_type')}</th>
+                                    <th className="bg-color">{t('mating_date')}</th>
+                                    <th className="bg-color">{t('sonar_date')}</th>
+                                    <th className="bg-color">{t('sonar_result')}</th>
+                                    <th className="bg-color">{t('expected_delivery_date')}</th>
+                                    <th className="bg-color">{t('actions')}</th>
                                 </tr>
                             </thead>
                             <tbody>
-    {matings.length > 0 ? (
-        matings.map((mating, index) => (
-            <tr key={mating._id}>
-                <th scope="row">{(currentPage - 1) * animalsPerPage + index + 1}</th>
-                <td>{mating.tagId}</td>
-                <td>{mating.maleTag_id}</td>
-                <td>{mating.matingType}</td>
-                <td>{mating.matingDate ? mating.matingDate.split('T')[0] : NO_DATE}</td>
-                <td>{mating.sonarDate ? mating.sonarDate.split('T')[0] : NO_DATE}</td>
-                <td>{mating.sonarRsult}</td>
-                <td>{mating.expectedDeliveryDate ? mating.expectedDeliveryDate.split('T')[0] : NO_DATE}</td>
-                <td className="text-center">
-                    <button className="btn btn-link p-0 me-2" onClick={() => editMating(mating._id)} title={t('edit')} style={{ color:"#808080" }}>
-                        <FaRegEdit />
-                    </button>
-                    <button className="btn btn-link p-0" style={{ color:"#808080" }} onClick={() => confirmDelete(mating._id)} title={t('delete')}>
-                        <RiDeleteBinLine/>
-                    </button>
-                </td>
-            </tr>
-        ))
-    ) : (
-        <tr>
-            <td colSpan="9" className="text-center py-4 text-muted">{t('no_mating_records')}</td>
-        </tr>
-    )}
-</tbody>
+                                {displayedMatings.length > 0 ? (
+                                    displayedMatings.map((mating, index) => (
+                                        <tr key={mating._id}>
+                                            <th scope="row">{(currentPage - 1) * itemsPerPage + index + 1}</th>
+                                            <td>{mating.tagId}</td>
+                                            <td>{mating.maleTag_id}</td>
+                                            <td>{mating.matingType}</td>
+                                            <td>{mating.matingDate ? new Date(mating.matingDate).toLocaleDateString() : NO_DATE}</td>
+                                            <td>{mating.sonarDate ? new Date(mating.sonarDate).toLocaleDateString() : NO_DATE}</td>
+                                            <td>
+                                                {mating.sonarRsult ? 
+                                                    mating.sonarRsult.charAt(0).toUpperCase() + mating.sonarRsult.slice(1) : 
+                                                    'N/A'}
+                                            </td>
+                                            <td>
+                                                {mating.expectedDeliveryDate ? 
+                                                    new Date(mating.expectedDeliveryDate).toLocaleDateString() : 
+                                                    NO_DATE}
+                                            </td>
+                                            <td className="text-center">
+                                                <button className="btn btn-link p-0 me-2" onClick={() => editMating(mating._id)} title={t('edit')} style={{ color:"#808080" }}>
+                                                    <FaRegEdit />
+                                                </button>
+                                                <button className="btn btn-link p-0" style={{ color:"#808080" }} onClick={() => confirmDelete(mating._id)} title={t('delete')}>
+                                                    <RiDeleteBinLine/>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan="9" className="text-center py-4 text-muted">{t('no_mating_records')}</td>
+                                    </tr>
+                                )}
+                            </tbody>
                         </table>
                     </div>
                     <div className="d-flex justify-content-center mt-4">
@@ -484,7 +505,6 @@ function MatingTable() {
                             {renderModernPagination()}
                         </nav>
                     </div>
-   
                 </div>
             )}
         </>

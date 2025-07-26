@@ -66,7 +66,7 @@ function Mating() {
             matingType: '',
             maleTag_id: '',
             matingDate: '',
-            checkDays: null,
+            checkDays: '',
             sonarRsult: null,
         },
         onSubmit: submitMating
