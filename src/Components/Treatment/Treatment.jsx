@@ -57,14 +57,13 @@ function Treatment() {
   const validationSchema = Yup.object({
     name: Yup.string().required(t("name_required")),
     type: Yup.string().required(t("type_required")),
-    volume: Yup.number()
-      .required(t("volume_required"))
-      .positive(t("volume_positive"))
-      .typeError(t("volume_must_be_number")),
-    price: Yup.number()
-      .required(t("price_required"))
-      .positive(t("price_positive"))
-      .typeError(t("price_must_be_number")),
+    bottles: Yup.number().nullable().typeError(t("must_be_number")),
+
+    dosesPerBottle: Yup.number().nullable().typeError(t("must_be_number")),
+
+    bottlePrice: Yup.number().nullable().typeError(t("must_be_number")),
+
+    expireDate: Yup.date().nullable().typeError(t("must_be_date")),
   });
 
   const formik = useFormik({
@@ -198,15 +197,16 @@ function Treatment() {
           <button
             type="submit"
             className="save-button"
-            disabled={isLoading || isSubmitted || !formik.isValid}
+            disabled={isLoading}
+            onClick={() => {
+              console.log("Form values:", formik.values);
+              console.log("Form errors:", formik.errors);
+              console.log("Form dirty:", formik.dirty);
+              console.log("isSubmitted:", isSubmitted);
+              formik.handleSubmit();
+            }}
           >
-            {isLoading ? (
-              <span className="loading-spinner"></span>
-            ) : (
-              <>
-                <IoIosSave /> {t("save")}
-              </>
-            )}
+            {isLoading ? "Loading..." : "Save"}
           </button>
 
           {isSubmitted && (
