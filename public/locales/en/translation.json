@@ -707,7 +707,26 @@
   "treatment_cost": "Treatment Cost",
   "fodderDetails": "Fodder Details",
   "feedComponents": "Feed Components",
-  "expire_date": "Expire Date"
-
+  "expire_date": "Expire Date",
+  
+  
+  "dosesPerBottle": "Doses per Bottle",
+  "bottlePrice": "Bottle Price",
+  "enter_treatment_bottles": "Enter number of bottles",
+  "enter_treatment_dosesPerBottle": "Enter doses per bottle",
+  "enter_treatment_bottle_Price": "Enter bottle price",
+  "add_new_treatment": "Add New Treatment",
+  "treatment_success_message": "Treatment added successfully",
+   "eye_check": "Eye Check",
+  "rectal_check": "Rectal Check",
+  "respiratory_check": "Respiratory Check",
+  "rumen_check": "Rumen Check",
+  "doses": "Doses",
+  "enter_doses": "Enter number of doses",
+  "doses_required": "Doses are required",
+  "doses_positive": "Doses must be positive",
+  "doses_number": "Doses must be a number",
+  "animal_exminetion": "Animal Examination"
+  
 }
 

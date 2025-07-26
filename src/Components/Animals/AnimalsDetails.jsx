@@ -359,7 +359,7 @@ function AnimalsDetails() {
                   />
                 </div>
 
-                <div className="input-group">
+                {/* <div className="input-group">
                   <label htmlFor="teething">{t("teething")}</label>
                   <select
                     id="teething"
@@ -374,7 +374,7 @@ function AnimalsDetails() {
                     <option value="four">{t("four")}</option>
                     <option value="six">{t("six")}</option>
                   </select>
-                </div>
+                </div> */}
               </>
             ) : (
               formik.values.animaleCondation === "born at farm" &&

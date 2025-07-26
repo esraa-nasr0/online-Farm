@@ -774,7 +774,30 @@
   "treatment_cost": "تكلفة العلاج",
   "fodderDetails": "تفاصيل العلف",
   "feedComponents": "مكونات العلف",
-  "expire_date": "تاريخ الانتهاء"
+  "expire_date": "تاريخ الانتهاء",
+   "Logout": "تسجيل الخروج",
+   "Notifications": "الإشعارات",
+   "Breed":"السلالة",
+   "Support": "الدعم",
+   "Home": "الصفحه الرئيسية",
+
+   "dosesPerBottle": "الجرعات لكل زجاجة",
+  "bottlePrice": "سعر الزجاجة",
+  "enter_treatment_bottles": "أدخل عدد الزجاجات",
+  "enter_treatment_dosesPerBottle": "أدخل عدد الجرعات لكل زجاجة",
+  "enter_treatment_bottle_Price": "أدخل سعر الزجاجة",
+  "add_new_treatment": "إضافة علاج جديد",
+  "treatment_success_message": "تمت إضافة العلاج بنجاح",
+  "eye_check": "فحص العين",
+  "rectal_check": "الفحص الشرجي",
+  "respiratory_check": "فحص الجهاز التنفسي",
+  "rumen_check": "فحص الكرش",
+  "doses": "الجرعات",
+  "enter_doses": "أدخل عدد الجرعات",
+  "doses_required": "الجرعات مطلوبة",
+  "doses_positive": "يجب أن يكون عدد الجرعات موجبًا",
+  "doses_number": "يجب أن يكون عدد الجرعات رقمًا",
+  "animal_exminetion": "فحص الحيوان"
 
 
 }

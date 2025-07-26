@@ -146,6 +146,20 @@
 .sidebar.mobile:not(.open) {
     transform: translateX(-100%);
 }
+.notif-badge {
+  background: #e74c3c;
+  color: #fff;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 12px;
+  margin-left: 6px;
+}
+
+/* للـ RTL */
+.sidebar.rtl .notif-badge {
+  margin-left: 0;
+  margin-right: 6px;
+}
 
 /* على الكمبيوتر - مفتوح افتراضيًا */
 @media (min-width: 769px) {

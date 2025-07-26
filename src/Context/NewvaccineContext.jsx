@@ -17,12 +17,7 @@ const getHeaders = () => {
 function getVaccinename(page, limit, filters = {}) {
     const headers = getHeaders(); 
 
-    return axios.get(`https://farm-project-bbzj.onrender.com/api/vaccine-types`, {
-        // params: {
-        //     page,
-        //     limit,
-        //     ...filters
-        // },
+    return axios.get(`https://farm-project-bbzj.onrender.com/api/vaccine/GetVaccine-menue`, {
         headers
     })
     .then((response) => response)

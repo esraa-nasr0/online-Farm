@@ -50,7 +50,7 @@ const features = [
 
 const Features = () => {
   return (
-    <section className="features-section">
+    <section id="last-section" className="features-section">
       <div className="container">
         <h2 className="section-heading">
           Our animal management <span>features</span>
