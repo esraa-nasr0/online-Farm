@@ -145,8 +145,10 @@ export default function Sidebar({ isOpen, isMobile, isRTL, notificationCount = 0
           icon: <FaSyringe />,
           subItems: [
             { name: "vaccineData", path: "/vaccineTable" },
-            { name: "addByAnimal", path: "/vaccinebytagid" },
-            { name: "addVaccineByLocation", path: "/vaccinebylocationshed" },
+            { name: "vaccine Animal Data", path: "/Vaccinebyanimalsstable" },
+            { name: "Add Vaccine", path: "/addVaccine" },
+            { name: "Add By Animal", path: "/vaccinebytagid" },
+            { name: "Add By Location", path: "/vaccinebylocationshed" },
           ],
         },
         {
