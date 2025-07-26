@@ -30,8 +30,25 @@ function Vaccinebyanimal() {
     }, []);
 
     async function fetchVaccinename() {
-        const res = await getVaccinename();
-        setvaccinename(res.data.data.vaccineTypes);
+        try {
+            const res = await getVaccinename();
+            const vaccines = res?.data?.data?.vaccines;
+
+            if (Array.isArray(vaccines)) {
+                const types = vaccines
+                    .map(v => v.vaccineType)
+                    .filter(v => v && v._id);
+
+                setvaccinename(types);
+            } else {
+                setvaccinename([]);
+                console.warn("Unexpected data format:", res.data);
+            }
+        } catch (error) {
+            console.error("Error fetching vaccine names:", error);
+            setError(t("Failed to load vaccine names"));
+            setvaccinename([]);
+        }
     }
 
     const vaccineOptions = vaccinename.map((item) => ({
@@ -122,7 +139,7 @@ function Vaccinebyanimal() {
                             </button>
                         )}
                         <div className="animaldata">
-                            {/* Vaccine Name with Image */}
+                            {/* Vaccine Name Select */}
                             <div className="input-box">
                                 <label className="label" htmlFor="vaccineTypeId">{t("Vaccine Name")}</label>
                                 <Select
@@ -156,95 +173,31 @@ function Vaccinebyanimal() {
                                 )}
                             </div>
 
-                            {/* Booster Dose */}
-                            <div className="input-box">
-                                <label className="label" htmlFor="BoosterDose">{t("Booster Dose")}</label>
-                                <input
-                                    id="BoosterDose"
-                                    name="BoosterDose"
-                                    type="text"
-                                    className="input2"
-                                    placeholder={t("Enter Booster Dose")}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    value={formik.values.BoosterDose}
-                                />
-                                {formik.errors.BoosterDose && formik.touched.BoosterDose && (
-                                    <p className="text-danger">{formik.errors.BoosterDose}</p>
-                                )}
-                            </div>
-
-                            {/* Annual Dose */}
-                            <div className="input-box">
-                                <label className="label" htmlFor="AnnualDose">{t("Annual Dose")}</label>
-                                <input
-                                    id="AnnualDose"
-                                    name="AnnualDose"
-                                    type="text"
-                                    className="input2"
-                                    placeholder={t("Enter Annual Dose")}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    value={formik.values.AnnualDose}
-                                />
-                                {formik.errors.AnnualDose && formik.touched.AnnualDose && (
-                                    <p className="text-danger">{formik.errors.AnnualDose}</p>
-                                )}
-                            </div>
-
-                            {/* Bottles */}
-                            <div className="input-box">
-                                <label className="label" htmlFor="bottles">{t("Bottles")}</label>
-                                <input
-                                    id="bottles"
-                                    name="bottles"
-                                    type="text"
-                                    className="input2"
-                                    placeholder={t("Enter Number Of Bottles")}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    value={formik.values.bottles}
-                                />
-                                {formik.errors.bottles && formik.touched.bottles && (
-                                    <p className="text-danger">{formik.errors.bottles}</p>
-                                )}
-                            </div>
-
-                            {/* Doses Per Bottle */}
-                            <div className="input-box">
-                                <label className="label" htmlFor="dosesPerBottle">{t("Doses Per Bottle")}</label>
-                                <input
-                                    id="dosesPerBottle"
-                                    name="dosesPerBottle"
-                                    type="text"
-                                    className="input2"
-                                    placeholder={t("Enter Doses Per Bottle")}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    value={formik.values.dosesPerBottle}
-                                />
-                                {formik.errors.dosesPerBottle && formik.touched.dosesPerBottle && (
-                                    <p className="text-danger">{formik.errors.dosesPerBottle}</p>
-                                )}
-                            </div>
-
-                            {/* Bottle Price */}
-                            <div className="input-box">
-                                <label className="label" htmlFor="bottlePrice">{t("Bottle Price")}</label>
-                                <input
-                                    id="bottlePrice"
-                                    name="bottlePrice"
-                                    type="text"
-                                    className="input2"
-                                    placeholder={t("Enter Bottle Price")}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    value={formik.values.bottlePrice}
-                                />
-                                {formik.errors.bottlePrice && formik.touched.bottlePrice && (
-                                    <p className="text-danger">{formik.errors.bottlePrice}</p>
-                                )}
-                            </div>
+                            {/* Rest of the input fields */}
+                            {[
+                                { id: "BoosterDose", label: "Booster Dose" },
+                                { id: "AnnualDose", label: "Annual Dose" },
+                                { id: "bottles", label: "Bottles" },
+                                { id: "dosesPerBottle", label: "Doses Per Bottle" },
+                                { id: "bottlePrice", label: "Bottle Price" },
+                            ].map(({ id, label }) => (
+                                <div className="input-box" key={id}>
+                                    <label className="label" htmlFor={id}>{t(label)}</label>
+                                    <input
+                                        id={id}
+                                        name={id}
+                                        type="text"
+                                        className="input2"
+                                        placeholder={t(`Enter ${label}`)}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        value={formik.values[id]}
+                                    />
+                                    {formik.errors[id] && formik.touched[id] && (
+                                        <p className="text-danger">{formik.errors[id]}</p>
+                                    )}
+                                </div>
+                            ))}
 
                             {/* Expiry Date */}
                             <div className="input-box">

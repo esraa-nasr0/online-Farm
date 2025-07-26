@@ -1,6 +1,11 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { jwtDecode } from 'jwt-decode';
+import { useContext } from "react";
+import { UserContext } from "../../Context/UserContext";
+
+
 import {
   FaPaw,
   FaHeart,
@@ -17,25 +22,95 @@ import {
   FaChevronUp,
   FaBell,
 } from "react-icons/fa";
+import { BiSupport } from "react-icons/bi";
+import { IoHome } from "react-icons/io5";
+import { FaLocationDot } from "react-icons/fa6";
+import { GiGoat } from "react-icons/gi";
+import { FaExclamationTriangle } from "react-icons/fa";
+import { CiLogout } from "react-icons/ci";
 
 import "./Sidebare.css";
 
 export default function Sidebar({ isOpen, isMobile, isRTL, notificationCount = 0 }) {
   const { t } = useTranslation();
   const [activeDropdown, setActiveDropdown] = useState(null);
+  const [isFattening, setIsFattening] = useState(false);
+  const navigate = useNavigate();
+  const { setAuthorization } = useContext(UserContext);
+
+
+  useEffect(() => {
+    const token = localStorage.getItem('Authorization');
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        setIsFattening(decoded.registerationType === 'fattening');
+      } catch (error) {
+        console.error('Error decoding token:', error);
+      }
+    }
+  }, []);
 
   const toggleDropdown = (dropdown) => {
     setActiveDropdown(activeDropdown === dropdown ? null : dropdown);
   };
 
+ const handleLogout = () => {
+  localStorage.removeItem("Authorization");
+  setAuthorization(null); // تحديث السياق
+  navigate("/");
+};
+
+
   const menuItems = [
-     {
+    {
+      title: "Home",
+      items: [
+        {
+          name: "Home",
+          icon: <IoHome />,
+          path: "/",
+        },
+      ],
+    },
+    {
+      title: "Support",
+      items: [
+        {
+          name: "Support",
+          icon: <BiSupport />,
+          path: "/support",
+        },
+      ],
+    },
+    {
       title: "Notifications",
       items: [
         {
           name: "Notifications",
           icon: <FaBell />,
           path: "/notificationPage",
+        },
+      ],
+    },
+    {
+      title: "Basic information",
+      items: [
+        {
+          name: "Location Shed",
+          icon: <FaLocationDot />,
+          subItems: [
+            { name: "Location Data", path: "/locationTable" },
+            { name: "Add Location", path: "/locationPost" },
+          ],
+        },
+        {
+          name: "Breed",
+          icon: <GiGoat />,
+          subItems: [
+            { name: "Breed Data", path: "/breedTable" },
+            { name: "Add Breed", path: "/breedPost" },
+          ],
         },
       ],
     },
@@ -133,7 +208,7 @@ export default function Sidebar({ isOpen, isMobile, isRTL, notificationCount = 0
       items: [
         {
           name: "excluded",
-          icon: <FaUserSlash />,
+          icon: <FaExclamationTriangle />,
           subItems: [
             { name: "excludedData", path: "/excludedtable" },
             { name: "addExcluded", path: "/excluded" },
@@ -141,8 +216,20 @@ export default function Sidebar({ isOpen, isMobile, isRTL, notificationCount = 0
         },
       ],
     },
-   
   ];
+
+  const filteredMenuItems = menuItems.map(section => {
+    if (section.title === "Health and Breeding") {
+      const newItems = section.items.filter(item => {
+        if (isFattening && (item.name === "mating" || item.name === "breeding")) {
+          return false;
+        }
+        return true;
+      });
+      return { ...section, items: newItems };
+    }
+    return section;
+  });
 
   return (
     <aside className={`sidebar ${isOpen ? "open" : "closed"} ${isRTL ? "rtl" : "ltr"}`}>
@@ -152,7 +239,7 @@ export default function Sidebar({ isOpen, isMobile, isRTL, notificationCount = 0
         </div>
 
         <nav>
-          {menuItems.map((section, sectionIndex) => (
+          {filteredMenuItems.map((section, sectionIndex) => (
             <div className="sidebar-section" key={sectionIndex}>
               <p className="section-title">{t(section.title)}</p>
               <ul className="sidebar-menu">
@@ -196,6 +283,18 @@ export default function Sidebar({ isOpen, isMobile, isRTL, notificationCount = 0
               </ul>
             </div>
           ))}
+
+          {/* Logout Section */}
+          <div className="sidebar-section">
+            <ul className="sidebar-menu">
+              <li>
+                <div className="menu-item logout-item" onClick={handleLogout}>
+                  <span className="menu-icon"><CiLogout  /></span>
+                  <span className="menu-text">{t("Logout")}</span>
+                </div>
+              </li>
+            </ul>
+          </div>
         </nav>
       </div>
     </aside>

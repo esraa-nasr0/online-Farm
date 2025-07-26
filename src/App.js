@@ -97,6 +97,8 @@ import NewvaccineContextProvider from "./Context/NewvaccineContext.jsx";
 import ReportServices from "./Components/Services/ReportServices.jsx";
 import { useTranslation } from "react-i18next";
 import NotificationPage from "./Components/Notification/NotificationPage.jsx";
+import Support from "./Components/Support/Support.jsx";
+
 
 let routers = createBrowserRouter([
   {
@@ -183,6 +185,7 @@ let routers = createBrowserRouter([
       { path: "breedServices", element: <ProtectedRoute><BreedServices/></ProtectedRoute> },
 
       { path: "notificationPage", element: <ProtectedRoute><NotificationPage/></ProtectedRoute> },
+      { path: "support", element: <ProtectedRoute><Support/></ProtectedRoute> },
 
 
     ],
