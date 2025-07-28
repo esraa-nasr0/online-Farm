@@ -7,6 +7,8 @@ import { useTranslation } from 'react-i18next';
 import { LocationContext } from '../../Context/LocationContext';
 import { useNavigate } from 'react-router-dom';
 import './Mating.css';
+import { useQuery } from '@tanstack/react-query';
+
 
 function MatingLocation() {
     const [showAlert, setShowAlert] = useState(false);
@@ -24,6 +26,21 @@ function MatingLocation() {
         const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
         return { Authorization: formattedToken };
     };
+
+     // Fetch male tag IDs using useQuery
+    const fetchMaleTags = async () => {
+        const headers = getHeaders();
+        const res = await axios.get(
+            'https://farm-project-bbzj.onrender.com/api/animal/males',
+            { headers }
+        );
+        return res.data.data;
+    };
+
+    const { data: maleTags, isLoading: maleTagsLoading, error: maleTagsError } = useQuery({
+        queryKey: ['maleTagsID'],
+        queryFn: fetchMaleTags
+    });
 
     const fetchLocation = async () => {
         try {
@@ -154,16 +171,18 @@ function MatingLocation() {
 
                         <div className="input-group">
                             <label htmlFor="maleTag_id">{t('male_tag_id')}</label>
-                            <input 
-                                type="text"
+                            <select
                                 id="maleTag_id"
                                 name="maleTag_id"
                                 value={formik.values.maleTag_id}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                disabled={isSubmitted}
-                                placeholder={t('enter_male_tag_id')}
-                            />
+                            >
+                                <option value="">{t('select_male_tag_id')}</option>
+                                {maleTags && maleTags.map(tag => (
+                                    <option key={tag} value={tag}>{tag}</option>
+                                ))}
+                            </select>
                             {formik.errors.maleTag_id && formik.touched.maleTag_id && (
                                 <p className="text-danger">{formik.errors.maleTag_id}</p>
                             )}

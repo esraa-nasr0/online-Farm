@@ -125,29 +125,36 @@ function AnimalCost() {
                     </div>
 
                     <table className="table table-hover mt-4 p-2">
-                        <thead>
-                            <tr>
-                                <th scope="col" className="bg-color">{t("number")}</th>
-                                <th scope="col" className="bg-color">{t("animal_tag_id")}</th>
-                                <th scope="col" className="bg-color">{t("feed_cost")}</th>
-                                <th scope="col" className="bg-color">{t("treatment_cost")}</th>
-                                <th scope="col" className="bg-color">{t("date")}</th>
-                                <th scope="col" className="bg-color">{t("total_cost")}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {animalCost.map((item, index) => (
-                                <tr key={index}>
-                                    <th scope="row">{(currentPage - 1) * CostAnimalsPerPage + index + 1}</th>
-                                    <td>{item.animalTagId}</td>
-                                    <td>{item.feedCost}</td>
-                                    <td>{item.treatmentCost}</td>
-                                    <td>{new Date(item.date).toLocaleDateString()}</td>
-                                    <td>{item.totalCost}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+    <thead>
+        <tr>
+            <th scope="col" className="text-center bg-color">{t("number")}</th>
+            <th scope="col" className="text-center bg-color">{t("animal_tag_id")}</th>
+            <th scope="col" className="text-center bg-color">{t("feed_cost")}</th>
+            <th scope="col" className="text-center bg-color">{t("treatment_cost")}</th>
+            <th scope="col" className="text-center bg-color">{t("vaccine_cost")}</th>
+            <th scope="col" className="text-center bg-color">{t("purchase_price")}</th>
+            <th scope="col" className="text-center bg-color">{t("market_value")}</th>
+            <th scope="col" className="text-center bg-color">{t("date")}</th>
+            <th scope="col" className="text-center bg-color">{t("total_cost")}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {animalCost.map((item, index) => (
+            <tr key={index}>
+                <th className='text-center' scope="row">{(currentPage - 1) * CostAnimalsPerPage + index + 1}</th>
+                <td className='text-center'>{item.animalTagId}</td>
+                <td className='text-center'>{item.feedCost}</td>
+                <td className='text-center'>{item.treatmentCost}</td>
+                <td className='text-center'>{item.vaccineCost}</td>
+                <td className='text-center'>{item.purchasePrice}</td>
+                <td className='text-center'>{item.marketValue}</td>
+                <td className='text-center'>{new Date(item.date).toLocaleDateString()}</td>
+                <td className='text-center'>{item.totalCost}</td>
+            </tr>
+        ))}
+    </tbody>
+</table>
+
 
                     <div className="d-flex justify-content-center mt-4">
                         <nav>

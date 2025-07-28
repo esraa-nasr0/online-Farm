@@ -123,6 +123,7 @@ function AnimalsDetails() {
       purchaseDate: "",
       purchasePrice: "",
       teething: "",
+      marketValue:"",
       age: {
         years: 0,
         months: 0,
@@ -294,6 +295,7 @@ function AnimalsDetails() {
                 />
               </div>
             )}
+
           </div>
 
           <div className="form-section">
@@ -420,6 +422,19 @@ function AnimalsDetails() {
                       disabled={isSubmitted}
                     />
                   </div>
+              <div className="input-group">
+              <label htmlFor="marketValue">{t("market_value")}</label>
+              <input
+                type="number"
+                id="marketValue"
+                name="marketValue"
+                value={formik.values.marketValue}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                disabled={isSubmitted}
+                placeholder={t("enter_market_value")}
+              />
+            </div>
                 </>
               )
             )}

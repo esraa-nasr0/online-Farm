@@ -797,9 +797,12 @@
   "doses_required": "الجرعات مطلوبة",
   "doses_positive": "يجب أن يكون عدد الجرعات موجبًا",
   "doses_number": "يجب أن يكون عدد الجرعات رقمًا",
-  "animal_exminetion": "فحص الحيوان"
+  "animal_exminetion": "فحص الحيوان",
 
+  "select_male_tag_id": "اختر رقم ذكر الحيوان",
 
+"vaccine_cost": "تكلفة اللقاح",
+"market_value": "القيمة السوقية"
 }
 
 

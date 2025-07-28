@@ -68,15 +68,7 @@ function Vaccinebyanimal() {
             bottlePrice: '',
             expiryDate: '',
         },
-        validationSchema: Yup.object({
-            vaccineTypeId: Yup.string().required(t("Vaccine type is required")),
-            BoosterDose: Yup.number().typeError(t("Must be a number")).required(t("Booster dose is required")),
-            AnnualDose: Yup.number().typeError(t("Must be a number")).required(t("Annual dose is required")),
-            bottles: Yup.number().typeError(t("Must be a number")).required(t("Bottles count is required")),
-            dosesPerBottle: Yup.number().typeError(t("Must be a number")).required(t("Doses per bottle is required")),
-            bottlePrice: Yup.number().typeError(t("Must be a number")).required(t("Bottle price is required")),
-            expiryDate: Yup.string().required(t("Expiry date is required")),
-        }),
+        
         onSubmit: async (values) => {
             const headers = getHeaders();
             setIsLoading(true);

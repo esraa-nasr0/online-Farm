@@ -6,6 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import './Mating.css';
 import Swal from 'sweetalert2';
+import { useQuery } from '@tanstack/react-query';
 
 
 
@@ -24,6 +25,18 @@ function EditMating() {
         return { Authorization: formattedToken };
     };
     
+    const fetchMaleTags = async () => {
+    const headers = getHeaders();
+    const res = await axios.get('https://farm-project-bbzj.onrender.com/api/animal/males', { headers });
+    return res.data.data;
+};
+
+const { data: maleTags, isLoading: maleTagsLoading, error: maleTagsError } = useQuery({
+    queryKey: ['maleTagsId'],
+    queryFn: fetchMaleTags
+});
+
+
     async function editMating(values) {
         const headers = getHeaders();
         setisLoading(true); 
@@ -174,20 +187,23 @@ function EditMating() {
 
                         <div className="input-group">
                             <label htmlFor="maleTag_id">{t('male_tag_id')}</label>
-                            <input
-                                type="text"
+                            <select
                                 id="maleTag_id"
                                 name="maleTag_id"
                                 value={formik.values.maleTag_id}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                placeholder={t('enter_male_tag_id')}
-                            />
+                            >
+                                <option value="">{t('select_male_tag_id')}</option>
+                                {maleTags && maleTags.map(tag => (
+                                    <option key={tag} value={tag}>{tag}</option>
+                                ))}
+                            </select>
                             {formik.errors.maleTag_id && formik.touched.maleTag_id && (
                                 <p className="text-danger">{formik.errors.maleTag_id}</p>
                             )}
                         </div>
-                    </div>
+                        </div>
 
                     <div className="form-section">
                         <h2>{t('mating_details')}</h2>

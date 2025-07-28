@@ -188,6 +188,7 @@ function EditAnimal() {
         purchasePrice: animal.purchasePrice || "",
         teething: animal.teething || "",
         age: age, // Set the calculated age
+        marketValue: animal.marketValue || "",
       });
 
       setAnimalData(animal);
@@ -224,6 +225,7 @@ function EditAnimal() {
       purchaseDate: "",
       purchasePrice: "",
       teething: "",
+      marketValue:"",
       age: {
         years: 0,
         months: 0,
@@ -505,6 +507,18 @@ function EditAnimal() {
                       onBlur={formik.handleBlur}
                     />
                   </div>
+                  <div className="input-group">
+              <label htmlFor="marketValue">{t("market_value")}</label>
+              <input
+                type="number"
+                id="marketValue"
+                name="marketValue"
+                value={formik.values.marketValue}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                placeholder={t("enter_market_value")}
+              />
+            </div>
                 </>
               )
             )}

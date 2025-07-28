@@ -726,7 +726,14 @@
   "doses_required": "Doses are required",
   "doses_positive": "Doses must be positive",
   "doses_number": "Doses must be a number",
-  "animal_exminetion": "Animal Examination"
+  "animal_exminetion": "Animal Examination",
+
+  "select_male_tag_id": "Select male tag ID",
+
+  "vaccine_cost": "Vaccine Cost",
+  "market_value": "Market Value"
+
+
   
 }
 
