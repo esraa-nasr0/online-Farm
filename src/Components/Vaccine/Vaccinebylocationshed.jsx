@@ -15,9 +15,9 @@ function Vaccinebylocationshed() {
   const [locations, setLocations] = useState([]);
   const [Vaccine, setVaccine] = useState([]);
   const [isLoadingLocations, setIsLoadingLocations] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
-const { t, i18n } = useTranslation();
-
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     const fetchLocations = async () => {
@@ -30,7 +30,7 @@ const { t, i18n } = useTranslation();
         }
       } catch (err) {
         console.error("Error details:", err);
-        Swal.fire(t("error"), t("failedLoadLocations"), "error");
+        setError(t("failedLoadLocations"));
         setLocations([]);
       } finally {
         setIsLoadingLocations(false);
@@ -50,7 +50,7 @@ const { t, i18n } = useTranslation();
         }
       } catch (err) {
         console.error("Error details:", err);
-        Swal.fire(t("error"), t("failedLoadVaccines"), "error");
+        setError(t("failedLoadVaccines"));
         setVaccine([]);
       } finally {
         setIsLoadingLocations(false);
@@ -116,122 +116,115 @@ const { t, i18n } = useTranslation();
   });
 
   return (
-    <div className=" container mx-auto">
-      <div
-        className="big-card"
-        style={{
-          width: "100%",
-          // padding: '20px',
-          borderRadius: "15px",
-          boxShadow: "0 4px 15px rgba(0, 0, 0, 0.1)",
-        }}
-      >
-        <div className="container">
-          <div className="title2" style={{ paddingTop: "15px" }}>
-            {t("addByLocationTitle")}
-          </div>
-          <form onSubmit={formik.handleSubmit} className="mt-5">
-            {isLoading ? (
-              <button type="submit" className="btn button2" disabled>
-                <i className="fas fa-spinner fa-spin"></i>
-              </button>
-            ) : (
-              <button type="submit" className="btn button2">
-                <IoIosSave /> {t("save")}
-              </button>
-            )}
-            <div className="animaldata">
-
-              <div className="input-box">
-                <label className="label" htmlFor="vaccineId">
-                  {t('Vaccine Name')}
-                </label>
-                <select
-                  id="vaccineId"
-                  name="vaccineId"
-                  className="input2"
-                  onChange={formik.handleChange}
-                  value={formik.values.vaccineId}
-                  required
-                >
-                  <option value="">{t("selectVaccine")}</option>
-                  {isLoadingLocations ? (
-                    <option disabled>{t("loadingVaccines")}...</option>
-                  ) : (
-                    Vaccine.map((v) => (
-                      <option key={v._id} value={v._id}>
-                        {i18n.language === "ar"
-                          ? v.vaccineType?.arabicName
-                          : v.vaccineType?.englishName}
-                      </option>
-                    ))
-                  )}
-                </select>
-              </div>
-
-              <div className="input-box">
-                <label className="label" htmlFor="date">
-                  {t("date")}
-                </label>
-                <input
-                  id="date"
-                  name="date"
-                  type="date"
-                  className="input2"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.date}
-                  required
-                />
-              </div>
-
-              <div className="input-box">
-                <label className="label" htmlFor="locationShed">
-                  {t("Location Shed")}
-                </label>
-                <select
-                  id="locationShed"
-                  name="locationShed"
-                  className="input2"
-                  onChange={formik.handleChange}
-                  value={formik.values.locationShed}
-                  required
-                >
-                  <option value="">{t("selectLocationShed")}</option>
-                  {isLoadingLocations ? (
-                    <option disabled>{t("loadingLocations")}...</option>
-                  ) : (
-                    locations.map((location) => (
-                      <option key={location._id} value={location._id}>
-                        {location.locationShedName}
-                      </option>
-                    ))
-                  )}
-                </select>
-              </div>
-
-              <div className="input-box">
-                <label className="label" htmlFor="entryType">
-                  {t("Entry Type")}
-                </label>
-                <select
-                  id="entryType"
-                  name="entryType"
-                  className="input2"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.entryType}
-                >
-                  <option value="">{t("selectEntryType")}</option>
-                  <option value="Booster Dose">{t("boosterDose")}</option>
-                  <option value="Annual Dose">{t("annualDose")}</option>
-                  <option value="First Dose">{t("firstDose")}</option>
-                </select>
-              </div>
-            </div>
-          </form>
-        </div>
+    <div className="animal-details-container">
+      <div className="animal-details-header">
+        <h1>{t("addByLocationTitle")}</h1>
       </div>
+
+      {error && <div className="error-message">{error}</div>}
+
+      <form onSubmit={formik.handleSubmit} className="animal-form">
+        <div className="form-grid">
+          <div className="form-section">
+            <h2>{t("Vaccine Information")}</h2>
+            
+            <div className="input-group">
+              <label htmlFor="vaccineId">{t("Vaccine Name")}</label>
+              <select
+                id="vaccineId"
+                name="vaccineId"
+                onChange={formik.handleChange}
+                value={formik.values.vaccineId}
+                required
+              >
+                <option value="">{t("selectVaccine")}</option>
+                {isLoadingLocations ? (
+                  <option disabled>{t("loadingVaccines")}...</option>
+                ) : (
+                  Vaccine.map((v) => (
+                    <option key={v._id} value={v._id}>
+                      {i18n.language === "ar"
+                        ? v.vaccineType?.arabicName
+                        : v.vaccineType?.englishName}
+                    </option>
+                  ))
+                )}
+              </select>
+            </div>
+
+            <div className="input-group">
+              <label htmlFor="date">{t("date")}</label>
+              <input
+                id="date"
+                name="date"
+                type="date"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.date}
+                required
+              />
+            </div>
+          </div>
+
+          <div className="form-section">
+            <h2>{t("Location Information")}</h2>
+            
+            <div className="input-group">
+              <label htmlFor="locationShed">{t("Location Shed")}</label>
+              <select
+                id="locationShed"
+                name="locationShed"
+                onChange={formik.handleChange}
+                value={formik.values.locationShed}
+                required
+              >
+                <option value="">{t("selectLocationShed")}</option>
+                {isLoadingLocations ? (
+                  <option disabled>{t("loadingLocations")}...</option>
+                ) : (
+                  locations.map((location) => (
+                    <option key={location._id} value={location._id}>
+                      {location.locationShedName}
+                    </option>
+                  ))
+                )}
+              </select>
+            </div>
+
+            <div className="input-group">
+              <label htmlFor="entryType">{t("Entry Type")}</label>
+              <select
+                id="entryType"
+                name="entryType"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.entryType}
+              >
+                <option value="">{t("selectEntryType")}</option>
+                <option value="Booster Dose">{t("boosterDose")}</option>
+                <option value="Annual Dose">{t("annualDose")}</option>
+                <option value="First Dose">{t("firstDose")}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div className="form-actions">
+          <button
+            type="submit"
+            className="save-button"
+            disabled={isLoading || isLoadingLocations}
+          >
+            {isLoading ? (
+              <span className="loading-spinner"></span>
+            ) : (
+              <>
+                <IoIosSave /> {t("save")}
+              </>
+            )}
+          </button>
+        </div>
+      </form>
     </div>
   );
 }

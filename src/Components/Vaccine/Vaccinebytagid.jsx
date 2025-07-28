@@ -5,61 +5,33 @@ import axios from 'axios';
 import { VaccineanimalContext } from '../../Context/VaccineanimalContext';
 import { useNavigate } from 'react-router-dom'; 
 import Swal from 'sweetalert2';
-import { LocationContext } from '../../Context/Locationshedcontext';
-import { number } from 'yup';
 import { useTranslation } from 'react-i18next';
-
 
 function VaccinebytagId() {
     const { t, i18n } = useTranslation();
-    const { getallVaccineanimal, getVaccineMenue  } = useContext(VaccineanimalContext); 
-    // const { getLocationtMenue} = useContext(LocationContext); 
+    const { getallVaccineanimal, getVaccineMenue } = useContext(VaccineanimalContext); 
     const [isLoading, setIsLoading] = useState(false);
-    const [locations, setLocations] = useState([]);
     const [Vaccine, setVaccine] = useState([]);
-    const [isLoadingLocations, setIsLoadingLocations] = useState(true);
+    const [isLoadingVaccines, setIsLoadingVaccines] = useState(true);
+    const [error, setError] = useState(null);
     const navigate = useNavigate();
-  
-    // useEffect(() => {
-    //     const fetchLocations = async () => {
-    //         setIsLoadingLocations(true);
-    //         try {
-    //             const { data } = await getLocationtMenue();
-    //             if (data.status === 'success') {
-    //                 const locationsData = data.data.tagIds || data.data;
-    //                 setLocations(Array.isArray(locationsData) ? locationsData : []);
-    //             }
-    //         } catch (err) {
-    //             console.error("Error details:", err);
-    //             Swal.fire("Error!", "Failed to load locations data", "error");
-    //             setLocations([]);
-    //         } finally {
-    //             setIsLoadingLocations(false);
-    //         }
-    //     };
-    //     fetchLocations();
-    // }, [getLocationtMenue]);
 
     useEffect(() => {
         const fetchVaccine = async () => {
-            setIsLoadingLocations(true);
+            setIsLoadingVaccines(true);
             try {
                 const { data } = await getVaccineMenue();
-                console.log("API Response Data:", data.data.vaccines);
                 
                 if (data.status === 'success') {
-                
-                    const Vaccine = data.data.vaccines
-                     || data.data;
-                    console.log("Vaccine:", Vaccine);
-                    setVaccine(Array.isArray(Vaccine) ? Vaccine : []);
+                    const vaccines = data.data.vaccines || data.data;
+                    setVaccine(Array.isArray(vaccines) ? vaccines : []);
                 }
             } catch (err) {
                 console.error("Error details:", err);
-                Swal.fire("Error!", "Failed to load locations data", "error");
+                setError(t("failedLoadVaccines"));
                 setVaccine([]);
             } finally {
-                setIsLoadingLocations(false);
+                setIsLoadingVaccines(false);
             }
         };
         fetchVaccine();
@@ -78,10 +50,10 @@ function VaccinebytagId() {
 
     const formik = useFormik({
         initialValues: {
-            vaccineId:'',
-            date:'',
-            tagId:'', 
-            entryType:'',
+            vaccineId: '',
+            date: '',
+            tagId: '', 
+            entryType: '',
         },
         onSubmit: async (values) => {
             setIsLoading(true);
@@ -94,33 +66,26 @@ function VaccinebytagId() {
                     entryType: values.entryType,
                 };
         
-                console.log("🚀 Data to send:", dataToSend);
-        
                 const {data} = await axios.post(
                     'https://farm-project-bbzj.onrender.com/api/vaccine/AddVaccineForAnimal',
                     dataToSend,
                     { headers }
                 );
         
-                console.log("✅ API Response:", data);
-        
                 if (data.status === "SUCCESS") {
-
                     Swal.fire({
-                        title: "Success!",
-                        text: "Data has been submitted successfully!",
+                        title: t("success"),
+                        text: t("dataSubmittedSuccessfully"),
                         icon: "success",
-                        confirmButtonText: "OK",
-                        
+                        confirmButtonText: t("ok"),
                     }).then(() => navigate('/Vaccinebyanimalsstable'));
                 }
             } catch (err) {
-                console.error("❌ API Error:", err.response?.data);
                 Swal.fire({
-                    title: "Error!",
-                    text: err.response?.data?.message || "An error occurred while submitting data.",
+                    title: t("error"),
+                    text: err.response?.data?.message || t("submitError"),
                     icon: "error",
-                    confirmButtonText: "OK",
+                    confirmButtonText: t("ok"),
                 });
             } finally {
                 setIsLoading(false);
@@ -129,91 +94,106 @@ function VaccinebytagId() {
     });
 
     return (
-        <div className='container'>
-            <div className="big-card" style={{
-                width: '100%',
-                borderRadius: '15px',
-                boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
-            }}>
-                <div className="container">
-                    <form onSubmit={formik.handleSubmit} className="mt-5">
-                        <div className='d-flex vaccine align-items-center justify-content-between' style={{paddingTop:"15px"}}>
-                            <div className="title-v"> {t('Add Vaccine by Tag Id')}</div>
-                            <button type="submit" className="btn button2" disabled={isLoading}>
-                                {isLoading ? <i className="fas fa-spinner fa-spin"></i> : <IoIosSave />}  {t('Save')}
-                            </button>
-                        </div>
-
-                        <div className="animaldata">
-                        <div className="input-box">
-    <label className="label" htmlFor="tagId"> {t('Vaccine Name')}</label>
-    <select
-        id="vaccineId"
-        name="vaccineId"
-        className="input2"
-        onChange={formik.handleChange}
-        value={formik.values.vaccineId}
-        required
-    >
-        <option value=""> {t('Select Vaccine Name')}</option>
-        {isLoadingLocations ? (
-            <option disabled> {t('Loading locations...')}</option>
-        ) : (
-            Vaccine.map((item) => (
-                <option key={item._id} value={item._id}>
-                    {i18n.language === "ar" ? item.vaccineType?.arabicName : item.vaccineType?.englishName}
-                </option>
-            ))
-        )}
-    </select>
-</div>
-                            <div className="input-box">
-                                <label className="label" htmlFor="date"> {t('Date')}</label>
-                                <input
-                                    id="date"
-                                    name="date"
-                                    type="date"
-                                    className="input2"
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    value={formik.values.date}
-                                    required
-                                />
-                            </div>
-
-                            <div className="input-box">
-                        <label className="label" htmlFor="entryType"> {t('Entry Type')}</label>
-                        <select
-                            id="entryType"
-                            name="entryType"
-                            className="input2"
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            value={formik.values.entryType}
-                        >
-                            <option value=""> {t('Select Entry Type')}</option>
-                            <option value="Booster Dose"> {t('Booster Dose')}</option>
-                            <option value="Annual Dose"> {t('Annual Dose')}</option>
-                            <option value="First Dose"> {t('First Dose')}</option>
-                        </select>
-                    </div>
-                            <div className="input-box">
-                                <label className="label" htmlFor="tagId"> {t('Tag Id')}</label>
-                                <input
-                                    id="tagId"
-                                    name="tagId"
-                                    type="text"
-                                    className="input2"
-                                    placeholder= {t('Enter Tag Id')}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    value={formik.values.tagId}
-                                />
-                            </div>
-                        </div>
-                    </form>
-                </div>
+        <div className="animal-details-container">
+            <div className="animal-details-header">
+                <h1>{t('addVaccineByTagId')}</h1>
             </div>
+
+            {error && <div className="error-message">{error}</div>}
+
+            <form onSubmit={formik.handleSubmit} className="animal-form">
+                <div className="form-grid">
+                    <div className="form-section">
+                        <h2>{t('vaccineInformation')}</h2>
+                        
+                        <div className="input-group">
+                            <label htmlFor="vaccineId">{t('vaccineName')}</label>
+                            <select
+                                id="vaccineId"
+                                name="vaccineId"
+                                onChange={formik.handleChange}
+                                value={formik.values.vaccineId}
+                                required
+                            >
+                                <option value="">{t('selectVaccineName')}</option>
+                                {isLoadingVaccines ? (
+                                    <option disabled>{t('loading')}...</option>
+                                ) : (
+                                    Vaccine.map((item) => (
+                                        <option key={item._id} value={item._id}>
+                                            {i18n.language === "ar" ? item.vaccineType?.arabicName : item.vaccineType?.englishName}
+                                        </option>
+                                    ))
+                                )}
+                            </select>
+                        </div>
+
+                        <div className="input-group">
+                            <label htmlFor="date">{t('date')}</label>
+                            <input
+                                id="date"
+                                name="date"
+                                type="date"
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                value={formik.values.date}
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    <div className="form-section">
+                        <h2>{t('animalInformation')}</h2>
+                        
+                        <div className="input-group">
+                            <label htmlFor="tagId">{t('tagId')}</label>
+                            <input
+                                id="tagId"
+                                name="tagId"
+                                type="text"
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                value={formik.values.tagId}
+                                placeholder={t('enterTagId')}
+                                required
+                            />
+                        </div>
+
+                        <div className="input-group">
+                            <label htmlFor="entryType">{t('entryType')}</label>
+                            <select
+                                id="entryType"
+                                name="entryType"
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                value={formik.values.entryType}
+                                required
+                            >
+                                <option value="">{t('selectEntryType')}</option>
+                                <option value="Booster Dose">{t('boosterDose')}</option>
+                                <option value="Annual Dose">{t('annualDose')}</option>
+                                <option value="First Dose">{t('firstDose')}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="form-actions">
+                    <button
+                        type="submit"
+                        className="save-button"
+                        disabled={isLoading || isLoadingVaccines}
+                    >
+                        {isLoading ? (
+                            <span className="loading-spinner"></span>
+                        ) : (
+                            <>
+                                <IoIosSave /> {t('save')}
+                            </>
+                        )}
+                    </button>
+                </div>
+            </form>
         </div>
     );
 }
