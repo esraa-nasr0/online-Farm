@@ -36,6 +36,7 @@ function EditVaccine() {
             } catch (err) {
                 console.error("Error fetching vaccines:", err);
                 setVaccines([]);
+                setError(t("failed_to_load_vaccines"));
             } finally {
                 setIsLoadingVaccines(false);
             }
@@ -62,7 +63,7 @@ function EditVaccine() {
                     title: t('success'),
                     text: t('vaccine_updated_successfully'),
                     icon: 'success',
-                    confirmButtonColor: '#88522e'
+                    confirmButtonColor: '#9cbd81'
                 });
                 navigate('/vaccineTable');
             }
@@ -73,7 +74,7 @@ function EditVaccine() {
                 title: t('error'),
                 text: err.response?.data?.message || t('error_updating_vaccine'),
                 icon: 'error',
-                confirmButtonColor: '#88522e'
+                confirmButtonColor: '#9cbd81'
             });
         } finally {
             setIsLoading(false);
@@ -121,98 +122,109 @@ function EditVaccine() {
     }, [id]);
 
     return (
-        <div className="container">
-            <div className="animaldata">
-                <div className="card-body">
-                    {error && <div className="alert alert-danger">{error}</div>}
-                    <form onSubmit={formik.handleSubmit}>
-
-                         <div className='d-flex vaccine align-items-center justify-content-between'>
-                                            <h2 className="title-v">Edit Vaccine</h2>
-                                            <button type="submit" className="btn button2" disabled={isLoading}>
-                                                {isLoading ? <span className="btn button2"></span> : <><IoIosSave /> Save</>}
-                                            </button>
-                                        </div>
-
-                        <div className='d-flex vaccine align-items-center justify-content-between'>
-                            <h2 className="title-v">{t("Edit Vaccine")}</h2>
-                                <button type="submit" className="btn button2">
-                                                  <IoIosSave /> {t("save")}
-                                              </button>
-                        </div>
-
-                        <div className="row g-3">
-                            <div className="mb-3 input-box">
-                                <label htmlFor="tagId" className="form-label fw-bold">{t("animal_tag_id")}</label>
-                                <input
-                                    id="tagId"
-                                    name="tagId"
-                                    type="text"
-                                    className="form-control"
-                                    placeholder={t("enter_animal_tag_id")}
-                                    value={formik.values.tagId}
-                                    onChange={formik.handleChange}
-                                    required
-                                />
-                            </div>
-
-                            <div className="mb-3 input-box">
-                                <label htmlFor="date" className="form-label fw-bold">{t("vaccination_date")}</label>
-                                <input
-                                    id="date"
-                                    name="date"
-                                    type="date"
-                                    className="form-control"
-                                    value={formik.values.date}
-                                    onChange={formik.handleChange}
-                                    required
-                                />
-                            </div>
-
-                            <div className="mb-3 input-box">
-                                <label htmlFor="vaccineId" className="form-label fw-bold">{t("vaccine")}</label>
-                                <select
-                                    id="vaccineId"
-                                    name="vaccineId"
-                                    className="form-select"
-                                    value={formik.values.vaccineId}
-                                    onChange={formik.handleChange}
-                                    required
-                                    disabled={isLoadingVaccines}
-                                >
-                                    <option value="">{t("select_vaccine")}</option>
-                                    {isLoadingVaccines ? (
-                                        <option disabled>{t("loading_vaccines")}</option>
-                                    ) : (
-                                        vaccines.map((vaccine) => (
-                                            <option key={vaccine._id} value={vaccine._id}>
-                                                {vaccine.vaccineName}
-                                            </option>
-                                        ))
-                                    )}
-                                </select>
-                            </div>
-
-                            <div className="mb-3 input-box">
-                                <label htmlFor="entryType" className="form-label fw-bold">{t("entry_type")}</label>
-                                <select
-                                    id="entryType"
-                                    name="entryType"
-                                    className="form-select"
-                                    value={formik.values.entryType}
-                                    onChange={formik.handleChange}
-                                    required
-                                >
-                                    <option value="">{t("select_entry_type")}</option>
-                                    <option value="Booster Dose">{t("booster_dose")}</option>
-                                    <option value="Annual Dose">{t("annual_dose")}</option>
-                                    <option value="Initial Dose">{t("initial_dose")}</option>
-                                </select>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+        <div className="animal-details-container">
+            <div className="animal-details-header">
+                <h1>{t("edit_vaccine")}</h1>
             </div>
+
+            {error && <div className="error-message">{error}</div>}
+
+            <form onSubmit={formik.handleSubmit} className="animal-form">
+                <div className="form-grid">
+                    <div className="form-section">
+                        <h2>{t("animal_information")}</h2>
+                        
+                        <div className="input-group">
+                            <label htmlFor="tagId">{t("animal_tag_id")}</label>
+                            <input
+                                id="tagId"
+                                name="tagId"
+                                type="text"
+                                className="form-control"
+                                placeholder={t("enter_animal_tag_id")}
+                                value={formik.values.tagId}
+                                onChange={formik.handleChange}
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    <div className="form-section">
+                        <h2>{t("vaccine_details")}</h2>
+                        
+                        <div className="input-group">
+                            <label htmlFor="vaccineId">{t("vaccine")}</label>
+                            <select
+                                id="vaccineId"
+                                name="vaccineId"
+                                value={formik.values.vaccineId}
+                                onChange={formik.handleChange}
+                                required
+                                disabled={isLoadingVaccines}
+                            >
+                                <option value="">{t("select_vaccine")}</option>
+                                {isLoadingVaccines ? (
+                                    <option disabled>{t("loading_vaccines")}</option>
+                                ) : (
+                                    vaccines.map((vaccine) => (
+                                        <option key={vaccine._id} value={vaccine._id}>
+                                            {vaccine.vaccineName}
+                                        </option>
+                                    ))
+                                )}
+                            </select>
+                        </div>
+
+                        <div className="input-group">
+                            <label htmlFor="entryType">{t("entry_type")}</label>
+                            <select
+                                id="entryType"
+                                name="entryType"
+                                value={formik.values.entryType}
+                                onChange={formik.handleChange}
+                                required
+                            >
+                                <option value="">{t("select_entry_type")}</option>
+                                <option value="Booster Dose">{t("booster_dose")}</option>
+                                <option value="Annual Dose">{t("annual_dose")}</option>
+                                <option value="Initial Dose">{t("initial_dose")}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div className="form-section">
+                        <h2>{t("date_information")}</h2>
+                        
+                        <div className="input-group">
+                            <label htmlFor="date">{t("vaccination_date")}</label>
+                            <input
+                                id="date"
+                                name="date"
+                                type="date"
+                                value={formik.values.date}
+                                onChange={formik.handleChange}
+                                required
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="form-actions">
+                    <button
+                        type="submit"
+                        className="save-button"
+                        disabled={isLoading || isLoadingVaccines}
+                    >
+                        {isLoading ? (
+                            <span className="loading-spinner"></span>
+                        ) : (
+                            <>
+                                <IoIosSave /> {t("save")}
+                            </>
+                        )}
+                    </button>
+                </div>
+            </form>
         </div>
     );
 }

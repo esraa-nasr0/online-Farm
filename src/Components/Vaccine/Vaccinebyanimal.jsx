@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import { NewvaccineContext } from '../../Context/NewvaccineContext';
 import Select from 'react-select';
+import "./Vaccinebyanimal.css";
 
 function Vaccinebyanimal() {
     const { i18n, t } = useTranslation();
@@ -119,106 +120,174 @@ function Vaccinebyanimal() {
     });
 
     return (
-        <div className='container'>
-            <div className="big-card" style={{
-                width: '100%',
-                borderRadius: '15px',
-                boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
-            }}>
-                <div className="container mx-auto pb-3">
-                    <div className="title2" style={{ paddingTop: "15px" }}>{t("Add Vaccine")}</div>
-                    <p className="text-danger">{error}</p>
-                    <form onSubmit={formik.handleSubmit} className="mt-5">
-                        {isLoading ? (
-                            <button type="submit" className="btn button2" disabled>
-                                <i className="fas fa-spinner fa-spin"></i>
-                            </button>
-                        ) : (
-                            <button type="submit" className="btn button2">
-                                <IoIosSave /> {t("Save")}
-                            </button>
-                        )}
-                        <div className="animaldata">
-                            {/* Vaccine Name Select */}
-                            <div className="input-box">
-                                <label className="label" htmlFor="vaccineTypeId">{t("Vaccine Name")}</label>
-                                <Select
-                                    name="vaccineTypeId"
-                                    options={vaccineOptions}
-                                    onChange={(selectedOption) =>
-                                        formik.setFieldValue('vaccineTypeId', selectedOption?.value || "")
-                                    }
-                                    onBlur={() => formik.setFieldTouched('vaccineTypeId', true)}
-                                    getOptionLabel={(e) => (
-                                        <div style={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                            gap: "10px",
-                                            direction: i18n.language === "ar" ? "rtl" : "ltr"
-                                        }}>
-                                            <img
-                                                src={e.image}
-                                                alt={e.label}
-                                                width="30"
-                                                height="30"
-                                                style={{ borderRadius: "5px", objectFit: "cover" }}
-                                            />
-                                            <span>{e.label}</span>
-                                        </div>
-                                    )}
-                                    classNamePrefix="react-select"
-                                />
-                                {formik.errors.vaccineTypeId && formik.touched.vaccineTypeId && (
-                                    <p className="text-danger">{formik.errors.vaccineTypeId}</p>
-                                )}
-                            </div>
-
-                            {/* Rest of the input fields */}
-                            {[
-                                { id: "BoosterDose", label: "Booster Dose" },
-                                { id: "AnnualDose", label: "Annual Dose" },
-                                { id: "bottles", label: "Bottles" },
-                                { id: "dosesPerBottle", label: "Doses Per Bottle" },
-                                { id: "bottlePrice", label: "Bottle Price" },
-                            ].map(({ id, label }) => (
-                                <div className="input-box" key={id}>
-                                    <label className="label" htmlFor={id}>{t(label)}</label>
-                                    <input
-                                        id={id}
-                                        name={id}
-                                        type="text"
-                                        className="input2"
-                                        placeholder={t(`Enter ${label}`)}
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
-                                        value={formik.values[id]}
-                                    />
-                                    {formik.errors[id] && formik.touched[id] && (
-                                        <p className="text-danger">{formik.errors[id]}</p>
-                                    )}
-                                </div>
-                            ))}
-
-                            {/* Expiry Date */}
-                            <div className="input-box">
-                                <label className="label" htmlFor="expiryDate">{t("Expiry Date")}</label>
-                                <input
-                                    id="expiryDate"
-                                    name="expiryDate"
-                                    type="date"
-                                    className="input2"
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    value={formik.values.expiryDate}
-                                />
-                                {formik.errors.expiryDate && formik.touched.expiryDate && (
-                                    <p className="text-danger">{formik.errors.expiryDate}</p>
-                                )}
-                            </div>
-                        </div>
-                    </form>
-                </div>
+        <div className="animal-details-container">
+            <div className="animal-details-header">
+                <h1>{t("Add Vaccine")}</h1>
             </div>
+
+            {error && <div className="error-message">{error}</div>}
+
+            <form onSubmit={formik.handleSubmit} className="animal-form">
+                <div className="form-grid">
+                    <div className="form-section">
+                        <h2>{t("Vaccine Information")}</h2>
+                        
+                        <div className="input-group">
+                            <label htmlFor="vaccineTypeId">{t("Vaccine Name")}</label>
+                            <Select
+                                id="vaccineTypeId"
+                                name="vaccineTypeId"
+                                options={vaccineOptions}
+                                onChange={(selectedOption) =>
+                                    formik.setFieldValue('vaccineTypeId', selectedOption?.value || "")
+                                }
+                                onBlur={() => formik.setFieldTouched('vaccineTypeId', true)}
+                                getOptionLabel={(e) => (
+                                    <div style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: "10px",
+                                        direction: i18n.language === "ar" ? "rtl" : "ltr"
+                                    }}>
+                                        <img
+                                            src={e.image}
+                                            alt={e.label}
+                                            width="30"
+                                            height="30"
+                                            style={{ borderRadius: "5px", objectFit: "cover" }}
+                                        />
+                                        <span>{e.label}</span>
+                                    </div>
+                                )}
+                                classNamePrefix="react-select"
+                                className="react-select-container"
+                            />
+                            {formik.errors.vaccineTypeId && formik.touched.vaccineTypeId && (
+                                <p className="text-danger">{formik.errors.vaccineTypeId}</p>
+                            )}
+                        </div>
+
+                        <div className="input-group">
+                            <label htmlFor="BoosterDose">{t("Booster Dose")}</label>
+                            <input
+                                id="BoosterDose"
+                                name="BoosterDose"
+                                type="text"
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                value={formik.values.BoosterDose}
+                                placeholder={t("Enter Booster Dose")}
+                            />
+                            {formik.errors.BoosterDose && formik.touched.BoosterDose && (
+                                <p className="text-danger">{formik.errors.BoosterDose}</p>
+                            )}
+                        </div>
+
+                        <div className="input-group">
+                            <label htmlFor="AnnualDose">{t("Annual Dose")}</label>
+                            <input
+                                id="AnnualDose"
+                                name="AnnualDose"
+                                type="text"
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                value={formik.values.AnnualDose}
+                                placeholder={t("Enter Annual Dose")}
+                            />
+                            {formik.errors.AnnualDose && formik.touched.AnnualDose && (
+                                <p className="text-danger">{formik.errors.AnnualDose}</p>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="form-section">
+                        <h2>{t("Inventory Details")}</h2>
+                        
+                        <div className="input-group">
+                            <label htmlFor="bottles">{t("Bottles")}</label>
+                            <input
+                                id="bottles"
+                                name="bottles"
+                                type="text"
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                value={formik.values.bottles}
+                                placeholder={t("Enter Bottles Count")}
+                            />
+                            {formik.errors.bottles && formik.touched.bottles && (
+                                <p className="text-danger">{formik.errors.bottles}</p>
+                            )}
+                        </div>
+
+                        <div className="input-group">
+                            <label htmlFor="dosesPerBottle">{t("Doses Per Bottle")}</label>
+                            <input
+                                id="dosesPerBottle"
+                                name="dosesPerBottle"
+                                type="text"
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                value={formik.values.dosesPerBottle}
+                                placeholder={t("Enter Doses Per Bottle")}
+                            />
+                            {formik.errors.dosesPerBottle && formik.touched.dosesPerBottle && (
+                                <p className="text-danger">{formik.errors.dosesPerBottle}</p>
+                            )}
+                        </div>
+
+                        <div className="input-group">
+                            <label htmlFor="bottlePrice">{t("Bottle Price")}</label>
+                            <input
+                                id="bottlePrice"
+                                name="bottlePrice"
+                                type="text"
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                value={formik.values.bottlePrice}
+                                placeholder={t("Enter Bottle Price")}
+                            />
+                            {formik.errors.bottlePrice && formik.touched.bottlePrice && (
+                                <p className="text-danger">{formik.errors.bottlePrice}</p>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="form-section">
+                        <h2>{t("Expiry Information")}</h2>
+                        
+                        <div className="input-group">
+                            <label htmlFor="expiryDate">{t("Expiry Date")}</label>
+                            <input
+                                id="expiryDate"
+                                name="expiryDate"
+                                type="date"
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                value={formik.values.expiryDate}
+                            />
+                            {formik.errors.expiryDate && formik.touched.expiryDate && (
+                                <p className="text-danger">{formik.errors.expiryDate}</p>
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                <div className="form-actions">
+                    <button
+                        type="submit"
+                        className="save-button"
+                        disabled={isLoading}
+                    >
+                        {isLoading ? (
+                            <span className="loading-spinner"></span>
+                        ) : (
+                            <>
+                                <IoIosSave /> {t("Save")}
+                            </>
+                        )}
+                    </button>
+                </div>
+            </form>
         </div>
     );
 }
