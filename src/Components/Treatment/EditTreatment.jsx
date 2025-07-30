@@ -78,7 +78,8 @@ function EditTreatment() {
             name: treatment.name || '',
             type: treatment.type || '',
             bottles: treatment.stock?.bottles || '',
-            dosesPerBottle: treatment.stock?.dosesPerBottle || '',
+            volumePerBottle: treatment.stock?.volumePerBottle || '',
+            unitOfMeasure: treatment.stock?.unitOfMeasure || '',
             bottlePrice: treatment.pricing?.bottlePrice || '',
             expireDate: treatment.expireDate?.split("T")[0] || '',
           });
@@ -97,7 +98,8 @@ function EditTreatment() {
       name: "",
       type: "",
       bottles: "",
-      dosesPerBottle: "",
+      volumePerBottle: "",
+      unitOfMeasure:"",
       bottlePrice: "",
       expireDate: "",
     },
@@ -157,15 +159,32 @@ function EditTreatment() {
             </div>
 
             <div className="input-group">
-              <label htmlFor="dosesPerBottle">{t("dosesPerBottle")}</label>
+              <label htmlFor="volumePerBottle">{t("volumePerBottle")}</label>
               <input
-                id="dosesPerBottle"
+                id="volumePerBottle"
                 type="number"
-                {...formik.getFieldProps("dosesPerBottle")}
-                placeholder={t("enter_treatment_dosesPerBottle")}
+                {...formik.getFieldProps("volumePerBottle")}
+                placeholder={t("enter_volume_per_bottle")}
               />
-              {formik.touched.dosesPerBottle && formik.errors.dosesPerBottle && (
-                <p className="error-message">{formik.errors.dosesPerBottle}</p>
+              {formik.touched.volumePerBottle && formik.errors.volumePerBottle && (
+                <p className="error-message">{formik.errors.volumePerBottle}</p>
+              )}
+            </div>
+
+            <div className="input-group">
+              <label htmlFor="unitOfMeasure">{t("unitOfMeasure")}</label>
+              <select
+                id="unitOfMeasure"
+                {...formik.getFieldProps("unitOfMeasure")}
+                placeholder={t("select_unit_of_measure")}
+              >
+                <option value="">{t("select_unit_of_measure")}</option>
+                <option value="ml">{t("ml")}</option>
+                <option value="cm³">{t("cm³")}</option>
+                <option value="ampoule">{t("ampoule")}</option>
+                </select>
+              {formik.touched.unitOfMeasure && formik.errors.unitOfMeasure && (
+                <p className="error-message">{formik.errors.unitOfMeasure}</p>
               )}
             </div>
 

@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { IoIosSave } from "react-icons/io";
 import Swal from 'sweetalert2';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
 import './Mating.css';
 import { useQuery } from '@tanstack/react-query';
 
@@ -15,7 +14,6 @@ function Mating() {
     const [matingData, setMatingData] = useState(null);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const { t } = useTranslation();
-    let navigate = useNavigate();
 
     const getHeaders = () => {
         const Authorization = localStorage.getItem('Authorization');
@@ -23,7 +21,6 @@ function Mating() {
         return { Authorization: formattedToken };
     };
 
-    // Fetch male tag IDs using useQuery
     const fetchMaleTags = async () => {
         const headers = getHeaders();
         const res = await axios.get(
@@ -42,7 +39,6 @@ function Mating() {
         if (isSubmitted) return;
 
         value.checkDays = parseInt(value.checkDays, 10);
-
         const headers = getHeaders();
         setisLoading(true);
 
@@ -58,17 +54,17 @@ function Mating() {
                 setMatingData(data.data.mating);
                 setShowAlert(true);
                 setIsSubmitted(true);
-                formik.setFieldValue('sonarDate', data.data.mating.sonarDate);
                 formik.resetForm();
 
                 Swal.fire({
                     title: t('success_title'),
-                    text: t('mating_success_message'),
+                    html: `
+                        <p>${t('mating_success_message')}</p>
+                        <p><strong>${t('sonar_date')}:</strong> ${new Date(data.data.mating.sonarDate).toLocaleDateString()}</p>
+                    `,
                     icon: 'success',
                     confirmButtonText: t('ok')
                 });
-
-                navigate('/matingtable');
             }
         } catch (err) {
             setisLoading(false);
@@ -96,13 +92,6 @@ function Mating() {
             </div>
 
             {error && <div className="error-message">{error}</div>}
-
-            {showAlert && matingData && matingData.sonarDate && (
-                <div className="success-message">
-                    <h3>{t('sonar_date')}</h3>
-                    <p>{new Date(matingData.sonarDate).toLocaleDateString()}</p>
-                </div>
-            )}
 
             <form onSubmit={formik.handleSubmit} className="mating-form">
                 <div className="form-grid">
@@ -204,7 +193,14 @@ function Mating() {
                 </div>
 
                 <div className="form-actions">
-                    <button type="submit" className="save-button" disabled={isLoading || isSubmitted}>
+                    <button
+                        type="submit"
+                        className="save-button"
+                        disabled={isLoading || isSubmitted}
+                        onClick={() => {
+                            formik.handleSubmit();
+                        }}
+                    >
                         {isLoading ? (
                             <span className="loading-spinner"></span>
                         ) : (
@@ -213,6 +209,21 @@ function Mating() {
                             </>
                         )}
                     </button>
+
+                    {isSubmitted && (
+                        <button
+                            type="button"
+                            className="save-button"
+                            onClick={() => {
+                                formik.resetForm();
+                                setIsSubmitted(false);
+                                setMatingData(null);
+                                setShowAlert(false);
+                            }}
+                        >
+                            {t('add_new_mating')}
+                        </button>
+                    )}
                 </div>
             </form>
         </div>

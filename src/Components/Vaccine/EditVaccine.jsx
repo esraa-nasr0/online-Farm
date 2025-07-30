@@ -9,22 +9,23 @@ import { useTranslation } from 'react-i18next';
 import Select from 'react-select';
 import { NewvaccineContext } from '../../Context/NewvaccineContext';
 
-
 function EditVaccine() {
     const { i18n, t } = useTranslation();
     const { id } = useParams();
     const navigate = useNavigate();
     const { getVaccinename } = useContext(NewvaccineContext);
 
-    const [vaccinename, setvaccinename] = useState([]);
+    const [vaccineTypes, setVaccineTypes] = useState([]);
+    const [diseaseTypes, setDiseaseTypes] = useState([]);
+    const [filteredVaccines, setFilteredVaccines] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [isDataLoaded, setIsDataLoaded] = useState(false);
 
     const getHeaders = () => {
         const Authorization = localStorage.getItem('Authorization');
+        const token = Authorization?.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
         return {
-            Authorization: Authorization?.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`,
+            Authorization: token,
             'Content-Type': 'application/json',
         };
     };
@@ -32,43 +33,74 @@ function EditVaccine() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                await fetchVaccinename();
+                await fetchVaccineTypes();
                 await fetchVaccineData();
-                setIsDataLoaded(true);
-            } catch (error) {
+            } catch (err) {
+                console.error("Error loading data:", err);
                 setError(t("Failed to load data"));
             }
         };
         fetchData();
     }, [id]);
 
-    const fetchVaccinename = async () => {
+    const fetchVaccineTypes = async () => {
         try {
             const res = await getVaccinename(1, 100);
-            const vaccines = res.data?.data?.vaccines || [];
+            const vaccines = res.data?.data || [];
 
-            const uniqueTypes = Array.from(
-                new Map(
-                    vaccines.map(v => [v.vaccineType._id, v.vaccineType])
-                ).values()
-            );
-
-            setvaccinename(uniqueTypes);
+            if (Array.isArray(vaccines)) {
+                setVaccineTypes(vaccines);
+                
+                // Extract unique disease types
+                const diseaseTypesArray = vaccines.map(v => 
+                    i18n.language === "ar" ? v.arabicDiseaseType : v.englishDiseaseType
+                );
+                const uniqueDiseaseTypes = [...new Set(diseaseTypesArray)];
+                
+                setDiseaseTypes(uniqueDiseaseTypes);
+                setFilteredVaccines(vaccines);
+            }
         } catch (error) {
+            console.error("Error fetching vaccine types:", error);
             setError(t("Failed to fetch vaccine types"));
-            setvaccinename([]);
+            setVaccineTypes([]);
+            setDiseaseTypes([]);
+            setFilteredVaccines([]);
         }
     };
 
-    const vaccineOptions = vaccinename?.map(item => ({
+    const handleDiseaseTypeChange = (selectedDisease) => {
+        if (!selectedDisease) {
+            setFilteredVaccines(vaccineTypes);
+            return;
+        }
+        
+        const filtered = vaccineTypes.filter(v => 
+            i18n.language === "ar" 
+                ? v.arabicDiseaseType === selectedDisease
+                : v.englishDiseaseType === selectedDisease
+        );
+        
+        setFilteredVaccines(filtered);
+        formik.setFieldValue('vaccineTypeId', '');
+    };
+
+    const diseaseTypeOptions = diseaseTypes.map(disease => ({
+        value: disease,
+        label: disease
+    }));
+
+    const vaccineOptions = filteredVaccines.map(item => ({
         value: item._id,
         label: i18n.language === "ar" ? item.arabicName : item.englishName,
         image: item.image ? `https://farm-project-bbzj.onrender.com/${item.image.replace(/\\/g, "/")}` : '',
-    })) || [];
+    }));
 
     const formik = useFormik({
         initialValues: {
+            diseaseType: '',
             vaccineTypeId: '',
+            otherVaccineName: '',
             BoosterDose: '',
             AnnualDose: '',
             bottles: '',
@@ -76,22 +108,16 @@ function EditVaccine() {
             bottlePrice: '',
             expiryDate: '',
         },
-        validationSchema: Yup.object({
-            vaccineTypeId: Yup.string().required(t("Vaccine type is required")),
-            BoosterDose: Yup.number().required(t("Booster dose is required")),
-            AnnualDose: Yup.number().required(t("Annual dose is required")),
-            bottles: Yup.number().required(t("Bottles count is required")),
-            dosesPerBottle: Yup.number().required(t("Doses per bottle is required")),
-            bottlePrice: Yup.number().required(t("Bottle price is required")),
-            expiryDate: Yup.string().required(t("Expiry date is required")),
-        }),
+       
         onSubmit: async (values) => {
             setIsLoading(true);
             try {
                 const response = await axios.patch(
                     `https://farm-project-bbzj.onrender.com/api/vaccine/UpdateVaccine/${id}`,
                     {
+                        diseaseType: values.diseaseType,
                         vaccineTypeId: values.vaccineTypeId,
+                        otherVaccineName: values.otherVaccineName,
                         BoosterDose: values.BoosterDose,
                         AnnualDose: values.AnnualDose,
                         bottles: values.bottles,
@@ -106,8 +132,10 @@ function EditVaccine() {
                         .then(() => navigate('/vaccineTable'));
                 }
             } catch (err) {
-                setError(err.response?.data?.message || t("An error occurred while updating data."));
-                Swal.fire(t("Error"), error, "error");
+                console.error("Update error:", err);
+                const msg = err.response?.data?.message || t("An error occurred while updating data.");
+                setError(msg);
+                Swal.fire(t("Error"), msg, "error");
             } finally {
                 setIsLoading(false);
             }
@@ -121,8 +149,17 @@ function EditVaccine() {
                 { headers: getHeaders() }
             );
             const vaccine = res.data?.data?.vaccine || {};
+            
+            // Find the disease type for the current vaccine
+            const currentVaccineType = vaccineTypes.find(v => v._id === vaccine.vaccineType?._id);
+            const currentDiseaseType = currentVaccineType ? 
+                (i18n.language === "ar" ? currentVaccineType.arabicDiseaseType : currentVaccineType.englishDiseaseType) : 
+                '';
+            
             formik.setValues({
+                diseaseType: vaccine.diseaseType || currentDiseaseType || '',
                 vaccineTypeId: vaccine.vaccineType?._id || '',
+                otherVaccineName: vaccine.otherVaccineName || '',
                 BoosterDose: vaccine.BoosterDose || '',
                 AnnualDose: vaccine.AnnualDose || '',
                 bottles: vaccine.stock?.bottles || '',
@@ -131,17 +168,10 @@ function EditVaccine() {
                 expiryDate: vaccine.expiryDate?.slice(0, 10) || '',
             });
         } catch (error) {
+            console.error("Fetch vaccine details error:", error);
             setError(t("Failed to fetch vaccine details."));
         }
     };
-
-    if (!isDataLoaded) {
-        return <div className="loading-container">Loading...</div>;
-    }
-
-    if (error) {
-        return <div className="error-container">Error: {error}</div>;
-    }
 
     return (
         <div className="animal-details-container">
@@ -155,10 +185,30 @@ function EditVaccine() {
                 <div className="form-grid">
                     <div className="form-section">
                         <h2>{t("Vaccine Information")}</h2>
-                        
+
+                        <div className="input-group">
+                            <label htmlFor="diseaseType">{t("Disease Type")}</label>
+                            <Select
+                                id="diseaseType"
+                                name="diseaseType"
+                                options={diseaseTypeOptions}
+                                value={diseaseTypeOptions.find(option => option.value === formik.values.diseaseType)}
+                                onChange={(selectedOption) => {
+                                    handleDiseaseTypeChange(selectedOption?.value);
+                                    formik.setFieldValue('diseaseType', selectedOption?.value || '');
+                                }}
+                                onBlur={() => formik.setFieldTouched('diseaseType', true)}
+                                isClearable
+                                placeholder={t("Select Disease Type")}
+                                classNamePrefix="react-select"
+                                className="react-select-container"
+                            />
+                        </div>
+
                         <div className="input-group">
                             <label htmlFor="vaccineTypeId">{t("Vaccine Name")}</label>
                             <Select
+                                id="vaccineTypeId"
                                 name="vaccineTypeId"
                                 options={vaccineOptions}
                                 value={vaccineOptions.find(option => option.value === formik.values.vaccineTypeId)}
@@ -170,12 +220,27 @@ function EditVaccine() {
                                         <span>{e.label}</span>
                                     </div>
                                 )}
-                                className="react-select-container"
                                 classNamePrefix="react-select"
+                                className="react-select-container"
+                                placeholder={filteredVaccines.length === 0 ? t("No vaccines available") : t("Select Vaccine")}
+                                isDisabled={filteredVaccines.length === 0}
                             />
                             {formik.errors.vaccineTypeId && formik.touched.vaccineTypeId && (
                                 <p className="text-danger">{formik.errors.vaccineTypeId}</p>
                             )}
+                        </div>
+
+                        <div className="input-group">
+                            <label htmlFor="otherVaccineName">{t("Other Vaccine Name")}</label>
+                            <input
+                                id="otherVaccineName"
+                                name="otherVaccineName"
+                                type="text"
+                                value={formik.values.otherVaccineName}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                placeholder={t("Enter Other Vaccine Name")}
+                            />
                         </div>
 
                         <div className="input-group">
@@ -184,6 +249,7 @@ function EditVaccine() {
                                 id="BoosterDose"
                                 name="BoosterDose"
                                 type="number"
+                                min="0"
                                 value={formik.values.BoosterDose}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
@@ -200,6 +266,7 @@ function EditVaccine() {
                                 id="AnnualDose"
                                 name="AnnualDose"
                                 type="number"
+                                min="0"
                                 value={formik.values.AnnualDose}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
@@ -213,13 +280,14 @@ function EditVaccine() {
 
                     <div className="form-section">
                         <h2>{t("Stock Information")}</h2>
-                        
+
                         <div className="input-group">
                             <label htmlFor="bottles">{t("bottles")}</label>
                             <input
                                 id="bottles"
                                 name="bottles"
                                 type="number"
+                                min="0"
                                 value={formik.values.bottles}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
@@ -236,6 +304,7 @@ function EditVaccine() {
                                 id="dosesPerBottle"
                                 name="dosesPerBottle"
                                 type="number"
+                                min="0"
                                 value={formik.values.dosesPerBottle}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
@@ -252,6 +321,8 @@ function EditVaccine() {
                                 id="bottlePrice"
                                 name="bottlePrice"
                                 type="number"
+                                min="0"
+                                step="0.01"
                                 value={formik.values.bottlePrice}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
@@ -265,7 +336,7 @@ function EditVaccine() {
 
                     <div className="form-section">
                         <h2>{t("Expiry Information")}</h2>
-                        
+
                         <div className="input-group">
                             <label htmlFor="expiryDate">{t("expiryDate")}</label>
                             <input

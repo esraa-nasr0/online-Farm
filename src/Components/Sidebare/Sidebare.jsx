@@ -28,6 +28,8 @@ import { FaLocationDot } from "react-icons/fa6";
 import { GiGoat } from "react-icons/gi";
 import { FaExclamationTriangle } from "react-icons/fa";
 import { CiLogout } from "react-icons/ci";
+import { MdOutlineLocalPharmacy } from "react-icons/md";
+
 
 import "./Sidebare.css";
 
@@ -121,9 +123,9 @@ export default function Sidebar({ isOpen, isMobile, isRTL, notificationCount = 0
           name: "animal",
           icon: <FaPaw />,
           subItems: [
-            { name: "animalsData", path: "/animals" },
-            { name: "addAnimal", path: "/AnimalsDetails" },
-            { name: "animalCost", path: "/animalCost" },
+            { name: "animals Data", path: "/animals" },
+            { name: "add Animal", path: "/AnimalsDetails" },
+            { name: "animal Cost", path: "/animalCost" },
           ],
         },
       ],
@@ -135,16 +137,16 @@ export default function Sidebar({ isOpen, isMobile, isRTL, notificationCount = 0
           name: "mating",
           icon: <FaHeart />,
           subItems: [
-            { name: "matingData", path: "/matingTable" },
-            { name: "addMating", path: "/mating" },
-            { name: "addByLocationShed", path: "/matingLocation" },
+            { name: "mating Data", path: "/matingTable" },
+            { name: "add Mating", path: "/mating" },
+            { name: "add By LocationShed", path: "/matingLocation" },
           ],
         },
         {
           name: "vaccine",
           icon: <FaSyringe />,
           subItems: [
-            { name: "vaccineData", path: "/vaccineTable" },
+            { name: "vaccine Data", path: "/vaccineTable" },
             { name: "vaccine Animal Data", path: "/Vaccinebyanimalsstable" },
             { name: "Add Vaccine", path: "/addVaccine" },
             { name: "Add By Animal", path: "/vaccinebytagid" },
@@ -152,30 +154,38 @@ export default function Sidebar({ isOpen, isMobile, isRTL, notificationCount = 0
           ],
         },
         {
+          name: "Pharmacy",
+          icon:<MdOutlineLocalPharmacy /> ,
+          subItems: [
+            { name: "Pharmacy Data", path: "/treatmentTable" },
+            { name: "add Pharmacy", path: "/treatment" },
+          ],
+        },
+        {
           name: "treatment",
           icon: <FaPills />,
           subItems: [
-            { name: "treatmentData", path: "/treatmentTable" },
-            { name: "addTreatment", path: "/treatment" },
-            { name: "showByAnimal", path: "/treatAnimalTable" },
-            { name: "addTreatmentByAnimal", path: "/treatmentAnimal" },
-            { name: "addTreatmentByLocation", path: "/treatmentLocation" },
+            { name: "treatment Data", path: "/treatmentTable" },
+            { name: "add Treatment", path: "/treatment" },
+            { name: "show By Animal", path: "/treatAnimalTable" },
+            { name: "add By Animal", path: "/treatmentAnimal" },
+            { name: "add By Location", path: "/treatmentLocation" },
           ],
         },
         {
           name: "weight",
           icon: <FaWeight />,
           subItems: [
-            { name: "weightData", path: "/weightTable" },
-            { name: "addWeight", path: "/weight" },
+            { name: "weight Data", path: "/weightTable" },
+            { name: "add Weight", path: "/weight" },
           ],
         },
         {
           name: "breeding",
           icon: <FaSeedling />,
           subItems: [
-            { name: "breedingData", path: "/breadingTable" },
-            { name: "addBreeding", path: "/breeding" },
+            { name: "breeding Data", path: "/breadingTable" },
+            { name: "add Breeding", path: "/breeding" },
           ],
         },
       ],
@@ -187,22 +197,22 @@ export default function Sidebar({ isOpen, isMobile, isRTL, notificationCount = 0
           name: "feeding",
           icon: <FaUtensils />,
           subItems: [
-            { name: "feedingData", path: "/feedingTable" },
-            { name: "addFeeding", path: "/feed" },
-            { name: "dataByLocation", path: "/feedlocationtable" },
-            { name: "addFeedingByLocation", path: "/feedbylocation" },
+            { name: "feeding Data", path: "/feedingTable" },
+            { name: "add Feeding", path: "/feed" },
+            { name: "data By Location", path: "/feedlocationtable" },
+            { name: "add  Location", path: "/feedbylocation" },
           ],
         },
         {
           name: "fodder",
           icon: <FaBreadSlice />,
           subItems: [
-            { name: "fodderData", path: "/fodderTable" },
-            { name: "addFodder", path: "/fodder" },
+            { name: "fodder Data", path: "/fodderTable" },
+            { name: "add Fodder", path: "/fodder" },
           ],
         },
         { name: "reports", icon: <FaChartBar />, path: "/report" },
-        { name: "dailyReports", icon: <FaCalendarAlt />, path: "/reportDaliy" },
+        { name: "daily Reports", icon: <FaCalendarAlt />, path: "/reportDaliy" },
       ],
     },
     {
@@ -212,8 +222,8 @@ export default function Sidebar({ isOpen, isMobile, isRTL, notificationCount = 0
           name: "excluded",
           icon: <FaExclamationTriangle />,
           subItems: [
-            { name: "excludedData", path: "/excludedtable" },
-            { name: "addExcluded", path: "/excluded" },
+            { name: "excluded Data", path: "/excludedtable" },
+            { name: "add Excluded", path: "/excluded" },
           ],
         },
       ],

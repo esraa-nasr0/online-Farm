@@ -802,7 +802,90 @@
   "select_male_tag_id": "اختر رقم ذكر الحيوان",
 
 "vaccine_cost": "تكلفة اللقاح",
-"market_value": "القيمة السوقية"
+"market_value": "القيمة السوقية",
+"Other Vaccine Name": "اسم لقاح آخر",
+"Enter Other Vaccine Name": "أدخل اسم لقاح آخر",
+ "unitOfMeasure": "وحدة القياس",
+  "select_unit_of_measure": "اختر وحدة القياس",
+  "volumePerBottle": "الحجم لكل زجاجة",
+  "enter_volume_per_bottle": "أدخل الحجم لكل زجاجة",
+  "ml": "مل",
+  "cm³": "سم³",
+  "ampoule": "أمبولة",
+  "totalVolume": "إجمالي الحجم",
+  "Pharmacy": "الصيدلية",
+  "enter_Pharmacy_data": "أدخل بيانات الصيدلية",
+  "go_to_Pharmacy": "الذهاب إلى الصيدلية",
+  "all_Pharmacy_details": "عرض جميع تفاصيل علاجات الصيدلية",
+  "go_to_Pharmacy_data": "اذهب إلى بيانات الصيدلية",
+  "add_Pharmacyt": "إضافة علاج للصيدلية",
+  "add_Pharmacy_details": "إضافة علاج جديد إلى سجل الصيدلية",
+  "go_to_add_Pharmacy": "اذهب إلى إضافة علاج",
+  "Pharmacy_added_successfully": "تمت إضافة علاج الصيدلية بنجاح",
+  "Pharmacy_details": "تفاصيل الصيدلية",
+  "Pharmacy Data": "بيانات الصيدلية",
+  "add Pharmacy": "إضافة الى للصيدلية",
+
+  "treatment Data": "بيانات العلاج",
+  "add Treatment": "إضافة علاج",
+  "show By Animal": "عرض حسب الحيوان",
+  "add By Animal": "إضافة حسب الحيوان",
+  "add By Location": "إضافة حسب الموقع",
+
+  "vaccine Data": "بيانات اللقاح",
+  "add Vaccine": "إضافة لقاح",
+  "vaccine Animal Data": "بيانات لقاح الحيوان",
+  "Add By Animal": "إضافة حسب الحيوان",
+  "Add By Location": "إضافة حسب الموقع",
+
+  "Basic information": "المعلومات الأساسية",
+  "Location Data": "بيانات المواقع",
+  "Add Location": "إضافة موقع",
+  "Breed Data": "بيانات السلالات",
+  "Add Breed": "إضافة سلالة",
+
+  "Animal Management": "إدارة الحيوانات",
+  "animals Data": "بيانات الحيوانات",
+  "add Animal": "إضافة حيوان",
+  "animal Cost": "تكاليف الحيوان",
+
+  "Health and Breeding": "الصحة والتزاوج",
+  "mating Data": "بيانات التزاوج",
+  "add Mating": "إضافة تزاوج",
+  "add By LocationShed": "إضافة حسب الموقع",
+
+
+  "weight Data": "بيانات الوزن",
+  "add Weight": "إضافة وزن",
+
+  "breeding Data": "بيانات التربية",
+  "add Breeding": "إضافة تربية",
+
+  "Feeding and Reports": "التغذية والتقارير",
+  "feeding Data": "بيانات التغذية",
+  "add Feeding": "إضافة تغذية",
+  "data By Location": "بيانات حسب الموقع",
+  "add  Location": "إضافة حسب الموقع",
+
+  "fodder Data": "بيانات العلف",
+  "add Fodder": "إضافة علف",
+
+  "daily Reports": "التقارير اليومية",
+
+  "System": "النظام",
+  "excluded Data": "بيانات المستبعدين",
+  "add Excluded": "إضافة مستبعد",
+
+  "add_new_mating": "إضافة تلقيح جديد",
+
+  "pregnancy_age": "عمر الحمل (بالأسابيع)",
+"enter_pregnancy_age": "ادخل عمر الحمل",
+"fetus_count": "عدد الأجنة",
+"enter_fetus_count": "ادخل عدد الأجنة"
+
+
+
+
 }
 
 
