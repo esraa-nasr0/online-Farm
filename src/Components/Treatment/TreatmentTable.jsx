@@ -344,7 +344,7 @@ function TreatmentTable() {
         <div className="container mt-5 vaccine-table-container">
           <div className="container mt-5">
             <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mt-5 mb-3">
-              <h2 className="vaccine-table-title">{t("treatment")}</h2>
+              <h2 className="vaccine-table-title">{t("Pharmacy")}</h2>
               <div className="d-flex flex-wrap gap-2">
                 <button
                   className="btn btn-outline-dark"
@@ -457,12 +457,16 @@ function TreatmentTable() {
                             {item.stock?.bottles}
                           </div>
                           <div>
-                            <strong>{t("doses_per_bottle")}:</strong>{" "}
-                            {item.stock?.dosesPerBottle}
+                            <strong>{t("volumePerBottle")}:</strong>{" "}
+                            {item.stock?.volumePerBottle}
                           </div>
                           <div>
-                            <strong>{t("total_doses")}:</strong>{" "}
-                            {item.stock?.totalDoses}
+                            <strong>{t("unitOfMeasure")}:</strong>{" "}
+                            {item.stock?.unitOfMeasure}
+                          </div>
+                          <div>
+                            <strong>{t("totalVolume")}:</strong>{" "}
+                            {item.stock?.totalVolume}
                           </div>
                         </td>
                         <td>

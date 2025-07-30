@@ -726,7 +726,102 @@
   "doses_required": "Doses are required",
   "doses_positive": "Doses must be positive",
   "doses_number": "Doses must be a number",
-  "animal_exminetion": "Animal Examination"
+  "animal_exminetion": "Animal Examination",
+
+  "select_male_tag_id": "Select male tag ID",
+
+  "vaccine_cost": "Vaccine Cost",
+  "market_value": "Market Value",
+  "Other Vaccine Name": "Other Vaccine Name",
+  "Enter Other Vaccine Name": "Enter Other Vaccine Name",
+   "unitOfMeasure": "Unit of Measure",
+  "select_unit_of_measure": "Select unit of measure",
+  "volumePerBottle": "Volume per Bottle",
+  "enter_volume_per_bottle": "Enter volume per bottle",
+  "ml": "mL",
+  "cm³":"cm³",
+  "ampoule": "Ampoule",
+  "totalVolume": "Total Volume",
+  "Pharmacy": "Pharmacy",
+  "enter_Pharmacy_data": "Enter the Pharmacy Data",
+  "go_to_pharmacy": "Go to Pharmacy",
+  "all_Pharmacy_details": "View all pharmacy treatment details",
+  "go_to_Pharmacy_data": "Go to Pharmacy Data",
+  "add_Pharmacyt": "Add Pharmacy ",
+  "add_Pharmacy_details": "Add new treatment to pharmacy record",
+  "go_to_add_Pharmacy": "Go to Add Pharmacy",
+  "Pharmacy_added_successfully": "Pharmacy record added successfully",
+  "Pharmacy_details": "Pharmacy Details",
+  "Pharmacy Data": "Pharmacy Data",
+  "add Pharmacy": "Add Pharmacy",
+
+  "treatment Data": "Treatment Data",
+  "add Treatment": "Add Treatment",
+  "show By Animal": "Show by Animal",
+  "add By Animal": "Add by Animal",
+  "add By Location": "Add by Location",
+
+  "vaccine Data": "Vaccine Data",
+  "vaccine Animal Data": "Vaccine Animal Data",
+  "Add By Animal": "Add by Animal",
+  "Add By Location": "Add by Location",
+
+  "Home": "Home",
+  "Support": "Support",
+  "Notifications": "Notifications",
+
+  "Basic information": "Basic Information",
+  "Location Shed": "Location Shed",
+  "Location Data": "Location Data",
+  "Add Location": "Add Location",
+  "Breed": "Breed",
+  "Breed Data": "Breed Data",
+  "Add Breed": "Add Breed",
+
+  "Animal Management": "Animal Management",
+  "animals Data": "Animals Data",
+  "add Animal": "Add Animal",
+  "animal Cost": "Animal Cost",
+
+  "Health and Breeding": "Health and Breeding",
+  "mating Data": "Mating Data",
+  "add Mating": "Add Mating",
+  "add By LocationShed": "Add by Location Shed",
+
+  "weight Data": "Weight Data",
+  "add Weight": "Add Weight",
+
+  "breeding Data": "Breeding Data",
+  "add Breeding": "Add Breeding",
+
+  "Feeding and Reports": "Feeding and Reports",
+  "feeding Data": "Feeding Data",
+  "add Feeding": "Add Feeding",
+  "data By Location": "Data by Location",
+  "add  Location": "Add Location",
+
+  "fodder Data": "Fodder Data",
+  "add Fodder": "Add Fodder",
+
+  "daily Reports": "Daily Reports",
+
+  "System": "System",
+  "excluded Data": "Excluded Data",
+  "add Excluded": "Add Excluded",
+
+  "Logout": "Logout",
+
+  "add_new_mating": "Add New Mating",
+
+  "pregnancy_age": "Pregnancy Age (day)",
+"enter_pregnancy_age": "Enter pregnancy age",
+"fetus_count": "Fetus Count",
+"enter_fetus_count": "Enter number of fetuses"
+
+
+
+
+
   
 }
 

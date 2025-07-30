@@ -1,5 +1,5 @@
 import React from "react";
-import gardenImg from "../../Assets/Img/pexels-helenalopes-841303.jpg"; 
+import gardenImg from "../../Assets/Img/goat-2632143_1280.jpg"; 
 import "./imgslide.css";
 import { Link, useNavigate } from "react-router-dom";
 

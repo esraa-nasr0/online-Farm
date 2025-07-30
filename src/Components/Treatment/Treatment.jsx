@@ -59,7 +59,7 @@ function Treatment() {
     type: Yup.string().required(t("type_required")),
     bottles: Yup.number().nullable().typeError(t("must_be_number")),
 
-    dosesPerBottle: Yup.number().nullable().typeError(t("must_be_number")),
+    volumePerBottle: Yup.number().nullable().typeError(t("must_be_number")),
 
     bottlePrice: Yup.number().nullable().typeError(t("must_be_number")),
 
@@ -71,7 +71,8 @@ function Treatment() {
       name: "",
       type: "",
       bottles: "",
-      dosesPerBottle: "",
+      volumePerBottle: "",
+      unitOfMeasure:"",
       bottlePrice: "",
       expireDate: "",
     },
@@ -88,14 +89,14 @@ function Treatment() {
   return (
     <div className="treatment-container">
       <div className="treatment-header">
-        <h1>{t("treatment")}</h1>
+        <h1>{t("Pharmacy")}</h1>
       </div>
 
       {error && <div className="error-message">{error}</div>}
 
       {treatmentData && (
         <div className="success-message">
-          <h3>{t("treatment_added_successfully")}</h3>
+          <h3>{t("Pharmacy_added_successfully")}</h3>
           <p>{treatmentData.name}</p>
         </div>
       )}
@@ -103,7 +104,7 @@ function Treatment() {
       <form onSubmit={formik.handleSubmit} className="treatment-form">
         <div className="form-grid">
           <div className="form-section">
-            <h2>{t("treatment_details")}</h2>
+            <h2>{t("Pharmacy_details")}</h2>
 
             <div className="input-group">
               <label htmlFor="name">{t("name")}</label>
@@ -148,20 +149,36 @@ function Treatment() {
             </div>
 
             <div className="input-group">
-              <label htmlFor="dosesPerBottle">{t("dosesPerBottle")}</label>
+              <label htmlFor="volumePerBottle">{t("volumePerBottle")}</label>
               <input
-                id="dosesPerBottle"
+                id="volumePerBottle"
                 type="number"
-                {...formik.getFieldProps("dosesPerBottle")}
+                {...formik.getFieldProps("volumePerBottle")}
                 disabled={isSubmitted}
-                placeholder={t("enter_treatment_dosesPerBottle")}
+                placeholder={t("enter_volume_per_bottle")}
               />
-              {formik.touched.dosesPerBottle &&
-                formik.errors.dosesPerBottle && (
+              {formik.touched.volumePerBottle &&
+                formik.errors.volumePerBottle && (
                   <p className="error-message">
-                    {formik.errors.dosesPerBottle}
+                    {formik.errors.volumePerBottle}
                   </p>
                 )}
+            </div>
+            <div className="input-group">
+              <label htmlFor="unitOfMeasure">{t("unitOfMeasure")}</label>
+              <select
+                id="unitOfMeasure"
+                {...formik.getFieldProps("unitOfMeasure")}
+                placeholder={t("select_unit_of_measure")}
+              >
+                <option value="">{t("select_unit_of_measure")}</option>
+                <option value="ml">{t("ml")}</option>
+                <option value="cm³">{t("cm³")}</option>
+                <option value="ampoule">{t("ampoule")}</option>
+                </select>
+              {formik.touched.unitOfMeasure && formik.errors.unitOfMeasure && (
+                <p className="error-message">{formik.errors.unitOfMeasure}</p>
+              )}
             </div>
 
             <div className="input-group">

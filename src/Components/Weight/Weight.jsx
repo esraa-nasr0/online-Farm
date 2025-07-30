@@ -50,23 +50,7 @@ function Weight() {
         }
     }
 
-    const validation = Yup.object({
-        tagId: Yup.string()
-            .max(10, t('tag_id_max'))
-            .required(t('tag_id_required')),
-        weightType: Yup.string().required(t('weight_type_required')),
-        weight: Yup.number()
-            .max(1000, t('weight_max'))
-            .positive(t('weight_positive'))
-            .required(t('weight_required')),
-        height: Yup.number()
-            .max(300, t('height_max'))
-            .positive(t('height_positive'))
-            .required(t('height_required')),
-        Date: Yup.date()
-            .required(t('date_required'))
-            .max(new Date(), t('date_cannot_be_future')),
-    });
+  
 
     const formik = useFormik({
         initialValues: {
@@ -76,7 +60,6 @@ function Weight() {
             height: '',
             Date: '',
         },
-        validationSchema: validation,
         onSubmit: submitWeight,
     });
 

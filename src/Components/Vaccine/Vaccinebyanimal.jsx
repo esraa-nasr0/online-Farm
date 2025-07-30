@@ -14,6 +14,8 @@ function Vaccinebyanimal() {
     const { i18n, t } = useTranslation();
     const { getVaccinename } = useContext(NewvaccineContext);
     const [vaccinename, setvaccinename] = useState([]);
+    const [diseaseTypes, setDiseaseTypes] = useState([]);
+    const [filteredVaccines, setFilteredVaccines] = useState([]);
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
@@ -31,36 +33,70 @@ function Vaccinebyanimal() {
     }, []);
 
     async function fetchVaccinename() {
-        try {
-            const res = await getVaccinename();
-            const vaccines = res?.data?.data?.vaccines;
+    try {
+        const res = await getVaccinename();
+        const vaccines = res?.data?.data;
 
-            if (Array.isArray(vaccines)) {
-                const types = vaccines
-                    .map(v => v.vaccineType)
-                    .filter(v => v && v._id);
-
-                setvaccinename(types);
-            } else {
-                setvaccinename([]);
-                console.warn("Unexpected data format:", res.data);
-            }
-        } catch (error) {
-            console.error("Error fetching vaccine names:", error);
-            setError(t("Failed to load vaccine names"));
+        if (Array.isArray(vaccines)) {
+            setvaccinename(vaccines);
+            
+            // Extract disease types array first
+            const diseaseTypesArray = vaccines.map(v => 
+                i18n.language === "ar" ? v.arabicDiseaseType : v.englishDiseaseType
+            );
+            
+            // Then get unique values
+            const uniqueDiseaseTypes = [...new Set(diseaseTypesArray)];
+            
+            setDiseaseTypes(uniqueDiseaseTypes);
+            setFilteredVaccines(vaccines); // Initially show all vaccines
+        } else {
             setvaccinename([]);
+            setDiseaseTypes([]);
+            setFilteredVaccines([]);
+            console.warn("Unexpected data format:", res.data);
         }
+    } catch (error) {
+        console.error("Error fetching vaccine names:", error);
+        setError(t("Failed to load vaccine names"));
+        setvaccinename([]);
+        setDiseaseTypes([]);
+        setFilteredVaccines([]);
     }
+}
 
-    const vaccineOptions = vaccinename.map((item) => ({
+    const handleDiseaseTypeChange = (selectedDisease) => {
+        if (!selectedDisease) {
+            setFilteredVaccines(vaccinename);
+            return;
+        }
+        
+        const filtered = vaccinename.filter(v => 
+            i18n.language === "ar" 
+                ? v.arabicDiseaseType === selectedDisease
+                : v.englishDiseaseType === selectedDisease
+        );
+        
+        setFilteredVaccines(filtered);
+        formik.setFieldValue('vaccineTypeId', ''); // Reset vaccine selection when disease type changes
+    };
+
+    const vaccineOptions = filteredVaccines.map((item) => ({
         value: item._id,
         label: i18n.language === "ar" ? item.arabicName : item.englishName,
         image: `https://farm-project-bbzj.onrender.com/${item.image.replace(/\\/g, "/")}`,
     }));
 
+    const diseaseTypeOptions = diseaseTypes.map(disease => ({
+        value: disease,
+        label: disease
+    }));
+
     const formik = useFormik({
         initialValues: {
+            diseaseType: '',
             vaccineTypeId: "",
+            otherVaccineName: '',
             BoosterDose: '',
             AnnualDose: '',
             bottles: '',
@@ -68,21 +104,14 @@ function Vaccinebyanimal() {
             bottlePrice: '',
             expiryDate: '',
         },
-        validationSchema: Yup.object({
-            vaccineTypeId: Yup.string().required(t("Vaccine type is required")),
-            BoosterDose: Yup.number().typeError(t("Must be a number")).required(t("Booster dose is required")),
-            AnnualDose: Yup.number().typeError(t("Must be a number")).required(t("Annual dose is required")),
-            bottles: Yup.number().typeError(t("Must be a number")).required(t("Bottles count is required")),
-            dosesPerBottle: Yup.number().typeError(t("Must be a number")).required(t("Doses per bottle is required")),
-            bottlePrice: Yup.number().typeError(t("Must be a number")).required(t("Bottle price is required")),
-            expiryDate: Yup.string().required(t("Expiry date is required")),
-        }),
+        
         onSubmit: async (values) => {
             const headers = getHeaders();
             setIsLoading(true);
 
             const dataToSend = {
                 vaccineTypeId: values.vaccineTypeId,
+                otherVaccineName: values.otherVaccineName,
                 BoosterDose: Number(values.BoosterDose),
                 AnnualDose: Number(values.AnnualDose),
                 bottles: Number(values.bottles),
@@ -132,6 +161,26 @@ function Vaccinebyanimal() {
                     <div className="form-section">
                         <h2>{t("Vaccine Information")}</h2>
                         
+                        {/* Disease Type Select Input */}
+                        <div className="input-group">
+                            <label htmlFor="diseaseType">{t("Disease Type")}</label>
+                            <Select
+                                id="diseaseType"
+                                name="diseaseType"
+                                options={diseaseTypeOptions}
+                                onChange={(selectedOption) => {
+                                    handleDiseaseTypeChange(selectedOption?.value);
+                                    formik.setFieldValue('diseaseType', selectedOption?.value || "");
+                                }}
+                                onBlur={() => formik.setFieldTouched('diseaseType', true)}
+                                isClearable
+                                placeholder={t("Select Disease Type")}
+                                classNamePrefix="react-select"
+                                className="react-select-container"
+                            />
+                        </div>
+                        
+                        {/* Vaccine Name Select Input */}
                         <div className="input-group">
                             <label htmlFor="vaccineTypeId">{t("Vaccine Name")}</label>
                             <Select
@@ -161,18 +210,37 @@ function Vaccinebyanimal() {
                                 )}
                                 classNamePrefix="react-select"
                                 className="react-select-container"
+                                placeholder={filteredVaccines.length === 0 ? t("No vaccines available for selected disease type") : t("Select Vaccine")}
+                                isDisabled={filteredVaccines.length === 0}
                             />
                             {formik.errors.vaccineTypeId && formik.touched.vaccineTypeId && (
                                 <p className="text-danger">{formik.errors.vaccineTypeId}</p>
                             )}
                         </div>
 
+                        {/* Rest of your form fields remain the same */}
                         <div className="input-group">
-                            <label htmlFor="BoosterDose">{t("Booster Dose")}</label>
+                            <label htmlFor="otherVaccineName">{t("Other Vaccine Name")}</label>
+                            <input
+                                id="otherVaccineName"
+                                name="otherVaccineName"
+                                type="text"
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                value={formik.values.otherVaccineName}
+                                placeholder={t("Enter Other Vaccine Name")}
+                            />
+                            {formik.errors.otherVaccineName && formik.touched.otherVaccineName && (
+                                <p className="text-danger">{formik.errors.otherVaccineName}</p>
+                            )}
+                        </div>
+
+                        <div className="input-group">
+                            <label htmlFor="BoosterDose">{t("Booster Dose (Days)")}</label>
                             <input
                                 id="BoosterDose"
                                 name="BoosterDose"
-                                type="text"
+                                type="number"
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                                 value={formik.values.BoosterDose}
@@ -184,11 +252,11 @@ function Vaccinebyanimal() {
                         </div>
 
                         <div className="input-group">
-                            <label htmlFor="AnnualDose">{t("Annual Dose")}</label>
+                            <label htmlFor="AnnualDose">{t("Annual Dose (Months)")}</label>
                             <input
                                 id="AnnualDose"
                                 name="AnnualDose"
-                                type="text"
+                                type="number"
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                                 value={formik.values.AnnualDose}

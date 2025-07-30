@@ -4,8 +4,8 @@ import React, { useState } from 'react';
 import { IoIosSave } from "react-icons/io";
 import Swal from 'sweetalert2';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
 import './Mating.css';
+import { useQuery } from '@tanstack/react-query';
 
 function Mating() {
     const [showAlert, setShowAlert] = useState(false);
@@ -14,7 +14,6 @@ function Mating() {
     const [matingData, setMatingData] = useState(null);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const { t } = useTranslation();
-    let navigate = useNavigate();
 
     const getHeaders = () => {
         const Authorization = localStorage.getItem('Authorization');
@@ -22,14 +21,27 @@ function Mating() {
         return { Authorization: formattedToken };
     };
 
-    async function submitMating(value) {
-        if (isSubmitted) {
-            return;
-        }
-        value.checkDays = parseInt(value.checkDays, 10);
-
+    const fetchMaleTags = async () => {
         const headers = getHeaders();
-        setisLoading(true); 
+        const res = await axios.get(
+            'https://farm-project-bbzj.onrender.com/api/animal/males',
+            { headers }
+        );
+        return res.data.data;
+    };
+
+    const { data: maleTags, isLoading: maleTagsLoading, error: maleTagsError } = useQuery({
+        queryKey: ['maleTags'],
+        queryFn: fetchMaleTags
+    });
+
+    async function submitMating(value) {
+        if (isSubmitted) return;
+
+        value.checkDays = parseInt(value.checkDays, 10);
+        const headers = getHeaders();
+        setisLoading(true);
+
         try {
             let { data } = await axios.post(
                 `https://farm-project-bbzj.onrender.com/api/mating/addmating`,
@@ -42,16 +54,17 @@ function Mating() {
                 setMatingData(data.data.mating);
                 setShowAlert(true);
                 setIsSubmitted(true);
-                formik.setFieldValue('sonarDate', data.data.mating.sonarDate);
                 formik.resetForm();
-                
+
                 Swal.fire({
                     title: t('success_title'),
-                    text: t('mating_success_message'),
+                    html: `
+                        <p>${t('mating_success_message')}</p>
+                        <p><strong>${t('sonar_date')}:</strong> ${new Date(data.data.mating.sonarDate).toLocaleDateString()}</p>
+                    `,
                     icon: 'success',
                     confirmButtonText: t('ok')
                 });
-                navigate('/matingtable');
             }
         } catch (err) {
             setisLoading(false);
@@ -79,13 +92,6 @@ function Mating() {
             </div>
 
             {error && <div className="error-message">{error}</div>}
-            
-            {showAlert && matingData && matingData.sonarDate && (
-                <div className="success-message">
-                    <h3>{t('sonar_date')}</h3>
-                    <p>{new Date(matingData.sonarDate).toLocaleDateString()}</p>
-                </div>
-            )}
 
             <form onSubmit={formik.handleSubmit} className="mating-form">
                 <div className="form-grid">
@@ -93,7 +99,7 @@ function Mating() {
                         <h2>{t('basic_info')}</h2>
                         <div className="input-group">
                             <label htmlFor="tagId">{t('female_tag_id')}</label>
-                            <input 
+                            <input
                                 type="text"
                                 id="tagId"
                                 name="tagId"
@@ -110,7 +116,7 @@ function Mating() {
 
                         <div className="input-group">
                             <label htmlFor="matingType">{t('mating_type')}</label>
-                            <select 
+                            <select
                                 id="matingType"
                                 name="matingType"
                                 value={formik.values.matingType}
@@ -131,16 +137,18 @@ function Mating() {
                         <h2>{t('mating_details')}</h2>
                         <div className="input-group">
                             <label htmlFor="maleTag_id">{t('male_tag_id')}</label>
-                            <input 
-                                type="text"
+                            <select
                                 id="maleTag_id"
                                 name="maleTag_id"
                                 value={formik.values.maleTag_id}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                disabled={isSubmitted}
-                                placeholder={t('enter_male_tag_id')}
-                            />
+                            >
+                                <option value="">{t('select_male_tag_id')}</option>
+                                {maleTags && maleTags.map(tag => (
+                                    <option key={tag} value={tag}>{tag}</option>
+                                ))}
+                            </select>
                             {formik.errors.maleTag_id && formik.touched.maleTag_id && (
                                 <p className="text-danger">{formik.errors.maleTag_id}</p>
                             )}
@@ -148,7 +156,7 @@ function Mating() {
 
                         <div className="input-group">
                             <label htmlFor="matingDate">{t('mating_date')}</label>
-                            <input 
+                            <input
                                 type="date"
                                 id="matingDate"
                                 name="matingDate"
@@ -164,7 +172,7 @@ function Mating() {
 
                         <div className="input-group">
                             <label htmlFor="checkDays">{t('check_Days')}</label>
-                            <select 
+                            <select
                                 id="checkDays"
                                 name="checkDays"
                                 value={formik.values.checkDays}
@@ -185,7 +193,14 @@ function Mating() {
                 </div>
 
                 <div className="form-actions">
-                    <button type="submit" className="save-button" disabled={isLoading || isSubmitted}>
+                    <button
+                        type="submit"
+                        className="save-button"
+                        disabled={isLoading || isSubmitted}
+                        onClick={() => {
+                            formik.handleSubmit();
+                        }}
+                    >
                         {isLoading ? (
                             <span className="loading-spinner"></span>
                         ) : (
@@ -194,6 +209,21 @@ function Mating() {
                             </>
                         )}
                     </button>
+
+                    {isSubmitted && (
+                        <button
+                            type="button"
+                            className="save-button"
+                            onClick={() => {
+                                formik.resetForm();
+                                setIsSubmitted(false);
+                                setMatingData(null);
+                                setShowAlert(false);
+                            }}
+                        >
+                            {t('add_new_mating')}
+                        </button>
+                    )}
                 </div>
             </form>
         </div>
