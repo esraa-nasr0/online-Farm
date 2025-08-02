@@ -16,11 +16,11 @@ function EditTreatAnimal() {
   const [isLoading, setIsLoading] = useState(false);
   const [locationSheds, setLocationSheds] = useState([]);
   const [treatmentOptions, setTreatmentOptions] = useState([]);
-
   const { getTreatmentMenue } = useContext(TreatmentContext);
   const { LocationMenue } = useContext(LocationContext);
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const getHeaders = () => {
     const token = localStorage.getItem("Authorization");
@@ -31,54 +31,58 @@ function EditTreatAnimal() {
     };
   };
 
+  const formatDate = (isoString) => (isoString ? isoString.split("T")[0] : "");
+
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        // Fetch location sheds
         const locationResponse = await LocationMenue();
         if (locationResponse?.data?.status === "success") {
           setLocationSheds(locationResponse.data.data.locationSheds || []);
         }
 
-        // Fetch treatment options
         const treatmentResponse = await getTreatmentMenue();
         if (treatmentResponse?.data?.status === "success") {
           setTreatmentOptions(treatmentResponse.data.data || []);
         }
 
-        // Fetch existing treatment data
-        const treatmentData = await axios.get(
+        const { data } = await axios.get(
           `https://farm-project-bbzj.onrender.com/api/treatment/getsingletreatmentforAnimals/${id}`,
           { headers: getHeaders() }
         );
 
-        if (treatmentData?.data?.data?.treatmentShed) {
-          const treatment = treatmentData.data.data.treatmentShed;
+        const treatment = data?.data?.treatments?.[0];
+        if (treatment) {
           formik.setValues({
             tagId: treatment.tagId || "",
-            locationShed: treatment.locationShed?._id || "",
+            locationShed: treatment.locationShed || "",
             date: formatDate(treatment.date) || "",
+            eyeCheck: treatment.eyeCheck || "",
+            rectalCheck: treatment.rectalCheck || "",
+            respiratoryCheck: treatment.respiratoryCheck || "",
+            rumenCheck: treatment.rumenCheck || "",
+            diagnosis: treatment.diagnosis || "",
+            temperature: treatment.temperature || "",
             treatments: treatment.treatments?.map((comp) => ({
               treatmentId: comp.treatmentId || "",
-              volume: comp.volume || "",
-            })) || [{ treatmentId: "", volume: "" }],
+              volumePerAnimal: comp.volumePerAnimal || "",
+              numberOfDoses: comp.numberOfDoses || "",
+              doses: comp.doses?.map((dose) => ({
+                date: formatDate(dose.date),
+                taken: dose.taken,
+              })) || [],
+            })) || [],
           });
         }
-      } catch (error) {
-        console.error("Error loading initial data:", error);
+      } catch (err) {
+        console.error("Error loading data:", err);
         setError(t("failed_to_load_data"));
-        Swal.fire({
-          title: t("error_title"),
-          text: t("failed_to_load_data"),
-          icon: "error",
-        });
+        Swal.fire({ title: t("error"), text: t("failed_to_load_data"), icon: "error" });
       }
     };
 
     fetchInitialData();
   }, [id]);
-
-  const formatDate = (isoString) => (isoString ? isoString.split("T")[0] : "");
 
   const validationSchema = Yup.object({
     tagId: Yup.string().required(t("tagId_required")),
@@ -88,10 +92,15 @@ function EditTreatAnimal() {
       .of(
         Yup.object({
           treatmentId: Yup.string().required(t("treatment_id_required")),
-          volume: Yup.number()
+          volumePerAnimal: Yup.number()
             .required(t("volume_required"))
             .positive(t("volume_positive"))
             .typeError(t("volume_valid_number")),
+          numberOfDoses: Yup.number()
+            .required(t("doses_required"))
+            .positive(t("doses_positive"))
+            .integer(t("doses_integer"))
+            .typeError(t("doses_number")),
         })
       )
       .min(1, t("at_least_one_treatment")),
@@ -102,60 +111,86 @@ function EditTreatAnimal() {
       tagId: "",
       locationShed: "",
       date: "",
-      treatments: [{ treatmentId: "", volume: "" }],
+      eyeCheck: "",
+      rectalCheck: "",
+      respiratoryCheck: "",
+      rumenCheck: "",
+      diagnosis: "",
+      temperature: "",
+      treatments: [{
+        treatmentId: "",
+        volumePerAnimal: "",
+        numberOfDoses: "",
+        doses: [],
+      }],
     },
     validationSchema,
     onSubmit: async (values) => {
-  setIsLoading(true);
-  setError(null);
-  try {
-    const response = await axios.patch(
-      `https://farm-project-bbzj.onrender.com/api/treatment/updatetreatmentforAnimals/${id}`,
-      values,
-      { headers: getHeaders() }
-    );
+      setIsLoading(true);
+      try {
+        const res = await axios.patch(
+          `https://farm-project-bbzj.onrender.com/api/treatment/updatetreatmentforAnimals/${id}`,
+          values,
+          { headers: getHeaders() }
+        );
 
-    console.log("response:", response.data); // شوفي شكل الداتا الراجعة
+        if (res.data.status === "SUCCESS") {
+          setIsSubmitted(true);
+          Swal.fire({
+            title: t("success"),
+            text: res.data.message || t("animal_update_success"),
+            icon: "success",
+            confirmButtonText: t("ok"),
+          });
+        } else {
+          throw new Error(res.data.message);
+        }
+      } catch (err) {
+        setError(err.message || t("error_occurred"));
+        Swal.fire({
+          title: t("error"),
+          text: err.message || t("error_occurred"),
+          icon: "error",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    },
+  });
 
-    if (response.data.status === "SUCCESS") {
-      await Swal.fire({
-        title: t("success_title"),
-        text: response.data.message || t("animal_update_success"),
-        icon: "success",
-        confirmButtonText: t("ok"),
-      });
-      navigate("/treatAnimalTable");
-      return; // ده مهم عشان يمنع تكملة الكود
+  const handleTreatmentChange = (e, index) => {
+    const { name, value } = e.target;
+    const treatments = [...formik.values.treatments];
+
+    if (name === "numberOfDoses") {
+      treatments[index].numberOfDoses = value;
+      treatments[index].doses = Array.from({ length: Number(value) || 0 }, () => ({
+        date: "",
+        taken: false,
+      }));
+    } else {
+      treatments[index][name] = value;
     }
 
-    // لو مش success، اعملي throw
-    throw new Error(response.data.message || "Update failed");
-
-  } catch (err) {
-    console.error("Error updating treatment:", err);
-    setError(err.response?.data?.message || err.message || t("error_occurred"));
-    Swal.fire({
-      title: t("error_title"),
-      text: err.response?.data?.message || err.message || t("error_occurred"),
-      icon: "error",
-      confirmButtonText: t("ok"),
-    });
-  } finally {
-    setIsLoading(false);
-  }
-}
-  });
+    formik.setFieldValue("treatments", treatments);
+  };
 
   const addTreat = () => {
     formik.setFieldValue("treatments", [
       ...formik.values.treatments,
-      { treatmentId: "", volume: "" },
+      {
+        treatmentId: "",
+        volumePerAnimal: "",
+        numberOfDoses: "",
+        doses: [],
+      },
     ]);
   };
 
-  const handleTreatmentChange = (e, index) => {
-    const { name, value } = e.target;
-    formik.setFieldValue(`treatments[${index}].${name}`, value);
+  const removeTreat = (indexToRemove) => {
+    const updated = [...formik.values.treatments];
+    updated.splice(indexToRemove, 1);
+    formik.setFieldValue("treatments", updated);
   };
 
   return (
@@ -168,29 +203,18 @@ function EditTreatAnimal() {
 
       <form onSubmit={formik.handleSubmit} className="treatment-form">
         <div className="form-grid">
+          {/* Animal Details */}
           <div className="form-section">
             <h2>{t("animal_details")}</h2>
+
             <div className="input-group">
-              <label htmlFor="tagId">{t("tag_id")}</label>
-              <input
-                id="tagId"
-                type="text"
-                {...formik.getFieldProps("tagId")}
-                placeholder={t("enter_tag_id")}
-                readOnly
-              />
-              {formik.errors.tagId && formik.touched.tagId && (
-                <p className="error-message">{formik.errors.tagId}</p>
-              )}
+              <label>{t("tag_id")}</label>
+              <input type="text" readOnly {...formik.getFieldProps("tagId")} />
             </div>
 
             <div className="input-group">
-              <label htmlFor="locationShed">{t("location_shed")}</label>
-              <select
-                id="locationShed"
-                {...formik.getFieldProps("locationShed")}
-                disabled={isLoading}
-              >
+              <label>{t("location_shed")}</label>
+              <select {...formik.getFieldProps("locationShed")}>
                 <option value="">{t("select_location_shed")}</option>
                 {locationSheds.map((shed) => (
                   <option key={shed._id} value={shed._id}>
@@ -198,38 +222,42 @@ function EditTreatAnimal() {
                   </option>
                 ))}
               </select>
-              {formik.errors.locationShed && formik.touched.locationShed && (
-                <p className="error-message">{formik.errors.locationShed}</p>
-              )}
             </div>
 
             <div className="input-group">
-              <label htmlFor="date">{t("date")}</label>
-              <input
-                id="date"
-                type="date"
-                {...formik.getFieldProps("date")}
-                disabled={isLoading}
-              />
-              {formik.errors.date && formik.touched.date && (
-                <p className="error-message">{formik.errors.date}</p>
-              )}
+              <label>{t("date")}</label>
+              <input type="date" {...formik.getFieldProps("date")} />
             </div>
           </div>
 
+          {/* Examinations */}
           <div className="form-section">
-            <h2>{t("treatments")}</h2>
-            {formik.values.treatments.map((treatment, index) => (
-              <div key={index} className="input-group">
-                <label htmlFor={`treatment-${index}`}>
-                  {t("treatment_name")}
-                </label>
+            <h2>{t("animal_exminetion_and_diagnosis")}</h2>
+
+            {["eyeCheck", "rectalCheck", "respiratoryCheck", "rumenCheck", "diagnosis", "temperature"].map((field) => (
+              <div className="input-group" key={field}>
+                <label>{t(field)}</label>
+                <input
+                  type={field === "temperature" ? "number" : "text"}
+                  name={field}
+                  value={formik.values[field]}
+                  onChange={formik.handleChange}
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* Treatments */}
+          {formik.values.treatments.map((treatment, index) => (
+            <div key={index} className="form-section">
+              <h2>{t("treatments")} #{index + 1}</h2>
+
+              <div className="input-group">
+                <label>{t("treatment_name")}</label>
                 <select
-                  id={`treatment-${index}`}
                   name="treatmentId"
                   value={treatment.treatmentId}
                   onChange={(e) => handleTreatmentChange(e, index)}
-                  disabled={isLoading}
                 >
                   <option value="">{t("select_treatment")}</option>
                   {treatmentOptions.map((option) => (
@@ -238,49 +266,80 @@ function EditTreatAnimal() {
                     </option>
                   ))}
                 </select>
+              </div>
 
-                <label htmlFor={`volume-${index}`}>{t("volume")}</label>
+              <div className="input-group">
+                <label>{t("volumePerAnimal")}</label>
                 <input
                   type="number"
-                  id={`volume-${index}`}
-                  name="volume"
-                  value={treatment.volume}
+                  name="volumePerAnimal"
+                  value={treatment.volumePerAnimal}
                   onChange={(e) => handleTreatmentChange(e, index)}
-                  placeholder={t("enter_volume")}
-                  disabled={isLoading}
                 />
-                {formik.errors.treatments?.[index]?.treatmentId && (
-                  <p className="error-message">
-                    {formik.errors.treatments[index].treatmentId}
-                  </p>
-                )}
-                {formik.errors.treatments?.[index]?.volume && (
-                  <p className="error-message">
-                    {formik.errors.treatments[index].volume}
-                  </p>
-                )}
               </div>
-            ))}
-          </div>
+
+              <div className="input-group">
+                <label>{t("number_of_doses")}</label>
+                <input
+                  type="number"
+                  name="numberOfDoses"
+                  value={treatment.numberOfDoses}
+                  onChange={(e) => handleTreatmentChange(e, index)}
+                />
+              </div>
+
+              {/* Dose Inputs */}
+              {treatment.doses?.map((dose, doseIndex) => (
+                <div key={doseIndex} className="dose-row">
+                  <div className="input-group">
+                    <label>{t("dose_date")} {doseIndex + 1}</label>
+                    <input
+                      type="date"
+                      value={dose.date}
+                      onChange={(e) => {
+                        const updated = [...formik.values.treatments];
+                        updated[index].doses[doseIndex].date = e.target.value;
+                        formik.setFieldValue("treatments", updated);
+                      }}
+                    />
+                  </div>
+
+                  <div className="input-group checkbox-group">
+                    <label>{t("taken")}</label>
+                    <input
+                      type="checkbox"
+                      checked={dose.taken}
+                      onChange={(e) => {
+                        const updated = [...formik.values.treatments];
+                        updated[index].doses[doseIndex].taken = e.target.checked;
+                        formik.setFieldValue("treatments", updated);
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
+
+              {/* Remove Button */}
+              {formik.values.treatments.length > 1 && (
+                <button
+                  type="button"
+                  className="remove-treatment-button"
+                  onClick={() => removeTreat(index)}
+                >
+                  ×
+                </button>
+              )}
+            </div>
+          ))}
         </div>
 
         <div className="form-actions">
-          <button
-            type="button"
-            onClick={addTreat}
-            className="add-treatment-button"
-            disabled={isLoading}
-          >
+          <button type="button" onClick={addTreat} className="add-treatment-button">
             +
           </button>
+
           <button type="submit" className="save-button" disabled={isLoading}>
-            {isLoading ? (
-              <span className="loading-spinner"></span>
-            ) : (
-              <>
-                <IoIosSave /> {t("save")}
-              </>
-            )}
+            {isLoading ? <span className="loading-spinner"></span> : <><IoIosSave /> {t("save")}</>}
           </button>
         </div>
       </form>

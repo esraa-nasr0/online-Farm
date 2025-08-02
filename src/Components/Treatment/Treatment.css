@@ -139,6 +139,31 @@
     cursor: pointer;
     transition: background-color 0.2s ease;
 }
+.remove-treatment-wrapper {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.remove-treatment-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: #e3342f;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-left: 1.5rem;}
+
+.remove-treatment-button:hover {
+  background-color: #cc1f1a;
+}
+
 .save-button {
   display: inline-flex;
   align-items: center;

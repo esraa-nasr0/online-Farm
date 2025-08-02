@@ -99,6 +99,9 @@ import { useTranslation } from "react-i18next";
 import NotificationPage from "./Components/Notification/NotificationPage.jsx";
 import Support from "./Components/Support/Support.jsx";
 import Pharmacy from "./Components/Services/Pharmacy.jsx";
+import WithGrowthData from "./Components/Weight/WithGrowthData.jsx";
+
+
 
 
 let routers = createBrowserRouter([
@@ -188,6 +191,7 @@ let routers = createBrowserRouter([
       { path: "notificationPage", element: <ProtectedRoute><NotificationPage/></ProtectedRoute> },
       { path: "support", element: <ProtectedRoute><Support/></ProtectedRoute> },
       { path: "pharmacy", element: <ProtectedRoute><Pharmacy/></ProtectedRoute> },
+      { path: "withGrowthData", element: <ProtectedRoute><WithGrowthData/></ProtectedRoute> },
 
 
     ],

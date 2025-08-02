@@ -789,7 +789,7 @@
   "add_new_treatment": "إضافة علاج جديد",
   "treatment_success_message": "تمت إضافة العلاج بنجاح",
   "eye_check": "فحص العين",
-  "rectal_check": "الفحص الشرجي",
+  "rectal_check": "فحص المستقيم ",
   "respiratory_check": "فحص الجهاز التنفسي",
   "rumen_check": "فحص الكرش",
   "doses": "الجرعات",
@@ -881,7 +881,39 @@
   "pregnancy_age": "عمر الحمل (بالأسابيع)",
 "enter_pregnancy_age": "ادخل عمر الحمل",
 "fetus_count": "عدد الأجنة",
-"enter_fetus_count": "ادخل عدد الأجنة"
+"enter_fetus_count": "ادخل عدد الأجنة",
+
+  "animal_exminetion_and_diagnosis": "فحص الحيوان والتشخيص",
+  "diagnosis": "التشخيص",
+  "enter_diagnosis": "أدخل التشخيص",
+  "temperature": "درجة الحرارة",
+  "enter_temperature": "أدخل درجة الحرارة",
+  "select_treatment": "اختر العلاج",
+  "volumePerAnimal": "الكمية لكل حيوان",
+  "enter_volumePerAnimal": "أدخل الكمية لكل حيوان",
+  "number_of_doses": "عدد الجرعات",
+  "enter_number_of_doses": "أدخل عدد الجرعات",
+  "dose_date": "تاريخ الجرعة",
+  "taken": "تم إعطاؤها",
+  "treatment_added_successfully": "تمت إضافة العلاج بنجاح",
+  "failed_to_load_treatment_data": "فشل في تحميل بيانات العلاجات",
+
+  "Animal Growth": "نمو الحيوان",
+  "first_weight": "الوزن الأول",
+  "first_date": "تاريخ الوزن الأول",
+  "last_weight": "آخر وزن",
+  "last_date": "تاريخ آخر وزن",
+  "weight_gain": "زيادة الوزن",
+  "growth_days": "أيام النمو",
+  "adg": "متوسط الزيادة اليومية (ADG)",
+  "conversion_efficiency": "كفاءة التحويل",
+  "no_data_found": "لا توجد بيانات نمو",
+  "fetch_error": "فشل في جلب البيانات",
+
+  "growth_data_for": "بيانات النمو لـ",
+  "overall_growth": "النمو الكلي",
+  "show Animal Growth data": "عرض بيانات نمو الحيوان",
+  "show Animal Growth": "عرض نمو الحيوان"
 
 
 
