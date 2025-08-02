@@ -10,6 +10,7 @@ import ViewVaccine from '../Vaccine/ViewVaccine';
 import ViewBreeding from '../Breeding/ViewBreeding';
 import ViewTeatment from '../Treatment/ViewTreatment';
 import { useTranslation } from 'react-i18next';
+import WeightViewGrowth from '../Weight/WeightViewGrowth';
 
 export default function ViewDetailsofAnimal() {
     const { t } = useTranslation();
@@ -123,6 +124,7 @@ export default function ViewDetailsofAnimal() {
             <ViewBreeding animalId={id}/>
             <ViewVaccine  animalId={id}/>
             <ViewTeatment  animalId={id}/>
+            <WeightViewGrowth animalId={id}/>
         </div>
     );
 }

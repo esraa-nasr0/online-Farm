@@ -178,6 +178,7 @@ export default function Sidebar({ isOpen, isMobile, isRTL, notificationCount = 0
           subItems: [
             { name: "weight Data", path: "/weightTable" },
             { name: "add Weight", path: "/weight" },
+            { name: "Animal Growth", path: "/withGrowthData" },
           ],
         },
         {

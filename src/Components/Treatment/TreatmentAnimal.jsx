@@ -20,7 +20,7 @@ function TreatmentAnimal() {
 
   const getHeaders = () => {
     const Authorization = localStorage.getItem("Authorization");
-    const formattedToken = Authorization.startsWith("Bearer ")
+    const formattedToken = Authorization?.startsWith("Bearer ")
       ? Authorization
       : `Bearer ${Authorization}`;
     return { Authorization: formattedToken };
@@ -46,7 +46,6 @@ function TreatmentAnimal() {
 
   async function submitTreatment(values) {
     if (isSubmitted) return;
-
     const headers = getHeaders();
     setIsLoading(true);
     setError(null);
@@ -68,7 +67,6 @@ function TreatmentAnimal() {
           icon: "success",
           confirmButtonText: t("ok"),
         });
-        navigate("/treatAnimalTable");
       }
     } catch (error) {
       setIsLoading(false);
@@ -83,12 +81,22 @@ function TreatmentAnimal() {
   const formik = useFormik({
     initialValues: {
       tagId: "",
-      eyeCheck: false,
-      rectalCheck: false,
-      respiratoryCheck: false,
-      rumenCheck: false,
-      treatments: [{ treatmentId: "", doses: "" }],
       date: "",
+      eyeCheck: "",
+      rectalCheck: "",
+      respiratoryCheck: "",
+      rumenCheck: "",
+      diagnosis: "",
+      temperature: "",
+      date: "",
+      treatments: [
+        {
+          treatmentId: "",
+          volumePerAnimal: "",
+          numberOfDoses: "",
+          doses: [],
+        },
+      ],
     },
     onSubmit: submitTreatment,
   });
@@ -97,7 +105,12 @@ function TreatmentAnimal() {
     if (!isSubmitted) {
       formik.setFieldValue("treatments", [
         ...formik.values.treatments,
-        { treatmentId: "", doses: "" },
+        {
+          treatmentId: "",
+          volumePerAnimal: "",
+          numberOfDoses: "",
+          doses: [],
+        },
       ]);
     }
   };
@@ -106,7 +119,19 @@ function TreatmentAnimal() {
     if (!isSubmitted) {
       const { name, value } = e.target;
       const updatedTreatments = [...formik.values.treatments];
-      updatedTreatments[index][name] = name === "doses" ? Number(value) : value;
+
+      if (name === "numberOfDoses") {
+        const doseCount = Number(value);
+        updatedTreatments[index][name] = doseCount;
+        updatedTreatments[index].doses = Array.from({ length: doseCount }, () => ({
+          date: "",
+          taken: false,
+        }));
+      } else {
+        updatedTreatments[index][name] =
+          name === "volumePerAnimal" ? Number(value) : value;
+      }
+
       formik.setFieldValue("treatments", updatedTreatments);
     }
   };
@@ -115,15 +140,33 @@ function TreatmentAnimal() {
     formik.resetForm({
       values: {
         tagId: "",
-        eyeCheck: false,
-        rectalCheck: false,
-        respiratoryCheck: false,
-        rumenCheck: false,
-        treatments: [{ treatmentId: "", doses: "" }],
         date: "",
+        eyeCheck: "",
+        rectalCheck: "",
+        respiratoryCheck: "",
+        rumenCheck: "",
+        diagnosis: "",
+        temperature: "",
+        date: "",
+        treatments: [
+          {
+            treatmentId: "",
+            volumePerAnimal: "",
+            numberOfDoses: "",
+            doses: [],
+          },
+        ],
       },
     });
     setIsSubmitted(false);
+  };
+
+  const removeTreat = (index) => {
+    if (!isSubmitted) {
+      const updatedTreatments = [...formik.values.treatments];
+      updatedTreatments.splice(index, 1);
+      formik.setFieldValue("treatments", updatedTreatments);
+    }
   };
 
   return (
@@ -142,57 +185,9 @@ function TreatmentAnimal() {
 
       <form onSubmit={formik.handleSubmit} className="treatment-form">
         <div className="form-grid">
-          <div className="form-section">
-            <h2>{t("animal_exminetion")}</h2>
-
-            <div className="input-group checkbox-group">
-              <input
-                type="checkbox"
-                id="eyeCheck"
-                name="eyeCheck"
-                checked={formik.values.eyeCheck}
-                onChange={formik.handleChange}
-              />
-              <label htmlFor="eyeCheck">{t("eye_check")}</label>
-            </div>
-
-            <div className="input-group checkbox-group">
-              <input
-                type="checkbox"
-                id="rectalCheck"
-                name="rectalCheck"
-                checked={formik.values.rectalCheck}
-                onChange={formik.handleChange}
-              />
-              <label htmlFor="rectalCheck">{t("rectal_check")}</label>
-            </div>
-
-            <div className="input-group checkbox-group">
-              <input
-                type="checkbox"
-                id="respiratoryCheck"
-                name="respiratoryCheck"
-                checked={formik.values.respiratoryCheck}
-                onChange={formik.handleChange}
-              />
-              <label htmlFor="respiratoryCheck">{t("respiratory_check")}</label>
-            </div>
-
-            <div className="input-group checkbox-group">
-              <input
-                type="checkbox"
-                id="rumenCheck"
-                name="rumenCheck"
-                checked={formik.values.rumenCheck}
-                onChange={formik.handleChange}
-              />
-              <label htmlFor="rumenCheck">{t("rumen_check")}</label>
-            </div>
-          </div>
-
+          {/* Animal Details */}
           <div className="form-section">
             <h2>{t("animal_details")}</h2>
-
             <div className="input-group">
               <label htmlFor="tagId">{t("tag_id")}</label>
               <input
@@ -203,7 +198,6 @@ function TreatmentAnimal() {
                 placeholder={t("enter_tag_id")}
               />
             </div>
-
             <div className="input-group">
               <label htmlFor="date">{t("date")}</label>
               <input
@@ -215,41 +209,163 @@ function TreatmentAnimal() {
             </div>
           </div>
 
+          {/* Examination */}
           <div className="form-section">
-            <h2>{t("treatments")}</h2>
-            {formik.values.treatments.map((treatment, index) => (
-              <div key={index} className="input-group">
-                <label htmlFor={`treatment-${index}`}>
-                  {t("treatment_name")}
-                </label>
-                <select
-                  id={`treatment-${index}`}
-                  name="treatmentId"
-                  value={treatment.treatmentId}
-                  onChange={(e) => handleTreatmentChange(e, index)}
-                  disabled={isSubmitted}
-                >
-                  <option value="">{t("select_treatment")}</option>
-                  {treatmentOptions.map((option) => (
-                    <option key={option._id} value={option._id}>
-                      {option.name}
-                    </option>
-                  ))}
-                </select>
-
-                <label htmlFor={`doses-${index}`}>{t("doses")}</label>
-                <input
-                  type="number"
-                  id={`doses-${index}`}
-                  name="doses"
-                  value={treatment.doses}
-                  onChange={(e) => handleTreatmentChange(e, index)}
-                  disabled={isSubmitted}
-                  placeholder={t("enter_doses")}
-                />
-              </div>
-            ))}
+            <h2>{t("animal_exminetion_and_diagnosis")}</h2>
+            <div className="input-group">
+              <label htmlFor="eyeCheck">{t("eye_check")}</label>
+              <input
+                type="text"
+                id="eyeCheck"
+                name="eyeCheck"
+                value={formik.values.eyeCheck}
+                onChange={formik.handleChange}
+              />
+            </div>
+            <div className="input-group">
+              <label htmlFor="rectalCheck">{t("rectal_check")}</label>
+              <input
+                type="text"
+                id="rectalCheck"
+                name="rectalCheck"
+                value={formik.values.rectalCheck}
+                onChange={formik.handleChange}
+              />
+            </div>
+            <div className="input-group">
+              <label htmlFor="respiratoryCheck">{t("respiratory_check")}</label>
+              <input
+                type="text"
+                id="respiratoryCheck"
+                name="respiratoryCheck"
+                value={formik.values.respiratoryCheck}
+                onChange={formik.handleChange}
+              />
+            </div>
+            <div className="input-group">
+              <label htmlFor="rumenCheck">{t("rumen_check")}</label>
+              <input
+                type="text"
+                id="rumenCheck"
+                name="rumenCheck"
+                value={formik.values.rumenCheck}
+                onChange={formik.handleChange}
+              />
+            </div>
+            
+            <div className="input-group">
+              <label htmlFor="temperature">{t("temperature")}</label>
+              <input
+                type="number"
+                id="temperature"
+                name="temperature"
+                value={formik.values.temperature}
+                onChange={formik.handleChange}
+                disabled={isSubmitted}
+                placeholder={t("enter_temperature")}
+              />
+            </div>
+            <div className="input-group">
+              <label htmlFor="diagnosis">{t("diagnosis")}</label>
+              <input
+                type="text"
+                id="diagnosis"
+                name="diagnosis"
+                value={formik.values.diagnosis}
+                onChange={formik.handleChange}
+                disabled={isSubmitted}
+                placeholder={t("enter_diagnosis")}
+              />
+            </div>
           </div>
+
+          {/* Treatments */}
+          {formik.values.treatments.map((treatment, index) => {
+            return (
+              <div key={index} className="form-section">
+                <h2>{t("treatments")}</h2>
+                <div className="input-group">
+                  <label>{t("treatment_name")}</label>
+                  <select
+                    name="treatmentId"
+                    value={treatment.treatmentId}
+                    onChange={(e) => handleTreatmentChange(e, index)}
+                    disabled={isSubmitted}
+                  >
+                    <option value="">{t("select_treatment")}</option>
+                    {treatmentOptions.map((option) => (
+                      <option key={option._id} value={option._id}>
+                        {option.name}
+                      </option>
+                    ))}
+                  </select>
+
+                  <label>{t("volumePerAnimal")}</label>
+                  <input
+                    type="number"
+                    name="volumePerAnimal"
+                    value={treatment.volumePerAnimal}
+                    onChange={(e) => handleTreatmentChange(e, index)}
+                    disabled={isSubmitted}
+                    placeholder={t("enter_volumePerAnimal")}
+                  />
+
+                  <label>{t("number_of_doses")}</label>
+                  <input
+                    type="number"
+                    name="numberOfDoses"
+                    value={treatment.numberOfDoses}
+                    onChange={(e) => handleTreatmentChange(e, index)}
+                    disabled={isSubmitted}
+                    placeholder={t("enter_number_of_doses")}
+                  />
+
+                  {treatment.doses.map((dose, doseIndex) => (
+                    <div key={doseIndex} className="dose-row">
+                      <div className="input-group">
+                        <label>{t("dose_date")} ({doseIndex + 1})</label>
+                        <input
+                          type="date"
+                          value={dose.date}
+                          onChange={(e) => {
+                            const updatedTreatments = [...formik.values.treatments];
+                            updatedTreatments[index].doses[doseIndex].date = e.target.value;
+                            formik.setFieldValue("treatments", updatedTreatments);
+                          }}
+                          disabled={isSubmitted}
+                        />
+                      </div>
+                      <div className="input-group checkbox-group">
+                        <label>{t("taken")}</label>
+                        <input
+                          type="checkbox"
+                          checked={dose.taken}
+                          onChange={(e) => {
+                            const updatedTreatments = [...formik.values.treatments];
+                            updatedTreatments[index].doses[doseIndex].taken = e.target.checked;
+                            formik.setFieldValue("treatments", updatedTreatments);
+                          }}
+                          disabled={isSubmitted}
+                        />
+                      </div>
+                    </div>
+                  ))}
+
+                  {formik.values.treatments.length > 1 && !isSubmitted && (
+                    <div className="remove-treatment-wrapper">
+                      <button
+                        type="button"
+                        className="remove-treatment-button mt-2"
+                        onClick={() => removeTreat(index)}
+                      >
+                        ×
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
         </div>
 
         <div className="form-actions">

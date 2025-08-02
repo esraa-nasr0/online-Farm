@@ -816,7 +816,39 @@
   "pregnancy_age": "Pregnancy Age (day)",
 "enter_pregnancy_age": "Enter pregnancy age",
 "fetus_count": "Fetus Count",
-"enter_fetus_count": "Enter number of fetuses"
+"enter_fetus_count": "Enter number of fetuses",
+
+  "animal_exminetion_and_diagnosis": "Animal Examination and Diagnosis",
+  "diagnosis": "Diagnosis",
+  "enter_diagnosis": "Enter diagnosis",
+  "temperature": "Temperature",
+  "enter_temperature": "Enter temperature",
+  "treatments": "Treatments",
+  "select_treatment": "Select treatment",
+  "volumePerAnimal": "Volume Per Animal",
+  "enter_volumePerAnimal": "Enter volume per animal",
+  "number_of_doses": "Number of Doses",
+  "enter_number_of_doses": "Enter number of doses",
+  "dose_date": "Dose Date",
+  "taken": "Taken",
+  "treatment_added_successfully": "Treatment added successfully",
+  "failed_to_load_treatment_data": "Failed to load treatment data",
+
+   "Animal Growth": "Animal Growth",
+  "first_weight": "First Weight",
+  "first_date": "First Date",
+  "last_weight": "Last Weight",
+  "last_date": "Last Date",
+  "weight_gain": "Weight Gain",
+  "growth_days": "Growth Days",
+  "adg": "ADG",
+  "conversion_efficiency": "Conversion Efficiency",
+  "no_data_found": "No growth data found",
+
+   "growth_data_for": "Growth Data for",
+  "overall_growth": "Overall Growth",
+  "show Animal Growth data": "Show Animal Growth Data",
+  "show Animal Growth": "Show Animal Growth"
 
 
 

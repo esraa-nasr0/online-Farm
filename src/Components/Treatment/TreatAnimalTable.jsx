@@ -242,7 +242,7 @@ function TreatAnimalTable() {
                       {t("treatment_name")}
                     </th>
                     <th scope="col" className="text-center bg-color">
-                      {t("volume")}
+                      {t("volumePerAnimal")}
                     </th>
                     <th scope="col" className="text-center bg-color">
                       {t("date")}
@@ -270,7 +270,7 @@ function TreatAnimalTable() {
                         </td>
                         <td>
                           {item.treatments && item.treatments[0]
-                            ? item.treatments[0].volume
+                            ? item.treatments[0].volumePerAnimal
                             : "N/A"}
                         </td>
                         <td>{new Date(item.date).toLocaleDateString()}</td>
