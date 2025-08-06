@@ -12,6 +12,8 @@ function Excluded() {
     const navigate = useNavigate();
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+        const [isSubmitted, setIsSubmitted] = useState(false);
+    
 
     const getHeaders = () => {
         const Authorization = localStorage.getItem('Authorization');
@@ -28,12 +30,13 @@ function Excluded() {
                 { headers }
             );
             if (data.status === "success") {
+                setIsSubmitted(true);
                 Swal.fire({
                     title: t('success'),
                     text: t('data_submitted'),
                     icon: "success",
                     confirmButtonText: t('ok'),
-                }).then(() => navigate('/excludedtable'));
+                })
             }
         } catch (err) {
             setError(err.response?.data?.message || t('submit_error'));
@@ -189,6 +192,19 @@ function Excluded() {
                             </>
                         )}
                     </button>
+                    
+                    {isSubmitted && (
+        <button
+            type="button"
+            className="save-button"
+            onClick={() => {
+                formik.resetForm();
+                setIsSubmitted(false);
+            }}
+        >
+             {t('add_new_excluded')}
+        </button>
+    )}
                 </div>
             </form>
         </div>

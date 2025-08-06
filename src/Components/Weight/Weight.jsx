@@ -40,9 +40,8 @@ function Weight() {
                     text: t('weight_added_successfully'),
                     icon: 'success',
                     confirmButtonText: t('ok'),
-                }).then(() => {
-                    navigate('/weightTable');
-                });
+                })
+                formik.resetForm();
             }
         } catch (err) {
             setIsLoading(false);
@@ -185,13 +184,19 @@ function Weight() {
                         )}
                     </button>
                 </div>
+{isSubmitted && (
+  <button
+    type="button"
+    className="save-button"
+    onClick={() => {
+      formik.resetForm();
+      setIsSubmitted(false);
+    }}
+  >
+    {t("add_new_weight")}
+  </button>
+)}
 
-                {isSubmitted && (
-                    <div className="success-message">
-                        <h3>{t('success')}</h3>
-                        <p>{t('weight_data_saved_successfully')}</p>
-                    </div>
-                )}
             </form>
         </div>
     );

@@ -19,6 +19,8 @@ function Vaccinebyanimal() {
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
+    const [isSubmitted, setIsSubmitted] = useState(false);
+
 
     const getHeaders = () => {
         const Authorization = localStorage.getItem('Authorization');
@@ -128,12 +130,13 @@ function Vaccinebyanimal() {
                 );
 
                 if (response.data.status === "success") {
+                    setIsSubmitted(true); // ✅ خلي الزر يظهر
                     Swal.fire({
                         title: t("Success"),
                         text: t("Data has been submitted successfully!"),
                         icon: "success",
                         confirmButtonText: t("OK"),
-                    }).then(() => navigate('/vaccineTable'));
+                    })
                 }
             } catch (err) {
                 Swal.fire({
@@ -354,6 +357,19 @@ function Vaccinebyanimal() {
                             </>
                         )}
                     </button>
+                    {isSubmitted && (
+    <button
+        type="button"
+        className="save-button"
+        onClick={() => {
+            formik.resetForm();
+            setIsSubmitted(false);
+        }}
+    >
+        {t("Add New Vaccine")}
+    </button>
+)}
+
                 </div>
             </form>
         </div>
