@@ -54,6 +54,8 @@ function BreedPost() {
     const [inputLanguage, setInputLanguage] = useState('english'); // Track input language
     const { t } = useTranslation();
     const navigate = useNavigate();
+    const [isSubmitted, setIsSubmitted] = useState(false);
+
 
     // Helper function to generate headers with the latest token
     const getHeaders = () => {
@@ -62,36 +64,37 @@ function BreedPost() {
         return { Authorization: formattedToken };
     };
 
-    async function submitBreed(values) {
-        const headers = getHeaders();
-        setIsLoading(true);
-        setError(null);
+    async function submitBreed(values, { resetForm }) {
+    const headers = getHeaders();
+    setIsLoading(true);
+    setError(null);
 
-        console.log("Sending data:", values);
-        console.log("Headers:", headers);
+    try {
+        let { data } = await axios.post(
+            `https://farm-project-bbzj.onrender.com/api/breed/addbreed`,
+            values,
+            { headers }
+        );
 
-        try {
-            let { data } = await axios.post(
-                `https://farm-project-bbzj.onrender.com/api/breed/addbreed`,
-                values,
-                { headers }
-            );
-
-            if (data.status === "success") {
-                setIsLoading(false);
-                Swal.fire({
-                    title: "Success!",
-                    text: "Breed added successfully!",
-                    icon: "success",
-                    confirmButtonText: "OK",
-                });
-                navigate("/breedTable"); // Redirect to the breed table after successful submission
-            }
-        } catch (err) {
+        if (data.status === "success") {
             setIsLoading(false);
-            setError(err.response?.data?.message || "An error occurred");
+            Swal.fire({
+                title: "Success!",
+                text: "Breed added successfully!",
+                icon: "success",
+                confirmButtonText: "OK",
+            });
+
+            setIsSubmitted(true);  // ✅ عرض الزر
+            resetForm();           // ✅ تصفير الفورم
+            // navigate("/breedTable"); ❌ شيل التحويل التلقائي
         }
+    } catch (err) {
+        setIsLoading(false);
+        setError(err.response?.data?.message || "An error occurred");
     }
+}
+
 
     // **Formik Setup**
     let formik = useFormik({
@@ -101,7 +104,7 @@ function BreedPost() {
         validationSchema: Yup.object({
             breedName: Yup.string().required("Breed Name is required"),
         }),
-        onSubmit: submitBreed,
+onSubmit: submitBreed,
     });
 
     // Detect if input is in Arabic or English
@@ -210,6 +213,18 @@ function BreedPost() {
                         )}
                     </button>
                 </div>
+                {isSubmitted && (
+    <div className="form-actions">
+        <button
+            type="button"
+            className="save-button"
+            onClick={() => setIsSubmitted(false)}
+        >
+            {t("add_new_breed")}
+        </button>
+    </div>
+)}
+
             </form>
         </div>
     );

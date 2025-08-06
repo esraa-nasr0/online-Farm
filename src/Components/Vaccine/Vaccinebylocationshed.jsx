@@ -18,6 +18,7 @@ function Vaccinebylocationshed() {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   useEffect(() => {
     const fetchLocations = async () => {
@@ -95,12 +96,13 @@ function Vaccinebylocationshed() {
         );
 
         if (data.status === "SUCCESS") {
+          setIsSubmitted(true); // ✅ فعل حالة "تم الحفظ"
           Swal.fire({
             title: t("success"),
             text: t("dataSubmittedSuccessfully"),
             icon: "success",
             confirmButtonText: t("ok"),
-          }).then(() => navigate("/Vaccinebyanimalsstable"));
+          })
         }
       } catch (err) {
         Swal.fire({
@@ -224,6 +226,21 @@ function Vaccinebylocationshed() {
             )}
           </button>
         </div>
+        
+                {isSubmitted && (
+  <div className="form-actions">
+    <button
+      type="button"
+      className="save-button"
+      onClick={() => {
+        formik.resetForm();
+        setIsSubmitted(false);
+      }}
+    >
+      {t("add_new_vaccine")}
+    </button>
+  </div>
+)}
       </form>
     </div>
   );

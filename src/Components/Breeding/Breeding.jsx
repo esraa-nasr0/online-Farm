@@ -15,6 +15,8 @@ export default function Breeding() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
+    const [isSubmitted, setIsSubmitted] = useState(false);
+
 
     const getHeaders = () => {
         const Authorization = localStorage.getItem('Authorization');
@@ -40,12 +42,13 @@ export default function Breeding() {
             );
 
             if (data.status === "success") {
+                setIsSubmitted(true);
                 Swal.fire({
                     title: t("success"),
                     text: t("breeding_added_successfully"),
                     icon: "success",
                     confirmButtonText: t("ok")
-                }).then(() => navigate('/breadingTable'));
+                })
             }
         } catch (err) {
             setError(err.response?.data?.message || t("error_occurred"));
@@ -266,18 +269,33 @@ export default function Breeding() {
                         </div>
                     ))}
                 </div>
+<div className="form-actions">
+    <button type="submit" className="save-button" disabled={isLoading}>
+        {isLoading ? (
+            <span className="loading-spinner"></span>
+        ) : (
+            <>
+                <IoIosSave /> {t("save")}
+            </>
+        )}
+    </button>
+{isSubmitted && (
+  <button
+    type="button"
+    className="save-button reset-button"
+    onClick={() => {
+      formik.resetForm();
+      setNumberOfBirths(1);
+      setBirthEntries([{ tagId: "", gender: "male", birthweight: "" }]);
+      setIsSubmitted(false); // علشان الزر يختفي تاني لو حابة
+    }}
+  >
+    {t("add_new_breeding")}
+  </button>
+)}
 
-                <div className="form-actions">
-                    <button type="submit" className="save-button" disabled={isLoading}>
-                        {isLoading ? (
-                            <span className="loading-spinner"></span>
-                        ) : (
-                            <>
-                                <IoIosSave /> {t("save")}
-                            </>
-                        )}
-                    </button>
-                </div>
+</div>
+
             </form>
         </div>
     );

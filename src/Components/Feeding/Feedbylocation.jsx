@@ -19,6 +19,7 @@ export default function Feedbylocation() {
   const [feedName, setFeedName] = useState([]);
   const [locationSheds, setLocationSheds] = useState([]);
   const { t } = useTranslation();
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const getHeaders = () => {
     const Authorization = localStorage.getItem('Authorization');
@@ -70,12 +71,13 @@ export default function Feedbylocation() {
         { headers }
       );
       if (response.data.status === "SUCCESS") {
+        setIsSubmitted(true);
         Swal.fire({
           title: t("success_title"),
           text: `${t("submit_success_message")}\n${t("total_feed_cost")}: ${response.data.totalFeedCost}\n${t("per_animal_feed_cost")}: ${response.data.perAnimalFeedCost}`,
           icon: "success",
           confirmButtonText: t("ok"),
-        }).then(() => navigate('/feedlocationtable'));
+        })
       }
     } catch (err) {
       Swal.fire({
@@ -201,6 +203,19 @@ export default function Feedbylocation() {
               </>
             )}
           </button>
+          
+                    {isSubmitted && (
+        <button
+            type="button"
+            className="save-button"
+            onClick={() => {
+                formik.resetForm();
+                setIsSubmitted(false);
+            }}
+        >
+             {t('add_new_feed')}
+        </button>
+    )}
         </div>
       </form>
     </div>

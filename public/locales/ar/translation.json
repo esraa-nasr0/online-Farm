@@ -523,7 +523,7 @@
   "Enter your delivery state": "أدخل حالة الولادة",
   "Enter your delivery date": "أدخل تاريخ الولادة",
   "Enter number of births": "أدخل عدد الولادات",
-  "Enter Calf Tag ID": "أدخل رقم تعريف العجل",
+  "Enter Calf Tag ID": "أدخل رقم تعريف الحمل / الرضيع",
   "Enter Gender": "أدخل الجنس",
   "Enter Birth Weight": "أدخل وزن الولادة",
   "Milking": "الإدرار",
@@ -693,9 +693,9 @@
   "bad": "سيئة",
   "medium": "متوسطة",
   "number_of_births": "عدد المواليد",
-  "calf": "العجل",
-  "calf_tag_id": "معرف وسم العجل",
-  "enter_calf_tag_id": "أدخل معرف وسم العجل",
+  "calf":"رضيع / حمل",
+  "calf_tag_id": "رقم الرضيع /الحمل ",
+  "enter_calf_tag_id": "أدخل رقم الرضيع/ الحمل",
   "birth_weight": "وزن الولادة (كجم)",
   "enter_birth_weight": "أدخل وزن الولادة",
 
@@ -913,7 +913,16 @@
   "growth_data_for": "بيانات النمو لـ",
   "overall_growth": "النمو الكلي",
   "show Animal Growth data": "عرض بيانات نمو الحيوان",
-  "show Animal Growth": "عرض نمو الحيوان"
+  "show Animal Growth": "عرض نمو الحيوان",
+  "add_new_location_shed": "إضافة موقع جديد",
+  "add_new_vaccine": "إضافة تطعيم جديد",
+  "add_new_breed": "إضافة سلالة جديدة",
+  "add_new_weight": "إضافة وزن جديد",
+  "add_new_breeding": "إضافة ولادة جديدة",
+  "add_new_feed": "إضافة علف جديد",
+  "add_new_excluded": "إضافة مستبعد جديد"
+
+
 
 
 

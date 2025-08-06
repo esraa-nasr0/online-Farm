@@ -13,6 +13,7 @@ export default function Feed() {
     const [showAlert, setShowAlert] = useState(false);
     const navigate = useNavigate();
     const { t } = useTranslation();
+    const [isSubmitted, setIsSubmitted] = useState(false);
 
     const getHeaders = () => {
         const Authorization = localStorage.getItem('Authorization');
@@ -35,6 +36,7 @@ export default function Feed() {
             );
 
             if (data.status === "success") {
+                setIsSubmitted(true);
                 setIsLoading(false);
                 setShowAlert(true);
                 Swal.fire({
@@ -42,7 +44,7 @@ export default function Feed() {
                     text: t('data_submitted_success'),
                     icon: "success",
                     confirmButtonText: t('ok'),
-                }).then(() => navigate('/feedingTable'));
+                })
             }
         } catch (err) {
             Swal.fire({
@@ -166,6 +168,18 @@ export default function Feed() {
                             </>
                         )}
                     </button>
+                    {isSubmitted && (
+        <button
+            type="button"
+            className="save-button"
+            onClick={() => {
+                formik.resetForm();
+                setIsSubmitted(false);
+            }}
+        >
+             {t('add_new_feed')}
+        </button>
+    )}
                 </div>
             </form>
         </div>

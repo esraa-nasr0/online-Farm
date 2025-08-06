@@ -188,6 +188,19 @@ export default function Fodder() {
               </>
             )}
           </button>
+          
+                    {isSubmitted && (
+        <button
+            type="button"
+            className="save-button"
+            onClick={() => {
+                formik.resetForm();
+                setIsSubmitted(false);
+            }}
+        >
+             {t('add_new_feed')}
+        </button>
+    )}
         </div>
       </form>
     </div>

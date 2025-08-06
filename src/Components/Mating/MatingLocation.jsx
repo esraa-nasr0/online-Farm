@@ -89,7 +89,6 @@ function MatingLocation() {
                     icon: 'success',
                     confirmButtonText: t('ok')
                 });
-                navigate('/matingtable');
             }
         } catch (err) {
             setisLoading(false);
@@ -236,7 +235,23 @@ function MatingLocation() {
                             </>
                         )}
                     </button>
+                    
+                    {isSubmitted && (
+                        <button
+                            type="button"
+                            className="save-button"
+                            onClick={() => {
+                                formik.resetForm();
+                                setIsSubmitted(false);
+                                setMatingData(null);
+                                setShowAlert(false);
+                            }}
+                        >
+                            {t('add_new_mating')}
+                        </button>
+                    )}
                 </div>
+                
             </form>
         </div>
     );

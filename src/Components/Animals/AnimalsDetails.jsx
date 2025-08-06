@@ -456,6 +456,20 @@ function AnimalsDetails() {
             )}
           </button>
         </div>
+{isSubmitted && (
+  <div className="form-actions">
+    <button
+      type="button"
+      className="save-button"
+      onClick={() => {
+        setIsSubmitted(false);
+        formik.resetForm();
+      }}
+    >
+      {t("add_new_animal")}
+    </button>
+  </div>
+)}
 
         {responseData && (
           <div className="success-message">
@@ -465,6 +479,7 @@ function AnimalsDetails() {
             </p>
           </div>
         )}
+
       </form>
     </div>
   );
