@@ -19,6 +19,7 @@ import Img20 from "../../Assets/Img/full-shot-man-living-countryside.jpg";
 import Img21 from "../../Assets/Img/breed.jpg";
 import Img22 from "../../Assets/Img/locationShed.jpg";
 import Img100 from "../../Assets/Img/arpad-czapp-tvP6pCnq9iI-unsplash.jpg";
+import Img200 from "../../Assets/Img/c-img-390.jpg";
 
 function HomeServices() {
   const { t } = useTranslation();
@@ -67,6 +68,22 @@ function HomeServices() {
             </button>
           </Link>
         </li>
+
+        <li className="card">
+          <Link className="Link" to="/SupplierServices">
+            <img src={Img200} alt="suppliers" />
+            <h3>{t("Suppliers")}</h3>
+            <p>{t("enter_suppliers_data")}</p>
+            <button
+              className="btn mb-2 me-2"
+              style={{ backgroundColor: "#21763e", color: "white" }}
+            >
+              {t("go_to_suppliers")}
+            </button>
+          </Link>
+        </li> 
+        
+
 
         <li className="card">
           <Link className="Link" to="/animalServices">

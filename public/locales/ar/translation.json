@@ -920,9 +920,54 @@
   "add_new_weight": "إضافة وزن جديد",
   "add_new_breeding": "إضافة ولادة جديدة",
   "add_new_feed": "إضافة علف جديد",
-  "add_new_excluded": "إضافة مستبعد جديد"
+  "add_new_excluded": "إضافة مستبعد جديد",
 
+  "add_supplier": "إضافة مورد",
+  "supplier_details": "بيانات المورد",
+  "email": "البريد الإلكتروني",
+  "phone": "رقم الهاتف",
+  "company": "الشركة",
+  "notes": "ملاحظات",
+  "feeds": "الأعلاف",
+  "add_new_supplier": "إضافة مورد جديد",
+  "supplier_added_successfully": "تمت إضافة المورد بنجاح",
+  "Name is required": "الاسم مطلوب",
+  "Name must be at least 3 characters": "يجب أن يكون الاسم 3 أحرف على الأقل",
+  "Email is required": "البريد الإلكتروني مطلوب",
+  "Invalid email format": "صيغة البريد الإلكتروني غير صحيحة",
+  "Phone is required": "رقم الهاتف مطلوب",
+  "Phone must be digits only": "رقم الهاتف يجب أن يحتوي على أرقام فقط",
+  "Company is required": "اسم الشركة مطلوب",
+  "Notes must be less than 200 characters": "الملاحظات يجب ألا تتجاوز 200 حرف",
+  "placeholder_name": "أدخل الاسم",
+"placeholder_email": "أدخل البريد الإلكتروني",
+"placeholder_phone": "أدخل رقم الهاتف",
+"placeholder_company": "أدخل اسم الشركة",
+"placeholder_notes": "أضف أي ملاحظات",
+ 
+"Suppliers": "الموردين",
+  "search_by_email": "البحث بالبريد الإلكتروني",
+  "search_by_company": "البحث باسم الشركة",
+  "no_suppliers_found": "لم يتم العثور على موردين",
+  "supplier_deleted": "تم حذف المورد بنجاح.",
+  "delete_failed": "فشل في حذف المورد.",
+  "cannot_undo": "لا يمكن التراجع عن هذا الإجراء!",
 
+  "edit_supplier": "تعديل المورد",
+  "failed_to_load_supplier": "فشل في تحميل بيانات المورد",
+  "supplier_update_success": "تم تحديث بيانات المورد بنجاح",
+  "error_updating_supplier": "حدث خطأ أثناء تحديث بيانات المورد",
+
+  
+  "enter_suppliers_data": "أدخل بيانات الموردين",
+  "go_to_suppliers": "اذهب إلى الموردين",
+   "Supplier_services": "خدمات المورد",
+  "Supplier": "المورد",
+  "show_Supplier_data": "عرض بيانات المورد",
+  "go_to_Supplier": "اذهب إلى المورد",
+  "add_new_Supplier": "إضافة مورد جديد",
+  "enter_Supplier_data": "أدخل بيانات المورد",
+  "go_to_add_Supplier": "اذهب إلى إضافة مورد"
 
 
 

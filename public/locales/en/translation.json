@@ -855,7 +855,56 @@
   "add_new_weight": "Add New Weight",
   "add_new_breeding": "Add New Breeding",
   "add_new_feed": "Add New Feed",
-  "add_new_excluded": "Add New Excluded"
+  "add_new_excluded": "Add New Excluded",
+
+  "add_supplier": "Add Supplier",
+  "supplier_details": "Supplier Details",
+  "email": "Email",
+  "phone": "Phone",
+  "company": "Company",
+  "notes": "Notes",
+  "feeds": "Feeds",
+  "add_new_supplier": "Add New Supplier",
+  "supplier_added_successfully": "Supplier added successfully",
+  "Name is required": "Name is required",
+  "Name must be at least 3 characters": "Name must be at least 3 characters",
+  "Email is required": "Email is required",
+  "Invalid email format": "Invalid email format",
+  "Phone is required": "Phone is required",
+  "Phone must be digits only": "Phone must contain digits only",
+  "Company is required": "Company is required",
+  "Notes must be less than 200 characters": "Notes must be less than 200 characters",
+  "placeholder_name": "Enter name",
+"placeholder_email": "Enter email",
+"placeholder_phone": "Enter phone number",
+"placeholder_company": "Enter company name",
+"placeholder_notes": "Add any notes",
+
+
+"Suppliers": "Suppliers",
+  "search_by_email": "Search by email",
+  "search_by_company": "Search by company",
+  "no_suppliers_found": "No suppliers found",
+  "supplier_deleted": "Supplier deleted successfully.",
+  "delete_failed": "Failed to delete supplier.",
+  "cannot_undo": "This action cannot be undone!",
+
+  "edit_supplier": "Edit Supplier",
+  "failed_to_load_supplier": "Failed to load supplier data",
+  "supplier_update_success": "Supplier updated successfully",
+  "error_updating_supplier": "Error updating supplier",
+  "enter_suppliers_data": "Enter suppliers data",
+  "go_to_suppliers": "Go to suppliers",
+  "Supplier_services": "Supplier Services",
+  "Supplier": "Supplier",
+  "show_Supplier_data": "Show supplier data",
+  "go_to_Supplier": "Go to supplier",
+  "add_new_Supplier": "Add new supplier",
+  "enter_Supplier_data": "Enter supplier data",
+  "go_to_add_Supplier": "Go to add supplier"
+
+
+
 
 
 

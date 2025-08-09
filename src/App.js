@@ -100,6 +100,12 @@ import NotificationPage from "./Components/Notification/NotificationPage.jsx";
 import Support from "./Components/Support/Support.jsx";
 import Pharmacy from "./Components/Services/Pharmacy.jsx";
 import WithGrowthData from "./Components/Weight/WithGrowthData.jsx";
+import Supplier from "./Components/Suppliers/Supplier.jsx";
+import SupplierTable from "./Components/Suppliers/SupplierTable.jsx";
+import SupplierContextProvider from "./Context/SupplierContext.js";
+import EditSupplier from "./Components/Suppliers/EditSupplier.jsx";
+import SupplierServices from "./Components/Services/SupplierServices.jsx";
+
 
 
 
@@ -192,7 +198,10 @@ let routers = createBrowserRouter([
       { path: "support", element: <ProtectedRoute><Support/></ProtectedRoute> },
       { path: "pharmacy", element: <ProtectedRoute><Pharmacy/></ProtectedRoute> },
       { path: "withGrowthData", element: <ProtectedRoute><WithGrowthData/></ProtectedRoute> },
-
+      { path: "supplier", element: <ProtectedRoute><Supplier/></ProtectedRoute> },
+      { path: "supplierTable", element: <ProtectedRoute><SupplierTable/></ProtectedRoute> },
+      { path: "editSupplier/:id", element: <ProtectedRoute><EditSupplier/></ProtectedRoute> },
+      { path: "SupplierServices", element: <ProtectedRoute><SupplierServices/></ProtectedRoute> },
 
     ],
   },
@@ -221,6 +230,7 @@ export default function App() {
 
   return <>
       <SidebarProvider>
+        <SupplierContextProvider>
         <NewvaccineContextProvider>
     <VaccinetableentriescontextProvider>
   <BreedContextProvider>
@@ -257,7 +267,7 @@ export default function App() {
   </BreedContextProvider>
   </VaccinetableentriescontextProvider>
         </NewvaccineContextProvider>
-
+</SupplierContextProvider>
   </SidebarProvider>
 
   </>
