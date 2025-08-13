@@ -1,40 +1,46 @@
 import axios from "axios";
 import { createContext } from "react";
 
-export let LocationContext = createContext();
-
-
+export const LocationContext = createContext();
 
 const getHeaders = () => {
-    const Authorization = localStorage.getItem('Authorization');
-
-    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-
-    return {
-        Authorization: formattedToken
-    };
-    };
+  const token = localStorage.getItem("Authorization") || "";
+  return {
+    Authorization: token.startsWith("Bearer ") ? token : `Bearer ${token}`,
+    "Content-Type": "application/json",
+  };
+};
 
 function getLocationtMenue() {
-    const headers = getHeaders(); 
-    return axios
-        .get(`https://farm-project-bbzj.onrender.com/api/location/GetAll-Locationsheds-menue`, { headers })
-        .then((response) => response)
-        .catch((err) => err);
+  return axios
+    .get(
+      `https://farm-project-bbzj.onrender.com/api/location/GetAll-Locationsheds-menue`,
+      { headers: getHeaders() }
+    )
+    .then((response) => response)
+    .catch((err) => {
+      console.error("Error fetching location menu:", err);
+      throw err;
+    });
 }
 
 function getVaccineMenue() {
-    const headers = getHeaders(); 
-    return axios
-        .get(`https://farm-project-bbzj.onrender.com/api/vaccine/GetVaccine-menue`, { headers })
-        .then((response) => response)
-        .catch((err) => err);
+  return axios
+    .get(
+      `https://farm-project-bbzj.onrender.com/api/vaccine/GetVaccine-menue`,
+      { headers: getHeaders() }
+    )
+    .then((response) => response)
+    .catch((err) => {
+      console.error("Error fetching vaccine menu:", err);
+      throw err;
+    });
 }
 
-export default function LocationContextshedProvider(props) {
-    return (
-        <LocationContext.Provider value={{ getLocationtMenue,getVaccineMenue}}>
-            {props.children}
-        </LocationContext.Provider>
-    );
+export default function LocationContextshedProvider({ children }) {
+  return (
+    <LocationContext.Provider value={{ getLocationtMenue, getVaccineMenue }}>
+      {children}
+    </LocationContext.Provider>
+  );
 }

@@ -422,32 +422,44 @@ function Vaccinebyanimaltable() {
               </tr>
             </thead>
             <tbody>
-              {vaccines.length > 0 ? (
-                vaccines.map(vaccine => (
-                  <tr key={vaccine._id}>
-                    <td>{vaccine.tagId}</td>
-                    <td>{vaccine.Vaccine?.vaccineName || '--'}</td>
-                    <td>{vaccine.Vaccine?.pricing?.dosePrice || '--'}</td>
-                    <td>{vaccine.entryType}</td>
-                    <td>{new Date(vaccine.date).toLocaleDateString()}</td>
-                    <td>{vaccine.locationShed?.locationShedName || '--'}</td>
-                  
-                    <td className="text-center">
-                      <button className="btn btn-link p-0 me-2" onClick={() => editVaccine(vaccine._id)} title={t('edit')} style={{ color:"#808080" }}>
-                        <FaRegEdit />
-                      </button>
-                      <button className="btn btn-link p-0" style={{ color:"#808080" }} onClick={() => handleClick(vaccine._id)} title={t('delete')}>
-                        <RiDeleteBinLine />
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="7" className="text-center py-4 text-muted">{t('no_vaccine_records')}</td>
-                </tr>
-              )}
-            </tbody>
+  {vaccines.length > 0 ? (
+    vaccines.map(vaccine => (
+      <tr key={vaccine._id}>
+        <td>{vaccine.tagId}</td>
+        <td>{vaccine.vaccine?.name || '--'}</td>
+        <td>{vaccine.vaccine?.dosePrice ?? '--'}</td>
+        <td>{vaccine.entryType}</td>
+        <td>{new Date(vaccine.date).toLocaleDateString()}</td>
+        <td>{vaccine.locationShed?.name || '--'}</td>
+        <td className="text-center">
+          <button
+            className="btn btn-link p-0 me-2"
+            onClick={() => editVaccine(vaccine._id)}
+            title={t('edit')}
+            style={{ color: "#808080" }}
+          >
+            <FaRegEdit />
+          </button>
+          <button
+            className="btn btn-link p-0"
+            style={{ color: "#ff4d4f" }}
+            onClick={() => handleClick(vaccine._id)}
+            title={t('delete')}
+          >
+            <RiDeleteBinLine />
+          </button>
+        </td>
+      </tr>
+    ))
+  ) : (
+    <tr>
+      <td colSpan="7" className="text-center py-4 text-muted">
+        {t('no_vaccine_records')}
+      </td>
+    </tr>
+  )}
+</tbody>
+
           </table>
         </div>
         <div className="d-flex justify-content-center mt-4">

@@ -42,13 +42,6 @@ function WeightViewGrowth() {
     });
   };
 
-  if (isLoading) {
-    return (
-      <div className="animal">
-        <Rings visible={true} height="100" width="100" color="#21763e" ariaLabel="rings-loading" />
-      </div>
-    );
-  }
 
   if (isError) {
     Swal.fire(t('error'), error.message || t('fetch_error'), 'error');

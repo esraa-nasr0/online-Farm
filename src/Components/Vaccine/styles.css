@@ -4,6 +4,7 @@
 }
 
 .vaccine-table-container {
+  background-color: white;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* ظل ناعم */
   border-radius: 8px; /* اختياري: يعطي حواف ناعمة */
   padding: 1rem; /* اختياري: مسافة داخلية */

@@ -177,11 +177,6 @@ function TreatmentAnimal() {
 
       {error && <div className="error-message">{error}</div>}
 
-      {isSubmitted && (
-        <div className="success-message">
-          <h3>{t("treatment_saved_successfully")}</h3>
-        </div>
-      )}
 
       <form onSubmit={formik.handleSubmit} className="treatment-form">
         <div className="form-grid">

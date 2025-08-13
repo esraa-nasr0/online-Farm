@@ -100,11 +100,48 @@ export default function ViewDetailsofAnimal() {
                             <div className="mating-record-item">
                                 <div className="mating-record-info">
                                     <ul>
-                                        <li><strong>{t("tag_id")}:</strong> {animalData.tagId}</li>
-                                        <li><strong>{t("animal_type")}:</strong> {t(animalData.animalType)}</li>
-                                        <li><strong>{t("gender")}:</strong> {t(animalData.gender)}</li>
-                                        <li><strong>{t("breed")}:</strong> {animalData.breed?.breedName || '-'}</li>
-                                        <li><strong>{t("location_shed")}:</strong> {animalData.locationShed?.locationShedName || '-'}</li>
+                                        {animalData.tagId && (
+                                            <li><strong>{t("tag_id")}:</strong> {animalData.tagId}</li>
+                                        )}
+                                        {animalData.animalType && (
+                                            <li><strong>{t("animal_type")}:</strong> {t(animalData.animalType)}</li>
+                                        )}
+                                        {animalData.gender && (
+                                            <li><strong>{t("gender")}:</strong> {t(animalData.gender)}</li>
+                                        )}
+                                        {animalData.breed?.breedName && (
+                                            <li><strong>{t("breed")}:</strong> {animalData.breed.breedName}</li>
+                                        )}
+                                        {animalData.locationShed?.locationShedName && (
+                                            <li><strong>{t("location_shed")}:</strong> {animalData.locationShed.locationShedName}</li>
+                                        )}
+                                        {animalData.purchaseDate && (
+                                            <li><strong>{t("purchase_date")}:</strong> {new Date(animalData.purchaseDate).toLocaleDateString()}</li>
+                                        )}
+                                        {animalData.purchasePrice !== undefined && animalData.purchasePrice !== null && (
+                                            <li><strong>{t("purchase_price")}:</strong> {animalData.purchasePrice}</li>
+                                        )}
+                                        {animalData.traderName && (
+                                            <li><strong>{t("trader_name")}:</strong> {animalData.traderName}</li>
+                                        )}
+                                        {animalData.motherId && (
+                                            <li><strong>{t("mother_id")}:</strong> {animalData.motherId}</li>
+                                        )}
+                                        {animalData.fatherId && (
+                                            <li><strong>{t("father_id")}:</strong> {animalData.fatherId}</li>
+                                        )}
+                                        {animalData.female_Condition && (
+                                            <li><strong>{t("female_condition")}:</strong> {animalData.female_Condition}</li>
+                                        )}
+                                        {animalData.marketValue !== undefined && animalData.marketValue !== null && (
+                                            <li><strong>{t("market_value")}:</strong> {animalData.marketValue}</li>
+                                        )}
+                                        {animalData.age && (
+                                            <li>
+                                                <strong>{t("age")}:</strong>
+                                                {` ${animalData.age.years || 0} ${t("years")}, ${animalData.age.months || 0} ${t("months")}, ${animalData.age.days || 0} ${t("days")}`}
+                                            </li>
+                                        )}
                                     </ul>
                                 </div>
                                 <div className="mating-record-actions">
