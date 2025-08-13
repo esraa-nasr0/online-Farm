@@ -1,26 +1,26 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useCallback } from "react";
 import { useFormik } from "formik";
 import axios from "axios";
 import { IoIosSave } from "react-icons/io";
-import {  useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
-import { TreatmentContext } from "../../Context/TreatmentContext";
 import { Feedcontext } from "../../Context/FeedContext";
 import "./Supplier.css";
 
 function EditSupplier() {
   const { t } = useTranslation();
-  const { id } = useParams();
+  const { id: supplierId } = useParams();
 
-  const { getTreatmentMenue } = useContext(TreatmentContext);
   const { getFodderMenue } = useContext(Feedcontext);
-
+  
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [feeds, setFeeds] = useState([]);
-  const [treatments, setTreatments] = useState([]);
   const [isFetching, setIsFetching] = useState(true);
+
+  // للاطلاع والعرض
+  const [supplier, setSupplier] = useState(null);
 
   const getHeaders = () => {
     const token = localStorage.getItem("Authorization");
@@ -29,7 +29,6 @@ function EditSupplier() {
     };
   };
 
-  // عرف formik أولاً
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -37,47 +36,38 @@ function EditSupplier() {
       phone: "",
       company: "",
       notes: "",
-      treatmentId: "",  // مفرد بدل array
-      feedId: "",       // مفرد بدل array
     },
     onSubmit: editSupplier,
+    enableReinitialize: true, // مهم عشان يعيد حقن القيم بعد التحميل
   });
 
-  async function fetchSupplier() {
+  const fetchSupplier = useCallback(async () => {
     try {
       const { data } = await axios.get(
-        `https://farm-project-bbzj.onrender.com/api/supplier/getSinglesuppliers/${id}`,
+        `https://farm-project-bbzj.onrender.com/api/supplier/getSinglesuppliers/${supplierId}`,
         { headers: getHeaders() }
       );
+
       if (data.status === "success") {
-        const supplier = data.data.supplier;
-        formik.setValues({
-          name: supplier.name || "",
-          email: supplier.email || "",
-          phone: supplier.phone || "",
-          company: supplier.company || "",
-          notes: supplier.notes || "",
-          treatmentId: supplier.treatmentIds?.[0] || "", // خذ أول عنصر لو موجود
-          feedId: supplier.feedIds?.[0] || "",
-        });
+        const s = data.data.supplier;
+        setSupplier(s);
+
+        // حقن حقول التعريف الأساسية فقط (متسيبيش feedId هنا لأن عندك feeds Array)
+        formik.setValues(v => ({
+          ...v,
+          name: s.name || "",
+          email: s.email || "",
+          phone: s.phone || "",
+          company: s.company || "",
+          notes: s.notes || "",
+        }));
       }
     } catch (err) {
       setError(t("failed_to_load_supplier"));
     }
-  }
+  }, [supplierId, t]); // formik موجود بس مش لازم في deps
 
-  const fetchTreatments = async () => {
-    try {
-      const { data } = await getTreatmentMenue();
-      if (data?.status === "success" && Array.isArray(data.data)) {
-        setTreatments(data.data);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const fetchFeeds = async () => {
+  const fetchFeeds = useCallback(async () => {
     try {
       const { data } = await getFodderMenue();
       if (data?.status === "success" && Array.isArray(data.data)) {
@@ -86,48 +76,39 @@ function EditSupplier() {
     } catch (err) {
       console.error(err);
     }
-  };
+  }, [getFodderMenue]);
 
   async function loadData() {
     setIsFetching(true);
-    await Promise.all([fetchSupplier(), fetchTreatments(), fetchFeeds()]);
+    await Promise.all([fetchSupplier(), fetchFeeds()]);
     setIsFetching(false);
   }
 
   async function editSupplier(values) {
     setIsLoading(true);
     try {
-      await axios.patch(
-        `https://farm-project-bbzj.onrender.com/api/supplier/updatesupplier/${id}`,
+      // تحديث بيانات المورد
+      const { data } = await axios.patch(
+        `https://farm-project-bbzj.onrender.com/api/supplier/updatesupplier/${supplierId}`,
         {
           name: values.name,
           email: values.email,
           phone: values.phone,
           company: values.company,
           notes: values.notes,
-          treatmentIds: values.treatmentId ? [values.treatmentId] : [],
-          feedIds: values.feedId ? [values.feedId] : [],
         },
         { headers: getHeaders() }
       );
 
-      if (values.treatmentId) {
-        await axios.put(
-          `https://farm-project-bbzj.onrender.com/api/supplier/${id}/treatments/${values.treatmentId}`,
-          {},
-          { headers: getHeaders() }
-        );
-      }
-
-      if (values.feedId) {
-        await axios.put(
-          `https://farm-project-bbzj.onrender.com/api/supplier/${id}/feeds/${values.feedId}`,
-          {},
-          { headers: getHeaders() }
-        );
-      }
+      
 
       Swal.fire(t("success_title"), t("supplier_update_success"), "success");
+
+      // رجّعي جِيبى المورد من جديد لتحديث القوائم الحالية
+      await fetchSupplier();
+
+      // فضّي اختيار الـ feed بعد الإضافة
+      formik.setFieldValue("feedId", "");
     } catch (err) {
       setError(t("error_updating_supplier"));
     } finally {
@@ -138,11 +119,9 @@ function EditSupplier() {
   useEffect(() => {
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [supplierId]);
 
-  if (isFetching) {
-    return <div className="loading-message">{t("loading")}</div>;
-  }
+
 
   return (
     <div className="treatment-container">
@@ -154,7 +133,7 @@ function EditSupplier() {
 
       <form onSubmit={formik.handleSubmit} className="treatment-form">
         <div className="form-grid">
-          {/* Supplier Details */}
+          {/* تفاصيل المورد */}
           <div className="form-section">
             <h2>{t("supplier_details")}</h2>
             <div className="input-group">
@@ -194,43 +173,51 @@ function EditSupplier() {
             </div>
           </div>
 
-          {/* Treatments */}
+          {/* إضافة علاج للمورد */}
           <div className="form-section">
             <h2>{t("treatments")}</h2>
-            <div className="input-group">
-              <label>{t("treatment")}</label>
-              <select
-                {...formik.getFieldProps("treatmentId")}
-                disabled={isLoading}
-              >
-                <option value="">{t("select_treatment")}</option>
-                {treatments.map((option) => (
-                  <option key={option._id} value={option._id}>
-                    {option.name}
-                  </option>
-                ))}
-              </select>
+
+            {/* قائمة العلاجات الحالية */}
+            <div className="current-list">
+              <h3>{t("current_treatments")}</h3>
+              {supplier?.treatments?.length ? (
+                <ul className="pill-list">
+                  {supplier.treatments.map(tr => (
+                    <li key={tr._id} className="pill">
+                      {tr.name}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="muted">{t("no_treatments")}</p>
+              )}
             </div>
           </div>
 
-          {/* Feeds */}
+          {/* الأعلاف */}
           <div className="form-section">
             <h2>{t("feeds")}</h2>
-            <div className="input-group">
-              <label>{t("feed")}</label>
-              <select {...formik.getFieldProps("feedId")} disabled={isLoading}>
-                <option value="">{t("select_feed")}</option>
-                {feeds.map((feed) => (
-                  <option key={feed._id} value={feed._id}>
-                    {feed.name}
-                  </option>
-                ))}
-              </select>
+
+           
+            {/* قائمة الأعلاف الحالية */}
+            <div className="current-list">
+              <h3>{t("current_feeds")}</h3>
+              {supplier?.feeds?.length ? (
+                <ul className="pill-list">
+                  {supplier.feeds.map(fd => (
+                    <li key={fd._id} className="pill">
+                      {fd.name}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="muted">{t("no_feeds")}</p>
+              )}
             </div>
           </div>
         </div>
 
-        {/* Save Button */}
+        {/* زر الحفظ */}
         <div className="form-actions">
           {isLoading ? (
             <button type="submit" className="save-button" disabled>

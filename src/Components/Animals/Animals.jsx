@@ -404,13 +404,13 @@ export default function Animals() {
                                                 <td>{animal.locationShed?.locationShedName || animal.locationShed || '-'}</td>
                                                 <td>{animal.gender}</td>
                                                 <td className="text-center">
-                                                    <button className="btn btn-link p-0 me-2" onClick={() => viewAnimal(animal._id)} title={t('view')} style={{ color:"#808080" }}>
+                                                    <button className="btn btn-link p-0 me-2" onClick={() => viewAnimal(animal._id)} title={t('view')} style={{ color:"#0f40e1ff" }}>
                                                         <IoEyeOutline />
                                                     </button>
                                                     <button className="btn btn-link p-0 me-2" onClick={() => editAnimal(animal._id)} title={t('edit')} style={{ color:"#808080" }}>
                                                         <FaRegEdit />
                                                     </button>
-                                                    <button className="btn btn-link p-0" style={{ color:"#808080" }} onClick={() => handleClick(animal.id || animal._id)} title={t('delete')}>
+                                                    <button className="btn btn-link p-0" style={{ color:"#d33" }} onClick={() => handleClick(animal.id || animal._id)} title={t('delete')}>
                                                         <RiDeleteBinLine />
                                                     </button>
                                                 </td>

@@ -8,7 +8,7 @@ import { LocationContext } from '../../Context/Locationshedcontext';
 import { useTranslation } from 'react-i18next';
 
 function EditVaccine() {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const { getVaccineMenue } = useContext(LocationContext); 
     const [vaccines, setVaccines] = useState([]);
     const [isLoadingVaccines, setIsLoadingVaccines] = useState(true);
@@ -166,11 +166,24 @@ function EditVaccine() {
                                 {isLoadingVaccines ? (
                                     <option disabled>{t("loading_vaccines")}</option>
                                 ) : (
-                                    vaccines.map((vaccine) => (
-                                        <option key={vaccine._id} value={vaccine._id}>
-                                            {vaccine.vaccineName}
-                                        </option>
-                                    ))
+                                    vaccines.map((vaccine) => {
+                                        let vaccineName = "";
+                                        if (vaccine.vaccineType) {
+                                            vaccineName = i18n.language === "ar"
+                                                ? vaccine.vaccineType.arabicName
+                                                : vaccine.vaccineType.englishName;
+                                        } else if (vaccine.otherVaccineName) {
+                                            vaccineName = vaccine.otherVaccineName;
+                                        } else {
+                                            vaccineName = t("unknown_vaccine");
+                                        }
+
+                                        return (
+                                            <option key={vaccine._id} value={vaccine._id}>
+                                                {vaccineName}
+                                            </option>
+                                        );
+                                    })
                                 )}
                             </select>
                         </div>

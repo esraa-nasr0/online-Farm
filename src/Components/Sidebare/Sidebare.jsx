@@ -29,6 +29,7 @@ import { GiGoat } from "react-icons/gi";
 import { FaExclamationTriangle } from "react-icons/fa";
 import { CiLogout } from "react-icons/ci";
 import { MdOutlineLocalPharmacy } from "react-icons/md";
+import { RiLuggageCartFill } from "react-icons/ri";
 
 
 import "./Sidebare.css";
@@ -93,6 +94,22 @@ export default function Sidebar({ isOpen, isMobile, isRTL, notificationCount = 0
           icon: <FaBell />,
           path: "/notificationPage",
         },
+      ],
+    },
+    {
+      title: "Supplier",
+      items: [
+        {
+          name: "Supplier",
+          icon: <RiLuggageCartFill />,
+          subItems: [
+            { name: "Suppliers Data", path: "/supplierTable" },
+            { name: "Add Suppliers", path: "/supplier" },
+            { name: "Add Suppliers Treatment", path: "/linkSupplierTreatment" },
+            { name: "Add Suppliers Feed", path: "/linkSupplierFeed" },
+
+          ],
+          },
       ],
     },
     {

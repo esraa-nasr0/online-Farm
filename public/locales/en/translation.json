@@ -901,7 +901,45 @@
   "go_to_Supplier": "Go to supplier",
   "add_new_Supplier": "Add new supplier",
   "enter_Supplier_data": "Enter supplier data",
-  "go_to_add_Supplier": "Go to add supplier"
+  "go_to_add_Supplier": "Go to add supplier",
+
+  "Location": "Location",
+  "Vaccine_Name": "Vaccine Name",
+  "Disease_Type": "Disease Type",
+  "Dose_Price": "Dose Price",
+  "Booster_Dose": "Booster Dose",
+  "Annual_Dose": "Annual Dose",
+  "Is_Expired": "Is Expired",
+  "Yes": "Yes",
+  "No": "No",
+
+  "volume_per_animal": "Volume per Animal",
+  "not_taken": "Not Taken",
+  "delete_failed_treatment": "Failed to delete treatment",
+  "add_by_Supplier_Treatment": "Add by Supplier (Treatment)",
+  "add_details_by_Supplier_Treatment": "Add treatment details provided by the supplier.",
+  "go_to_add_by_Supplier_Treatment": "Go to Add by Supplier (Treatment)",
+  
+  "add_by_Supplier_Feed": "Add by Supplier (Feed)",
+  "add_details_Supplier_Feed": "Add feed details provided by the supplier.",
+  "go_to_add_Supplier_Feed": "Go to Add by Supplier (Feed)",
+
+  "supplier": "Supplier",
+  "suppliers_data": "Suppliers Data",
+  "add_suppliers": "Add Suppliers",
+  "add_suppliers_treatment": "Add Suppliers Treatment",
+  "add_suppliers_feed": "Add Suppliers Feed",
+
+   "link_treatment_to_supplier": "Link Treatment to Supplier",
+  "add_treatment_success": "Treatment linked successfully.",
+  "error_treatment": "Failed to link treatment.",
+
+   "link_feed_to_supplier": "Link Feed to Supplier",
+  "add_feed_success": "Feed linked successfully.",
+  "error_feed": "Failed to link feed.",
+  "select_supplier": "Select supplier",
+  "feed": "Feed",
+  "link": "Link"
 
 
 

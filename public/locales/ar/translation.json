@@ -967,7 +967,43 @@
   "go_to_Supplier": "اذهب إلى المورد",
   "add_new_Supplier": "إضافة مورد جديد",
   "enter_Supplier_data": "أدخل بيانات المورد",
-  "go_to_add_Supplier": "اذهب إلى إضافة مورد"
+  "go_to_add_Supplier": "اذهب إلى إضافة مورد",
+
+  "Disease_Type": "نوع المرض",
+  "Dose_Price": "سعر الجرعة",
+  "Booster_Dose": "الجرعة المنشطة",
+  "Annual_Dose": "الجرعة السنوية",
+  "Is_Expired": "منتهي الصلاحية",
+  "Yes": "نعم",
+  "No": "لا",
+
+  "volume_per_animal": "الجرعة لكل حيوان",
+  "not_taken": "لم تؤخذ",
+  "delete_failed_treatment": "فشل حذف العلاج",
+  "add_by_Supplier_Treatment": "إضافة من المورد (العلاج)",
+  "add_details_by_Supplier_Treatment": "إضافة تفاصيل العلاج المقدمة من المورد.",
+  "go_to_add_by_Supplier_Treatment": "الذهاب إلى الإضافة من المورد (العلاج)",
+  
+  "add_by_Supplier_Feed": "إضافة من المورد (العلف)",
+  "add_details_Supplier_Feed": "إضافة تفاصيل العلف المقدمة من المورد.",
+  "go_to_add_Supplier_Feed": "الذهاب إلى الإضافة من المورد (العلف)",
+
+  "supplier": "المورد",
+  "suppliers_data": "بيانات الموردين",
+  "add_suppliers": "إضافة موردين",
+  "add_suppliers_treatment": "إضافة علاج من الموردين",
+  "add_suppliers_feed": "إضافة علف من الموردين",
+
+  "link_treatment_to_supplier": "ربط العلاج بالمورد",
+  "add_treatment_success": "تم ربط العلاج بنجاح.",
+  "error_treatment": "فشل في ربط العلاج.",
+  "select_supplier": "اختر المورد",
+  "link": "ربط",
+
+  "link_feed_to_supplier": "ربط العلف بالمورد",
+  "add_feed_success": "تم ربط العلف بنجاح.",
+  "error_feed": "فشل في ربط العلف.",
+  "feed": "العلف"
 
 
 

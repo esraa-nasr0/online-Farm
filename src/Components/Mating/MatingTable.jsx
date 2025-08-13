@@ -1,12 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaRegEdit } from "react-icons/fa";
-import { RiDeleteBin6Line, RiDeleteBinLine } from "react-icons/ri";
-import { MdOutlineAddToPhotos } from "react-icons/md";
+import { RiDeleteBinLine } from "react-icons/ri";
 import { MatingContext } from '../../Context/MatingContext';
 import { Rings } from 'react-loader-spinner';
 import Swal from 'sweetalert2';
-import UploadMatExcel from './UploadMatExcel';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import "../Vaccine/styles.css"
@@ -43,24 +41,12 @@ function MatingTable() {
     async function fetchMating() {
         setIsLoading(true);
         try {
-            const filters = {
-                tagId: searchCriteria.tagId,
-                matingDate: searchCriteria.matingDate,
-                sonarRsult: searchCriteria.sonarRsult,
-                animalType: searchCriteria.animalType,
-                sonarDate: searchCriteria.sonarDate,
-                matingName: searchCriteria.matingName,
-                locationShed: searchCriteria.locationShed,
-                entryType: searchCriteria.entryType
-            };
-            
-            // جلب جميع البيانات مع الباجينيشين
+            const filters = { ...searchCriteria };
             const { data } = await getMating(currentPage, itemsPerPage, filters);
             
             setAllMatings(data.data.mating);
             setDisplayedMatings(data.data.mating);
             
-            // تحديث معلومات الباجينيشين
             setPagination(data.data.pagination || {
                 total: data.data.mating.length,
                 page: currentPage,
@@ -82,8 +68,8 @@ function MatingTable() {
     const deleteItem = async (id) => {
         try {
             await deleteMating(id);
-            setAllMatings((prevMatings) => prevMatings.filter((mating) => mating._id !== id));
-            setDisplayedMatings((prevMatings) => prevMatings.filter((mating) => mating._id !== id));
+            setAllMatings(prev => prev.filter(mating => mating._id !== id));
+            setDisplayedMatings(prev => prev.filter(mating => mating._id !== id));
             Swal.fire({
                 icon: 'success',
                 title: t('deleted'),
@@ -91,7 +77,6 @@ function MatingTable() {
                 timer: 1500
             });
         } catch (error) {
-            console.error("Delete error:", error);
             Swal.fire({
                 icon: 'error',
                 title: t('error'),
@@ -223,8 +208,7 @@ function MatingTable() {
             link.click();
             link.remove();
             window.URL.revokeObjectURL(url);
-        } catch (error) {
-            console.error("Error downloading template:", error);
+        } catch {
             Swal.fire(t('error'), t('failed_to_download_template'), 'error');
         } finally {
             setIsLoading(false);
@@ -254,8 +238,7 @@ function MatingTable() {
             link.click();
             link.remove();
             window.URL.revokeObjectURL(url);
-        } catch (error) {
-            console.error("Error exporting to Excel:", error);
+        } catch {
             Swal.fire(t('error'), t('failed_to_export_to_excel'), 'error');
         } finally {
             setIsLoading(false);
@@ -263,102 +246,42 @@ function MatingTable() {
     };
 
     const handleImportFromExcel = async (event) => {
+        await importExcel(event, 'https://farm-project-bbzj.onrender.com/api/mating/import', 
+            t('matings_imported_successfully'),
+            t('failed_to_import_from_excel'));
+    };
+
+    const handleUpdateFromExcel = async (event) => {
+        await importExcel(event, 'https://farm-project-bbzj.onrender.com/api/mating/import?mode=update',
+             t('matings_updated_successfully'),
+             t('failed_to_update_from_excel'));
+    };
+
+    const importExcel = async (event, url, successMsg, failMsg) => {
         const file = event.target.files[0];
         if (!file) {
-            Swal.fire({
-                title: t('error'),
-                html: `
-                    <div>
-                        <p>${t('please_select_file')}</p>
-                        <p style="color: #666; margin-top: 10px; font-size: 0.9em;">
-                            ${t('date_format_note')}:<br/>
-                            - ${t('mating_date')}: YYYY-MM-DD
-                        </p>
-                    </div>
-                `,
-                icon: 'error'
-            });
+            Swal.fire({ title: t('error'), text: t('please_select_file'), icon: 'error' });
             return;
         }
-
         const fileName = file.name.toLowerCase();
         if (!fileName.endsWith('.xlsx') && !fileName.endsWith('.xls')) {
-            Swal.fire({
-                title: t('error'),
-                html: `
-                    <div>
-                        <p>${t('please_upload_valid_excel')}</p>
-                        <p style="color: #666; margin-top: 10px; font-size: 0.9em;">
-                            ${t('supported_formats')}: .xlsx, .xls
-                        </p>
-                    </div>
-                `,
-                icon: 'error'
-            });
+            Swal.fire({ title: t('error'), text: t('please_upload_valid_excel'), icon: 'error' });
             return;
         }
-
         const headers = getHeaders();
         const formData = new FormData();
-        
         try {
             setIsLoading(true);
             formData.append('file', file);
-
-            const response = await axios.post(
-                'https://farm-project-bbzj.onrender.com/api/mating/import',
-                formData,
-                {
-                    headers: {
-                        ...headers,
-                        'Content-Type': 'multipart/form-data'
-                    }
-                }
-            );
-
+            const response = await axios.post(url, formData, { headers: { ...headers, 'Content-Type': 'multipart/form-data' } });
             if (response.data && response.data.status === 'success') {
-                Swal.fire({
-                    title: t('success'),
-                    text: t('matings_imported_successfully'),
-                    icon: 'success'
-                });
+                Swal.fire({ title: t('success'), text: successMsg, icon: 'success' });
                 fetchMating();
             } else {
-                throw new Error(response.data?.message || 'Import failed');
+                throw new Error(response.data?.message || 'Operation failed');
             }
         } catch (error) {
-            console.error("Error details:", error);
-            let errorMessage = t('failed_to_import_from_excel');
-            let errorDetails = '';
-            
-            if (error.response?.data?.message) {
-                const message = error.response.data.message;
-                
-                if (message.includes('Invalid date format in row')) {
-                    const row = message.match(/row (\d+)/)?.[1] || '';
-                    errorMessage = t('date_format_error');
-                    errorDetails = `
-                        <p style="margin-top: 10px; color: #666;">
-                            ${t('error_in_row')}: ${row}<br/>
-                            ${t('correct_date_format')}: YYYY-MM-DD<br/>
-                            ${t('example')}: 2024-03-20
-                        </p>
-                    `;
-                } else {
-                    errorMessage = message;
-                }
-            }
-
-            Swal.fire({
-                title: t('error'),
-                html: `
-                    <div>
-                        <p>${errorMessage}</p>
-                        ${errorDetails}
-                    </div>
-                `,
-                icon: 'error'
-            });
+            Swal.fire({ title: t('error'), text: error.response?.data?.message || failMsg, icon: 'error' });
         } finally {
             setIsLoading(false);
             event.target.value = '';
@@ -373,137 +296,97 @@ function MatingTable() {
                 </div>
             ) : (
                 <div className="container mt-5 vaccine-table-container">
-                    <div className="container mt-5">
-                        <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mt-5 mb-3">
-                            <h2 className="vaccine-table-title">{t('Mating Records')}</h2>
-
-                            <div className="d-flex flex-wrap gap-2">
-                                <button className="btn btn-outline-dark" onClick={handleExportToExcel} title={t('export_all_data')}>
-                                    <i className="fas fa-download me-1"></i> {t('export_all_data')}
-                                </button>
-                                <button className="btn btn-success" onClick={handleDownloadTemplate} title={t('download_template')}>
-                                    <i className="fas fa-file-arrow-down me-1"></i> {t('download_template')}
-                                </button>
-                                <label className="btn btn-dark btn-outline-dark mb-0 d-flex align-items-center" style={{ cursor: 'pointer', color:"white" }} title={t('import_from_excel')}>
-                                    <i className="fas fa-file-import me-1"></i> {t('import_from_excel')}
-                                    <input type="file" hidden accept=".xlsx,.xls" onChange={handleImportFromExcel} />
-                                </label>
-                            </div>
-                        </div>
-
-                        <div className="row g-2 mb-3">
-                            <div className="col-md-4">
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    placeholder={t('search_by_tag_id')}
-                                    value={searchCriteria.tagId}
-                                    onChange={(e) => setSearchCriteria({ ...searchCriteria, tagId: e.target.value })}
-                                />
-                            </div>
-                            <div className="col-md-4">
-                                <select
-                                    value={searchCriteria.animalType}
-                                    className="form-select"
-                                    onChange={(e) => setSearchCriteria({ ...searchCriteria, animalType: e.target.value })}
-                                >
-                                    <option value="">{t('animal_type')}</option>
-                                    <option value="goat">{t('goat')}</option>
-                                    <option value="sheep">{t('sheep')}</option>
-                                </select>
-                            </div>
-                            <div className="col-md-4">
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    placeholder={t('search_mating_date')}
-                                    value={searchCriteria.matingDate}
-                                    onChange={(e) => setSearchCriteria({ ...searchCriteria, matingDate: e.target.value })}
-                                />
-                            </div>
-                            <div className="col-md-4">
-                                <select
-                                    className="form-control"
-                                    value={searchCriteria.sonarRsult}
-                                    onChange={(e) => setSearchCriteria({ ...searchCriteria, sonarRsult: e.target.value })}
-                                >
-                                    <option value="">{t('all_sonar_results')}</option>
-                                    <option value="positive">{t('positive')}</option>
-                                    <option value="negative">{t('negative')}</option>
-                                </select>
-                            </div>
-                            <div className="col-md-4">
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    placeholder={t('search_sonar_date')}
-                                    value={searchCriteria.sonarDate}
-                                    onChange={(e) => setSearchCriteria({ ...searchCriteria, sonarDate: e.target.value })}
-                                />
-                            </div>
-                            <div className="d-flex justify-content-end mb-3">
-                                <button className="btn btn-outline-secondary" onClick={handleSearch}>{t('search')}</button>
-                            </div>
+                    <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mt-5 mb-3">
+                        <h2 className="vaccine-table-title">{t('Mating Records')}</h2>
+                        <div className="d-flex flex-wrap gap-2">
+                            <button className="btn btn-outline-dark" onClick={handleExportToExcel}>
+                                <i className="fas fa-download me-1"></i> {t('export_all_data')}
+                            </button>
+                            <button className="btn btn-success" onClick={handleDownloadTemplate}>
+                                <i className="fas fa-file-arrow-down me-1"></i> {t('download_template')}
+                            </button>
+                            <label className="btn btn-dark d-flex align-items-center" style={{ color:"white" }}>
+                                <i className="fas fa-file-import me-1"></i> {t('import_from_excel')}
+                                <input type="file" hidden accept=".xlsx,.xls" onChange={handleImportFromExcel} />
+                            </label>
+                            <label className="btn btn-warning d-flex align-items-center" style={{ color:"white" }}>
+                                <i className="fas fa-sync-alt me-1"></i> {t('update_from_excel')}
+                                <input type="file" hidden accept=".xlsx,.xls" onChange={handleUpdateFromExcel} />
+                            </label>
                         </div>
                     </div>
 
+                    {/* Search */}
+                    <div className="row g-2 mb-3">
+                        <div className="col-md-4">
+                            <input type="text" className="form-control" placeholder={t('search_by_tag_id')}
+                                value={searchCriteria.tagId}
+                                onChange={(e) => setSearchCriteria({ ...searchCriteria, tagId: e.target.value })} />
+                        </div>
+                        <div className="col-md-4">
+                            <select value={searchCriteria.animalType} className="form-select"
+                                onChange={(e) => setSearchCriteria({ ...searchCriteria, animalType: e.target.value })}>
+                                <option value="">{t('animal_type')}</option>
+                                <option value="goat">{t('goat')}</option>
+                                <option value="sheep">{t('sheep')}</option>
+                            </select>
+                        </div>
+                        <div className="col-md-4">
+                            <input type="text" className="form-control" placeholder={t('search_mating_date')}
+                                value={searchCriteria.matingDate}
+                                onChange={(e) => setSearchCriteria({ ...searchCriteria, matingDate: e.target.value })} />
+                        </div>
+                        <div className="d-flex justify-content-end mb-3">
+                            <button className="btn btn-outline-secondary" onClick={handleSearch}>{t('search')}</button>
+                        </div>
+                    </div>
+
+                    {/* Table */}
                     <div className="table-responsive">
                         <table className="table align-middle">
                             <thead>
                                 <tr>
-                                    <th className="bg-color">#</th>
-                                    <th className="bg-color">{t('female_tag_id')}</th>
-                                    <th className="bg-color">{t('male_tag_id')}</th>
-                                    <th className="bg-color">{t('mating_type')}</th>
-                                    <th className="bg-color">{t('mating_date')}</th>
-                                    <th className="bg-color">{t('sonar_date')}</th>
-                                    <th className="bg-color">{t('sonar_result')}</th>
-                                    <th className="bg-color">{t('expected_delivery_date')}</th>
-                                    <th className="bg-color">{t('actions')}</th>
+                                    <th className="text-center bg-color">#</th>
+                                    <th className="text-center bg-color">{t('female_tag_id')}</th>
+                                    <th className="text-center bg-color">{t('male_tag_id')}</th>
+                                    <th className="text-center bg-color">{t('mating_type')}</th>
+                                    <th className="text-center bg-color">{t('mating_date')}</th>
+                                    <th className="text-center bg-color">{t('sonar_date')}</th>
+                                    <th className="text-center bg-color">{t('sonar_result')}</th>
+                                    <th className="text-center bg-color">{t('expected_delivery_date')}</th>
+                                    <th className="text-center bg-color">{t('actions')}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {displayedMatings.length > 0 ? (
-                                    displayedMatings.map((mating, index) => (
-                                        <tr key={mating._id}>
-                                            <th scope="row">{(currentPage - 1) * itemsPerPage + index + 1}</th>
-                                            <td>{mating.tagId}</td>
-                                            <td>{mating.maleTag_id}</td>
-                                            <td>{mating.matingType}</td>
-                                            <td>{mating.matingDate ? new Date(mating.matingDate).toLocaleDateString() : NO_DATE}</td>
-                                            <td>{mating.sonarDate ? new Date(mating.sonarDate).toLocaleDateString() : NO_DATE}</td>
-                                            <td>
-                                                {mating.sonarRsult ? 
-                                                    mating.sonarRsult.charAt(0).toUpperCase() + mating.sonarRsult.slice(1) : 
-                                                    'N/A'}
-                                            </td>
-                                            <td>
-                                                {mating.expectedDeliveryDate ? 
-                                                    new Date(mating.expectedDeliveryDate).toLocaleDateString() : 
-                                                    NO_DATE}
-                                            </td>
-                                            <td className="text-center">
-                                                <button className="btn btn-link p-0 me-2" onClick={() => editMating(mating._id)} title={t('edit')} style={{ color:"#808080" }}>
-                                                    <FaRegEdit />
-                                                </button>
-                                                <button className="btn btn-link p-0" style={{ color:"#808080" }} onClick={() => confirmDelete(mating._id)} title={t('delete')}>
-                                                    <RiDeleteBinLine/>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))
-                                ) : (
+                                {displayedMatings.length > 0 ? displayedMatings.map((mating, index) => (
+                                    <tr key={mating._id}>
+                                        <th className="text-center">{(currentPage - 1) * itemsPerPage + index + 1}</th>
+                                        <td className="text-center">{mating.tagId}</td>
+                                        <td className="text-center">{mating.maleTag_id}</td>
+                                        <td className="text-center">{mating.matingType}</td>
+                                        <td className="text-center">{mating.matingDate ? new Date(mating.matingDate).toLocaleDateString() : NO_DATE}</td>
+                                        <td className="text-center">{mating.sonarDate ? new Date(mating.sonarDate).toLocaleDateString() : NO_DATE}</td>
+                                        <td className="text-center">{mating.sonarRsult || 'N/A'}</td>
+                                        <td className="text-center">{mating.expectedDeliveryDate ? new Date(mating.expectedDeliveryDate).toLocaleDateString() : NO_DATE}</td>
+                                        <td className="text-center">
+                                            <button className="btn btn-link p-0 me-2" style={{ color: "#0f7e34ff" }} onClick={() => editMating(mating._id)}>
+                                                <FaRegEdit />
+                                            </button>
+                                            <button className="btn btn-link p-0" style={{ color: "#ff4d4f" }} onClick={() => confirmDelete(mating._id)}>
+                                                <RiDeleteBinLine />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                )) : (
                                     <tr>
-                                        <td colSpan="9" className="text-center py-4 text-muted">{t('no_mating_records')}</td>
+                                        <td colSpan="9" className="text-center">{t('no_mating_records')}</td>
                                     </tr>
                                 )}
                             </tbody>
                         </table>
                     </div>
                     <div className="d-flex justify-content-center mt-4">
-                        <nav>
-                            {renderModernPagination()}
-                        </nav>
+                        {renderModernPagination()}
                     </div>
                 </div>
             )}

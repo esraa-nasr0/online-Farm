@@ -89,13 +89,27 @@ function ViewAnimalTreatment({ animalId }) {
                 <ul>
                     <li><strong>{t('date')}:</strong> {formatDate(treatment.date)}</li>
                     <li><strong>{t('location')}:</strong> {treatment.locationShed?.name || '-'}</li>
+                    <li><strong>{t('diagnosis')}:</strong> {treatment.diagnosis || '-'}</li>
+                    <li><strong>{t('temperature')}:</strong> {treatment.temperature != null ? treatment.temperature.toFixed(1) + '°C' : '-'}</li>
                     <li>
                         <strong>{t('medications')}:</strong>
                         {treatment.treatments?.map((med, medIndex) => (
-                            <ul key={medIndex}>
-                                <li>{t('name')}: {med.name}</li>
-                                <li>{t('volume')}: {med.volume}</li>
-                                <li>{t('price_per_ml')}: {med.pricePerMl}</li>
+                            <ul key={medIndex} className="pl-4 list-disc">
+                                <li>{t('name')}: {med.treatmentId?.name || '-'}</li>
+                                <li>{t('volume_per_animal')}: {med.volumePerAnimal} {med.treatmentId?.stock?.unitOfMeasure || ''}</li>
+                                <li>{t('number_of_doses')}: {med.numberOfDoses}</li>
+                                <li>{t('price_per_ml')}: {med.treatmentId?.pricePerMl}</li>
+                                <li>{t('expire_date')}: {med.treatmentId?.expireDate?.slice(0, 10) || '-'}</li>
+                                <li>
+                                    <strong>{t('doses')}:</strong>
+                                    <ul className="pl-4 list-decimal">
+                                        {med.doses?.map((dose, doseIndex) => (
+                                            <li key={dose._id}>
+                                                {formatDate(dose.date)} - {dose.taken ? t('taken') : t('not_taken')}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </li>
                             </ul>
                         ))}
                     </li>
