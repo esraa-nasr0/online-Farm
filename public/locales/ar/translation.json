@@ -1003,8 +1003,66 @@
   "link_feed_to_supplier": "ربط العلف بالمورد",
   "add_feed_success": "تم ربط العلف بنجاح.",
   "error_feed": "فشل في ربط العلف.",
-  "feed": "العلف"
+  "feed": "العلف",
 
+  "export_all_data": "تصدير كل البيانات",
+  "download_template": "تحميل النموذج",
+  "import_from_excel": "استيراد من إكسل",
+  "select_breed":"اختار السلالة",
+  "select_gender":"اختار الجنس",
+  "select_condition":"اختار مصدر الحياون",
+  "update_from_excel": "تحديث من إكسل",
+   "select_check_Days": "اختر أيام الفحص",
+   "total_gain":"وزن الزيادة",
+   "growth_period_days":"عدد ايام الفترة",
+
+   "failedLoadVaccines": "فشل في تحميل التحصينات",
+  "dataSubmittedSuccessfully": "تم إرسال البيانات بنجاح!",
+  "addVaccineByTagId": "إضافة تحصين برقم الوسم",
+  "vaccineInformation": "معلومات التحصين",
+  "vaccineName": "اسم التحصين",
+  "selectVaccineName": "اختر اسم التحصين",
+  "animalInformation": "معلومات الحيوان",
+  "enterTagId": "أدخل رقم الوسم",
+  "entryType": "نوع الإدخال",
+  "selectEntryType": "اختر نوع الإدخال",
+  "boosterDose": "جرعة منشطة",
+  "annualDose": "جرعة سنوية",
+  "firstDose": "الجرعة الأولى",
+
+  "Vaccine Information": "معلومات التحصين",
+  "Disease Type": "نوع المرض",
+  "Select Disease Type": "اختر نوع المرض",
+  "No vaccines available for selected disease type": "لا توجد تحصينات متاحة لنوع المرض المحدد",
+  "Select Vaccine": "اختر التحصين",
+  "Booster Dose (Days)": "جرعة منشطة (أيام)",
+  "Enter Booster Dose": "أدخل الجرعة المنشطة",
+  "Annual Dose (Months)": "الجرعة السنوية (أشهر)",
+  "Enter Annual Dose": "أدخل الجرعة السنوية",
+  "Inventory Details": "تفاصيل المخزون",
+  "Enter Bottles Count": "أدخل عدد العبوات",
+  "Enter Doses Per Bottle": "أدخل عدد الجرعات لكل عبوة",
+  "Enter Bottle Price": "أدخل سعر العبوة",
+  "Expiry Information": "معلومات انتهاء الصلاحية",
+  "Success": "نجاح",
+  "Error": "خطأ",
+  "Failed to load vaccine names": "فشل في تحميل أسماء التحصينات",
+
+
+  "selectVaccine": "اختر التحصين",
+  "loadingVaccines": "جاري تحميل التحصينات",
+  "Location Information": "معلومات الموقع",
+  "selectLocationShed": "اختر الحظيرة",
+  "loadingLocations": "جاري تحميل المواقع",
+  "failedLoadLocations": "فشل في تحميل المواقع",
+  "stock":"مخزن",
+  "general_info": "المعلومات العامة",
+
+  "Suppliers Data": "بيانات الموردين",
+  "Add Suppliers": "إضافة موردين",
+  "Add Suppliers Treatment": "إضافة علاج للموردين",
+  "Add Suppliers Feed": "إضافة علف للموردين"
+  
 
 
 

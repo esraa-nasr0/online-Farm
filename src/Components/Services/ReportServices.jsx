@@ -28,7 +28,7 @@ function ReportServices() {
             </div>
           </Link>
         </div>
-
+{/* 
         <div className="card2">
           <Link className="Link" to="/reportDaliy">
             <div className="icon">
@@ -42,7 +42,7 @@ function ReportServices() {
             </button>
             </div>
           </Link>
-        </div>
+        </div> */}
       </div>
     </div>
   );

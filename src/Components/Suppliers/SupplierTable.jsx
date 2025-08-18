@@ -199,7 +199,7 @@ const confirmDelete = (id) => {
                       <td className="text-center">{supplier.feeds?.length > 0 ? supplier.feeds.map((f, i) => <div key={i}>{f.name}</div>) : "—"}</td>
                       <td className="text-center">{supplier.notes}</td>
                       <td className="text-center">
-                        <button className="btn btn-link p-0 me-2" onClick={() => navigate(`/editSupplier/${supplier._id}`)} title={t("edit")} style={{ color: "#808080" }}>
+                        <button className="btn btn-link p-0 me-2" onClick={() => navigate(`/editSupplier/${supplier._id}`)} title={t("edit")} style={{ color: "#0f7e34ff" }}>
                           <FaRegEdit />
                         </button>
                         <button className="btn btn-link p-0" onClick={() => confirmDelete(supplier._id)} title={t("delete")} style={{ color: "#ff4d4f" }}>

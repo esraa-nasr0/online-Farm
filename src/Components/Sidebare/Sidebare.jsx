@@ -1,46 +1,33 @@
-import { useState, useEffect } from "react";
+import { MdOutlineLanguage } from "react-icons/md";
+import { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { jwtDecode } from 'jwt-decode';
-import { useContext } from "react";
 import { UserContext } from "../../Context/UserContext";
-
-
+import i18n from "i18next"; 
 import {
-  FaPaw,
-  FaHeart,
-  FaSyringe,
-  FaPills,
-  FaWeight,
-  FaSeedling,
-  FaUtensils,
-  FaBreadSlice,
-  FaChartBar,
-  FaCalendarAlt,
-  FaUserSlash,
-  FaChevronDown,
-  FaChevronUp,
-  FaBell,
+  FaPaw, FaHeart, FaSyringe, FaPills, FaWeight, FaSeedling, FaUtensils,
+  FaBreadSlice, FaChartBar, FaCalendarAlt, FaChevronDown, FaChevronUp,
+  FaBell, FaExclamationTriangle
 } from "react-icons/fa";
 import { BiSupport } from "react-icons/bi";
 import { IoHome } from "react-icons/io5";
 import { FaLocationDot } from "react-icons/fa6";
 import { GiGoat } from "react-icons/gi";
-import { FaExclamationTriangle } from "react-icons/fa";
 import { CiLogout } from "react-icons/ci";
 import { MdOutlineLocalPharmacy } from "react-icons/md";
 import { RiLuggageCartFill } from "react-icons/ri";
 
-
 import "./Sidebare.css";
 
-export default function Sidebar({ isOpen, isMobile, isRTL, notificationCount = 0 }) {
+export default function Sidebar({ isOpen, notificationCount = 0 }) {
   const { t } = useTranslation();
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [isFattening, setIsFattening] = useState(false);
   const navigate = useNavigate();
   const { setAuthorization } = useContext(UserContext);
-
+  const [rtl, setRtl] = useState(localStorage.getItem("lang") === "ar"); 
+  const [langDropdown, setLangDropdown] = useState(false); // للتحكم في الدروب داون
 
   useEffect(() => {
     const token = localStorage.getItem('Authorization');
@@ -52,49 +39,42 @@ export default function Sidebar({ isOpen, isMobile, isRTL, notificationCount = 0
         console.error('Error decoding token:', error);
       }
     }
+    const lang = localStorage.getItem("lang") || "en";
+    i18n.changeLanguage(lang);
+    setRtl(lang === "ar");
+    document.dir = lang === "ar" ? "rtl" : "ltr";
   }, []);
+
+  const changeLanguage = (lang) => {
+    i18n.changeLanguage(lang);
+    localStorage.setItem("lang", lang);
+    setRtl(lang === "ar");
+    document.dir = lang === "ar" ? "rtl" : "ltr";
+    setLangDropdown(false); // يقفل الدروب داون بعد الاختيار
+  };
 
   const toggleDropdown = (dropdown) => {
     setActiveDropdown(activeDropdown === dropdown ? null : dropdown);
   };
 
- const handleLogout = () => {
-  localStorage.removeItem("Authorization");
-  setAuthorization(null); // تحديث السياق
-  navigate("/");
-};
-
+  const handleLogout = () => {
+    localStorage.removeItem("Authorization");
+    setAuthorization(null);
+    navigate("/");
+  };
 
   const menuItems = [
     {
       title: "Home",
-      items: [
-        {
-          name: "Home",
-          icon: <IoHome />,
-          path: "/",
-        },
-      ],
+      items: [{ name: "Home", icon: <IoHome />, path: "/" }],
     },
     {
       title: "Support",
-      items: [
-        {
-          name: "Support",
-          icon: <BiSupport />,
-          path: "/support",
-        },
-      ],
+      items: [{ name: "Support", icon: <BiSupport />, path: "/support" }],
     },
     {
       title: "Notifications",
-      items: [
-        {
-          name: "Notifications",
-          icon: <FaBell />,
-          path: "/notificationPage",
-        },
-      ],
+      items: [{ name: "Notifications", icon: <FaBell />, path: "/notificationPage" }],
     },
     {
       title: "Supplier",
@@ -107,9 +87,8 @@ export default function Sidebar({ isOpen, isMobile, isRTL, notificationCount = 0
             { name: "Add Suppliers", path: "/supplier" },
             { name: "Add Suppliers Treatment", path: "/linkSupplierTreatment" },
             { name: "Add Suppliers Feed", path: "/linkSupplierFeed" },
-
           ],
-          },
+        },
       ],
     },
     {
@@ -172,7 +151,7 @@ export default function Sidebar({ isOpen, isMobile, isRTL, notificationCount = 0
         },
         {
           name: "Pharmacy",
-          icon:<MdOutlineLocalPharmacy /> ,
+          icon: <MdOutlineLocalPharmacy />,
           subItems: [
             { name: "Pharmacy Data", path: "/treatmentTable" },
             { name: "add Pharmacy", path: "/treatment" },
@@ -230,7 +209,7 @@ export default function Sidebar({ isOpen, isMobile, isRTL, notificationCount = 0
           ],
         },
         { name: "reports", icon: <FaChartBar />, path: "/report" },
-        { name: "daily Reports", icon: <FaCalendarAlt />, path: "/reportDaliy" },
+        // { name: "daily Reports", icon: <FaCalendarAlt />, path: "/reportDaliy" },
       ],
     },
     {
@@ -262,10 +241,51 @@ export default function Sidebar({ isOpen, isMobile, isRTL, notificationCount = 0
   });
 
   return (
-    <aside className={`sidebar ${isOpen ? "open" : "closed"} ${isRTL ? "rtl" : "ltr"}`}>
+    <aside className={`sidebar ${isOpen ? "open" : "closed"} ${rtl ? "rtl" : "ltr"}`}>
       <div className="sidebar-header">
         <div className="sidebar-title">
           <h3>ONLINE FARM</h3>
+        </div>
+
+        {/* Language Switcher with Dropdown */}
+        <div className="language-switcher" style={{ position: "relative" }}>
+          <MdOutlineLanguage
+            size={28}
+            style={{ cursor: "pointer" }}
+            onClick={() => setLangDropdown(!langDropdown)}
+          />
+          {langDropdown && (
+  <ul
+    className="lang-dropdown"
+    style={{
+      position: "absolute",
+      top: "35px",
+      right: 0,
+      background: "#ffffff",
+      color: "#000",
+      listStyle: "none",
+      padding: "8px 12px",
+      borderRadius: "8px",
+      boxShadow: "0px 4px 12px rgba(0,0,0,0.2)",
+      zIndex: 9999,  // 👈 عشان يظهر فوق أي عنصر
+      minWidth: "120px"
+    }}
+  >
+    <li
+      onClick={() => changeLanguage("en")}
+      style={{ cursor: "pointer", padding: "6px 0", fontWeight: "500" }}
+    >
+      English
+    </li>
+    <li
+      onClick={() => changeLanguage("ar")}
+      style={{ cursor: "pointer", padding: "6px 0", fontWeight: "500" }}
+    >
+      العربية
+    </li>
+  </ul>
+)}
+
         </div>
 
         <nav>
@@ -319,7 +339,7 @@ export default function Sidebar({ isOpen, isMobile, isRTL, notificationCount = 0
             <ul className="sidebar-menu">
               <li>
                 <div className="menu-item logout-item" onClick={handleLogout}>
-                  <span className="menu-icon"><CiLogout  /></span>
+                  <span className="menu-icon"><CiLogout /></span>
                   <span className="menu-text">{t("Logout")}</span>
                 </div>
               </li>

@@ -436,7 +436,7 @@ function Vaccinebyanimaltable() {
             className="btn btn-link p-0 me-2"
             onClick={() => editVaccine(vaccine._id)}
             title={t('edit')}
-            style={{ color: "#808080" }}
+            style={{ color: "#0f7e34ff" }}
           >
             <FaRegEdit />
           </button>

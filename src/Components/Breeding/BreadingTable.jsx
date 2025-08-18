@@ -250,9 +250,15 @@ function BreadingTable() {
 
         </div>
         <div className="col-md-4">
-                       <input type="text" className="form-control" value={searchCriteria.deliveryDate} placeholder={t("Search Delivery Date")} onChange={(e) => setSearchCriteria((prev) => ({ ...prev, deliveryDate: e.target.value }))} />
+  <input 
+    type="date" 
+    className="form-control" 
+    value={searchCriteria.deliveryDate} 
+    placeholder={t("Search Delivery Date")} 
+    onChange={(e) => setSearchCriteria((prev) => ({ ...prev, deliveryDate: e.target.value }))} 
+  />
+</div>
 
-        </div>
         <div className="col-md-4">
                       <input type="text" className="form-control" value={searchCriteria.animalType} placeholder={t("Search Animal Type")} onChange={(e) => setSearchCriteria((prev) => ({ ...prev, animalType: e.target.value }))} />
 
@@ -305,12 +311,12 @@ function BreadingTable() {
 
                         <td className="text-center">
                     
-                                        <button className="btn btn-link p-0 me-2" onClick={() => editMating(breeding._id)} title={t('edit')} style={{
-                                          color:"#808080"
-                                        }}><FaRegEdit /></button>
-                                        <button className="btn btn-link  p-0" style={{
-                                          color:"#808080"
-                                        }} onClick={() => handleClick(breeding._id)} title={t('delete')}  ><RiDeleteBinLine/></button>
+                                        <button className="btn btn-link p-0 me-2" onClick={() => editMating(breeding._id)} title={t('edit')}
+                                         style={{ color: "#0f7e34ff" }}
+                                        ><FaRegEdit /></button>
+                                        <button className="btn btn-link  p-0"
+                                         style={{ color:"#d33" }}
+                                         onClick={() => handleClick(breeding._id)} title={t('delete')}  ><RiDeleteBinLine/></button>
                                       </td>
                   </tr>
                 ))}

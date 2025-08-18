@@ -189,17 +189,13 @@ function LocationTable() {
                           className="btn btn-link p-0 me-2"
                           onClick={() => editLocations(location._id)}
                           title={t("edit")}
-                          style={{
-                            color: "#808080",
-                          }}
+                          style={{ color: "#0f7e34ff" }}
                         >
                           <FaRegEdit />
                         </button>
                         <button
                           className="btn btn-link p-0"
-                          style={{
-                            color: "#808080",
-                          }}
+                          style={{ color:"#d33" }}
                           onClick={() => handleClick(location._id)}
                           title={t("delete")}
                         >

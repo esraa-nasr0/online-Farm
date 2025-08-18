@@ -382,12 +382,12 @@ function ExcludedTable() {
                 <td className="text-center ">{item.price ? item.price : "_"}</td>
                 <td className="text-center ">{item.weight}</td>
                 <td className="text-center">
-                    <button className="btn btn-link p-0 me-2" onClick={() => editExcluded(item._id)}  title={t('edit')} style={{
-                    color:"#808080"
-                    }}><FaRegEdit /></button>
-                    <button className="btn btn-link  p-0" style={{
-                    color:"#808080"
-                    }} onClick={() => confirmDelete(item._id)} title={t('delete')}  ><RiDeleteBinLine/></button>
+                    <button className="btn btn-link p-0 me-2" onClick={() => editExcluded(item._id)}  title={t('edit')} 
+                   style={{ color: "#0f7e34ff" }}
+                    ><FaRegEdit /></button>
+                    <button className="btn btn-link  p-0"
+                    style={{ color:"#d33" }}
+                     onClick={() => confirmDelete(item._id)} title={t('delete')}  ><RiDeleteBinLine/></button>
                 </td>
             </tr>
         ))
