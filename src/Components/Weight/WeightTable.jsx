@@ -134,7 +134,7 @@ function WeightTable() {
             <ul className="pagination">
                 <li className={`page-item${currentPage === 1 ? ' disabled' : ''}`}>
                     <button className="page-link pagination-arrow" onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
-                        &lt; {t ? t('Back') : 'Back'}
+                        &lt; {t ? t('back') : 'Back'}
                     </button>
                 </li>
                 {pageButtons}
@@ -407,10 +407,10 @@ function WeightTable() {
                                                 <td>{weight.height}</td>
                                                 <td>{weight.Date ? weight.Date.split('T')[0] : t('no_date')}</td>
                                                 <td className="text-center">
-                                                    <button className="btn btn-link p-0 me-2" onClick={() => editWeight(weight._id)} title={t('edit')} style={{ color:"#808080" }}>
+                                                    <button className="btn btn-link p-0 me-2" onClick={() => editWeight(weight._id)} title={t('edit')} style={{ color: "#0f7e34ff" }}>
                                                         <FaRegEdit />
                                                     </button>
-                                                    <button className="btn btn-link p-0" style={{ color:"#808080" }} onClick={() => confirmDelete(weight._id)} title={t('delete')}>
+                                                    <button className="btn btn-link p-0" style={{ color:"#d33" }} onClick={() => confirmDelete(weight._id)} title={t('delete')}>
                                                         <RiDeleteBinLine/>
                                                     </button>
                                                 </td>

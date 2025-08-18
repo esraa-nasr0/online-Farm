@@ -317,7 +317,7 @@ export default function Animals() {
             <ul className="pagination">
                 <li className={`page-item${currentPage === 1 ? ' disabled' : ''}`}>
                     <button className="page-link pagination-arrow" onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
-                        &lt; {t('Back')}
+                        &lt; {t('back')}
                     </button>
                 </li>
                 {pageButtons}
@@ -407,7 +407,7 @@ export default function Animals() {
                                                     <button className="btn btn-link p-0 me-2" onClick={() => viewAnimal(animal._id)} title={t('view')} style={{ color:"#0f40e1ff" }}>
                                                         <IoEyeOutline />
                                                     </button>
-                                                    <button className="btn btn-link p-0 me-2" onClick={() => editAnimal(animal._id)} title={t('edit')} style={{ color:"#808080" }}>
+                                                    <button className="btn btn-link p-0 me-2" style={{ color: "#0f7e34ff" }} onClick={() => editAnimal(animal._id)} title={t('edit')} >
                                                         <FaRegEdit />
                                                     </button>
                                                     <button className="btn btn-link p-0" style={{ color:"#d33" }} onClick={() => handleClick(animal.id || animal._id)} title={t('delete')}>
