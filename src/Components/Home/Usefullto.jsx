@@ -5,6 +5,7 @@ import trader from '../../Assets/Img/full-shot-man-living-countryside.jpg';
 import butchers from '../../Assets/Img/home.jpg'; 
 const GoatCard = () => {
   return (
+    <div className='usefullto'>
     <div className='container usefull mx-auto'>
         <h1 className='section_heading text-center mb-4 color-text'>Free application <span>useful to</span> </h1>
   <div className='row  '>
@@ -58,7 +59,7 @@ const GoatCard = () => {
           
           </div>
     </div>
-  
+  </div>
   
 
   );

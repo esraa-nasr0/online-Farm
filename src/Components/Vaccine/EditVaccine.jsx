@@ -1,6 +1,5 @@
-import React, { useEffect, useState, useContext } from 'react';
+import  { useEffect, useState, useContext } from 'react';
 import { useFormik } from 'formik';
-import * as Yup from 'yup';
 import { IoIosSave } from "react-icons/io";
 import axios from 'axios';
 import Swal from 'sweetalert2';
@@ -175,13 +174,13 @@ function EditVaccine() {
 
     return (
         <div className="animal-details-container">
-            <div className="animal-details-header">
+            <div className="animal-details-header container">
                 <h1>{t("Edit Vaccine")}</h1>
             </div>
 
             {error && <div className="error-message">{error}</div>}
 
-            <form onSubmit={formik.handleSubmit} className="animal-form">
+            <form onSubmit={formik.handleSubmit} className="animal-form container">
                 <div className="form-grid">
                     <div className="form-section">
                         <h2>{t("Vaccine Information")}</h2>

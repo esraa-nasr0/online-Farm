@@ -1,7 +1,9 @@
+/* Layout.css */
 .app-container {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    margin-left: 13px;
 }
 
 .content-wrapper {
@@ -9,25 +11,35 @@
     flex: 1;
 }
 
+/* إزالة الهوامش الجانبية عندما يكون السايدبار مخفيًا */
+.content-wrapper.ltr .main-content,
+.content-wrapper.rtl .main-content { 
+    margin-left: 0; 
+    margin-right: 0; 
+    width: 100%; /* تأكد من أخذ العرض الكامل */
+}
+
+/* إزالة التحولات والهوامش عندما يكون السايدبار مفتوحًا */
+.app-has-wide-sidebar .content-wrapper.ltr .main-content,
+.app-has-wide-sidebar .content-wrapper.rtl .main-content { 
+    margin-left: 0 !important; 
+    margin-right: 0 !important; 
+    width: 100% !important;
+}
+
+/* تأكد من أن المحتوى يأخذ المساحة الكاملة */
 .main-content {
+    width: 100%;
     flex: 1;
-    padding: 20px;
-    transition: all 0.3s ease;
 }
 
-.main-content.with-sidebar {
-    margin-left: 250px;
-    width: calc(100% - 250px);
+/* إخفاء السايدبار تمامًا في الصفحات المحددة */
+.msb {
+    display: none;
 }
 
-@media (max-width: 768px) {
-    .main-content.with-sidebar {
-        margin-left: 0;
-        width: 100%;
-    }
-    
-    /* لإظهار السايدبار بشكل كامل على الأجهزة المحمولة */
-    .sidebar {
-        z-index: 1000;
-    }
-}
+/* إظهار السايدبار فقط في الصفحات المسموح بها */
+.should-show-sidebar .msb {
+    display: block;
+} 
+

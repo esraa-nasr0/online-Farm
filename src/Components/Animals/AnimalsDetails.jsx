@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import  { useContext, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import axios from "axios";
 import { IoIosSave } from "react-icons/io";
@@ -135,13 +135,13 @@ function AnimalsDetails() {
 
   return (
     <div className="animal-details-container">
-      <div className="animal-details-header">
+      <div className="animal-details-header container">
         <h1>{t("add_animal")}</h1>
       </div>
 
       {error && <div className="error-message">{error}</div>}
 
-      <form onSubmit={formik.handleSubmit} className="animal-form">
+      <form onSubmit={formik.handleSubmit} className="animal-form container">
         <div className="form-grid">
           <div className="form-section">
             <h2>{t("basic_info")}</h2>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
@@ -136,13 +136,13 @@ export default function EditBreeding() {
 
     return (
         <div className="breeding-details-container">
-            <div className="breeding-details-header">
+            <div className="breeding-details-header container">
                 <h1>{t('edit_breeding')}</h1>
             </div>
 
             {error && <div className="error-message">{error}</div>}
 
-            <form onSubmit={formik.handleSubmit} className="breeding-form">
+            <form onSubmit={formik.handleSubmit} className="breeding-form container">
                 <div className="form-grid">
                     <div className="form-section">
                         <h2>{t('basic_info')}</h2>

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useFormik } from 'formik';
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import { IoIosSave } from "react-icons/io";
 import Swal from 'sweetalert2';
 import { useNavigate } from "react-router-dom";
@@ -65,13 +65,13 @@ function Excluded() {
 
     return (
         <div className="excluded-details-container">
-            <div className="excluded-details-header">
+            <div className="excluded-details-header container">
                 <h1>{t('add_excluded')}</h1>
             </div>
 
             {error && <div className="error-message">{error}</div>}
 
-            <form onSubmit={formik.handleSubmit} className="excluded-form">
+            <form onSubmit={formik.handleSubmit} className="excluded-form container">
                 <div className="form-grid">
                     <div className="form-section">
                         <h2>{t('basic_info')}</h2>

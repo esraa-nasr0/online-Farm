@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useFormik } from "formik";
-import React, { useContext, useEffect, useState } from "react";
+import  { useContext, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { IoIosSave } from "react-icons/io";
 import * as Yup from "yup";
@@ -195,13 +195,13 @@ function EditTreatAnimal() {
 
   return (
     <div className="treatment-container">
-      <div className="treatment-header">
+      <div className="treatment-header container">
         <h1>{t("edit_treatment")}</h1>
       </div>
 
       {error && <div className="error-message">{error}</div>}
 
-      <form onSubmit={formik.handleSubmit} className="treatment-form">
+      <form onSubmit={formik.handleSubmit} className="treatment-form container">
         <div className="form-grid">
           {/* Animal Details */}
           <div className="form-section">

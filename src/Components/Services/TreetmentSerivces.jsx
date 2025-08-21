@@ -11,7 +11,7 @@ function TreetmentServices() {
     
 
     return (
-    <div className='section'>
+    <div className='section container'>
         <h2>{t("treatment_services")}</h2>
         <div className="content">
     

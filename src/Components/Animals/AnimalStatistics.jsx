@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';  
+import  { useEffect, useState } from 'react';  
 import axios from 'axios';  
 import { FaHorse, FaDiceD6, FaDiceThree } from 'react-icons/fa';  
 import styles from './AnimalStatistics.module.css'; // Import as CSS Module  

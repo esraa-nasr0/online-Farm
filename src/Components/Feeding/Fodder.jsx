@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useFormik } from 'formik';
-import React, { useState, useEffect, useContext } from 'react';
+import  { useState, useEffect, useContext } from 'react';
 import Swal from 'sweetalert2';
 import { IoIosSave } from 'react-icons/io';
 import { Feedcontext } from '../../Context/FeedContext';
@@ -104,7 +104,7 @@ export default function Fodder() {
 
   return (
     <div className="feeding-container">
-      <div className="feeding-header">
+      <div className="feeding-header container">
         <h1>{t('fodderTitle')}</h1>
       </div>
 
@@ -116,7 +116,7 @@ export default function Fodder() {
         </div>
       )}
 
-      <form onSubmit={formik.handleSubmit} className="feeding-form">
+      <form onSubmit={formik.handleSubmit} className="feeding-form container">
         <div className="form-grid">
           <div className="form-section">
             <h2>{t('fodderDetails')}</h2>

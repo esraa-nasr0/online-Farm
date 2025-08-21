@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useFormik } from 'formik';
-import React, { useContext, useEffect, useState } from 'react';
+import  { useContext, useEffect, useState } from 'react';
 import { IoIosSave } from "react-icons/io";
 import Swal from 'sweetalert2';
 import { useTranslation } from 'react-i18next';
@@ -110,7 +110,7 @@ function MatingLocation() {
 
     return (
         <div className="mating-details-container">
-            <div className="mating-details-header">
+            <div className="mating-details-header container">
                 <h1>{t('mating')}</h1>
             </div>
 
@@ -123,7 +123,7 @@ function MatingLocation() {
                 </div>
             )}
 
-            <form onSubmit={formik.handleSubmit} className="mating-form">
+            <form onSubmit={formik.handleSubmit} className="mating-form container">
                 <div className="form-grid">
                     <div className="form-section">
                         <h2>{t('location_info')}</h2>

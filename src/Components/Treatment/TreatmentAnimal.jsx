@@ -1,9 +1,8 @@
 import axios from "axios";
 import { useFormik } from "formik";
-import React, { useContext, useState, useEffect } from "react";
+import  { useContext, useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import { IoIosSave } from "react-icons/io";
-import * as Yup from "yup";
 import { TreatmentContext } from "../../Context/TreatmentContext";
 import { useTranslation } from "react-i18next";
 import "./Treatment.css";
@@ -171,14 +170,14 @@ function TreatmentAnimal() {
 
   return (
     <div className="treatment-container">
-      <div className="treatment-header">
+      <div className="treatment-header container">
         <h1>{t("treatment_by_animal")}</h1>
       </div>
 
       {error && <div className="error-message">{error}</div>}
 
 
-      <form onSubmit={formik.handleSubmit} className="treatment-form">
+      <form onSubmit={formik.handleSubmit} className="treatment-form container">
         <div className="form-grid">
           {/* Animal Details */}
           <div className="form-section">

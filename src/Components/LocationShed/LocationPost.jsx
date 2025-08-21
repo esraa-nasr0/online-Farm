@@ -1,5 +1,5 @@
 import { useFormik } from "formik";
-import React, { useState } from "react";
+import  { useState } from "react";
 import * as Yup from "yup";
 import { IoIosSave } from "react-icons/io";
 import axios from "axios";
@@ -66,12 +66,12 @@ function LocationPost() {
   });
 
   return (
-    <div className="animal-details-container">
-      <div className="animal-details-header">
+    <div className="animal-details-container  ">
+      <div className="animal-details-header container">
         <h1>{t("location_shed")}</h1>
       </div>
       {error && <div className="error-message">{error}</div>}
-      <form onSubmit={formik.handleSubmit} className="animal-form">
+      <form onSubmit={formik.handleSubmit} className="animal-form container">
         <div className="form-grid">
           <div className="form-section">
             <div className="input-group">

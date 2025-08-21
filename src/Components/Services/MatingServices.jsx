@@ -9,7 +9,7 @@ function MatingServices() {
     const { t } = useTranslation();
 
     return (
-        <div className='section'>
+        <div className='section container'>
             <h2>{t('mating_services')}</h2>
             <div className="content">
 

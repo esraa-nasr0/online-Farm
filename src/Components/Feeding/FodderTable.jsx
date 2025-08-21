@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useState } from "react";
+import  { useContext, useEffect, useState } from "react";
 import { Rings } from "react-loader-spinner";
-import { RiDeleteBin6Line, RiDeleteBinLine } from "react-icons/ri";
+import {  RiDeleteBinLine } from "react-icons/ri";
 import { FaRegEdit } from "react-icons/fa";
 import { Feedcontext } from "../../Context/FeedContext";
 import Swal from "sweetalert2";

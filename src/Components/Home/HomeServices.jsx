@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-import { MdOutlineReportOff } from "react-icons/md";
 
 import Img1 from "../../Assets/Img/Goat-Kids-Care-and-Management-2.jpg";
 import Img2 from "../../Assets/Img/goat3.jpeg";
@@ -10,7 +9,6 @@ import Img3 from "../../Assets/Img/weightGoat.jpg";
 import Img12 from "../../Assets/Img/Vaccine.jpg";
 import Img13 from "../../Assets/Img/breeding.webp";
 import Img14 from "../../Assets/Img/report.jpg";
-import Img15 from "../../Assets/Img/pngtree-yellow-office-report-image_1297576.jpg";
 import Img16 from "../../Assets/Img/pngtree-write-report-line-filled-icon-png-image_324810.jpg";
 import Img17 from "../../Assets/Img/treatment.webp";
 import Img18 from "../../Assets/Img/animalCost.jpg";
@@ -38,7 +36,7 @@ function HomeServices() {
   }, []);
 
   return (
-    <div className="section">
+    <div className="section ">
       <h2>{t("home_services")}</h2>
       <ul className="cards">
         <li className="card">

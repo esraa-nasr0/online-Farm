@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
@@ -80,11 +80,11 @@ export default function Feed() {
 
     return (
         <div className="feeding-container">
-            <div className="feeding-header">
+            <div className="feeding-header container">
                 <h1>{t('add_feed')}</h1>
             </div>
 
-            <form onSubmit={formik.handleSubmit} className="feeding-form">
+            <form onSubmit={formik.handleSubmit} className="feeding-form container">
                 <div className="form-grid">
                     <div className="form-section">
                         <h2>{t('feed_info')}</h2>

@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import  { useContext, useState, useEffect } from 'react';
 import { useFormik } from 'formik';
 import { IoIosSave } from 'react-icons/io';
 import axios from 'axios';
@@ -114,13 +114,13 @@ export default function Feedbylocation() {
 
   return (
     <div className="feeding-container">
-      <div className="feeding-header">
+      <div className="feeding-header container">
         <h1>{t("feed_by_location_shed")}</h1>
       </div>
 
       {error && <div className="error-message">{error}</div>}
 
-      <form onSubmit={formik.handleSubmit} className="feeding-form">
+      <form onSubmit={formik.handleSubmit} className="feeding-form container">
         <div className="form-grid">
           <div className="form-section">
             <h2>{t("location_info")}</h2>

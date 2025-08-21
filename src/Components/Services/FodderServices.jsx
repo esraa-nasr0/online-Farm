@@ -8,7 +8,7 @@ function FodderServices() {
     const { t } = useTranslation();
 
     return (
-        <div className='section'>
+        <div className='section container'>
             <h2>{t('fodder_services')}</h2>
             <div className="content">
                 <div className="card2">

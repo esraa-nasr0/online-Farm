@@ -1,8 +1,8 @@
 import { useFormik } from "formik";
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { IoIosSave } from "react-icons/io";
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
+import {  useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "./Mating.css";
 import Swal from "sweetalert2";
@@ -15,7 +15,6 @@ function EditMating() {
   const [isLoading, setisLoading] = useState(false);
   const [matingData, setMatingData] = useState(null);
   const { id } = useParams();
-  const navigate = useNavigate();
 
   const getHeaders = () => {
     const Authorization = localStorage.getItem("Authorization");
@@ -147,7 +146,7 @@ function EditMating() {
 
   return (
     <div className="mating-details-container">
-      <div className="mating-details-header">
+      <div className="mating-details-header container">
         <h1>{t("edit_mating")}</h1>
       </div>
 
@@ -162,7 +161,7 @@ function EditMating() {
         </div>
       )}
 
-      <form onSubmit={formik.handleSubmit} className="mating-form">
+      <form onSubmit={formik.handleSubmit} className="mating-form container">
         <div className="form-grid">
           <div className="form-section">
             <h2>{t("basic_info")}</h2>
