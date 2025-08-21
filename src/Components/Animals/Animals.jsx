@@ -1,13 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import  { useContext, useEffect, useState } from 'react';
 import { FaRegEdit } from "react-icons/fa";
-import { RiDeleteBin6Line, RiDeleteBinLine } from "react-icons/ri";
-import { MdOutlineAddToPhotos } from "react-icons/md";
+import {  RiDeleteBinLine } from "react-icons/ri";
 import { Rings } from 'react-loader-spinner';
 import { AnimalContext } from '../../Context/AnimalContext';
 import Swal from 'sweetalert2';
 import { useNavigate } from "react-router-dom";
-import { GrView } from "react-icons/gr";
 import { useTranslation } from 'react-i18next';
 import AnimalStatistics from './AnimalStatistics';
 import axios from 'axios';

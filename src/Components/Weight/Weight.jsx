@@ -1,6 +1,5 @@
 import { useFormik } from 'formik';
-import React, { useState } from 'react';
-import * as Yup from "yup";
+import  { useState } from 'react';
 import { IoIosSave } from "react-icons/io";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -10,7 +9,6 @@ import './Weight.css';
 
 function Weight() {
     const { t } = useTranslation();
-    let navigate = useNavigate();
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
@@ -64,13 +62,13 @@ function Weight() {
 
     return (
         <div className="weight-details-container">
-            <div className="weight-details-header">
+            <div className="weight-details-header container">
                 <h1>{t('weight')}</h1>
             </div>
 
             {error && <div className="error-message">{error}</div>}
 
-            <form onSubmit={formik.handleSubmit} className="weight-form">
+            <form onSubmit={formik.handleSubmit} className="weight-form container">
                 <div className="form-grid">
                     <div className="form-section">
                         <h2>{t('basic_info')}</h2>

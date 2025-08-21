@@ -10,7 +10,7 @@ function FeedingServices() {
     const { t } = useTranslation();
 
     return (
-        <div className='section'>
+        <div className='section container'>
             <h2>{t('feeding_services')}</h2>
             <div className="content">
 

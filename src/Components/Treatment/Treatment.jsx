@@ -1,8 +1,7 @@
 import axios from "axios";
 import { useFormik } from "formik";
-import React, { useState } from "react";
+import { useState } from "react";
 import Swal from "sweetalert2";
-import { IoIosSave } from "react-icons/io";
 import * as Yup from "yup";
 import { useTranslation } from "react-i18next";
 import "./Treatment.css";
@@ -88,7 +87,7 @@ function Treatment() {
 
   return (
     <div className="treatment-container">
-      <div className="treatment-header">
+      <div className="treatment-header container">
         <h1>{t("Pharmacy")}</h1>
       </div>
 
@@ -101,7 +100,7 @@ function Treatment() {
         </div>
       )}
 
-      <form onSubmit={formik.handleSubmit} className="treatment-form">
+      <form onSubmit={formik.handleSubmit} className="treatment-form container">
         <div className="form-grid">
           <div className="form-section">
             <h2>{t("Pharmacy_details")}</h2>

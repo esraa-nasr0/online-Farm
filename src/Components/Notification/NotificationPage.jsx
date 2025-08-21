@@ -186,7 +186,7 @@ function NotificationPage() {
   const activeNotifications = notifications.filter(n => !n.isArchived);
 
   return (
-    <div className="notification-page">
+    <div className="notification-page container">
         <nav>
             <header className="header">
           <div className="header-title">

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import  { useContext, useEffect, useState } from "react";
 import { LocationContext } from "../../Context/LocationContext";
 import Swal from "sweetalert2";
 import { FaRegEdit } from "react-icons/fa";

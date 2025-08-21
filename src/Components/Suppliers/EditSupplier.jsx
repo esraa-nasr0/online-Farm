@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, useCallback } from "react";
+import  { useEffect, useState, useContext, useCallback } from "react";
 import { useFormik } from "formik";
 import axios from "axios";
 import { IoIosSave } from "react-icons/io";
@@ -125,13 +125,13 @@ function EditSupplier() {
 
   return (
     <div className="treatment-container">
-      <div className="treatment-header">
+      <div className="treatment-header container">
         <h1>{t("edit_supplier")}</h1>
       </div>
 
       {error && <div className="error-message">{error}</div>}
 
-      <form onSubmit={formik.handleSubmit} className="treatment-form">
+      <form onSubmit={formik.handleSubmit} className="treatment-form container">
         <div className="form-grid">
           {/* تفاصيل المورد */}
           <div className="form-section">
@@ -183,7 +183,7 @@ function EditSupplier() {
               {supplier?.treatments?.length ? (
                 <ul className="pill-list">
                   {supplier.treatments.map(tr => (
-                    <li key={tr._id} className="pill">
+                    <li key={tr._id} className="pill mt-2">
                       {tr.name}
                     </li>
                   ))}
@@ -205,7 +205,7 @@ function EditSupplier() {
               {supplier?.feeds?.length ? (
                 <ul className="pill-list">
                   {supplier.feeds.map(fd => (
-                    <li key={fd._id} className="pill">
+                    <li key={fd._id} className="pill mt-2">
                       {fd.name}
                     </li>
                   ))}

@@ -1,10 +1,8 @@
-import React, { useContext, useEffect, useState } from 'react';
+import  { useContext, useEffect, useState } from 'react';
 import { useFormik } from 'formik';
-import * as Yup from 'yup';
 import { IoIosSave } from "react-icons/io";
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { useNavigate } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import { NewvaccineContext } from '../../Context/NewvaccineContext';
 import Select from 'react-select';
@@ -18,7 +16,6 @@ function Vaccinebyanimal() {
     const [filteredVaccines, setFilteredVaccines] = useState([]);
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
-    const navigate = useNavigate();
     const [isSubmitted, setIsSubmitted] = useState(false);
 
 
@@ -153,13 +150,13 @@ function Vaccinebyanimal() {
 
     return (
         <div className="animal-details-container">
-            <div className="animal-details-header">
+            <div className="animal-details-header container">
                 <h1>{t("Add Vaccine")}</h1>
             </div>
 
             {error && <div className="error-message">{error}</div>}
 
-            <form onSubmit={formik.handleSubmit} className="animal-form">
+            <form onSubmit={formik.handleSubmit} className="animal-form container">
                 <div className="form-grid">
                     <div className="form-section">
                         <h2>{t("Vaccine Information")}</h2>

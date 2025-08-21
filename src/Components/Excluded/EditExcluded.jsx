@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
@@ -105,13 +105,13 @@ export default function EditExcluded() {
 
     return (
         <div className="excluded-details-container">
-            <div className="excluded-details-header">
+            <div className="excluded-details-header container">
                 <h1>{t('edit_excluded')}</h1>
             </div>
 
             {error && <div className="error-message">{error}</div>}
 
-            <form onSubmit={formik.handleSubmit} className="excluded-form">
+            <form onSubmit={formik.handleSubmit} className="excluded-form container">
                 <div className="form-grid">
                     <div className="form-section">
                         <h2>{t('basic_info')}</h2>

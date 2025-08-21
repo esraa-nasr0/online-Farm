@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import  { useContext, useEffect, useState } from 'react';
+import {  useNavigate } from 'react-router-dom';
 import { FaRegEdit } from "react-icons/fa";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { MatingContext } from '../../Context/MatingContext';

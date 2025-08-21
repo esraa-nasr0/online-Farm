@@ -1,0 +1,282 @@
+/* src/components/Sidebare/modern-sidebar.css */
+
+:root {
+  --msb-bg: #0b0d12;
+  --msb-rail: #ffffff;
+  --msb-card: rgba(255,255,255,0.85);
+  --msb-border: rgba(0,0,0,0.06);
+  --msb-shadow: 0 10px 30px rgba(0,0,0,.12);
+  --msb-text: #0a0a0a;
+  --msb-muted: #70757a;
+  --msb-accent: #111827;
+  --msb-pill: #111827;
+}
+
+/* Shell */
+/* اجعل السايدبار عائماً وثابتاً على اليسار (أو اليمين في RTL) */
+/* ====== Shell: سايدبار ثابتة + بانل عائم ====== */
+.msb {
+  position: fixed;
+  inset-block: 16px;                 /* top & bottom */
+  inset-inline-start: 16px;          /* left في LTR */
+  z-index: 40;
+  width: 64px;                       /* عرض سكة الأيقونات فقط */
+  overflow: visible;                 /* عشان البانل يطلع برة */
+}
+
+/* لو RTL حطّيه على اليمين */
+.msb.rtl { inset-inline-start: auto; inset-inline-end: 16px; }
+
+/* سكة الأيقونات زي ما هي */
+.msb-rail {
+  height: calc(100vh - 32px);
+  width: 64px;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.12);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 8px;
+  gap: 8px;
+}
+
+/* ====== البانل العريض ====== */
+.msb-panel {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 320px;
+  background: rgba(255,255,255,0.85);
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.12);
+  backdrop-filter: saturate(140%) blur(6px);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  will-change: transform, opacity;
+  transition: transform .28s cubic-bezier(.2,.6,.2,1), opacity .2s ease;
+}
+
+/* مكان البانل بالنسبة للسكة */
+.msb.ltr .msb-panel { left: 80px; }  /* 64 + 16 gap */
+.msb.rtl .msb-panel { right: 80px; }
+
+/* الحالة المفتوحة */
+.msb.open .msb-panel {
+  transform: translateX(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* الحالة المقفولة: اطلعيه بالكامل برّه مع اتجاه الصفحة */
+.msb.closed.ltr .msb-panel {
+  transform: translateX(calc(-100% - 16px));
+  opacity: 0;
+  pointer-events: none;
+}
+.msb.closed.rtl .msb-panel {
+  transform: translateX(calc(100% + 16px));
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* (اختياري) سكرين خفيفة للموبايل لما يفتح */
+.msb-scrim {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.25);
+  z-index: 39;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s ease;
+}
+.msb.open + .msb-scrim { opacity: 1; pointer-events: auto; }
+
+@media (max-width: 768px) {
+  .msb { inset-inline-start: 8px; inset-inline-end: 8px; }
+  .msb.ltr .msb-panel { left: 72px; }
+  .msb.rtl .msb-panel { right: 72px; }
+}
+
+/* لما تكون مقفولة نخبّي البانل بس نسيب السكة */
+.msb.closed .msb-panel { transform: translateX(-8px); opacity: 0; pointer-events: none; }
+.msb.open   .msb-panel { opacity: 1; pointer-events: auto; }
+
+/* (اختياري) لو فيه تعارض قديم: احذف أي pointer-events:none من عناصر الأب */
+.msb.ltr { direction: ltr; }
+.msb.rtl { direction: rtl; }
+
+/* Mini rail */
+.msb-rail {
+  height: 100%;
+  width: 64px;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: var(--msb-shadow);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 8px;
+  gap: 8px;
+  pointer-events: auto;
+}
+
+.msb-rail .msb-logo {
+  width: 100%;
+  height: 44px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 4px;
+}
+.msb-rail .bars { display: flex; gap: 3px; }
+.msb-rail .bars span {
+  width: 8px; height: 18px; border-radius: 3px;
+  background: linear-gradient(180deg, #111827, #334155);
+  opacity: .9;
+}
+
+.msb-rail .msb-rail-items {
+  display: flex; flex-direction: column; gap: 10px; margin-top: 6px;
+}
+
+.rail-btn {
+  position: relative;
+  width: 44px; height: 44px;
+  display: grid; place-items: center;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,.06);
+  background: #fff;
+  color: var(--msb-text);
+  transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+}
+.rail-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 16px rgba(0,0,0,.08); }
+.rail-btn.logout { margin-top: auto; background: #fff7f7; color: #b42318; }
+
+/* Tooltip on collapsed rail (title attr alternative) */
+.rail-btn[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: calc(100% + 10px);
+  top: 50%; transform: translateY(-50%);
+  white-space: nowrap;
+  background: #111827; color: #fff; font-size: 12px;
+  padding: 6px 8px; border-radius: 8px;
+  opacity: 0; pointer-events: none; transition: opacity .12s ease;
+}
+.rail-btn:hover::after { opacity: .9; }
+
+.badge-parent { position: relative; }
+.badge {
+  position: absolute;
+  top: -4px; right: -2px;
+  min-width: 18px; height: 18px; padding: 0 4px;
+  border-radius: 9px; background: #ef4444; color: #fff;
+  font-size: 11px; font-weight: 700; display: grid; place-items: center;
+}
+
+/* Expanded panel */
+.msb-panel {
+  height: 100%;
+  background: var(--msb-card);
+  border: 1px solid var(--msb-border);
+  border-radius: 20px;
+  box-shadow: var(--msb-shadow);
+  backdrop-filter: saturate(140%) blur(6px);
+  display: flex; flex-direction: column;
+  padding: 14px;
+  transition: opacity .18s ease, transform .18s ease;
+}
+
+/* Header */
+.panel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 4px 6px 10px;
+}
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand .mark {
+  width: 26px; height: 26px; border-radius: 7px;
+  background: linear-gradient(135deg, #111827, #334155);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.25);
+}
+.brand span { font-weight: 800; letter-spacing: .3px; color: var(--msb-accent); }
+
+.lang-switch { position: relative; }
+.chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 10px; border-radius: 10px; border: 1px solid var(--msb-border);
+  background: #fff; color: var(--msb-text);
+}
+.chip.active { box-shadow: 0 6px 16px rgba(0,0,0,.08); }
+.lang-menu {
+  position: absolute; top: 38px; inset-inline-end: 0;
+  background: #fff; border: 1px solid var(--msb-border);
+  border-radius: 12px; padding: 6px; box-shadow: var(--msb-shadow);
+  display: grid; gap: 6px; z-index: 10;
+}
+.lang-menu button {
+  text-align: start; padding: 8px 10px; border-radius: 8px;
+  background: transparent; border: 0; color: var(--msb-text);
+}
+.lang-menu button:hover { background: #f3f4f6; }
+
+/* Nav */
+.panel-nav { overflow: auto; padding: 4px 4px 8px; }
+.nav-section + .nav-section { margin-top: 10px; }
+.section-title {
+  font-size: 12px; letter-spacing: .6px; color: var(--msb-muted);
+  padding: 6px 8px; margin: 0 0 4px 0;
+}
+
+.section-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+
+.nav-item .item-btn {
+  display: grid; grid-template-columns: 24px 1fr auto; align-items: center; gap: 10px;
+  width: 100%; text-decoration: none; border: 1px solid var(--msb-border);
+  background: #fff; color: var(--msb-text);
+  padding: 10px 12px; border-radius: 12px;
+  transition: box-shadow .12s ease, transform .12s ease, background .12s ease;
+}
+.nav-item .item-btn:hover { transform: translateY(-1px); box-shadow: 0 10px 18px rgba(0,0,0,.08); }
+.nav-item.active > .item-btn { outline: 2px solid #111827; outline-offset: 0; }
+
+.item-btn .ico { display: grid; place-items: center; font-size: 16px; }
+.item-btn .txt { font-weight: 600; }
+.item-btn .chev { opacity: .7; }
+
+.pill {
+  font-size: 11px; padding: 2px 8px; border-radius: 999px;
+  background: #111827; color: #fff; margin-inline-start: 8px;
+}
+
+.submenu {
+  margin-top: 6px;
+  display: grid; gap: 4px;
+  padding-inline-start: 34px;
+}
+.submenu .sub-link {
+  display: block; padding: 8px 10px; border-radius: 10px;
+  color: var(--msb-text); text-decoration: none; background: #fff;
+  border: 1px solid var(--msb-border);
+}
+.submenu .sub-link:hover { background: #f8fafc; }
+.submenu .sub-link.current { background: #111827; color: #fff; }
+
+/* Bottom wide logout */
+.logout-wide {
+  margin-top: auto;
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 12px; border-radius: 12px;
+  background: #fff3f3; color: #b42318; border: 1px solid #ffd3d3;
+}
+.logout-wide:hover { filter: brightness(0.98); }
+
+/* Mobile tweaks */
+@media (max-width: 768px) {
+  .msb { padding: 10px; gap: 10px; }
+  .msb.open { grid-template-columns: 56px min(88vw, 320px); }
+  .msb-rail { width: 56px; border-radius: 18px; }
+  .rail-btn { width: 40px; height: 40px; }
+}

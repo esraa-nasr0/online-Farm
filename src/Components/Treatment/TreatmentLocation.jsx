@@ -178,7 +178,7 @@ function TreatmentLocation() {
 
   return (
     <div className="treatment-container">
-      <div className="treatment-header">
+      <div className="treatment-header container">
         <h1>{t("treatment_by_location")}</h1>
       </div>
 
@@ -190,7 +190,7 @@ function TreatmentLocation() {
         </div>
       )}
 
-      <form onSubmit={formik.handleSubmit} className="treatment-form">
+      <form onSubmit={formik.handleSubmit} className="treatment-form container">
         <div className="form-grid">
           {/* General Information */}
           <div className="form-section">

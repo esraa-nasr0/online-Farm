@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useFormik } from "formik";
-import React, { useContext, useEffect, useState } from "react";
+import  { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { LocationContext } from "../../Context/LocationContext";
 import { IoIosSave } from "react-icons/io";
@@ -149,13 +149,13 @@ export default function EditFeedbyLocation() {
 
   return (
     <div className="feeding-container">
-      <div className="feeding-header">
+      <div className="feeding-header container">
         <h1>{t("edit_feed_by_location")}</h1>
       </div>
 
       {error && <div className="error-message">{error}</div>}
 
-      <form onSubmit={formik.handleSubmit} className="feeding-form">
+      <form onSubmit={formik.handleSubmit} className="feeding-form container">
         <div className="form-grid">
           <div className="form-section">
             <h2>{t("location_info")}</h2>

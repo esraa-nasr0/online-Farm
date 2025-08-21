@@ -1,11 +1,9 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { MdOutlineAddToPhotos } from "react-icons/md";
+import  { useContext, useEffect, useState } from "react";
 import { Feedbylocationcontext } from "../../Context/FeedbylocationContext.jsx";
 import { Rings } from "react-loader-spinner";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
-import { RiDeleteBin6Line, RiDeleteBinLine } from "react-icons/ri";
+import { RiDeleteBinLine } from "react-icons/ri";
 import { FaRegEdit } from "react-icons/fa";
 import "../Vaccine/styles.css"
 import { useTranslation } from 'react-i18next';

@@ -170,13 +170,13 @@ function Supplier() {
 
   return (
     <div className="treatment-container">
-      <div className="treatment-header">
+      <div className="treatment-header container">
         <h1>{t("add_supplier")}</h1>
       </div>
 
       {error && <div className="error-message">{error}</div>}
 
-      <form onSubmit={formik.handleSubmit} className="treatment-form">
+      <form onSubmit={formik.handleSubmit} className="treatment-form container">
         <div className="form-grid">
           {/* Supplier Details */}
           <div className="form-section">

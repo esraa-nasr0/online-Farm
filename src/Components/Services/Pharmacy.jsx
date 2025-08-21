@@ -8,7 +8,7 @@ function Pharmacy() {
     const { t } = useTranslation();
     
   return (
-    <div className="section">
+    <div className="section container">
       <h2>{t("Pharmacy")}</h2>
       <div className="content">
         <div className="card2">

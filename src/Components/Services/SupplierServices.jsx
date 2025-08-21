@@ -11,7 +11,7 @@ function SupplierServices() {
     const { t } = useTranslation();
     
   return (
- <div className='section'>
+ <div className='section container'>
             <h2>{t('Supplier_services')}</h2>
             <div className="content">
                 <div className="card2">

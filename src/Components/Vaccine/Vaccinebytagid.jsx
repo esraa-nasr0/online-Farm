@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { useFormik } from 'formik';
 import { IoIosSave } from "react-icons/io";
 import axios from 'axios';
@@ -98,13 +98,13 @@ function VaccinebytagId() {
 
     return (
         <div className="animal-details-container">
-            <div className="animal-details-header">
+            <div className="animal-details-header container">
                 <h1>{t('addVaccineByTagId')}</h1>
             </div>
 
             {error && <div className="error-message">{error}</div>}
 
-            <form onSubmit={formik.handleSubmit} className="animal-form">
+            <form onSubmit={formik.handleSubmit} className="animal-form container">
                 <div className="form-grid">
                     <div className="form-section">
                         <h2>{t('vaccineInformation')}</h2>
