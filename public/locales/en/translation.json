@@ -995,8 +995,14 @@
   "loadingLocations": "Loading locations",
   "Entry Type": "Entry Type",
   "failedLoadLocations": "Failed to load locations",
-   "general_info": "General Information"
+   "general_info": "General Information",
 
+   "Artificial insemination": "Artificial Insemination",
+
+   "average_daily_gain": "Average Daily Gain",
+  "enter_adg": "Enter ADG",
+  "feed_conversion_ratio": "Feed Conversion Ratio",
+  "enter_fcr": "Enter FCR"
 
 
 

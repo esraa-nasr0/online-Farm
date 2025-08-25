@@ -1061,7 +1061,13 @@
   "Suppliers Data": "بيانات الموردين",
   "Add Suppliers": "إضافة موردين",
   "Add Suppliers Treatment": "إضافة علاج للموردين",
-  "Add Suppliers Feed": "إضافة علف للموردين"
+  "Add Suppliers Feed": "إضافة علف للموردين",
+  "Artificial insemination": "التلقيح الاصطناعي",
+
+  "average_daily_gain": "معدل النمو اليومي",
+  "enter_adg": "أدخل معدل النمو اليومي",
+  "feed_conversion_ratio": "معدل التحويل الغذائي",
+  "enter_fcr": "أدخل معدل التحويل الغذائي"
   
 
 
