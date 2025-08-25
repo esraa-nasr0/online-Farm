@@ -8,6 +8,8 @@ import { FaRegEdit } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import "../Vaccine/styles.css";
 import axios from "axios";
+import { FiSearch } from "react-icons/fi";
+
 
 function TreatmentTable() {
   const { t } = useTranslation();
@@ -340,10 +342,57 @@ function TreatmentTable() {
           />
         </div>
       ) : (
+                <div className="container mt-4">
+                                <h2 className="vaccine-table-title">{t("Pharmacy")}</h2>
+                                <div className="container mt-5 vaccine-table-container">
+  <h6 className="mb-3 fw-bold custom-section-title">
+    {t("filter_data")}
+  </h6>
+
+  <div className="row g-2 mt-3 mb-3 align-items-end">
+    {/* Search by Name */}
+    <div className="col-12 col-sm-6 col-md-3">
+      <label htmlFor="searchNameInput" className="form-label">
+        {t("name")}
+      </label>
+      <input
+        type="text"
+        id="searchNameInput"
+        className="form-control"
+        placeholder={t("search_by_name")}
+        value={searchName}
+        onChange={(e) => setSearchName(e.target.value)}
+      />
+    </div>
+
+    {/* Search by Type */}
+    <div className="col-12 col-sm-6 col-md-3">
+      <label htmlFor="searchTypeInput" className="form-label">
+        {t("type")}
+      </label>
+      <input
+        type="text"
+        id="searchTypeInput"
+        className="form-control"
+        placeholder={t("search_by_type")}
+        value={searchType}
+        onChange={(e) => setSearchType(e.target.value)}
+      />
+    </div>
+
+    {/* Search Button */}
+    <div className="col-12 d-flex justify-content-end mt-2">
+      <button className="btn btn-success" onClick={handleSearch}>
+        <FiSearch /> {t("search")}
+      </button>
+    </div>
+  </div>
+</div>
+
+
         <div className="container mt-5 vaccine-table-container">
-          <div className="container mt-5">
-            <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mt-5 mb-3">
-              <h2 className="vaccine-table-title">{t("Pharmacy")}</h2>
+          <div className="container mt-3">
+            <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mt-3 mb-3">
               <div className="d-flex flex-wrap gap-2">
                 <button
                   className="btn btn-outline-dark"
@@ -378,44 +427,15 @@ function TreatmentTable() {
               </div>
             </div>
 
-            <div className="row g-2 mb-3">
-              <div className="col-md-4">
-                <input
-                  type="text"
-                  className="form-control me-2 mb-2"
-                  placeholder={t("search_by_name")}
-                  value={searchName}
-                  onChange={(e) => setSearchName(e.target.value)}
-                  style={{ flex: 1 }}
-                />
-              </div>
-              <div className="col-md-4">
-                <input
-                  type="text"
-                  className="form-control me-2 mb-2"
-                  placeholder={t("search_by_type")}
-                  value={searchType}
-                  onChange={(e) => setSearchType(e.target.value)}
-                  style={{ flex: 1 }}
-                />
-              </div>
-              <div className="d-flex justify-content-end mb-3">
-                <button
-                  className="btn btn-outline-secondary"
-                  onClick={handleSearch}
-                >
-                  {t("search")}
-                </button>
-              </div>
-            </div>
+    
           </div>
 
           {error && <p className="text-danger mt-3">{error}</p>}
 
-          <div className="table-responsive">
+          <div className="table-responsive ">
             <div className="full-width-table">
               <table
-                className="table align-middle"
+                className="table align-middle mt-3"
                 aria-label={t("treatment_table")}
               >
                 <thead>
@@ -518,6 +538,7 @@ function TreatmentTable() {
           <div className="d-flex justify-content-center mt-4">
             <nav>{renderModernPagination()}</nav>
           </div>
+        </div>
         </div>
       )}
     </>

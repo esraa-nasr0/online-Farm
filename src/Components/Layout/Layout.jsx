@@ -93,8 +93,8 @@ export default function Layout() {
     location.pathname === "/" || location.pathname === "/home";
 
   return (
-    <div className={`app-container ${isSidebarOpen && shouldShowSidebar ? "app-has-wide-sidebar" : ""}`}>
-      {shouldShowNavbar && (
+<div className={`app-container ${isSidebarOpen && shouldShowSidebar ? "app-has-wide-sidebar" : ""}`}>
+        {shouldShowNavbar && (
         <Navbar
           toggleSidebar={toggleSidebar}
           isSidebarOpen={isSidebarOpen}

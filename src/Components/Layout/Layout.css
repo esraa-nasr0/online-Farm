@@ -1,4 +1,7 @@
-/* Layout.css */
+:root {
+  --rail-w: 72px;
+  --panel-w: 280px;
+}
 .app-container {
     display: flex;
     flex-direction: column;
@@ -6,40 +9,19 @@
     margin-left: 13px;
 }
 
-.content-wrapper {
-    display: flex;
-    flex: 1;
+/* وجود السايدبار (مقفول = rail فقط) */
+.content-wrapper.should-show-sidebar.ltr { padding-left: var(--rail-w); transition: padding .28s ease; }
+.content-wrapper.should-show-sidebar.rtl { padding-right: var(--rail-w); transition: padding .28s ease; }
+
+/* مفتوح (والـ rail مخفي) → نعدّل للمسافة = panel فقط */
+.app-container.app-has-wide-sidebar .content-wrapper.should-show-sidebar.ltr { padding-left: var(--panel-w); }
+.app-container.app-has-wide-sidebar .content-wrapper.should-show-sidebar.rtl { padding-right: var(--panel-w); }
+
+/* موبايل: overlay — بدون padding */
+@media (max-width: 768px) {
+  .content-wrapper.should-show-sidebar.ltr,
+  .content-wrapper.should-show-sidebar.rtl {
+    padding-left: 0;
+    padding-right: 0;
+  }
 }
-
-/* إزالة الهوامش الجانبية عندما يكون السايدبار مخفيًا */
-.content-wrapper.ltr .main-content,
-.content-wrapper.rtl .main-content { 
-    margin-left: 0; 
-    margin-right: 0; 
-    width: 100%; /* تأكد من أخذ العرض الكامل */
-}
-
-/* إزالة التحولات والهوامش عندما يكون السايدبار مفتوحًا */
-.app-has-wide-sidebar .content-wrapper.ltr .main-content,
-.app-has-wide-sidebar .content-wrapper.rtl .main-content { 
-    margin-left: 0 !important; 
-    margin-right: 0 !important; 
-    width: 100% !important;
-}
-
-/* تأكد من أن المحتوى يأخذ المساحة الكاملة */
-.main-content {
-    width: 100%;
-    flex: 1;
-}
-
-/* إخفاء السايدبار تمامًا في الصفحات المحددة */
-.msb {
-    display: none;
-}
-
-/* إظهار السايدبار فقط في الصفحات المسموح بها */
-.should-show-sidebar .msb {
-    display: block;
-} 
-

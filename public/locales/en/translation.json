@@ -995,8 +995,29 @@
   "loadingLocations": "Loading locations",
   "Entry Type": "Entry Type",
   "failedLoadLocations": "Failed to load locations",
-   "general_info": "General Information"
+   "general_info": "General Information",
 
+   "Artificial insemination": "Artificial Insemination",
+
+   "average_daily_gain": "Average Daily Gain",
+  "enter_adg": "Enter ADG",
+  "feed_conversion_ratio": "Feed Conversion Ratio",
+  "enter_fcr": "Enter FCR",
+
+   "filter_excluded": "Filter Excluded",
+  "fodder.filter": "Filter Fodder",
+  "filter_mating": "Filter Mating",
+  "filter_animals": "Filter Animals",
+  "filter_breeding": "Filter Breeding",
+  "filter_feed": "Filter Feed",
+  "filter_feed_by_location": "Filter Feed by Location",
+  "filter_treatments": "Filter Treatments",
+  "filter_data": "Filter Data",
+  "filter_vaccines": "Filter Vaccines",
+  "filter_weights": "Filter Weights",
+  "filter_animals_cost": "Filter Animals Cost",
+  "filter_suppliers": "Filter Suppliers",
+  "weight_records": "Weight Records"
 
 
 

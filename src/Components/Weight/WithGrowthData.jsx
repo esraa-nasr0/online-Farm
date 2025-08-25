@@ -3,6 +3,8 @@ import axios from 'axios';
 import { Rings } from 'react-loader-spinner';
 import { useTranslation } from 'react-i18next';
 import "../Vaccine/styles.css";
+import { FiSearch } from "react-icons/fi";
+
 
 function WithGrowthData() {
     const { t } = useTranslation();
@@ -106,29 +108,52 @@ function WithGrowthData() {
                     <Rings visible={true} height="100" width="100" color="#21763e" ariaLabel="rings-loading" />
                 </div>
             ) : (
-                <div className="container mt-5 vaccine-table-container">
-                    <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mt-5 mb-3">
+                        <div className="container mt-4">
+
+                    <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-3">
                         <h2 className="vaccine-table-title">{t('Animal Growth')}</h2>
                     </div>
+                <div className="container mt-5 vaccine-table-container">
+  <h6 className="mb-3 fw-bold custom-section-title">
+    {t("filter_animals")}
+  </h6>
 
-                    <div className="row g-2 mb-3">
-                        <div className="col-md-4">
-                            <input
-                                type="text"
-                                className="form-control"
-                                placeholder={t('search_by_tag_id')}
-                                value={searchCriteria.tagId}
-                                onChange={(e) => setSearchCriteria({ ...searchCriteria, tagId: e.target.value })}
-                            />
-                        </div>
-                        <div className="d-flex justify-content-end mb-3">
-                            <button className="btn btn-outline-secondary" onClick={handleSearch}>{t('search')}</button>
-                        </div>
-                    </div>
+  <div className="row g-2 mt-3 mb-3 align-items-end">
+    {/* Input: Tag ID */}
+    <div className="col-12 col-sm-6 col-md-3">
+      <label htmlFor="tagIdInput" className="form-label">
+        {t("tag_id")}
+      </label>
+      <input
+        type="text"
+        id="tagIdInput"
+        className="form-control"
+        placeholder={t("search_by_tag_id")}
+        value={searchCriteria.tagId}
+        onChange={(e) =>
+          setSearchCriteria({
+            ...searchCriteria,
+            tagId: e.target.value,
+          })
+        }
+      />
+    </div>
 
+    {/* زر البحث */}
+    <div className="col-12 d-flex justify-content-end mt-2">
+      <button className="btn btn-success" onClick={handleSearch}>
+        <FiSearch /> {t("search")}
+      </button>
+    </div>
+  </div>
+</div>
+
+
+                <div className="container mt-5 vaccine-table-container">
+                    
                     <div className="table-responsive">
                         <div className="full-width-table">
-                            <table className="table align-middle">
+                            <table className="table align-middle mt-4">
                                 <thead>
                                     <tr>
                                         <th className="bg-color">#</th>
@@ -170,6 +195,7 @@ function WithGrowthData() {
                             {renderModernPagination()}
                         </nav>
                     </div>
+                </div>
                 </div>
             )}
         </>

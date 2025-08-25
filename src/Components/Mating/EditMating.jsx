@@ -192,6 +192,7 @@ function EditMating() {
               >
                 <option value="">{t("mating_type")}</option>
                 <option value="Natural">{t("natural")}</option>
+                <option value="Natural">{t('Artificial insemination')}</option>
               </select>
               {formik.errors.matingType && formik.touched.matingType && (
                 <p className="text-danger">{formik.errors.matingType}</p>

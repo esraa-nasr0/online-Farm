@@ -1,19 +1,25 @@
-import  { useState } from "react";
+import  { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { IoIosSave } from "react-icons/io";
 import Swal from 'sweetalert2';
-import { useNavigate } from "react-router-dom";
 import './Feeding.css';
 import { useTranslation } from 'react-i18next';
 
 export default function Feed() {
     const [isLoading, setIsLoading] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
-    const navigate = useNavigate();
     const { t } = useTranslation();
     const [isSubmitted, setIsSubmitted] = useState(false);
+      const [error, setError] = useState(""); // ✅ أضفت error state
+
+    
+  // supplier states
+  const [suppliers, setSuppliers] = useState([]);
+  const [supplierId, setSupplierId] = useState("");
+  const [loading, setLoading] = useState({ suppliers: false, submit: false });
+
 
     const getHeaders = () => {
         const Authorization = localStorage.getItem('Authorization');
@@ -21,42 +27,76 @@ export default function Feed() {
         return { Authorization: formattedToken };
     };
 
-    async function handleSubmit(values) {
-        const headers = getHeaders();
-        try {
-            setIsLoading(true);
-            const dataToSubmit = {
-                ...values,
-            };
-
-            const { data } = await axios.post(
-                "https://farm-project-bbzj.onrender.com/api/feed/addfeed",
-                dataToSubmit,
-                { headers }
-            );
-
-            if (data.status === "success") {
-                setIsSubmitted(true);
-                setIsLoading(false);
-                setShowAlert(true);
-                Swal.fire({
-                    title: t('success'),
-                    text: t('data_submitted_success'),
-                    icon: "success",
-                    confirmButtonText: t('ok'),
-                })
-            }
-        } catch (err) {
-            Swal.fire({
-                title: t('error'),
-                text: err.response?.data?.message || t('submit_error'),
-                icon: "error",
-                confirmButtonText: t('ok'),
-            });
-        } finally {
-            setIsLoading(false);
-        }
+      // 1) احضري الموردين
+  useEffect(() => {
+  async function fetchSuppliers() {
+    setLoading(prev => ({ ...prev, suppliers: true }));
+    setError("");
+    try {
+      const { data } = await axios.get(
+        "https://farm-project-bbzj.onrender.com/api/supplier/getallsuppliers",
+        { headers: getHeaders() }
+      );
+      if (data?.status === "success") {
+        setSuppliers(data.data.suppliers || []);
+      } else {
+        setSuppliers([]);
+      }
+    } catch (e) {
+      const msg = e?.response?.data?.message || e.message;
+      setError(msg);
+    } finally {
+      setLoading(prev => ({ ...prev, suppliers: false }));
     }
+  }
+  fetchSuppliers();
+}, []); // ✅ مفيش dependencies
+
+
+
+    async function handleSubmit(values) {
+  const headers = getHeaders();
+  try {
+    setIsLoading(true);
+
+    const dataToSubmit = {
+  name: values.name,
+  type: values.type,
+  price: Number(values.price),
+  quantity: Number(values.quantity),
+  concentrationOfDryMatter: Number(values.concentrationOfDryMatter),
+  supplierId: values.supplierId || supplierId, // رجعها supplierId للتجربة
+};
+
+    const { data } = await axios.post(
+      "https://farm-project-bbzj.onrender.com/api/feed/addfeed",
+      dataToSubmit,
+      { headers }
+    );
+
+    if (data.status === "success") {
+      Swal.fire({
+        title: t("success"),
+        text: t("data_submitted_success"),
+        icon: "success",
+        confirmButtonText: t("ok"),
+      });
+      setIsSubmitted(true);
+    }
+  } catch (err) {
+    console.error("Submit error:", err.response?.data);
+  Swal.fire({
+    title: t("error"),
+    text: err.response?.data?.message || t("submit_error"),
+    icon: "error",
+    confirmButtonText: t("ok"),
+    });
+  } finally {
+    setIsLoading(false);
+  }
+}
+
+
 
     const validationSchema = Yup.object({
         name: Yup.string().required(t('name_required')),
@@ -73,6 +113,7 @@ export default function Feed() {
             price: "",
             concentrationOfDryMatter: "",
             quantity: "",
+            supplierId:"",
         },
         validationSchema,
         onSubmit: handleSubmit,
@@ -156,6 +197,23 @@ export default function Feed() {
                             )}
                         </div>
                     </div>
+                    <div className="form-section">
+            <h2>{t("supplier") || "Supplier"}</h2>
+            <div className="input-group">
+              <label>{t("select_supplier") || "Select supplier"}</label>
+              <select
+  {...formik.getFieldProps("supplierId")}
+>
+  <option value="">{t("select_supplier")}</option>
+  {suppliers.map((s) => (
+    <option key={s._id} value={s._id}>
+      {s.name} {s.company ? `— ${s.company}` : ""}
+    </option>
+  ))}
+</select>
+
+            </div>
+          </div>
                 </div>
 
                 <div className="form-actions">

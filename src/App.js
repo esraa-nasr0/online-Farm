@@ -105,9 +105,6 @@ import SupplierTable from "./Components/Suppliers/SupplierTable.jsx";
 import SupplierContextProvider from "./Context/SupplierContext.js";
 import EditSupplier from "./Components/Suppliers/EditSupplier.jsx";
 import SupplierServices from "./Components/Services/SupplierServices.jsx";
-import LinkSupplierTreatment from "./Components/Suppliers/LinkSupplierTreatment.jsx";
-import LinkSupplierFeed from "./Components/Suppliers/LinkSupplierFeed.jsx";
-
 
 
 
@@ -205,9 +202,6 @@ let routers = createBrowserRouter([
       { path: "supplierTable", element: <ProtectedRoute><SupplierTable/></ProtectedRoute> },
       { path: "editSupplier/:id", element: <ProtectedRoute><EditSupplier/></ProtectedRoute> },
       { path: "SupplierServices", element: <ProtectedRoute><SupplierServices/></ProtectedRoute> },
-      { path: "linkSupplierTreatment", element: <ProtectedRoute><LinkSupplierTreatment/></ProtectedRoute> },
-      { path: "linkSupplierFeed", element: <ProtectedRoute><LinkSupplierFeed/></ProtectedRoute> },
-
     ],
   },
 ]);

@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import {
   FaChevronDown, FaChevronUp, FaBell, FaChartBar, FaHeart, FaPaw, FaSyringe,
   FaPills, FaWeight, FaSeedling, FaUtensils, FaBreadSlice, FaExclamationTriangle,
+  FaChevronLeft, FaChevronRight
 } from "react-icons/fa";
 import { IoHome } from "react-icons/io5";
 import { BiSupport } from "react-icons/bi";
@@ -23,28 +24,19 @@ export default function ModernSidebar({
   onChangeLanguage,
   isFattening = false,
   onToggle,
+  hideRailWhenOpen = true,   // ⬅️ الجديد
 }) {
   const { pathname } = useLocation();
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [langOpen, setLangOpen] = useState(false);
 
-  // --- MENU MODEL ---
   const baseMenu = useMemo(() => ([
-     {
+    {
       title: "MAIN MENU",
       items: [
         { name: "Home", icon: <IoHome />, path: "/" },
-        {
-          name: "Support",
-          icon: <BiSupport />,
-          path: "/support",
-        },
-        {
-          name: "Notifications",
-          icon: <FaBell />,
-          path: "/notificationPage",
-          badge: notificationCount,
-        },
+        { name: "Support", icon: <BiSupport />, path: "/support" },
+        { name: "Notifications", icon: <FaBell />, path: "/notificationPage", badge: notificationCount },
       ],
     },
     {
@@ -56,8 +48,6 @@ export default function ModernSidebar({
           subItems: [
             { name: "Suppliers Data", path: "/supplierTable" },
             { name: "Add Suppliers", path: "/supplier" },
-            { name: "Add Suppliers Treatment", path: "/linkSupplierTreatment" },
-            { name: "Add Suppliers Feed", path: "/linkSupplierFeed" },
           ],
         },
       ],
@@ -132,8 +122,6 @@ export default function ModernSidebar({
           name: "treatment",
           icon: <FaPills />,
           subItems: [
-            { name: "treatment Data", path: "/treatmentTable" },
-            { name: "add Treatment", path: "/treatment" },
             { name: "show By Animal", path: "/treatAnimalTable" },
             { name: "add By Animal", path: "/treatmentAnimal" },
             { name: "add By Location", path: "/treatmentLocation" },
@@ -180,7 +168,6 @@ export default function ModernSidebar({
           ],
         },
         { name: "reports", icon: <FaChartBar />, path: "/report" },
-        // { name: "daily Reports", icon: <FaCalendarAlt />, path: "/reportDaliy" },
       ],
     },
     {
@@ -198,82 +185,59 @@ export default function ModernSidebar({
     },
   ].filter(Boolean)), [notificationCount, isFattening]);
 
-  const toggleDropdown = (key) => {
-    setActiveDropdown((cur) => (cur === key ? null : key));
-  };
-
-  useEffect(() => {
-    if (!isOpen) setActiveDropdown(null);
-  }, [isOpen]);
+  const toggleDropdown = (key) => setActiveDropdown((cur) => (cur === key ? null : key));
+  useEffect(() => { if (!isOpen) setActiveDropdown(null); }, [isOpen]);
 
   const dir = isRTL ? "rtl" : "ltr";
-
-  const getTitle = (item) => {
-    if (typeof item === "string") return item;
-    if (item?.name) return item.name;
-    return "";
-  };
+  const getTitle = (item) => (typeof item === "string" ? item : item?.name || "");
 
   return (
-    <aside className={`msb ${isOpen ? "open" : "closed"} ${dir}`}>
-      {/* Mini rail */}
-      <div className="msb-rail">
-        <div className="msb-logo" aria-label="HALAL LAB" title="HALAL LAB"
-             onClick={onToggle} style={{cursor:'pointer'}}>
-          <div className="bars"><span/><span/><span/></div>
-        </div>
+    <aside
+      className={`msb ${isOpen ? "open" : "closed"} ${dir} ${
+        isOpen && hideRailWhenOpen ? "no-rail" : ""
+      }`}
+    >
+      {/* RAIL: يظهر فقط لو السايدبار مقفول أو احنا مش عايزين نخبيه */}
+      {!(isOpen && hideRailWhenOpen) && (
+        <div className="msb-rail">
+          <div className="msb-logo" aria-label="HALAL LAB" title="HALAL LAB" onClick={onToggle} style={{ cursor: "pointer" }}>
+            <div className="bars"><span/><span/><span/></div>
+          </div>
 
-        <div className="msb-rail-items">
-          <Link to="/" className="rail-btn" title="Home" data-tooltip="Home">
-            <IoHome />
-          </Link>
+          <div className="msb-rail-items">
+            <Link to="/" className="rail-btn" title="Home" data-tooltip="Home"><IoHome /></Link>
+            <button className="rail-btn" onClick={() => setLangOpen((v) => !v)} title="Language" data-tooltip="Language">
+              <MdOutlineLanguage />
+            </button>
+            <Link to="/notificationPage" className="rail-btn badge-parent" title="Notifications" data-tooltip="Notifications">
+              <FaBell />{notificationCount > 0 && <span className="badge">{notificationCount}</span>}
+            </Link>
+          </div>
 
-          <button
-            className="rail-btn"
-            onClick={() => setLangOpen((v) => !v)}
-            title="Language"
-            data-tooltip="Language"
-          >
-            <MdOutlineLanguage />
+          <button className="rail-btn logout" onClick={onLogout} title="Logout" data-tooltip="Logout">
+            <CiLogout />
           </button>
-
-          <Link
-            to="/notificationPage"
-            className="rail-btn badge-parent"
-            title="Notifications"
-            data-tooltip="Notifications"
-          >
-            <FaBell />
-            {notificationCount > 0 && <span className="badge">{notificationCount}</span>}
-          </Link>
         </div>
+      )}
 
-        <button
-          className="rail-btn logout"
-          onClick={onLogout}
-          title="Logout"
-          data-tooltip="Logout"
-        >
-          <CiLogout />
-        </button>
-      </div>
-
-      {/* Expanded panel */}
+      {/* PANEL */}
       <div className="msb-panel">
         <div className="panel-header">
-          <div className="brand">
-            <div className="mark" />
-            <span>HALAL LAB</span>
+          <div className="panel-left">
+            {/* زر إغلاق/فتح داخل الهيدر */}
+            <button className="collapse-btn" onClick={onToggle} aria-label="Toggle sidebar">
+              {isRTL ? <FaChevronRight /> : <FaChevronLeft />}
+            </button>
+
+            <div className="brand">
+              <div className="mark" />
+              <span>HALAL LAB</span>
+            </div>
           </div>
 
           <div className="lang-switch">
-            <button
-              className={`chip ${langOpen ? "active" : ""}`}
-              onClick={() => setLangOpen((v) => !v)}
-            >
-              <MdOutlineLanguage />
-              <span>Language</span>
-              {langOpen ? <FaChevronUp /> : <FaChevronDown />}
+            <button className={`chip ${langOpen ? "active" : ""}`} onClick={() => setLangOpen((v) => !v)}>
+              <MdOutlineLanguage /><span>Language</span>{langOpen ? <FaChevronUp /> : <FaChevronDown />}
             </button>
             {langOpen && (
               <div className="lang-menu">
@@ -288,38 +252,25 @@ export default function ModernSidebar({
           {baseMenu.map((section, sIdx) => (
             <div className="nav-section" key={sIdx}>
               <p className="section-title">{section.title}</p>
-
               <ul className="section-list">
                 {section.items.map((item, iIdx) => {
                   const hasChildren = !!item.subItems;
                   const active = pathname === item.path;
                   const k = `${section.title}-${item.name}`;
-
                   return (
                     <li className={`nav-item ${active ? "active" : ""}`} key={iIdx}>
                       {hasChildren ? (
                         <>
-                          <button
-                            className="item-btn"
-                            onClick={() => toggleDropdown(k)}
-                            aria-expanded={activeDropdown === k}
-                            title={getTitle(item)}
-                          >
+                          <button className="item-btn" onClick={() => toggleDropdown(k)} aria-expanded={activeDropdown === k} title={getTitle(item)}>
                             <span className="ico">{item.icon}</span>
                             <span className="txt">{item.name}</span>
-                            <span className="chev">
-                              {activeDropdown === k ? <FaChevronUp /> : <FaChevronDown />}
-                            </span>
+                            <span className="chev">{activeDropdown === k ? <FaChevronUp /> : <FaChevronDown />}</span>
                           </button>
-
                           {activeDropdown === k && (
                             <ul className="submenu">
                               {item.subItems.map((sub, subIdx) => (
                                 <li key={subIdx}>
-                                  <Link
-                                    to={sub.path}
-                                    className={`sub-link ${pathname === sub.path ? "current" : ""}`}
-                                  >
+                                  <Link to={sub.path} className={`sub-link ${pathname === sub.path ? "current" : ""}`}>
                                     {sub.name}
                                   </Link>
                                 </li>
@@ -342,10 +293,7 @@ export default function ModernSidebar({
           ))}
         </nav>
 
-        <button className="logout-wide" onClick={onLogout}>
-          <CiLogout />
-          <span>Logout</span>
-        </button>
+        <button className="logout-wide" onClick={onLogout}><CiLogout /><span>Logout</span></button>
       </div>
     </aside>
   );

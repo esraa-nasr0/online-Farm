@@ -1061,7 +1061,29 @@
   "Suppliers Data": "بيانات الموردين",
   "Add Suppliers": "إضافة موردين",
   "Add Suppliers Treatment": "إضافة علاج للموردين",
-  "Add Suppliers Feed": "إضافة علف للموردين"
+  "Add Suppliers Feed": "إضافة علف للموردين",
+  "Artificial insemination": "التلقيح الاصطناعي",
+
+  "average_daily_gain": "معدل النمو اليومي",
+  "enter_adg": "أدخل معدل النمو اليومي",
+  "feed_conversion_ratio": "معدل التحويل الغذائي",
+  "enter_fcr": "أدخل معدل التحويل الغذائي",
+
+  "filter_excluded": "فلترة المستبعدة",
+  "fodder.filter": "فلترة العلف",
+  "filter_mating": "فلترة التزاوج",
+  "filter_animals": "فلترة الحيوانات",
+  "filter_breeding": "فلترة التربية",
+  "filter_feed": "فلترة التغذية",
+  "filter_feed_by_location": "فلترة التغذية حسب الموقع",
+  "filter_treatments": "فلترة العلاجات",
+  "filter_data": "فلترة البيانات",
+  "filter_vaccines": "فلترة اللقاحات",
+  "filter_weights": "فلترة الأوزان",
+  "filter_animals_cost": "تصفية تكاليف الحيوانات",
+  "filter_suppliers": "تصفية الموردين",
+  "weight_records": "سجلات الأوزان"
+
   
 
 

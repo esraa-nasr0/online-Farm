@@ -148,53 +148,67 @@ function BreedTable() {
           />
         </div>
       ) : (
-        <div className="container mt-5 vaccine-table-container">
+        <div className="container mt-4">
           <h2 className="vaccine-table-title">{t('breed')}</h2>
+
+        <div className="container mt-5 vaccine-table-container">
 
           <div className="table-responsive">
             <div className="full-width-table">
-              <table className="table table-hover mt-5">
-                <thead>
-                  <tr>
-                    <th className="text-center bg-color">#</th>
-                    <th className="text-center bg-color">{t('breed_name')}</th>
-                    <th className="text-center bg-color">{t('actions')}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {breed.map((breeds, index) => (
-                    <tr key={breeds._id}>
-                      <td>{(currentPage - 1) * breedPerPage + index + 1}</td>
-                      <td>{breeds.breedName}</td>
-
-                      <td className="text-center">
-                        <button
-                          className="btn btn-link p-0 me-2"
-                          onClick={() => editBreed(breeds._id)}
-                          title={t('edit')}
-                          style={{ color: "#0f7e34ff" }}
-                        >
-                          <FaRegEdit />
-                        </button>
-                        <button
-                          className="btn btn-link  p-0"
-                          style={{ color:"#d33" }}
-                          onClick={() => handleClick(breeds._id)}
-                          title={t('delete')}
-                        >
-                          <RiDeleteBinLine />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <table className="table table-hover mt-2">
+  <thead>
+    <tr>
+      <th className="text-center bg-color">#</th>
+      <th className="text-center bg-color">{t('breed_name')}</th>
+      <th className="text-center bg-color">{t('average_daily_gain')}</th>
+      <th className="text-center bg-color">{t('feed_conversion_ratio')}</th>
+      <th className="text-center bg-color">{t('birth_weight')}</th>
+      <th className="text-center bg-color">{t('actions')}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {breed.map((breeds, index) => (
+      <tr key={breeds._id}>
+        <td>{(currentPage - 1) * breedPerPage + index + 1}</td>
+        <td>{breeds.breedName}</td>
+        <td className="text-center">
+          {breeds.standards?.adg !== null ? breeds.standards.adg : "-"}
+        </td>
+        <td className="text-center">
+          {breeds.standards?.fcr !== null ? breeds.standards.fcr : "-"}
+        </td>
+        <td className="text-center">
+          {breeds.standards?.birthWeight !== null ? breeds.standards.birthWeight : "-"}
+        </td>
+        <td className="text-center">
+          <button
+            className="btn btn-link p-0 me-2"
+            onClick={() => editBreed(breeds._id)}
+            title={t('edit')}
+            style={{ color: "#0f7e34ff" }}
+          >
+            <FaRegEdit />
+          </button>
+          <button
+            className="btn btn-link p-0"
+            style={{ color: "#d33" }}
+            onClick={() => handleClick(breeds._id)}
+            title={t('delete')}
+          >
+            <RiDeleteBinLine />
+          </button>
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
             </div>
           </div>
 
           <div className="d-flex justify-content-center mt-4">
             <nav>{renderModernPagination()}</nav>
           </div>
+        </div>
         </div>
       )}
     </>
