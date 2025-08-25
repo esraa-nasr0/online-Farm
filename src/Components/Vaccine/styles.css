@@ -2,7 +2,10 @@
   background-color: #e3e3e3 !important;
   color: #808080 !important;
 }
-
+.custom-section-title {
+  font-size: 1.4rem;  /* حجم أكبر مستوى من العادة */
+  line-height: 1.2;
+}
 .vaccine-table-container {
   background-color: white;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* ظل ناعم */
