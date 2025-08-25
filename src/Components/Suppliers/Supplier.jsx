@@ -111,6 +111,7 @@ function Supplier() {
       .matches(/^[0-9]+$/, t("Phone must be digits only")),
     company: Yup.string().required(t("Company is required")),
     notes: Yup.string().max(200, t("Notes must be less than 200 characters")),
+    supplyType: Yup.string().required(t("supplyType is required")),
   });
 
   const formik = useFormik({
@@ -122,6 +123,7 @@ function Supplier() {
       notes: "",
       treatmentIds: [],
       feedIds: [],
+      supplyType:"",
     },
     validationSchema,
     onSubmit: addSupplier,
@@ -174,7 +176,7 @@ function Supplier() {
         <h1>{t("add_supplier")}</h1>
       </div>
 
-      {error && <div className="error-message">{error}</div>}
+      {error && <div className="error-message container">{error}</div>}
 
       <form onSubmit={formik.handleSubmit} className="treatment-form container">
         <div className="form-grid">
@@ -230,6 +232,18 @@ function Supplier() {
               )}
             </div>
             <div className="input-group">
+              <label>{t("supplyType")}</label>
+              <input
+                placeholder={t("supplyType")}
+                type="text"
+                {...formik.getFieldProps("supplyType")}
+                disabled={isSubmitted}
+              />
+              {formik.touched.supplyType && formik.errors.supplyType && (
+                <div className="error-text">{formik.errors.supplyType}</div>
+              )}
+            </div>
+            <div className="input-group">
               <label>{t("notes")}</label>
               <textarea
                 placeholder={t("placeholder_notes")}
@@ -243,7 +257,7 @@ function Supplier() {
           </div>
 
           {/* Treatments */}
-          <div className="form-section">
+          {/* <div className="form-section">
             <h2>{t("treatments")}</h2>
             {formik.values.treatmentIds.map((value, index) => (
               <div key={index} className="input-group">
@@ -286,10 +300,10 @@ function Supplier() {
                 +
               </button>
             )}
-          </div>
+          </div> */}
 
           {/* Feeds */}
-          <div className="form-section">
+          {/* <div className="form-section">
             <h2>{t("feeds")}</h2>
             {formik.values.feedIds.map((value, index) => (
               <div key={index} className="input-group">
@@ -332,7 +346,8 @@ function Supplier() {
                 +
               </button>
             )}
-          </div>
+          </div> */}
+
         </div>
 
         {/* Save Button */}

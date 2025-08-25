@@ -98,14 +98,24 @@ function BreedPost() {
 
     // **Formik Setup**
     let formik = useFormik({
-        initialValues: {
-            breedName: "", 
-        },
-        validationSchema: Yup.object({
-            breedName: Yup.string().required("Breed Name is required"),
-        }),
-onSubmit: submitBreed,
-    });
+  initialValues: {
+    breedName: "",
+    standards: {
+      adg: "",
+      fcr: "",
+      birthWeight: "",
+    },
+  },
+  validationSchema: Yup.object({
+    breedName: Yup.string().required("Breed Name is required"),
+    standards: Yup.object({
+      adg: Yup.number().required("ADG is required"),
+      fcr: Yup.number().required("FCR is required"),
+      birthWeight: Yup.number().required("Birth Weight is required"),
+    }),
+  }),
+  onSubmit: submitBreed,
+});
 
     // Detect if input is in Arabic or English
     const isArabic = (text) => {
@@ -203,6 +213,60 @@ onSubmit: submitBreed,
                             )}
                         </div>
                     </div>
+                     {/* standards fields */}
+    <div className="form-section">
+  <div className="input-group">
+    <label className="label" htmlFor="adg">{t("average_daily_gain")}</label>
+    <input
+      type="number"
+      step="0.01"
+      id="adg"
+      name="standards.adg"
+      value={formik.values.standards.adg}
+      onChange={formik.handleChange}
+      className="input2"
+      placeholder={t("enter_adg")}
+    />
+    {formik.errors.standards?.adg && formik.touched.standards?.adg && (
+      <p className="text-danger">{formik.errors.standards.adg}</p>
+    )}
+  </div>
+
+  <div className="input-group">
+    <label className="label" htmlFor="fcr">{t("feed_conversion_ratio")}</label>
+    <input
+      type="number"
+      step="0.01"
+      id="fcr"
+      name="standards.fcr"
+      value={formik.values.standards.fcr}
+      onChange={formik.handleChange}
+      className="input2"
+      placeholder={t("enter_fcr")}
+    />
+    {formik.errors.standards?.fcr && formik.touched.standards?.fcr && (
+      <p className="text-danger">{formik.errors.standards.fcr}</p>
+    )}
+  </div>
+
+  <div className="input-group">
+    <label className="label" htmlFor="birthWeight">{t("birth_weight")}</label>
+    <input
+      type="number"
+      step="0.01"
+      id="birthWeight"
+      name="standards.birthWeight"
+      value={formik.values.standards.birthWeight}
+      onChange={formik.handleChange}
+      className="input2"
+      placeholder={t("enter_birth_weight")}
+    />
+    {formik.errors.standards?.birthWeight && formik.touched.standards?.birthWeight && (
+      <p className="text-danger">{formik.errors.standards.birthWeight}</p>
+    )}
+  </div>
+</div>
+
                 </div>
                 <div className="form-actions">
                     <button type="submit" className="save-button" disabled={isLoading}>
