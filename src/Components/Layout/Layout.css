@@ -2,6 +2,12 @@
   --rail-w: 72px;
   --panel-w: 280px;
 }
+.app-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin-left: 13px;
+}
 
 /* وجود السايدبار (مقفول = rail فقط) */
 .content-wrapper.should-show-sidebar.ltr { padding-left: var(--rail-w); transition: padding .28s ease; }

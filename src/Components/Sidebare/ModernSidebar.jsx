@@ -48,8 +48,6 @@ export default function ModernSidebar({
           subItems: [
             { name: "Suppliers Data", path: "/supplierTable" },
             { name: "Add Suppliers", path: "/supplier" },
-            { name: "Add Suppliers Treatment", path: "/linkSupplierTreatment" },
-            { name: "Add Suppliers Feed", path: "/linkSupplierFeed" },
           ],
         },
       ],
@@ -124,8 +122,6 @@ export default function ModernSidebar({
           name: "treatment",
           icon: <FaPills />,
           subItems: [
-            { name: "treatment Data", path: "/treatmentTable" },
-            { name: "add Treatment", path: "/treatment" },
             { name: "show By Animal", path: "/treatAnimalTable" },
             { name: "add By Animal", path: "/treatmentAnimal" },
             { name: "add By Location", path: "/treatmentLocation" },

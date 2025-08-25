@@ -9,6 +9,7 @@ import { VaccineanimalContext } from '../../Context/VaccineanimalContext';
 import axios from 'axios';
 import "./styles.css";
 import { RiDeleteBinLine } from "react-icons/ri";
+import { FiSearch } from "react-icons/fi";
 
 if (typeof document !== 'undefined' && !document.getElementById('vaccine-modern-table-style')) {
   const style = document.createElement('style');
@@ -357,9 +358,87 @@ function Vaccinebyanimaltable() {
         <Rings visible={true} height="100" width="100" color="#21763e" ariaLabel="rings-loading" />
       </div>
     ) : (
+      <div className='container mt-4'>
+                  <h2 className="vaccine-table-title">{t('Vaccines')}</h2>
+
+            <div className="container mt-5 vaccine-table-container">
+  <h6 className="mb-3 fw-bold custom-section-title">
+    {t("filter_vaccines")}
+  </h6>
+
+  <div className="row g-2 mt-3 mb-3 align-items-end">
+    {/* Tag ID */}
+    <div className="col-12 col-sm-6 col-md-3">
+      <label htmlFor="tagIdInput" className="form-label">
+        {t("tag_id")}
+      </label>
+      <input
+        type="text"
+        id="tagIdInput"
+        className="form-control"
+        placeholder={t("search_tag_id")}
+        value={searchCriteria.tagId}
+        onChange={(e) =>
+          setSearchCriteria({
+            ...searchCriteria,
+            tagId: e.target.value,
+          })
+        }
+      />
+    </div>
+
+    {/* Vaccine Name */}
+    <div className="col-12 col-sm-6 col-md-3">
+      <label htmlFor="vaccineNameInput" className="form-label">
+        {t("vaccine_name")}
+      </label>
+      <input
+        type="text"
+        id="vaccineNameInput"
+        className="form-control"
+        placeholder={t("search_by_vaccine_name")}
+        value={searchCriteria.vaccineName}
+        onChange={(e) =>
+          setSearchCriteria({
+            ...searchCriteria,
+            vaccineName: e.target.value,
+          })
+        }
+      />
+    </div>
+
+    {/* Location Shed */}
+    <div className="col-12 col-sm-6 col-md-3">
+      <label htmlFor="locationShedInput" className="form-label">
+        {t("location_shed")}
+      </label>
+      <input
+        type="text"
+        id="locationShedInput"
+        className="form-control"
+        placeholder={t("search_by_location_shed")}
+        value={searchCriteria.locationShed}
+        onChange={(e) =>
+          setSearchCriteria({
+            ...searchCriteria,
+            locationShed: e.target.value,
+          })
+        }
+      />
+    </div>
+
+    {/* Search Button */}
+    <div className="col-12 d-flex justify-content-end mt-2">
+      <button className="btn btn-success" onClick={handleSearch}>
+        <FiSearch /> {t("search")}
+      </button>
+    </div>
+  </div>
+</div>
+
+
       <div className="container mt-5 vaccine-table-container">
-        <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mt-5 mb-3">
-          <h2 className="vaccine-table-title">{t('Vaccines')}</h2>
+        <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mt-3 mb-3">
           <div className="d-flex flex-wrap gap-2">
             <button className="btn btn-outline-dark" onClick={handleExportToExcel} title={t('export_all_data')}>
               <i className="fas fa-download me-1"></i> {t('export_all_data')}
@@ -373,40 +452,9 @@ function Vaccinebyanimaltable() {
             </label>
           </div>
         </div>
-        <div className="row g-2 mb-3">
-          <div className="col-md-4">
-            <input
-              type="text"
-              className="form-control"
-              placeholder={t('search_tag_id')}
-              value={searchCriteria.tagId}
-              onChange={e => setSearchCriteria(prev => ({ ...prev, tagId: e.target.value }))}
-            />
-          </div>
-          <div className="col-md-4">
-            <input
-              type="text"
-              className="form-control"
-              placeholder={t('search_by_vaccine_name')}
-              value={searchCriteria.vaccineName}
-              onChange={e => setSearchCriteria(prev => ({ ...prev, vaccineName: e.target.value }))}
-            />
-          </div>
-          <div className="col-md-4">
-            <input
-              type="text"
-              className="form-control"
-              placeholder={t('search_by_location_shed')}
-              value={searchCriteria.locationShed}
-              onChange={e => setSearchCriteria(prev => ({ ...prev, locationShed: e.target.value }))}
-            />
-          </div>
-          <div className="d-flex justify-content-end mb-3">
-            <button className="btn btn-outline-secondary" onClick={handleSearch}>{t('search')}</button>
-          </div>
-        </div>
+        
       
-        <div className="table-responsive">
+        <div className="table-responsive mt-3">
           <table className="table table-hover align-middle bg-white">
             <thead className='bg-color'>
               <tr className='bg-color'>  
@@ -465,6 +513,7 @@ function Vaccinebyanimaltable() {
             {renderModernPagination()}
           </nav>
         </div>
+      </div>
       </div>
     )
   );

@@ -147,9 +147,11 @@ function LocationTable() {
           />
         </div>
       ) : (
+                <div className="container mt-4">
+            <h2 className="vaccine-table-title">{t("location_shed")}</h2>
+
         <div className="container mt-5 vaccine-table-container">
           <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mt-5 mb-3">
-            <h2 className="vaccine-table-title">{t("location_shed")}</h2>
 
             {/* 
         <div className="d-flex flex-wrap gap-2">
@@ -168,7 +170,7 @@ function LocationTable() {
 
           <div className="table-responsive">
             <div className="full-width-table">
-              <table className="table table-hover mt-5">
+              <table className="table table-hover mt-2">
                 <thead>
                   <tr>
                     <th className="text-center bg-color">#</th>
@@ -213,6 +215,7 @@ function LocationTable() {
           <div className="d-flex justify-content-center mt-4">
             <nav>{renderModernPagination()}</nav>
           </div>
+        </div>
         </div>
       )}
     </>

@@ -1,10 +1,11 @@
-import  { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import { TreatmentContext } from "../../Context/TreatmentContext";
 import { Rings } from "react-loader-spinner";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import {  RiDeleteBinLine } from "react-icons/ri";
+import { RiDeleteBinLine } from "react-icons/ri";
 import { FaRegEdit } from "react-icons/fa";
+import { FiSearch } from "react-icons/fi";
 import { useTranslation } from "react-i18next";
 import "../Vaccine/styles.css";
 
@@ -21,23 +22,20 @@ function TreatAnimalTable() {
   const [TreatAnimalPerPage] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
 
-  const [searchLocationShed, setSearchLocationShed] = useState("");
-  const [searchDate, setSearchDate] = useState("");
-  const [searchTagId, setSearchTagId] = useState("");
+  const [searchCriteria, setSearchCriteria] = useState({
+    tagId: "",
+    locationShed: "",
+    date: "",
+  });
 
   const fetchTreatment = async () => {
     setIsLoading(true);
     setError(null);
-    const filters = {
-      tagId: searchTagId,
-      locationShed: searchLocationShed,
-      date: searchDate,
-    };
     try {
       const { data } = await getTreatmentByAnimal(
         currentPage,
         TreatAnimalPerPage,
-        filters
+        searchCriteria
       );
       setTreatment(data?.data?.treatmentShed || []);
       setTotalPages(data.data.pagination?.totalPages);
@@ -55,12 +53,9 @@ function TreatAnimalTable() {
   const deleteItem = async (id) => {
     try {
       await deleteTreatmentByAnimal(id);
-      setTreatment((prevTreatment) =>
-        prevTreatment.filter((item) => item._id !== id)
-      );
+      setTreatment((prev) => prev.filter((item) => item._id !== id));
       Swal.fire(t("deleted_success"), "", "success");
     } catch (error) {
-      console.error("Failed to delete treatment:", error);
       Swal.fire(t("error_fetching_data"), "", "error");
     }
   };
@@ -89,9 +84,9 @@ function TreatAnimalTable() {
   };
 
   const renderModernPagination = () => {
-    const total = totalPages;
     const pageButtons = [];
     const maxButtons = 5;
+
     const addPage = (page) => {
       pageButtons.push(
         <li
@@ -104,52 +99,44 @@ function TreatAnimalTable() {
         </li>
       );
     };
-    if (total <= maxButtons) {
-      for (let i = 1; i <= total; i++) addPage(i);
+
+    if (totalPages <= maxButtons) {
+      for (let i = 1; i <= totalPages; i++) addPage(i);
     } else {
       addPage(1);
       if (currentPage > 3) {
-        pageButtons.push(
-          <li key="start-ellipsis" className="pagination-ellipsis">
-            ...
-          </li>
-        );
+        pageButtons.push(<li key="start-ellipsis">...</li>);
       }
       let start = Math.max(2, currentPage - 1);
-      let end = Math.min(total - 1, currentPage + 1);
+      let end = Math.min(totalPages - 1, currentPage + 1);
       if (currentPage <= 3) end = 4;
-      if (currentPage >= total - 2) start = total - 3;
-      for (let i = start; i <= end; i++) {
-        if (i > 1 && i < total) addPage(i);
+      if (currentPage >= totalPages - 2) start = totalPages - 3;
+      for (let i = start; i <= end; i++) addPage(i);
+      if (currentPage < totalPages - 2) {
+        pageButtons.push(<li key="end-ellipsis">...</li>);
       }
-      if (currentPage < total - 2) {
-        pageButtons.push(
-          <li key="end-ellipsis" className="pagination-ellipsis">
-            ...
-          </li>
-        );
-      }
-      addPage(total);
+      addPage(totalPages);
     }
+
     return (
       <ul className="pagination">
         <li className={`page-item${currentPage === 1 ? " disabled" : ""}`}>
           <button
-            className="page-link pagination-arrow"
+            className="page-link"
             onClick={() => paginate(currentPage - 1)}
-            disabled={currentPage === 1}
           >
-            &lt; Back
+            &lt; {t("back")}
           </button>
         </li>
         {pageButtons}
-        <li className={`page-item${currentPage === total ? " disabled" : ""}`}>
+        <li
+          className={`page-item${currentPage === totalPages ? " disabled" : ""}`}
+        >
           <button
-            className="page-link pagination-arrow"
+            className="page-link"
             onClick={() => paginate(currentPage + 1)}
-            disabled={currentPage === total}
           >
-            Next &gt;
+            {t("next")} &gt;
           </button>
         </li>
       </ul>
@@ -164,88 +151,102 @@ function TreatAnimalTable() {
   return (
     <>
       {isLoading ? (
-        <div
-          className="d-flex justify-content-center align-items-center"
-          style={{ height: "100vh" }}
-        >
-          <Rings
-            visible={true}
-            height="100"
-            width="100"
-            color="#21763e"
-            ariaLabel="rings-loading"
-          />
+        <div className="animal">
+          <Rings height="100" width="100" color="#21763e" />
         </div>
       ) : (
-        <div className="container mt-5 vaccine-table-container">
+        <div className="container mt-4">
           <h2 className="vaccine-table-title">{t("treatment_by_animal")}</h2>
 
-          <div className="row g-2 mb-3">
-            <div className="col-md-4">
-              <input
-                type="text"
-                className="form-control me-2 mb-2"
-                placeholder={t("search_tag_id")}
-                value={searchTagId}
-                onChange={(e) => setSearchTagId(e.target.value)}
-                style={{ flex: 1 }}
-              />
-            </div>
-            <div className="col-md-4">
-              <input
-                type="text"
-                className="form-control me-2 mb-2"
-                placeholder={t("search_location_shed")}
-                value={searchLocationShed}
-                onChange={(e) => setSearchLocationShed(e.target.value)}
-                style={{ flex: 1 }}
-              />
-            </div>
-            <div className="col-md-4">
-              <input
-                type="text"
-                className="form-control me-2 mb-2"
-                placeholder={t("search_date")}
-                value={searchDate}
-                onChange={(e) => setSearchDate(e.target.value)}
-                style={{ flex: 1 }}
-              />
-            </div>
-            <div className="d-flex justify-content-end mb-3">
-              <button
-                className="btn btn-outline-secondary"
-                onClick={handleSearch}
-              >
-                {t("search")}
-              </button>
+          {/* Filter Section */}
+          <div className="container mt-5 vaccine-table-container">
+            <h6 className="mb-3 fw-bold custom-section-title">
+              {t("filter_treatments")}
+            </h6>
+
+            <div className="row g-2 mt-3 mb-3 align-items-end">
+              <div className="col-12 col-sm-6 col-md-3">
+                <label htmlFor="tagIdInput" className="form-label">
+                  {t("tag_id")}
+                </label>
+                <input
+                  type="text"
+                  id="tagIdInput"
+                  className="form-control"
+                  placeholder={t("search_tag_id")}
+                  value={searchCriteria.tagId}
+                  onChange={(e) =>
+                    setSearchCriteria({
+                      ...searchCriteria,
+                      tagId: e.target.value,
+                    })
+                  }
+                />
+              </div>
+
+              <div className="col-12 col-sm-6 col-md-3">
+                <label htmlFor="locationShedInput" className="form-label">
+                  {t("location_shed")}
+                </label>
+                <input
+                  type="text"
+                  id="locationShedInput"
+                  className="form-control"
+                  placeholder={t("search_location_shed")}
+                  value={searchCriteria.locationShed}
+                  onChange={(e) =>
+                    setSearchCriteria({
+                      ...searchCriteria,
+                      locationShed: e.target.value,
+                    })
+                  }
+                />
+              </div>
+
+              <div className="col-12 col-sm-6 col-md-3">
+                <label htmlFor="dateInput" className="form-label">
+                  {t("date")}
+                </label>
+                <input
+                  type="date"
+                  id="dateInput"
+                  className="form-control"
+                  value={searchCriteria.date}
+                  onChange={(e) =>
+                    setSearchCriteria({
+                      ...searchCriteria,
+                      date: e.target.value,
+                    })
+                  }
+                />
+              </div>
+
+              <div className="col-12 d-flex justify-content-end mt-2">
+                <button className="btn btn-success" onClick={handleSearch}>
+                  <FiSearch /> {t("search")}
+                </button>
+              </div>
             </div>
           </div>
 
-          {error && <p className="text-danger mt-3">{error}</p>}
-
-          <div className="table-responsive">
-            <div className="full-width-table">
-              <table className="table align-middle">
+          {/* Table Section */}
+          <div className="container mt-5 vaccine-table-container">
+            <div className="table-responsive">
+              <table className="table align-middle mt-4">
                 <thead>
                   <tr>
-                    <th scope="col" className="text-center bg-color">
-                      #
-                    </th>
-                    <th scope="col" className="text-center bg-color">
-                      {t("tag_id")}
-                    </th>
-                    <th scope="col" className="text-center bg-color">
+                    <th className="text-center bg-color">#</th>
+                    <th className="text-center bg-color">{t("tag_id")}</th>
+                    <th className="text-center bg-color">
                       {t("location_shed")}
                     </th>
-                    <th scope="col" className="text-center bg-color">
+                    <th className="text-center bg-color">
                       {t("treatment_name")}
                     </th>
-                    <th scope="col" className="text-center bg-color">
+                    <th className="text-center bg-color">
                       {t("volumePerAnimal")}
                     </th>
-                    <th scope="col" className="text-center bg-color">
-                      {t("date")}
-                    </th>
+                    <th className="text-center bg-color">{t("date")}</th>
                     <th className="text-center bg-color">{t("actions")}</th>
                   </tr>
                 </thead>
@@ -253,41 +254,36 @@ function TreatAnimalTable() {
                   {treatment.length > 0 ? (
                     treatment.map((item, index) => (
                       <tr key={item._id || index}>
-                        <th scope="row">
+                        <th className="text-center">
                           {(currentPage - 1) * TreatAnimalPerPage + index + 1}
                         </th>
-                        <td>{item.tagId}</td>
-                        <td>
+                        <td className="text-center">{item.tagId}</td>
+                        <td className="text-center">
                           {item.locationShed?.locationShedName ||
                             item.locationShed ||
                             "-"}
                         </td>
-                        <td>
-                          {item.treatments && item.treatments[0]
-                            ? item.treatments[0].treatmentName
-                            : "No Treatment"}
+                        <td className="text-center">
+                          {item.treatments?.[0]?.treatmentName || "No Treatment"}
                         </td>
-                        <td>
-                          {item.treatments && item.treatments[0]
-                            ? item.treatments[0].volumePerAnimal
-                            : "N/A"}
+                        <td className="text-center">
+                          {item.treatments?.[0]?.volumePerAnimal || "N/A"}
                         </td>
-                        <td>{new Date(item.date).toLocaleDateString()}</td>
-
+                        <td className="text-center">
+                          {new Date(item.date).toLocaleDateString()}
+                        </td>
                         <td className="text-center">
                           <button
                             className="btn btn-link p-0 me-2"
                             onClick={() => editTreatment(item._id)}
-                            title={t("edit")}
                             style={{ color: "#0f7e34ff" }}
                           >
                             <FaRegEdit />
                           </button>
                           <button
-                            className="btn btn-link  p-0"
-                            style={{ color:"#d33" }}
+                            className="btn btn-link p-0"
                             onClick={() => confirmDelete(item._id)}
-                            title={t("delete")}
+                            style={{ color: "#d33" }}
                           >
                             <RiDeleteBinLine />
                           </button>
@@ -296,7 +292,7 @@ function TreatAnimalTable() {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="8" className="text-center">
+                      <td colSpan="7" className="text-center">
                         {t("no_treatments_found")}
                       </td>
                     </tr>
@@ -304,10 +300,11 @@ function TreatAnimalTable() {
                 </tbody>
               </table>
             </div>
-          </div>
 
-          <div className="d-flex justify-content-center mt-4">
-            <nav>{renderModernPagination()}</nav>
+            {/* Pagination */}
+            <div className="d-flex justify-content-center mt-4">
+              <nav>{renderModernPagination()}</nav>
+            </div>
           </div>
         </div>
       )}

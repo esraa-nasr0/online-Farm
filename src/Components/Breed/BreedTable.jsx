@@ -155,7 +155,7 @@ function BreedTable() {
 
           <div className="table-responsive">
             <div className="full-width-table">
-              <table className="table table-hover mt-5">
+              <table className="table table-hover mt-2">
   <thead>
     <tr>
       <th className="text-center bg-color">#</th>
