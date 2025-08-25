@@ -2,7 +2,7 @@
 
 /* ===== Theme (قابلة للتعديل) ===== */
 :root {
-  --msb-bg: #f4f6f9;                
+  --msb-bg: white;                
   --msb-bg-2: #e1e7f5;              
   --msb-accent: #e3e9f4;            
   --msb-text: #000000;              /* النص الأساسي + الأيقونات أسود */
