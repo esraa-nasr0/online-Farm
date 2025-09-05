@@ -235,7 +235,7 @@ export default function ModernSidebar({
 
             <div className="brand">
               <div className="mark" />
-              <span>HALAL LAB</span>
+              <span>ONLINE FARM</span>
             </div>
           </div>
 
