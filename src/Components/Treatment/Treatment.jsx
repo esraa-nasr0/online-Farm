@@ -16,6 +16,24 @@ const buildAuthHeaders = () => {
 
 const API = "https://farm-project-bbzj.onrender.com";
 
+/* ================= Helpers للصلاحية (< 6 شهور) ================= */
+const addMonths = (date, months) => {
+  const d = new Date(date);
+  const day = d.getDate();
+  d.setMonth(d.getMonth() + months);
+  // معالجة نهاية الشهر (مثلاً 31 + 1 شهر)
+  if (d.getDate() < day) d.setDate(0);
+  return d;
+};
+
+const isExpiringInLessThanSixMonths = (isoDateStr) => {
+  if (!isoDateStr) return false;
+  const exp = new Date(`${isoDateStr}T00:00:00`);
+  const sixMonthsAhead = addMonths(new Date(), 6);
+  return exp < sixMonthsAhead;
+};
+/* =============================================================== */
+
 export default function Treatment() {
   const { t } = useTranslation();
 
@@ -55,7 +73,9 @@ export default function Treatment() {
     }
 
     fetchSuppliers();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   // التحقق
@@ -83,13 +103,29 @@ export default function Treatment() {
     onSubmit: submitTreatment,
   });
 
-  // إرسال النموذج
+  // إرسال النموذج (بالتأكيد على الصلاحية < 6 شهور)
   async function submitTreatment(values) {
     if (isSubmitted) return;
 
     try {
-      setIsLoading(true);
       setError(null);
+
+      // ✅ تحذير قبل الإرسال لو أقل من 6 شهور
+      if (values.expireDate && isExpiringInLessThanSixMonths(values.expireDate)) {
+        const result = await Swal.fire({
+          title: t("Expiry Warning"),
+                    text: t("The expiry date is lessthan 6 months. Do you want to continue?"),
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: t("Yes"),
+                    cancelButtonText: t("No"),
+        });
+        if (!result.isConfirmed) {
+          return; // ❌ المستخدم لغى، ما نكمّلش
+        }
+      }
+
+      setIsLoading(true);
 
       // تجهيز البيانات (تضمين supplierId من الحالة أو فورميك)
       const payload = {
@@ -105,24 +141,24 @@ export default function Treatment() {
 
       const { data } = await axios.post(
         `${API}/api/treatment/addtreatment`,
-        payload,                                  // ✅ جسم الطلب الصحيح
-        { headers: buildAuthHeaders() }           // ✅ الإعدادات (الهيدر) كبراميتر ثالث
+        payload, // ✅ جسم الطلب
+        { headers: buildAuthHeaders() } // ✅ الهيدر
       );
 
       if (data?.status === "success") {
         setIsSubmitted(true);
         setTreatmentData(data.data.treatment);
         Swal.fire({
-          title: t("success") || "Success",
-          text: t("treatment_success_message") || "Treatment added successfully",
+          title: t("success") || "تم",
+          text: t("treatment_success_message") || "تم إضافة العلاج بنجاح",
           icon: "success",
-          confirmButtonText: t("ok") || "OK",
+          confirmButtonText: t("ok") || "حسناً",
         });
         formik.resetForm();
         setSupplierId("");
       }
     } catch (err) {
-      setError(err?.response?.data?.message || t("error_message") || "Something went wrong");
+      setError(err?.response?.data?.message || t("error_message") || "حدث خطأ ما");
     } finally {
       setIsLoading(false);
     }
@@ -200,7 +236,9 @@ export default function Treatment() {
             </div>
 
             <div className="input-group">
-              <label htmlFor="volumePerBottle">{t("volumePerBottle") || "Volume per Bottle"}</label>
+              <label htmlFor="volumePerBottle">
+                {t("volumePerBottle") || "Volume per Bottle"}
+              </label>
               <input
                 id="volumePerBottle"
                 type="number"
@@ -220,7 +258,9 @@ export default function Treatment() {
                 disabled={isSubmitted}
                 {...formik.getFieldProps("unitOfMeasure")}
               >
-                <option value="">{t("select_unit_of_measure") || "Select unit of measure"}</option>
+                <option value="">
+                  {t("select_unit_of_measure") || "Select unit of measure"}
+                </option>
                 <option value="ml">{t("ml") || "ml"}</option>
                 <option value="cm³">{t("cm³") || "cm³"}</option>
                 <option value="ampoule">{t("ampoule") || "Ampoule"}</option>
@@ -255,6 +295,14 @@ export default function Treatment() {
               {formik.touched.expireDate && formik.errors.expireDate && (
                 <p className="error-message">{formik.errors.expireDate}</p>
               )}
+
+              {/* ملاحظة فورية لو أقل من 6 شهور */}
+              {formik.values.expireDate &&
+                isExpiringInLessThanSixMonths(formik.values.expireDate) && (
+                  <small className="warning-text" style={{ display: "block", marginTop: 6 }}>
+                    {t("short_expiry_hint") || "تنبيه: الصلاحية أقل من 6 شهور."}
+                  </small>
+                )}
             </div>
           </div>
 
@@ -274,8 +322,8 @@ export default function Treatment() {
               >
                 <option value="">
                   {loading.suppliers
-                    ? (t("loading") || "Loading…")
-                    : (t("select_supplier") || "Select supplier")}
+                    ? t("loading") || "Loading…"
+                    : t("select_supplier") || "Select supplier"}
                 </option>
                 {suppliers.map((s) => (
                   <option key={s._id} value={s._id}>
@@ -288,12 +336,8 @@ export default function Treatment() {
         </div>
 
         <div className="form-actions">
-          <button
-            type="submit"
-            className="save-button"
-            disabled={isLoading}
-          >
-            {isLoading ? (t("loading") || "Loading...") : (t("save") || "Save")}
+          <button type="submit" className="save-button" disabled={isLoading}>
+            {isLoading ? t("loading") || "Loading..." : t("save") || "Save"}
           </button>
 
           {isSubmitted && (

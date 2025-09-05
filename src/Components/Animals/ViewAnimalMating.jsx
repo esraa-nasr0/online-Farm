@@ -113,9 +113,9 @@ function ViewAnimalMating({ animalId }) {
                       {formatDate(mating.sonarDate)}
                     </li>
                   )}
-                  {mating.sonarRsult && (
+                  {mating.sonarResult && (
                     <li>
-                      <strong>{t("sonar_result")}:</strong> {mating.sonarRsult}
+                      <strong>{t("sonar_result")}:</strong> {mating.sonarResult}
                     </li>
                   )}
                   {mating.expectedDeliveryDate && (

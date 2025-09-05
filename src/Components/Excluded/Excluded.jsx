@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useFormik } from 'formik';
-import  { useState } from 'react';
+import { useState } from 'react';
 import { IoIosSave } from "react-icons/io";
 import Swal from 'sweetalert2';
 import { useNavigate } from "react-router-dom";
@@ -12,12 +12,13 @@ function Excluded() {
     const navigate = useNavigate();
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
-        const [isSubmitted, setIsSubmitted] = useState(false);
-    
+    const [isSubmitted, setIsSubmitted] = useState(false);
 
     const getHeaders = () => {
         const Authorization = localStorage.getItem('Authorization');
-        return Authorization ? { Authorization: Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}` } : {};
+        return Authorization
+            ? { Authorization: Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}` }
+            : {};
     };
 
     async function submitExcluded(values) {
@@ -36,7 +37,7 @@ function Excluded() {
                     text: t('data_submitted'),
                     icon: "success",
                     confirmButtonText: t('ok'),
-                })
+                });
             }
         } catch (err) {
             setError(err.response?.data?.message || t('submit_error'));
@@ -54,11 +55,11 @@ function Excluded() {
     const formik = useFormik({
         initialValues: {
             tagId: '',
-            Date: '',
+            Date: '', // ⚠️ غيرها لـ date لو الـ API بيستقبل كده
             weight: '',
             excludedType: '',
             price: '',
-            reasoneOfDeath: ''
+            reasoneOfDeath: '' // ⚠️ غيرها لـ reasonOfDeath لو API بيستقبل كده
         },
         onSubmit: submitExcluded
     });
@@ -75,6 +76,7 @@ function Excluded() {
                 <div className="form-grid">
                     <div className="form-section">
                         <h2>{t('basic_info')}</h2>
+
                         <div className="input-group">
                             <label htmlFor="tagId">{t('tag_id')}</label>
                             <input
@@ -88,22 +90,6 @@ function Excluded() {
                             />
                             {formik.errors.tagId && formik.touched.tagId && (
                                 <p className="text-danger">{formik.errors.tagId}</p>
-                            )}
-                        </div>
-
-                        <div className="input-group">
-                            <label htmlFor="weight">{t('weight')}</label>
-                            <input
-                                type="number"
-                                id="weight"
-                                name="weight"
-                                value={formik.values.weight}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                placeholder={t('enter_weight')}
-                            />
-                            {formik.errors.weight && formik.touched.weight && (
-                                <p className="text-danger">{formik.errors.weight}</p>
                             )}
                         </div>
 
@@ -125,6 +111,7 @@ function Excluded() {
 
                     <div className="form-section">
                         <h2>{t('exclusion_details')}</h2>
+
                         <div className="input-group">
                             <label htmlFor="excludedType">{t('excluded_type')}</label>
                             <select
@@ -145,26 +132,44 @@ function Excluded() {
                         </div>
 
                         {formik.values.excludedType === 'sale' && (
-                            <div className="input-group">
-                                <label htmlFor="price">{t('price')}</label>
-                                <input
-                                    type="number"
-                                    id="price"
-                                    name="price"
-                                    value={formik.values.price}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    placeholder={t('enter_price')}
-                                />
-                                {formik.errors.price && formik.touched.price && (
-                                    <p className="text-danger">{formik.errors.price}</p>
-                                )}
-                            </div>
+                            <>
+                                <div className="input-group">
+                                    <label htmlFor="price">{t('price')}</label>
+                                    <input
+                                        type="number"
+                                        id="price"
+                                        name="price"
+                                        value={formik.values.price}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        placeholder={t('enter_price')}
+                                    />
+                                    {formik.errors.price && formik.touched.price && (
+                                        <p className="text-danger">{formik.errors.price}</p>
+                                    )}
+                                </div>
+
+                                <div className="input-group">
+                                    <label htmlFor="weight">{t('weight')}</label>
+                                    <input
+                                        type="number"
+                                        id="weight"
+                                        name="weight"
+                                        value={formik.values.weight}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        placeholder={t('enter_weight')}
+                                    />
+                                    {formik.errors.weight && formik.touched.weight && (
+                                        <p className="text-danger">{formik.errors.weight}</p>
+                                    )}
+                                </div>
+                            </>
                         )}
 
-                        {(formik.values.excludedType === 'death' || formik.values.excludedType === 'sweep') && (
+                        {formik.values.excludedType === 'death'  && (
                             <div className="input-group">
-                                <label htmlFor="reasoneOfDeath">{t('reason')}</label>
+                                <label htmlFor="reasoneOfDeath">{t('Reason')}</label>
                                 <input
                                     type="text"
                                     id="reasoneOfDeath"
@@ -179,6 +184,24 @@ function Excluded() {
                                 )}
                             </div>
                         )}
+
+                        {formik.values.excludedType === 'sweep' &&(
+                            <div className="input-group">
+                                    <label htmlFor="weight">{t('weight')}</label>
+                                    <input
+                                        type="number"
+                                        id="weight"
+                                        name="weight"
+                                        value={formik.values.weight}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        placeholder={t('enter_weight')}
+                                    />
+                                    {formik.errors.weight && formik.touched.weight && (
+                                        <p className="text-danger">{formik.errors.weight}</p>
+                                    )}
+                                </div>
+                        )}
                     </div>
                 </div>
 
@@ -192,19 +215,19 @@ function Excluded() {
                             </>
                         )}
                     </button>
-                    
+
                     {isSubmitted && (
-        <button
-            type="button"
-            className="save-button"
-            onClick={() => {
-                formik.resetForm();
-                setIsSubmitted(false);
-            }}
-        >
-             {t('add_new_excluded')}
-        </button>
-    )}
+                        <button
+                            type="button"
+                            className="save-button"
+                            onClick={() => {
+                                formik.resetForm();
+                                setIsSubmitted(false);
+                            }}
+                        >
+                            {t('add_new_excluded')}
+                        </button>
+                    )}
                 </div>
             </form>
         </div>

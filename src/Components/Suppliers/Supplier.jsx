@@ -184,11 +184,11 @@ function Supplier() {
           <div className="form-section">
             <h2>{t("supplier_details")}</h2>
             <div className="input-group">
-              <label>{t("name")}</label>
+              <label>{t("Name")}</label>
               <input
                 placeholder={t("placeholder_name")}
                 type="text"
-                {...formik.getFieldProps("name")}
+                {...formik.getFieldProps("Name")}
                 disabled={isSubmitted}
               />
               {formik.touched.name && formik.errors.name && (

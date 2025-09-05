@@ -105,47 +105,72 @@ function Vaccinebyanimal() {
         },
         
         onSubmit: async (values) => {
-            const headers = getHeaders();
-            setIsLoading(true);
+    const headers = getHeaders();
+    setIsLoading(true);
 
-            const dataToSend = {
-                vaccineTypeId: values.vaccineTypeId,
-                otherVaccineName: values.otherVaccineName,
-                BoosterDose: Number(values.BoosterDose),
-                AnnualDose: Number(values.AnnualDose),
-                bottles: Number(values.bottles),
-                dosesPerBottle: Number(values.dosesPerBottle),
-                bottlePrice: Number(values.bottlePrice),
-                expiryDate: values.expiryDate
-            };
+    try {
+        // ✅ تحقق من تاريخ الانتهاء
+        if (values.expiryDate) {
+            const expiry = new Date(values.expiryDate);
+            const today = new Date();
+            const sixMonthsLater = new Date();
+            sixMonthsLater.setMonth(today.getMonth() + 6);
 
-            try {
-                const response = await axios.post(
-                    'https://farm-project-bbzj.onrender.com/api/vaccine/AddVaccine',
-                    dataToSend,
-                    { headers }
-                );
-
-                if (response.data.status === "success") {
-                    setIsSubmitted(true); // ✅ خلي الزر يظهر
-                    Swal.fire({
-                        title: t("Success"),
-                        text: t("Data has been submitted successfully!"),
-                        icon: "success",
-                        confirmButtonText: t("OK"),
-                    })
-                }
-            } catch (err) {
-                Swal.fire({
-                    title: t("Error"),
-                    text: err.response?.data?.message || t("An error occurred while submitting data."),
-                    icon: "error",
-                    confirmButtonText: t("OK"),
+            if (expiry <= sixMonthsLater) {
+                const result = await Swal.fire({
+                    title: t("Expiry Warning"),
+                    text: t("The expiry date is lessthan 6 months. Do you want to continue?"),
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: t("Yes"),
+                    cancelButtonText: t("No"),
                 });
-            } finally {
-                setIsLoading(false);
+
+                if (!result.isConfirmed) {
+                    setIsLoading(false);
+                    return; // ❌ وقف الإرسال
+                }
             }
-        },
+        }
+
+        const dataToSend = {
+            vaccineTypeId: values.vaccineTypeId,
+            otherVaccineName: values.otherVaccineName,
+            BoosterDose: Number(values.BoosterDose),
+            AnnualDose: Number(values.AnnualDose),
+            bottles: Number(values.bottles),
+            dosesPerBottle: Number(values.dosesPerBottle),
+            bottlePrice: Number(values.bottlePrice),
+            expiryDate: values.expiryDate
+        };
+
+        const response = await axios.post(
+            'https://farm-project-bbzj.onrender.com/api/vaccine/AddVaccine',
+            dataToSend,
+            { headers }
+        );
+
+        if (response.data.status === "success") {
+            setIsSubmitted(true);
+            Swal.fire({
+                title: t("Success"),
+                text: t("Data has been submitted successfully!"),
+                icon: "success",
+                confirmButtonText: t("OK"),
+            });
+        }
+    } catch (err) {
+        Swal.fire({
+            title: t("Error"),
+            text: err.response?.data?.message || t("An error occurred while submitting data."),
+            icon: "error",
+            confirmButtonText: t("OK"),
+        });
+    } finally {
+        setIsLoading(false);
+    }
+},
+
     });
 
     return (

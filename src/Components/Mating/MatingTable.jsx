@@ -25,7 +25,7 @@ function MatingTable() {
   const [searchCriteria, setSearchCriteria] = useState({
     tagId: "",
     matingDate: "",
-    sonarRsult: "",
+    sonarResult: "",
     animalType: "",
     sonarDate: "",
     matingName: "",
@@ -506,7 +506,7 @@ function MatingTable() {
                             : NO_DATE}
                         </td>
                         <td className="text-center">
-                          {mating.sonarRsult || "N/A"}
+                          {mating.sonarResult || "N/A"}
                         </td>
                         <td className="text-center">
                           {mating.expectedDeliveryDate

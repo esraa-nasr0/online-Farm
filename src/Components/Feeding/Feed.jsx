@@ -130,7 +130,7 @@ export default function Feed() {
                     <div className="form-section">
                         <h2>{t('feed_info')}</h2>
                         <div className="input-group">
-                            <label htmlFor="name">{t('name')}</label>
+                            <label htmlFor="name">{t('Name')}</label>
                             <input
                                 {...formik.getFieldProps("name")}
                                 placeholder={t('enter_feed_name')}
@@ -185,7 +185,7 @@ export default function Feed() {
                         </div>
                         
                         <div className="input-group">
-                            <label htmlFor="quantity">{t('quantity')} (ton)</label>
+                            <label htmlFor="quantity">{t('quantity')} </label>
                             <input
                                 {...formik.getFieldProps("quantity")}
                                 placeholder={t('enter_quantity')}

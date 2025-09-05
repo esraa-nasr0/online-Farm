@@ -23,6 +23,28 @@ function EditAnimal() {
   const { id } = useParams();
   const navigate = useNavigate();
 
+  // ===== Helpers =====
+  const getHeaders = () => {
+    const Authorization = localStorage.getItem("Authorization");
+    return Authorization
+      ? {
+          Authorization: Authorization.startsWith("Bearer ")
+            ? Authorization
+            : `Bearer ${Authorization}`,
+        }
+      : {};
+  };
+
+  const formatDate = (dateString) =>
+    dateString ? new Date(dateString).toISOString().split("T")[0] : "";
+
+  const convertToISO = (dateString) => {
+    if (!dateString) return undefined;
+    const date = new Date(dateString);
+    return isNaN(date) ? undefined : date.toISOString();
+  };
+
+  // ===== Decode token to detect fattening mode =====
   useEffect(() => {
     const token = localStorage.getItem("Authorization");
     if (token) {
@@ -35,25 +57,12 @@ function EditAnimal() {
     }
   }, []);
 
-  const getHeaders = () => {
-    const Authorization = localStorage.getItem("Authorization");
-    return Authorization
-      ? {
-          Authorization: Authorization.startsWith("Bearer ")
-            ? Authorization
-            : `Bearer ${Authorization}`,
-        }
-      : {};
-  };
-
+  // ===== Load menus =====
   useEffect(() => {
     const fetchLocation = async () => {
       try {
         const { data } = await LocationMenue();
-        if (
-          data.status === "success" &&
-          Array.isArray(data.data.locationSheds)
-        ) {
+        if (data.status === "success" && Array.isArray(data.data.locationSheds)) {
           setLocationSheds(data.data.locationSheds);
         }
       } catch {
@@ -77,44 +86,104 @@ function EditAnimal() {
     fetchBreed();
   }, [BreedMenue]);
 
+  // ===== Fetch current animal =====
+  async function fetchAnimal() {
+    const headers = getHeaders();
+    try {
+      let { data } = await axios.get(
+        `https://farm-project-bbzj.onrender.com/api/animal/getsinglanimals/${id}`,
+        { headers }
+      );
+
+      if (data.status === "success") {
+        const animal = data.data.animal;
+
+        // Calculate age from birthDate
+        let age = { years: 0, months: 0, days: 0 };
+        if (animal.birthDate) {
+          const birthDate = new Date(animal.birthDate);
+          const today = new Date();
+
+          let years = today.getFullYear() - birthDate.getFullYear();
+          let months = today.getMonth() - birthDate.getMonth();
+          let days = today.getDate() - birthDate.getDate();
+
+          if (days < 0) {
+            months--;
+            days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+          }
+          if (months < 0) {
+            years--;
+            months += 12;
+          }
+          age = { years, months, days };
+        }
+
+        formik.setValues({
+          tagId: animal.tagId || "",
+          animalType: animal.animalType || "",
+          breed: animal.breed?._id || "",
+          gender: animal.gender || "",
+          motherId: animal.motherId || "",
+          fatherId: animal.fatherId || "",
+          birthDate: formatDate(animal.birthDate),
+          locationShedName: animal.locationShed?._id || "",
+          female_Condition: animal.female_Condition || "",
+          animaleCondation: animal.animaleCondation || "",
+          traderName: animal.traderName || "",
+          purchaseDate: formatDate(animal.purchaseDate),
+          purchasePrice: animal.purchasePrice ?? "",
+          teething: animal.teething || "",
+          marketValue: animal.marketValue ?? "",
+          age,
+        });
+
+        setAnimalData(animal);
+      } else {
+        throw new Error(data.message || "Failed to fetch animal");
+      }
+    } catch (error) {
+      console.error("Error fetching animal:", error);
+      setError(error.response?.data?.message || "Failed to load animal data");
+    }
+  }
+
+  useEffect(() => {
+    if (!id || !/^[0-9a-fA-F]{24}$/.test(id)) {
+      setError("Invalid animal ID");
+      return;
+    }
+    fetchAnimal();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
+
+  // ===== Submit (PATCH) =====
   async function editAnimal(values) {
     const headers = getHeaders();
     setIsLoading(true);
     try {
-      const convertToISO = (dateString) => {
-        if (!dateString) return undefined;
-        const date = new Date(dateString);
-        return isNaN(date) ? undefined : date.toISOString();
-      };
-
       const updatedValues = {
         ...values,
         birthDate: convertToISO(values.birthDate),
         purchaseDate: convertToISO(values.purchaseDate),
-        // Ensure locationShed is sent as an object with _id if it's selected
-        locationShed: values.locationShedName
-          ? { _id: values.locationShedName }
-          : undefined,
-        // Ensure breed is sent as an object with _id if it's selected
+        locationShed: values.locationShedName ? { _id: values.locationShedName } : undefined,
         breed: values.breed ? { _id: values.breed } : undefined,
       };
 
-      // Remove undefined values and the locationShedName field
+      // Strip undefined + strip UI-only fields
       const payload = Object.fromEntries(
         Object.entries(updatedValues).filter(
-          ([_, v]) => v !== undefined && !["locationShedName"].includes(_)
+          ([k, v]) => v !== undefined && !["locationShedName"].includes(k)
         )
       );
 
-      console.log("Submitting form with values:", payload);
-      let { data } = await axios.patch(
+      const { data } = await axios.patch(
         `https://farm-project-bbzj.onrender.com/api/animal/updateanimal/${id}`,
         payload,
         { headers }
       );
 
       if (data.status === "success") {
-        setIsLoading(false);
         setAnimalData(data.data.animal);
         Swal.fire({
           title: t("success_title"),
@@ -129,86 +198,12 @@ function EditAnimal() {
         err.response?.data?.message ||
         "An error occurred while processing your request";
       setError(errorMessage);
-      console.log(err.response?.data);
+    } finally {
       setIsLoading(false);
     }
   }
 
-  async function fetchAnimal() {
-  const headers = getHeaders();
-  try {
-    let { data } = await axios.get(
-      `https://farm-project-bbzj.onrender.com/api/animal/getsinglanimals/${id}`,
-      { headers }
-    );
-
-    if (data.status === "success") {
-      const animal = data.data.animal;
-      console.log("Full animal data:", animal);
-
-      const formatDate = (dateString) =>
-        dateString ? new Date(dateString).toISOString().split("T")[0] : "";
-
-      // Calculate age from birthDate
-      let age = { years: 0, months: 0, days: 0 };
-      if (animal.birthDate) {
-        const birthDate = new Date(animal.birthDate);
-        const today = new Date();
-        
-        let years = today.getFullYear() - birthDate.getFullYear();
-        let months = today.getMonth() - birthDate.getMonth();
-        let days = today.getDate() - birthDate.getDate();
-        
-        if (days < 0) {
-          months--;
-          days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
-        }
-        
-        if (months < 0) {
-          years--;
-          months += 12;
-        }
-        
-        age = { years, months, days };
-      }
-
-      formik.setValues({
-        tagId: animal.tagId || "",
-        animalType: animal.animalType || "",
-        breed: animal.breed?._id || "",
-        gender: animal.gender || "",
-        motherId: animal.motherId || "",
-        fatherId: animal.fatherId || "",
-        birthDate: formatDate(animal.birthDate),
-        locationShedName: animal.locationShed?._id || "",
-        female_Condition: animal.female_Condition || "",
-        animaleCondation: animal.animaleCondation || "",
-        traderName: animal.traderName || "",
-        purchaseDate: formatDate(animal.purchaseDate),
-        purchasePrice: animal.purchasePrice || "",
-        teething: animal.teething || "",
-        age: age, // Set the calculated age
-        marketValue: animal.marketValue || "",
-      });
-
-      setAnimalData(animal);
-    } else {
-      throw new Error(data.message || "Failed to fetch animal");
-    }
-  } catch (error) {
-    console.error("Error fetching animal:", error);
-    setError(error.response?.data?.message || "Failed to load animal data");
-  }
-}
-
-  useEffect(() => {
-    if (!id || !/^[0-9a-fA-F]{24}$/.test(id)) {
-      setError("Invalid animal ID");
-      return;
-    }
-    fetchAnimal();
-  }, [id]);
-
+  // ===== Formik =====
   const formik = useFormik({
     initialValues: {
       tagId: "",
@@ -225,15 +220,32 @@ function EditAnimal() {
       purchaseDate: "",
       purchasePrice: "",
       teething: "",
-      marketValue:"",
-      age: {
-        years: 0,
-        months: 0,
-        days: 0,
-      },
+      marketValue: "",
+      age: { years: 0, months: 0, days: 0 },
     },
     onSubmit: (values) => editAnimal(values),
   });
+
+  // ===== Visibility logic: show sections if they have data (even if selector not chosen) =====
+  const hasPurchaseData =
+    !!(formik.values.traderName?.trim() ||
+       formik.values.purchaseDate ||
+       (formik.values.purchasePrice !== "" && formik.values.purchasePrice != null) ||
+       formik.values.teething);
+
+  const hasBornAtFarmData =
+    !!(formik.values.motherId?.trim() ||
+       formik.values.fatherId?.trim() ||
+       formik.values.birthDate);
+
+  const shouldShowPurchaseSection =
+    formik.values.animaleCondation === "purchase" || hasPurchaseData;
+
+  const shouldShowBornSection =
+    (!isFattening) && (formik.values.animaleCondation === "born at farm" || hasBornAtFarmData);
+
+  const shouldShowFemaleCondition =
+    (!isFattening) && (formik.values.gender === "female" || !!formik.values.female_Condition?.trim());
 
   return (
     <div className="animal-details-container">
@@ -245,8 +257,10 @@ function EditAnimal() {
 
       <form onSubmit={formik.handleSubmit} className="animal-form container">
         <div className="form-grid">
+          {/* ===== Basic Info ===== */}
           <div className="form-section">
             <h2>{t("basic_info")}</h2>
+
             <div className="input-group">
               <label htmlFor="tagId">{t("tag_id")}</label>
               <input
@@ -338,11 +352,13 @@ function EditAnimal() {
                   />
                 </div>
               </div>
-            </div> {/* This closing div was missing */}
+            </div>
           </div>
 
+          {/* ===== Animal Details ===== */}
           <div className="form-section">
             <h2>{t("animal_details")}</h2>
+
             <div className="input-group">
               <label htmlFor="animalType">{t("animal_type")}</label>
               <select
@@ -373,11 +389,10 @@ function EditAnimal() {
               </select>
             </div>
 
-            {formik.values.gender === "female" && !isFattening && (
+            {/* Female condition: show if gender is female OR has saved data (and not fattening) */}
+            {shouldShowFemaleCondition && (
               <div className="input-group">
-                <label htmlFor="female_Condition">
-                  {t("female_condition")}
-                </label>
+                <label htmlFor="female_Condition">{t("female_condition")}</label>
                 <input
                   type="text"
                   id="female_Condition"
@@ -391,8 +406,10 @@ function EditAnimal() {
             )}
           </div>
 
+          {/* ===== Acquisition Details ===== */}
           <div className="form-section">
             <h2>{t("acquisition_details")}</h2>
+
             <div className="input-group">
               <label htmlFor="animaleCondation">{t("animal_condition")}</label>
               <select
@@ -410,7 +427,8 @@ function EditAnimal() {
               </select>
             </div>
 
-            {formik.values.animaleCondation === "purchase" ? (
+            {/* Purchase section: show if selected OR data exists */}
+            {shouldShowPurchaseSection && (
               <>
                 <div className="input-group">
                   <label htmlFor="traderName">{t("trader_name")}</label>
@@ -466,61 +484,62 @@ function EditAnimal() {
                   </select>
                 </div>
               </>
-            ) : (
-              formik.values.animaleCondation === "born at farm" &&
-              !isFattening && (
-                <>
-                  <div className="input-group">
-                    <label htmlFor="motherId">{t("mother_id")}</label>
-                    <input
-                      type="text"
-                      id="motherId"
-                      name="motherId"
-                      value={formik.values.motherId}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      placeholder={t("enter_mother_id")}
-                    />
-                  </div>
+            )}
 
-                  <div className="input-group">
-                    <label htmlFor="fatherId">{t("father_id")}</label>
-                    <input
-                      type="text"
-                      id="fatherId"
-                      name="fatherId"
-                      value={formik.values.fatherId}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      placeholder={t("enter_father_id")}
-                    />
-                  </div>
+            {/* Born at farm section: show if selected OR data exists (and not fattening) */}
+            {shouldShowBornSection && (
+              <>
+                <div className="input-group">
+                  <label htmlFor="motherId">{t("mother_id")}</label>
+                  <input
+                    type="text"
+                    id="motherId"
+                    name="motherId"
+                    value={formik.values.motherId}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    placeholder={t("enter_mother_id")}
+                  />
+                </div>
 
-                  <div className="input-group">
-                    <label htmlFor="birthDate">{t("birth_date")}</label>
-                    <input
-                      type="date"
-                      id="birthDate"
-                      name="birthDate"
-                      value={formik.values.birthDate}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                    />
-                  </div>
-                  <div className="input-group">
-              <label htmlFor="marketValue">{t("market_value")}</label>
-              <input
-                type="number"
-                id="marketValue"
-                name="marketValue"
-                value={formik.values.marketValue}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                placeholder={t("enter_market_value")}
-              />
-            </div>
-                </>
-              )
+                <div className="input-group">
+                  <label htmlFor="fatherId">{t("father_id")}</label>
+                  <input
+                    type="text"
+                    id="fatherId"
+                    name="fatherId"
+                    value={formik.values.fatherId}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    placeholder={t("enter_father_id")}
+                  />
+                </div>
+
+                <div className="input-group">
+                  <label htmlFor="birthDate">{t("birth_date")}</label>
+                  <input
+                    type="date"
+                    id="birthDate"
+                    name="birthDate"
+                    value={formik.values.birthDate}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  />
+                </div>
+
+                <div className="input-group">
+                  <label htmlFor="marketValue">{t("market_value")}</label>
+                  <input
+                    type="number"
+                    id="marketValue"
+                    name="marketValue"
+                    value={formik.values.marketValue}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    placeholder={t("enter_market_value")}
+                  />
+                </div>
+              </>
             )}
           </div>
         </div>

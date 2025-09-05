@@ -35,8 +35,10 @@ function HomeServices() {
     }
   }, []);
 
+  
+
   return (
-    <div className="section ">
+    <div className="section container">
       <h2>{t("home_services")}</h2>
       <ul className="cards">
         <li className="card">
@@ -165,7 +167,7 @@ function HomeServices() {
               className="btn mb-2 me-2"
               style={{ backgroundColor: "#21763e", color: "white" }}
             >
-              {t("go_to_pharmacy")}
+              {t("go_to_Pharmacy")}
             </button>
           </Link>
         </li>

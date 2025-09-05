@@ -1,5 +1,5 @@
 // src/components/Layout/Layout.jsx
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../Navbar/Navbar";
 import { Outlet, useLocation } from "react-router-dom";
 import "./Layout.css";
@@ -12,12 +12,17 @@ const BASE_URL = "https://farm-project-bbzj.onrender.com";
 
 export default function Layout() {
   const location = useLocation();
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // دائماً يبدأ مغلقاً
   const { i18n } = useTranslation();
+
+  // ——— الحالة ثابتة ومحفوظة في localStorage ———
+  const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
+    const saved = localStorage.getItem("sidebarOpen");
+    return saved ? saved === "1" : false; // يبدأ مغلقاً لو مفيش قيمة محفوظة
+  });
+
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const isRTL = i18n.language === "ar";
   const [isFattening, setIsFattening] = useState(false);
-  const sidebarRef = useRef(null);
 
   // المسارات التي نخفي فيها الـ Sidebar
   const hideSidebarPaths = [
@@ -50,42 +55,24 @@ export default function Layout() {
 
   const unreadCount = notifications.filter((n) => !n.isRead).length;
 
-  // متابعة حجم الشاشة
+  // ——— تحديث الـ isMobile بدون ما نقفل السايدبار ———
   useEffect(() => {
     const handleResize = () => {
-      const mobile = window.innerWidth <= 768;
-      setIsMobile(mobile);
-      
-      // على الجوال، نغلق السايدبار تلقائياً عند تغيير حجم الشاشة
-      if (mobile && isSidebarOpen) {
-        setIsSidebarOpen(false);
-      }
+      setIsMobile(window.innerWidth <= 768);
     };
-
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [isSidebarOpen]);
+  }, []);
 
-  // إغلاق السايدبار عند النقر خارجه
+  // ——— حفظ حالة الفتح/الغلق ———
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (isSidebarOpen && 
-          sidebarRef.current && 
-          !sidebarRef.current.contains(event.target) &&
-          !event.target.closest('.navbar-toggle')) {
-        setIsSidebarOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    localStorage.setItem("sidebarOpen", isSidebarOpen ? "1" : "0");
   }, [isSidebarOpen]);
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(prev => !prev);
-  };
+  // ——— مفيش إغلاق عند الضغط خارج السايدبار ———
+  // (اتشال الـ useEffect الخاص بـ mousedown والإغلاق)
+
+  const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
   // منطق إظهار الـ Sidebar و Navbar
   const shouldShowSidebar = !hideSidebarPaths.includes(location.pathname);
@@ -93,8 +80,8 @@ export default function Layout() {
     location.pathname === "/" || location.pathname === "/home";
 
   return (
-<div className={`app-container ${isSidebarOpen && shouldShowSidebar ? "app-has-wide-sidebar" : ""}`}>
-        {shouldShowNavbar && (
+    <div className={`app-container ${isSidebarOpen && shouldShowSidebar ? "app-has-wide-sidebar" : ""}`}>
+      {shouldShowNavbar && (
         <Navbar
           toggleSidebar={toggleSidebar}
           isSidebarOpen={isSidebarOpen}
@@ -105,28 +92,27 @@ export default function Layout() {
       <div className={`content-wrapper ${isRTL ? "rtl" : "ltr"} ${shouldShowSidebar ? "should-show-sidebar" : "no-sidebar"}`}>
         {shouldShowSidebar && (
           <>
-            <div ref={sidebarRef}>
-              <ModernSidebar
-                isOpen={isSidebarOpen}
-                isMobile={isMobile}
-                isRTL={isRTL}
-                notificationCount={unreadCount}
-                isFattening={isFattening}
-                onLogout={() => { 
-                  localStorage.removeItem("Authorization"); 
-                  window.location.href="/"; 
-                }}
-                onChangeLanguage={(lang) => { 
-                  i18n.changeLanguage(lang); 
-                  localStorage.setItem("lang", lang); 
-                  document.dir = lang === "ar" ? "rtl" : "ltr"; 
-                }}
-                onToggle={toggleSidebar}
-              />
-            </div>
-            {isSidebarOpen && isMobile && (
-              <div className="sidebar-scrim" onClick={() => setIsSidebarOpen(false)} />
-            )}
+            {/* السايدبار نفسه */}
+            <ModernSidebar
+              isOpen={isSidebarOpen}
+              isMobile={isMobile}
+              isRTL={isRTL}
+              notificationCount={unreadCount}
+              isFattening={isFattening}
+              onLogout={() => {
+                localStorage.removeItem("Authorization");
+                window.location.href = "/";
+              }}
+              onChangeLanguage={(lang) => {
+                i18n.changeLanguage(lang);
+                localStorage.setItem("lang", lang);
+                document.dir = lang === "ar" ? "rtl" : "ltr";
+              }}
+              onToggle={toggleSidebar} // يفتح/يقفل من زرار الكولابس أو اللوجو فقط
+            />
+
+            {/* Scrim للموبايل للـ dim فقط — بدون onClick */}
+            {isSidebarOpen && isMobile && <div className="sidebar-scrim" />}
           </>
         )}
 

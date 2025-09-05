@@ -334,7 +334,7 @@
   "feed_name": "Feed Name",
   "total_consumed": "Total Consumed",
   "remaining_feed_stock": "Remaining Feed Stock",
-  "quantity": "Quantity",
+  "quantity": "Quantity (kg)",
   "treatment_consumption": "Treatment Consumption",
   "remaining_treatment_stock": "Remaining Treatment Stock",
   "vaccine_report": "Vaccine Report",
@@ -347,7 +347,8 @@
   "total_doses": "Total Doses",
   "bottle_price": "Bottle Price",
   "dose_price": "Dose Price",
-
+"select_excluded_type":"select excluded type",
+"exclusion_details":"Exclusion Details",
   "remove": "Remove ",
   "Vaccine_Records": "Vaccine Records",
 
@@ -1017,7 +1018,61 @@
   "filter_weights": "Filter Weights",
   "filter_animals_cost": "Filter Animals Cost",
   "filter_suppliers": "Filter Suppliers",
-  "weight_records": "Weight Records"
+  "weight_records": "Weight Records",
+
+  "notification_list": "Notification List",
+  "notifications": "Notifications",
+  "unread": "Unread",
+  "error_loading": "An error occurred while loading notifications.",
+  "mark_all_read": "Mark all as read",
+  "mark_read": "Mark as Read",
+  "no_notifications": "No notifications available.",
+  "confirm_title": "Are you sure?",
+  "confirm_text": "You won't be able to revert this!",
+  "confirm_btn": "Yes, delete it!",
+  "cancel_btn": "Cancel",
+  "deleted_title": "Deleted!",
+  "deleted_msg": "Your notification has been deleted.",
+  "load_error": "Failed to load notifications",
+  "mark_error": "Failed to mark as read",
+  "mark_success": "Notification marked as read",
+  "mark_all_error": "Failed to mark all as read",
+  "mark_all_success": "All notifications marked as read",
+
+    "supplyType": "Supply Type",
+
+     "age_at_weaning_days": "Age at weaning (days)",
+  "max_weaning_90_days": "Maximum weaning is 90 days",
+  "weight_interval_days": "Weight interval (days)",
+  "schedule_weighing_until_weaning": "Schedule weighing until weaning",
+  
+
+  "select_interval_days": "Select interval days",
+  "select interval days": "Select interval days",
+
+  "planned_weights": "Planned weigh dates",
+  "no_planned_weights": "No planned weights.",
+  "plans_summary": "Plans summary",
+  "planned_count": "count",
+
+  "copied": "Copied",
+
+  "failed_to_fetch": "Failed to fetch breeding data.",
+  "select": "Select",
+
+  "birth_entries_count_mismatch": "Birth entries count doesn't match number of births",
+  "calf_tag_required": "Calf tag is required",
+  "gender_required": "Gender is required",
+  "birth_weight_invalid": "Birth weight is invalid",
+  "age_at_weaning_invalid": "Age at weaning is invalid",
+  "weight_interval_invalid": "Weight interval is invalid",
+  "invalid_delivery_state": "Invalid delivery state",
+
+  "animal_information": "Animal Information",
+  "vaccine_details": "Vaccine Details",
+  "unknown_vaccine": "Unknown vaccine",
+  "date_information": "Date Information",
+  "failed_to_load_vaccines": "Failed to load vaccine list"
 
 
 
