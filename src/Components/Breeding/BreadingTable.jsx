@@ -329,7 +329,7 @@ function BreadingTable() {
 
           {/* Excel Buttons */}
           <div className="container mt-5 vaccine-table-container">
-            <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mt-3 mb-3">
+            {/* <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mt-3 mb-3">
               <div className="d-flex flex-wrap gap-2">
                 <button className="btn btn-outline-dark" onClick={handleExportToExcel}>
                   <i className="fas fa-download me-1"></i> {t("export_all_data")}
@@ -342,7 +342,7 @@ function BreadingTable() {
                   <input type="file" hidden accept=".xlsx,.xls" onChange={handleImportFromExcel} />
                 </label>
               </div>
-            </div>
+            </div> */}
 
             {/* Table */}
             <div className="table-responsive">
