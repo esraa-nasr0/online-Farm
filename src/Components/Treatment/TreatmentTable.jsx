@@ -392,7 +392,7 @@ function TreatmentTable() {
 
         <div className="container mt-5 vaccine-table-container">
           <div className="container mt-3">
-            <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mt-3 mb-3">
+            {/* <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mt-3 mb-3">
               <div className="d-flex flex-wrap gap-2">
                 <button
                   className="btn btn-outline-dark"
@@ -425,7 +425,7 @@ function TreatmentTable() {
                   />
                 </label>
               </div>
-            </div>
+            </div> */}
 
     
           </div>

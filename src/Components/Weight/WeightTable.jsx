@@ -312,7 +312,7 @@ function WeightTable() {
 
           {/* Table Section */}
           <div className="container mt-5 vaccine-table-container">
-            <div className="d-flex flex-wrap gap-2 mb-3">
+            {/* <div className="d-flex flex-wrap gap-2 mb-3">
               <button className="btn btn-outline-dark" onClick={handleExportToExcel}>
                 <i className="fas fa-download me-1"></i> {t("export_all_data")}
               </button>
@@ -323,7 +323,7 @@ function WeightTable() {
                 <i className="fas fa-file-import me-1"></i> {t("import_from_excel")}
                 <input type="file" hidden accept=".xlsx,.xls" onChange={handleImportFromExcel} />
               </label>
-            </div>
+            </div> */}
 
             <div className="table-responsive">
               <table className="table align-middle mt-4">
