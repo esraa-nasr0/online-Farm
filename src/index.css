@@ -278,78 +278,131 @@ code {
 }
 
 /* HomeServices */
-
 .section {
   display: flex;
   align-items: center;
   flex-direction: column;
-  padding: 15px 0 0;
+  padding: 50px 20px;
+  background: #f4f6f9;
+  min-height: 100vh;
 }
 
 .section h2 {
-  font-size: 2.2em;
-  font-weight: 700;
-  margin-bottom: 30px;
-  font-size: 2rem;
-  color: #778983 !important ;
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 40px;
+  color: #21763e !important;
+  position: relative;
 }
+
+.section h2::after {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 4px;
+  background: #21763e;
+  margin: 10px auto 0;
+  border-radius: 2px;
+}
+
 .cards {
   display: flex;
   flex-wrap: wrap;
-  max-width: 1100px;
-  margin-top: 50px;
-  padding: 0 10px;
-  justify-content: space-between;
-  margin-bottom: 30px;
+  max-width: 1200px;
+  margin-top: 30px;
+  padding: 0 15px;
+  justify-content: center;
+  gap: 25px;
 }
+
+/* Animation when cards appear */
 .card {
   background: #fff;
-  padding: 40px 20px;
+  padding: 35px 20px;
   list-style: none;
-  border-radius: 1rem;
-  box-shadow: 0 4px 12px rgba(168, 168, 168, 0.2);
-  margin-bottom: 30px;
-  width: calc(100% / 3 - 35px);
+  border-radius: 1.2rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  width: calc(100% / 3 - 30px);
   text-align: center;
-  transition: transform 0.3s, box-shadow 0.3s;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  opacity: 0;
+  transform: translateY(40px);
+  animation: fadeUp 0.8s ease forwards;
 }
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card:nth-child(1) { animation-delay: 0.1s; }
+.card:nth-child(2) { animation-delay: 0.2s; }
+.card:nth-child(3) { animation-delay: 0.3s; }
+.card:nth-child(4) { animation-delay: 0.4s; }
+.card:nth-child(5) { animation-delay: 0.5s; }
+/* لو عايز تزود الباقي كمل بنفس الطريقة */
+
 .card img {
-  width: 120px;
-  height: 120px;
+  width: 110px;
+  height: 110px;
   margin-bottom: 20px;
-  border-radius: 100%;
+  border-radius: 50%;
   object-fit: cover;
-  margin:0 30px  25px 30px;
+  transition: transform 0.4s ease;
 }
-.card_icon {
-  color: #ac0202;
-  width: 120px;
-  height: 120px;
-  margin-bottom: 20px;
-  border-radius: 100%;
-  object-fit: cover;
-  margin:0 30px  25px 30px;
+
+.card h3 {
+  color: #21763e !important;
+  margin-bottom: 10px;
+  font-weight: 700;
 }
-.card h3{
-  color: #778983 !important ;
-}
+
 .card p {
   padding: 0 15px;
   margin-top: 5px;
-  color: #778983 !important ;
+  color: #555 !important;
+  font-size: 0.95rem;
+  line-height: 1.5;
 }
 
-.card:hover{ 
-  transform: translateY(-6px); /* A more pronounced hover effect */  
-  box-shadow: 0 8px 20px rgba(77, 77, 77, 0.3); 
+/* Hover effect */
+.card:hover {
+  transform: translateY(-10px) scale(1.03);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
 }
-.Link{
-  color: #0e0e0e;
+
+.card:hover img {
+  transform: scale(1.1) rotate(3deg);
+}
+
+.Link {
+  color: inherit;
   text-decoration: none;
 }
+
+.button {
+  background: #21763e;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: none;
+  margin-top: 15px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.button:hover {
+  background: #1a5d31;
+  transform: translateY(-3px);
+}
+
+/* Responsive */
 @media (max-width: 1200px) {
   .card {
-    width: calc(100% / 2 - 20px);
+    width: calc(50% - 20px);
   }
 }
 
@@ -357,16 +410,8 @@ code {
   .card {
     width: 100%;
   }
-
-  .card:hover{
-    transform: scale(1.1);
-    opacity: 0.9;
-    -webkit-transform: scale(1.1);
-    -moz-transform: scale(1.1);
-    -ms-transform: scale(1.1);
-    -o-transform: scale(1.1);
-  }
 }
+
 
 /* contact us */
 

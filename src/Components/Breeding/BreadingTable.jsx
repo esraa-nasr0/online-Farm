@@ -33,6 +33,16 @@ function BreadingTable() {
     totalPages: 1,
   });
 
+  // تنسيق التاريخ للعرض داخل الـ chips
+  const fmt = (iso) => {
+    if (!iso) return "";
+    const d = new Date(iso);
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const dd = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${dd}`;
+  };
+
   const fetchBreeding = async () => {
     setIsLoading(true);
     try {
@@ -58,6 +68,7 @@ function BreadingTable() {
 
   useEffect(() => {
     fetchBreeding();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage]);
 
   const confirmDelete = (id) => {
@@ -362,15 +373,52 @@ function BreadingTable() {
                             ? new Date(item.deliveryDate).toLocaleDateString()
                             : NO_DATE}
                         </td>
+
+                        {/* Birth Entries + Planned Weights */}
                         <td className="text-center">
                           {item.birthEntries?.length > 0 ? (
                             <ul className="list-group">
                               {item.birthEntries.map((entry, idx) => (
-                                <li key={idx} className="list-group-item">
-                                  <strong>{t("Tag ID")}:</strong> {entry.tagId},{" "}
-                                  <strong>{t("Gender")}:</strong> {entry.gender},{" "}
-                                  <strong>{t("Birthweight")}:</strong>{" "}
-                                  {entry.birthweight} kg
+                                <li key={idx} className="list-group-item text-start">
+                                  <div>
+                                    <strong>{t("Tag ID")}:</strong> {entry.tagId},{" "}
+                                    <strong>{t("Gender")}:</strong> {entry.gender},{" "}
+                                    <strong>{t("Birthweight")}:</strong>{" "}
+                                    {entry.birthweight} kg
+                                  </div>
+
+                                  {/* Planned Weights (read-only, styled) */}
+                                  {Array.isArray(entry.plannedWeights) && entry.plannedWeights.length > 0 ? (
+                                    <div className="planned-weights mt-2">
+                                      <div className="pw-header">
+                                        <label className="pw-title">
+                                          {t("planned_weights") || "Planned weigh dates"}
+                                        </label>
+                                        <span className="pw-count">{entry.plannedWeights.length}</span>
+                                      </div>
+
+                                      <ul className="pw-chips">
+                                        {entry.plannedWeights.map((d, i2) => (
+                                          <li key={i2} className="pw-chip" title={`#${i2 + 1}`}>
+                                            <span className="pw-index">#{i2 + 1}</span>
+                                            <time dateTime={d}>{fmt(d)}</time>
+                                          </li>
+                                        ))}
+                                      </ul>
+                                    </div>
+                                  ) : (
+                                    <div className="planned-weights mt-2">
+                                      <div className="pw-header">
+                                        <label className="pw-title">
+                                          {t("planned_weights") || "Planned weigh dates"}
+                                        </label>
+                                        <span className="pw-count">0</span>
+                                      </div>
+                                      <p className="text-muted m-0">
+                                        {t("no_planned_weights") || "No planned weights."}
+                                      </p>
+                                    </div>
+                                  )}
                                 </li>
                               ))}
                             </ul>
@@ -378,6 +426,7 @@ function BreadingTable() {
                             <span className="text-muted">{t("No Birth Entries")}</span>
                           )}
                         </td>
+
                         <td className="text-center">{item.motheringAbility || "--"}</td>
                         <td className="text-center">{item.milking || "--"}</td>
                         <td className="text-center">

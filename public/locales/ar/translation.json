@@ -9,7 +9,7 @@
     "animal_type": "نوع الحيوان",
     "goat": "ماعز",
     "sheep": "اغنام",
-    "gender": "الجنس",
+    "gender": "جنس الحيوان",
     "female": "أنثى",
     "male": "ذكر",
     "female_condition": "حالة الأنثى",
@@ -105,7 +105,7 @@
     "Birth Entries":"عدد المواليد",
     "Edit":"تعديل",
     "Delete":"حذف",
-    "Gender":"الجنس",
+    "Gender":"جنس الحيوان",
     "Birthweight":"وزن المولود",
     "No Birth Entries":"لا إدخالات الميلاد",
     "Search Tag ID":"البحث حسب رقم الحيوان",
@@ -123,6 +123,8 @@
     "tagId":"رقم الحيوان",
     "Excluded Type":"النوع المستبعد",
     "Reason":"السبب",
+    "select_excluded_type":"اختار نوع الاستبعاد",
+    "exclusion_details":"تفاصيل الاستبعاد",
     "Price":"السعر",
     "Weight":"الوزن",
     "Add Excluted":"إضافة مستثنى",
@@ -168,7 +170,7 @@
 "Feed Records":"سجلات الطعام",
 "Search name":"البحث بالاسم",
 "Search type":"البحث بالنوع",
-"Quantity":"كمية",
+"quantity":"الكميه (كيلو جرام)",
 "Name":"الاسم",
 "Add Feed":"إضافة طعام",
 "Enter Quantity":"ادخل الكميه",
@@ -268,6 +270,7 @@
         "height_required": "الطول مطلوب",
         "height_max": "الطول لا يمكن أن يتجاوز 10 أحرف",
         "date_required": "التاريخ مطلوب",
+        "enter_reason":"ادخل السبب ",
 
 
     "home_services": "الخدمات الرئيسية",
@@ -305,7 +308,7 @@
     "feeding": "التغذية",
     "enter_feeding_data": "أدخل بيانات تغذية الحيوان",
     "go_to_feeding": "الذهاب إلى التغذية",
-    "fodder": "العلف",
+    "fodder": "مخزن علف و خامات",
     "enter_fodder_data": "أدخل بيانات العلف",
     "go_to_fodder": "الذهاب إلى العلف",
 
@@ -331,23 +334,23 @@
     "add_excluded_details": "أضف تفاصيل المستبعد",
     "go_to_add_excluded": "اذهب لإضافة مستبعد",
 
-    "feeding_services": "خدمات التغذية",
-    "feeding_details": "جميع تفاصيل التغذية",
-    "go_to_feeding_data": "اذهب إلى بيانات التغذية",
-    "add_by_feeding": "إضافة  التغذية",
-    "add_details_by_feeding": "أضف تفاصيل  التغذية",
-    "go_to_add_feeding": "اذهب لإضافة التغذية",
-    "feeding_details_by_location": "جميع التفاصيل حسب الموقع",
-    "go_to_data_by_location": "اذهب إلى البيانات حسب الموقع",
-    "add_by_location": "إضافة حسب الموقع",
-    "add_details_by_location": "أضف التفاصيل حسب الموقع",
-    "go_to_add_by_location": "اذهب لإضافة حسب الموقع",
+    "feeding_services": "  خدمات التغذية ",
+    "feeding_details": "جميع تفاصيل العلف و الخامات",
+    "go_to_feeding_data": "اذهب إلى بيانات العلف و الخامات",
+    "add_by_feeding": "إضافة  العلف و الخامات",
+    "add_details_by_feeding": "أضف تفاصيل  العلف و الخامات",
+    "go_to_add_feeding": "اذهب لإضافة العلف و الخامات",
+    "feeding_details_by_location": "جميع التفاصيل حسب العنبر",
+    "go_to_data_by_location": "اذهب إلى البيانات حسب العنبر",
+    "add_by_location": "إضافة حسب العنبر",
+    "add_details_by_location": "أضف التفاصيل حسب العنبر",
+    "go_to_add_by_location": "اذهب لإضافة حسب العنبر",
 
     "fodder_services": "خدمات العلف",
-    "fodder_details": "جميع تفاصيل العلف",
+    "fodder_details": "جميع تفاصيل تصنيع العلف (عليقه)",
     "go_to_fodder_data": "اذهب إلى بيانات العلف",
     "add_fodder": "إضافة علف",
-    "add_fodder_details": "أضف تفاصيل العلف",
+    "add_fodder_details": "أضف تفاصيل تصنيع العلف (عليقه)",
     "go_to_add_fodder": "اذهب لإضافة العلف",
 
     "location_services": "خدمات الحظائر",
@@ -419,7 +422,6 @@
     "feed_name": "اسم العلف",
     "total_consumed": "إجمالي المستهلك",
     "remaining_feed_stock": "المخزون المتبقي من العلف",
-    "quantity": "الكمية",
     "treatment_consumption": "استهلاك العلاج",
     "remaining_treatment_stock": "المخزون المتبقي من العلاج",
     "vaccine_report": "تقرير اللقاحات",
@@ -488,7 +490,7 @@
     "tag2": "الزراعة",
 
     "foddernames": "اسم",
-    "fodder.title": "العلف",
+    "fodder.title": "مخزن علف و خامات",
     "fodder.searchPlaceholder": "ابحث بالاسم",
     "fodder.searchButton": "بحث",
     "fodder.table.index": "#",
@@ -517,7 +519,7 @@
     "fetchFodderError": "فشل في جلب تفاصيل العلف.",
     "submitError": "حدث خطأ ما",
 
-    "fodderTitle": "العلف",
+    "fodderTitle": "مخزن علف و خامات ",
     
 
   "Enter your delivery state": "أدخل حالة الولادة",
@@ -608,8 +610,8 @@
  
   "choose_excluded_type": "اختر نوع الاستبعاد",
   "sale": "بيع",
-  "death": "موت",
-  "sweep": "تنظيف",
+  "death": "نفوق",
+  "sweep":"زبح",
 
   "reason_of_death": "سبب الموت",
   "reason_of_sweep": "سبب التنظيف",
@@ -683,9 +685,9 @@
   "assisted": "مساعدة",
   "caesarean": "قيصرية",
   "delivery_date": "تاريخ الولادة",
-  "milking": "الحليب",
+  "milking": " ادرار الحليب ",
   "select_milking": "اختر حالة الحليب",
-  "no_milk": "لا حليب",
+  "no_milk": "لا يوجد حليب",
   "one_teat": "حلمة واحدة",
   "two_teat": "حلمتان",
   "mothering_ability": "قدرة الأمومة",
@@ -838,44 +840,7 @@
   "Add By Animal": "إضافة حسب الحيوان",
   "Add By Location": "إضافة حسب الموقع",
 
-  "Basic information": "المعلومات الأساسية",
-  "Location Data": "بيانات المواقع",
-  "Add Location": "إضافة موقع",
-  "Breed Data": "بيانات السلالات",
-  "Add Breed": "إضافة سلالة",
-
-  "Animal Management": "إدارة الحيوانات",
-  "animals Data": "بيانات الحيوانات",
-  "add Animal": "إضافة حيوان",
-  "animal Cost": "تكاليف الحيوان",
-
-  "Health and Breeding": "الصحة والتزاوج",
-  "mating Data": "بيانات التزاوج",
-  "add Mating": "إضافة تزاوج",
-  "add By LocationShed": "إضافة حسب الموقع",
-
-
-  "weight Data": "بيانات الوزن",
-  "add Weight": "إضافة وزن",
-
-  "breeding Data": "بيانات التربية",
-  "add Breeding": "إضافة تربية",
-
-  "Feeding and Reports": "التغذية والتقارير",
-  "feeding Data": "بيانات التغذية",
-  "add Feeding": "إضافة تغذية",
-  "data By Location": "بيانات حسب الموقع",
-  "add  Location": "إضافة حسب الموقع",
-
-  "fodder Data": "بيانات العلف",
-  "add Fodder": "إضافة علف",
-
-  "daily Reports": "التقارير اليومية",
-
-  "System": "النظام",
-  "excluded Data": "بيانات المستبعدين",
-  "add Excluded": "إضافة مستبعد",
-
+  
   "add_new_mating": "إضافة تلقيح جديد",
 
   "pregnancy_age": "عمر الحمل (بالأسابيع)",
@@ -1062,27 +1027,138 @@
   "Add Suppliers": "إضافة موردين",
   "Add Suppliers Treatment": "إضافة علاج للموردين",
   "Add Suppliers Feed": "إضافة علف للموردين",
-  "Artificial insemination": "التلقيح الاصطناعي",
+  "Artificial insemination": "تلقيح صناعى",
 
   "average_daily_gain": "معدل النمو اليومي",
   "enter_adg": "أدخل معدل النمو اليومي",
   "feed_conversion_ratio": "معدل التحويل الغذائي",
   "enter_fcr": "أدخل معدل التحويل الغذائي",
 
-  "filter_excluded": "فلترة المستبعدة",
-  "fodder.filter": "فلترة العلف",
-  "filter_mating": "فلترة التزاوج",
-  "filter_animals": "فلترة الحيوانات",
-  "filter_breeding": "فلترة التربية",
-  "filter_feed": "فلترة التغذية",
-  "filter_feed_by_location": "فلترة التغذية حسب الموقع",
-  "filter_treatments": "فلترة العلاجات",
-  "filter_data": "فلترة البيانات",
-  "filter_vaccines": "فلترة اللقاحات",
-  "filter_weights": "فلترة الأوزان",
+  "filter_excluded": "فلتر الاستبعاد",
+  "fodder.filter": "فلتر العلف",
+  "filter_mating": "فلتر التزاوج",
+  "filter_animals": "فلتر الحيوانات",
+  "filter_breeding": "فلتر التربية",
+  "filter_feed": "فلتر التغذية",
+  "filter_feed_by_location": "فلتر التغذية حسب الموقع",
+  "filter_treatments": "فلتر العلاجات",
+  "filter_data": "فلتر البيانات",
+  "filter_vaccines": "فلتر اللقاحات",
+  "filter_weights": "فلتر الأوزان",
   "filter_animals_cost": "تصفية تكاليف الحيوانات",
-  "filter_suppliers": "تصفية الموردين",
-  "weight_records": "سجلات الأوزان"
+  "filter_suppliers": "فلتر الموردين",
+  "weight_records": "سجلات الأوزان",
+
+  
+  "MAIN MENU": "القائمة الرئيسية",
+
+  "Basic information": "المعلومات الأساسية",
+  "Location Data": "بيانات المواقع",
+  "Add Location": "إضافة موقع",
+  "Breed Data": "بيانات السلالات",
+  "Add Breed": "إضافة سلالة",
+
+  "Animal Management": "إدارة الحيوانات",
+  "animals Data": "بيانات الحيوانات",
+  "add Animal": "إضافة حيوان",
+  "animal Cost": "تكلفة الحيوان",
+
+  "Health and Breeding": "الصحة والتكاثر",
+  "mating Data": "بيانات التزاوج",
+  "add Mating": "إضافة تزاوج",
+  "add By LocationShed": "إضافة حسب الحظيرة",
+
+
+  "weight Data": "بيانات الوزن",
+  "add Weight": "إضافة وزن",
+
+  "breeding Data": "بيانات التربية",
+  "add Breeding": "إضافة تربية",
+
+  "Feeding and Reports": "التغذية والتقارير",
+  "feeding Data": "بيانات التغذية",
+  "add Feeding": "إضافة تغذية",
+  "data By Location": "بيانات حسب الموقع",
+  "add  Location": "إضافة موقع",
+
+  "fodder Data": "بيانات العلف",
+  "add Fodder": "إضافة علف",
+
+
+  "System": "النظام",
+  "excluded Data": "بيانات المستبعد",
+  "add Excluded": "إضافة مستبعد",
+
+  "Language": "اللغة",
+  "English": "الإنجليزية",
+  "العربية": "العربية",
+
+   "notification_list": "قائمة الإشعارات",
+  "notifications": "إشعارات",
+  "unread": "غير مقروء",
+  "error_loading": "حدث خطأ أثناء تحميل الإشعارات.",
+  "mark_all_read": "تحديد الكل كمقروء",
+  "mark_read": "تحديد كمقروء",
+  "no_notifications": "لا توجد إشعارات متاحة.",
+  "confirm_title": "هل أنت متأكد؟",
+  "confirm_text": "لن تتمكن من التراجع عن هذا!",
+  "confirm_btn": "نعم، احذفها!",
+  "cancel_btn": "إلغاء",
+  "deleted_title": "تم الحذف!",
+  "deleted_msg": "تم حذف الإشعار بنجاح.",
+  "load_error": "فشل تحميل الإشعارات",
+  "mark_error": "فشل في تحديد الإشعار كمقروء",
+  "mark_success": "تم تحديد الإشعار كمقروء",
+  "mark_all_error": "فشل تحديد الكل كمقروء",
+  "mark_all_success": "تم تحديد جميع الإشعارات كمقروء",
+  "delete_error": "فشل في حذف الإشعار",
+
+    "supplyType": "نوع التوريد",
+
+  "The expiry date is lessthan 6 months. Do you want to continue?":"تاريخ الصلاحية أقل من 6 شهور من اليوم. هل تريد المتابعة؟",
+  "short expiry title": "تاريخ صلاحية قصير",
+
+  "Animal Add Success": "تمت إضافة الحيوان بنجاح",
+  "Age in Days": "العمر بالأيام",
+
+   "age_at_weaning_days": "العمر عند الفطام (بالأيام)",
+  "max_weaning_90_days": "الحد الأقصى للفطام 90 يومًا",
+  "weight_interval_days": "فاصل الوزن (بالأيام)",
+  "schedule_weighing_until_weaning": "جدولة الوزن حتى الفطام",
+
+  "breeding_updated_successfully": "تم تعديل سجل التناسل بنجاح",
+  "edit_breeding": "تعديل المواليد",
+  "breeding_details_title": "تفاصيل التناسل",
+
+
+  "planned_weights": "مواعيد الوزن المجدولة",
+  "no_planned_weights": "لا توجد مواعيد وزن مجدولة.",
+  "plans_summary": "ملخص الخطط",
+  "planned_count": "العدد",
+
+
+  "copied": "تم النسخ",
+
+  "failed_to_fetch": "فشل في جلب بيانات التناسل.",
+  "select": "اختر",
+
+  "birth_entries_count_mismatch": "عدد سجلات المواليد لا يطابق عدد المواليد",
+  "calf_tag_required": "رقم العجل مطلوب",
+  "gender_required": "النوع مطلوب",
+  "birth_weight_invalid": "وزن الميلاد غير صالح",
+  "age_at_weaning_invalid": "عمر الفطام غير صالح",
+  "weight_interval_invalid": "فاصل الوزن غير صالح",
+  "invalid_delivery_state": "حالة ولادة غير صالحة",
+
+  "animal_information": "بيانات الحيوان",
+  "vaccine_details": "تفاصيل التطعيم",
+  "unknown_vaccine": "تطعيم غير معروف",
+  "date_information": "بيانات التاريخ",
+  "failed_to_load_vaccines": "فشل في تحميل قائمة التطعيمات",
+
+"Stock Information":"معلومات المخزن",
+  "Typing an 'Other vaccine name' disables the disease & vaccine lists.": "كتابة اسم لقاح آخر تُعطل قوائم الأمراض واللقاحات."
+
 
   
 

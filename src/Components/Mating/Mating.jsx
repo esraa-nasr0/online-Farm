@@ -80,7 +80,7 @@ function Mating() {
             maleTag_id: '',
             matingDate: '',
             checkDays: '',
-            sonarRsult: null,
+            sonarResult: null,
         },
         onSubmit: submitMating
     });
@@ -125,8 +125,8 @@ function Mating() {
                                 disabled={isSubmitted}
                             >
                                 <option value="">{t('mating_type')}</option>
-                                <option value="Natural">{t('natural')}</option>
-                                <option value="Natural">{t('Artificial insemination')}</option>
+                                <option value={t('natural')}>{t('natural')}</option>
+                                <option value={t('Artificial insemination')}>{t('Artificial insemination')}</option>
                             </select>
                             {formik.errors.matingType && formik.touched.matingType && (
                                 <p className="text-danger">{formik.errors.matingType}</p>

@@ -111,7 +111,7 @@ function EditMating() {
             matingDate: formatDate(mating.matingDate),
             sonarDate: formatDate(mating.sonarDate),
             checkDays: mating.checkDays || null,
-            sonarRsult: mating.sonarRsult || null,
+            sonarResult: mating.sonarResult || null,
             pregnancyAge: mating.pregnancyAge || "",
             fetusCount: mating.fetusCount || "",
             expectedDeliveryDate: formatDate(mating.expectedDeliveryDate),
@@ -134,7 +134,7 @@ function EditMating() {
       maleTag_id: "",
       matingDate: "",
       checkDays: null,
-      sonarRsult: null,
+      sonarResult: null,
       sonarDate: "",
       pregnancyAge: "",
       fetusCount: "",
@@ -191,8 +191,8 @@ function EditMating() {
                 onBlur={formik.handleBlur}
               >
                 <option value="">{t("mating_type")}</option>
-                <option value="Natural">{t("natural")}</option>
-                <option value="Natural">{t('Artificial insemination')}</option>
+                <option value={t("natural")}>{t("natural")}</option>
+                <option value={t('Artificial insemination')}>{t('Artificial insemination')}</option>
               </select>
               {formik.errors.matingType && formik.touched.matingType && (
                 <p className="text-danger">{formik.errors.matingType}</p>
@@ -261,23 +261,23 @@ function EditMating() {
             </div>
 
             <div className="input-group">
-              <label htmlFor="sonarRsult">{t("sonar_result")}</label>
+              <label htmlFor="sonarResult">{t("sonar_result")}</label>
               <select
-                id="sonarRsult"
-                name="sonarRsult"
-                value={formik.values.sonarRsult}
+                id="sonarResult"
+                name="sonarResult"
+                value={formik.values.sonarResult}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               >
                 <option value="">{t("select_sonar_result")}</option>
-                <option value="positive">{t("positive")}</option>
-                <option value="negative">{t("negative")}</option>
+                <option value={t("positive")}>{t("positive")}</option>
+                <option value={t("negative")}>{t("negative")}</option>
               </select>
-              {formik.errors.sonarRsult && formik.touched.sonarRsult && (
-                <p className="text-danger">{formik.errors.sonarRsult}</p>
+              {formik.errors.sonarResult && formik.touched.sonarResult && (
+                <p className="text-danger">{formik.errors.sonarResult}</p>
               )}
             </div>
-            {formik.values.sonarRsult === "positive" && (
+            {formik.values.sonarResult === "positive" && (
               <>
                 <div className="input-group">
                   <label htmlFor="pregnancyAge">{t("pregnancy_age")}</label>

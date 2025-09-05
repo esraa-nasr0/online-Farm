@@ -1,4 +1,4 @@
-import  { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import axios from "axios";
 import { IoIosSave } from "react-icons/io";
@@ -91,12 +91,16 @@ function AnimalsDetails() {
       if (data.status === "success") {
         setResponseData(data.data.animal);
         setIsSubmitted(true);
+
         Swal.fire({
           title: t("success_title"),
-          text: t("animal_add_success"),
+          text: `${t("Animal Add Success")} \n${t("Age in Days")}: ${
+            data.data.animal.ageInDays
+          }`,
           icon: "success",
           confirmButtonText: t("ok"),
         });
+
         formik.resetForm();
       }
     } catch (err) {
@@ -123,7 +127,7 @@ function AnimalsDetails() {
       purchaseDate: "",
       purchasePrice: "",
       teething: "",
-      marketValue:"",
+      marketValue: "",
       age: {
         years: 0,
         months: 0,
@@ -295,7 +299,6 @@ function AnimalsDetails() {
                 />
               </div>
             )}
-
           </div>
 
           <div className="form-section">
@@ -422,19 +425,19 @@ function AnimalsDetails() {
                       disabled={isSubmitted}
                     />
                   </div>
-              <div className="input-group">
-              <label htmlFor="marketValue">{t("market_value")}</label>
-              <input
-                type="number"
-                id="marketValue"
-                name="marketValue"
-                value={formik.values.marketValue}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                disabled={isSubmitted}
-                placeholder={t("enter_market_value")}
-              />
-            </div>
+                  <div className="input-group">
+                    <label htmlFor="marketValue">{t("market_value")}</label>
+                    <input
+                      type="number"
+                      id="marketValue"
+                      name="marketValue"
+                      value={formik.values.marketValue}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      disabled={isSubmitted}
+                      placeholder={t("enter_market_value")}
+                    />
+                  </div>
                 </>
               )
             )}
@@ -456,30 +459,22 @@ function AnimalsDetails() {
             )}
           </button>
         </div>
-{isSubmitted && (
-  <div className="form-actions">
-    <button
-      type="button"
-      className="save-button"
-      onClick={() => {
-        setIsSubmitted(false);
-        formik.resetForm();
-      }}
-    >
-      {t("add_new_animal")}
-    </button>
-  </div>
-)}
-
-        {responseData && (
-          <div className="success-message">
-            <h3>{t("animal_details")}</h3>
-            <p>
-              {t("age_in_days")}: {responseData.ageInDays}
-            </p>
+        {isSubmitted && (
+          <div className="form-actions">
+            <button
+              type="button"
+              className="save-button"
+              onClick={() => {
+                setIsSubmitted(false);
+                formik.resetForm();
+              }}
+            >
+              {t("add_new_animal")}
+            </button>
           </div>
         )}
 
+        
       </form>
     </div>
   );

@@ -2,14 +2,14 @@
 
 /* ===== Theme (قابلة للتعديل) ===== */
 :root {
-  --msb-bg: #f4f6f9;                
-  --msb-bg-2: #e1e7f5;              
-  --msb-accent: #e3e9f4;            
-  --msb-text: #000000;              /* النص الأساسي + الأيقونات أسود */
-  --msb-muted: #555555;             /* نص خافت */
-  --msb-border: rgba(0,0,0,.1);
-  --msb-pill: #ff4757;              
-  --msb-shadow: 0 12px 30px rgba(0, 0, 0, .2);
+  --msb-bg: rgb(40, 40, 40);             /* الخلفية الأساسية */
+  --msb-bg-2: #717b8c;           /* خلفية ثانوية غامقة قليلاً */
+  --msb-accent: #717b8c;         /* لون مميز */
+  --msb-text: #e1e7f5;           /* النصوص + الأيقونات */
+  --msb-muted: #c6d0ea;          /* نص خافت */
+  --msb-border: rgba(225, 231, 245, 0.2); /* حدود فاتحة شفافة */
+  --msb-pill: #ff4757;           
+  --msb-shadow: 0 12px 30px rgba(0, 0, 0, .3);
   --msb-rail-w: 72px;               
   --msb-panel-w: 280px;             
   --msb-radius: 14px;
@@ -20,12 +20,12 @@
   display: inline-flex !important;
   align-items: center;
   justify-content: center;
-  min-width: 22px;         /* تبقى دايرة مع رقمين، وبيضاوي مع 3 أرقام */
+  min-width: 22px;
   height: 22px;
-  padding: 0 6px;          /* تسمح بـ 3 أرقام (زي 155) */
+  padding: 0 6px;
   margin-inline-start: 8px;
   border-radius: 9999px;
-  background: #ef4444;     /* أحمر */
+  background: #ef4444;
   color: #fff;
   font-weight: 700;
   font-size: 12px;
@@ -40,21 +40,19 @@
   inset-inline-start: 0;
   z-index: 1200;
   display: grid;
-  grid-template-columns: var(--msb-rail-w) 0px; /* مغلق */
+  grid-template-columns: var(--msb-rail-w) 0px;
   transition: grid-template-columns .28s ease;
   pointer-events: auto;
 }
 
-/* عند الفتح يظهر البانل بعرض كامل */
 .msb.open {
   grid-template-columns: var(--msb-rail-w) var(--msb-panel-w);
 }
 
-/* RTL دعم */
 .msb.rtl { direction: rtl; }
 .msb.ltr { direction: ltr; }
 
-/* ===== RAIL (الشريط المصغر) ===== */
+/* ===== RAIL ===== */
 .msb-rail {
   background: var(--msb-bg);
   color: var(--msb-text);
@@ -114,14 +112,14 @@
   display: grid;
   place-items: center;
   font-size: 20px;
-  color: #000000;   /* أسود */
+  color: var(--msb-text);
   background: transparent;
   transition: background .15s ease, transform .15s ease, border-color .15s ease;
 }
 .rail-btn:hover {
   background: var(--msb-bg-2);
   transform: translateY(-1px);
-  border-color: rgba(0,0,0,.18);
+  border-color: var(--msb-border);
 }
 
 /* بادج الإشعارات */
@@ -139,13 +137,14 @@
   border: 2px solid var(--msb-bg);
 }
 
-/* زر الخروج بأسفل الرايل */
+/* زر الخروج أسفل الرايل */
 .rail-btn.logout {
-    color: #d63031;  
+    color: #ff6b6b;  
   margin-block-start: 6px;
   margin-block-end: 2px;
 }
-.rail-btn.logout:hover { background: rgba(227, 9, 9, 0.06); }
+.rail-btn.logout:hover { background: rgba(255,107,107,0.1); }
+
 /* Tooltip */
 .rail-btn[data-tooltip]::after {
   content: attr(data-tooltip);
@@ -154,7 +153,7 @@
   inset-block-start: 50%;
   transform: translateY(-50%);
   white-space: nowrap;
-  background: #0b1226;
+  background: #717b8c;
   color: #fff;
   font-size: 12px;
   padding: 6px 10px;
@@ -170,7 +169,7 @@
 }
 .rail-btn:hover::after { opacity: 1; }
 
-/* ===== PANEL (اللوحة الواسعة) ===== */
+/* ===== PANEL ===== */
 .msb-panel {
   background: var(--msb-bg);
   color: var(--msb-text);
@@ -203,8 +202,9 @@
   gap: 10px;
   font-weight: 700;
   letter-spacing: .4px;
+  color: var(--msb-text);
 }
-.brand .mark { display: none; } /* لغينا اللوجو البرتقالي */
+.brand .mark { display: none; }
 
 /* زر اللغة */
 .lang-switch { position: relative; }
@@ -217,7 +217,7 @@
   border-radius: 999px;
   border: 1px solid var(--msb-border);
   cursor: pointer;
-  color: #000000;  /* أسود */
+  color: var(--msb-text);
   font-weight: 600;
 }
 .chip.active { background: var(--msb-bg-2); }
@@ -226,7 +226,7 @@
   inset-inline-end: 0;
   inset-block-start: calc(100% + 8px);
   min-width: 160px;
-  background: #0b1226;
+  background: #717b8c;
   border: 1px solid rgba(255,255,255,.06);
   border-radius: 12px;
   overflow: hidden;
@@ -239,12 +239,12 @@
   width: 100%;
   padding: 10px 12px;
   cursor: pointer;
-  color: #f1f5ff;
+  color: #e1e7f5;
   font-size: 14px;
 }
-.lang-menu button:hover { background: rgba(255,255,255,.06); }
+.lang-menu button:hover { background: rgba(255,255,255,.08); }
 
-/* ===== الناف (القائمة) ===== */
+/* ===== الناف ===== */
 .panel-nav {
   padding: 10px 10px 14px;
   overflow-y: auto;
@@ -278,7 +278,7 @@
   gap: 10px;
   padding: 10px 10px;
   border-radius: 12px;
-  color: #000000; /* أسود */
+  color: var(--msb-text);
   border: 1px solid transparent;
   transition: background .15s ease, border-color .15s ease;
 }
@@ -294,7 +294,7 @@
 .sub-link.current {
   background: var(--msb-accent);
   border-color: transparent;
-  color: #000000;  /* أسود */
+  color: var(--msb-text);
 }
 
 /* Submenu */
@@ -302,20 +302,20 @@
   list-style: none;
   margin: 6px 0 10px 42px;
   padding: 0;
-  border-inline-start: 2px solid rgba(0,0,0,.1);
+  border-inline-start: 2px solid rgba(225,231,245,0.2);
 }
-.msb.rtl .submenu { margin: 6px 42px 10px 0; border-inline-start: none; border-inline-end: 2px solid rgba(0,0,0,.1); }
+.msb.rtl .submenu { margin: 6px 42px 10px 0; border-inline-start: none; border-inline-end: 2px solid rgba(225,231,245,0.2); }
 
 .submenu li { margin: 2px 0; }
 .sub-link {
   display: block;
-  color: #000000;  /* أسود */
+  color: var(--msb-text);
   font-size: 13.5px;
   padding: 8px 10px;
   border-radius: 10px;
   transition: background .12s ease, transform .12s ease;
 }
-.sub-link:hover { background: rgba(0,0,0,.07); transform: translateX(2px); }
+.sub-link:hover { background: rgba(225,231,245,0.08); transform: translateX(2px); }
 
 /* زر تسجيل الخروج أسفل البانل */
 .logout-wide {
@@ -328,10 +328,10 @@
   padding: 10px 12px;
   border-radius: 12px;
   border: 1px solid var(--msb-border);
-  color: #d63031;   /* أسود */
+  color: #ff6b6b;
   background: transparent;
 }
-.logout-wide:hover { background: rgba(227, 9, 9, 0.06); }
+.logout-wide:hover { background: rgba(255,107,107,0.1); }
 
 /* ===== حالات على الموبايل ===== */
 @media (max-width: 768px) {
@@ -355,7 +355,6 @@
   pointer-events: none;
 }
 
-/* لما السايدبار يفتح واحنا مخبّيين الـ rail */
 .msb.open.no-rail { grid-template-columns: var(--msb-panel-w); }
 
 .panel-left { display: flex; align-items: center; gap: 10px; }
@@ -371,33 +370,30 @@
   display: grid;
   place-items: center;
   font-size: 18px;
-  color: #000000; /* أسود */
+  color: var(--msb-text);
   background: transparent;
   transition: background .15s ease, transform .15s ease, border-color .15s ease;
 }
 .collapse-btn:hover {
   background: var(--msb-bg-2);
   transform: translateY(-1px);
-  border-color: rgba(0,0,0,.18);
+  border-color: var(--msb-border);
 }
-
 
 /* شيل أي Scroll أفقي على مستوى الصفحة */
 html, body, #root {
   width: 100%;
-  overflow-x: hidden;         /* أو clip لو تحبي */
+  overflow-x: hidden;
 }
 
-/* امنع أي عنصر رئيسي عندنا يطلع عرض عن الشاشة */
 .app-container,
 .content-wrapper,
 .main-content {
   max-width: 100%;
-  min-width: 0;               /* مهم مع الـflex لتفادي overflow */
-  overflow-x: clip;           /* لو متصفح قديم استخدمي hidden بدلها */
+  min-width: 0;
+  overflow-x: clip;
 }
 
-/* السايدبار وأجزاؤه: امنع أفقي واسمح بعمودي */
 .msb,
 .msb-rail,
 .msb-panel,
