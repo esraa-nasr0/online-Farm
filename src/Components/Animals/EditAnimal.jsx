@@ -468,21 +468,7 @@ function EditAnimal() {
                   />
                 </div>
 
-                <div className="input-group">
-                  <label htmlFor="teething">{t("teething")}</label>
-                  <select
-                    id="teething"
-                    name="teething"
-                    value={formik.values.teething}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                  >
-                    <option value="">{t("select_teething")}</option>
-                    <option value="two">{t("two")}</option>
-                    <option value="four">{t("four")}</option>
-                    <option value="six">{t("six")}</option>
-                  </select>
-                </div>
+                
               </>
             )}
 
