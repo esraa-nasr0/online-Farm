@@ -1,5 +1,5 @@
 import { useFormik } from "formik";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import * as Yup from "yup";
 import { IoIosSave } from "react-icons/io";
 import axios from "axios";
@@ -56,7 +56,6 @@ function EditBreed() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // Helper function to generate headers with the latest token
   const getHeaders = () => {
     const Authorization = localStorage.getItem("Authorization");
     const formattedToken = Authorization.startsWith("Bearer ")
@@ -64,6 +63,37 @@ function EditBreed() {
       : `Bearer ${Authorization}`;
     return { Authorization: formattedToken };
   };
+
+  async function fetchBreed() {
+    const headers = getHeaders();
+    try {
+      let { data } = await axios.get(
+        `https://farm-project-bbzj.onrender.com/api/breed/GetSingle-breed/${id}`,
+        { headers }
+      );
+
+      if (data && data.data && data.data.breed) {
+        const breed = data.data.breed;
+        formik.setValues({
+          breedName: breed.breedName || "",
+          standards: {
+            adg: breed.standards?.adg ?? "",
+            fcr: breed.standards?.fcr ?? "",
+            birthWeight: breed.standards?.birthWeight ?? "",
+          },
+        });
+      } else {
+        throw new Error("Unexpected API response structure");
+      }
+    } catch (error) {
+      console.error("Failed to fetch breed data:", error);
+      setError("Failed to fetch breed details.");
+    }
+  }
+
+  useEffect(() => {
+    fetchBreed();
+  }, [id]);
 
   async function submitBreed(values) {
     const headers = getHeaders();
@@ -93,8 +123,7 @@ function EditBreed() {
     }
   }
 
-  // **Formik Setup**
-  let formik = useFormik({
+  const formik = useFormik({
     initialValues: {
       breedName: "",
       standards: {
@@ -106,18 +135,15 @@ function EditBreed() {
     onSubmit: submitBreed,
   });
 
-  // Detect if input is in Arabic or English
   const isArabic = (text) => {
     const arabicRegex = /[\u0600-\u06FF]/;
     return arabicRegex.test(text);
   };
 
-  // Handle input change for suggestions
   const handleInputChange = (e) => {
     const value = e.target.value;
     formik.handleChange(e);
 
-    // Detect input language
     setInputLanguage(isArabic(value) ? "arabic" : "english");
 
     if (value.length > 0) {
@@ -134,7 +160,6 @@ function EditBreed() {
     }
   };
 
-  // Handle suggestion selection
   const handleSuggestionClick = (breed) => {
     const selectedValue =
       inputLanguage === "arabic" ? breed.arabic : breed.english;

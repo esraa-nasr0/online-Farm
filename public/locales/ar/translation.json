@@ -1157,11 +1157,74 @@
   "failed_to_load_vaccines": "فشل في تحميل قائمة التطعيمات",
 
 "Stock Information":"معلومات المخزن",
-  "Typing an 'Other vaccine name' disables the disease & vaccine lists.": "كتابة اسم لقاح آخر تُعطل قوائم الأمراض واللقاحات."
-
+  "Typing an 'Other vaccine name' disables the disease & vaccine lists.": "كتابة اسم لقاح آخر تُعطل قوائم الأمراض واللقاحات.",
 
   
 
+  "current_treatments": "العلاجات الحالية",
+  "no_treatments": "لا توجد علاجات",
+
+  "current_feeds": "الأعلاف الحالية",
+  "no_feeds": "لا توجد أعلاف",
+
+  
+  "downloading": "جارى التنزيل…",
+  "download_pdf": "تنزيل PDF",
+  "apply": "تطبيق",
+  "loading_report": "جارى تحميل التقرير…",
+  "download_error": "خطأ في تنزيل PDF",
+    "unexpectedResponse": "استجابة غير متوقعة من الخادم",
+  "avg_cost_animal": "متوسط التكلفة/حيوان",
+  "mortality_rate": "معدل النفوق",
+  "treatment_incidence": "معدل المعالجة",
+  "vaccination_coverage": "نسبة التغطية باللقاحات",
+  "fcr_overall": "معدل تحويل العلف",
+  "revenue": "الإيرادات",
+  "profit": "الأرباح",
+  "shed_costs": "تكلفة العلف لكل عنبر",
+  "shed": "العنبر",
+  "consumed": "المستهلك",
+  "cost": "التكلفة",
+  "no_data": "لا توجد بيانات",
+  "shed_excluded": "المستبعد حسب العنبر",
+  "reason": "السبب",
+  "count": "العدد",
+  "per_breed_animals": "عدد الحيوانات حسب السلالة",
+  "daily_use": "الاستهلاك اليومي",
+  "days_cover": "أيام التغطية",
+  "warn": "تحذير",
+
+  "Remaining Doses":"الجرعات المتبقيه",
+
+
+  "shed_details": "تفاصيل العنبر",
+  "total": "الإجمالي",
+  "males": "الذكور",
+  "females": "الإناث",
+  "goats": "الماعز",
+  "animals_in": "الحيوانات في",
+  "age": "العمر",
+  "unknown": "غير معروف",
+  "not_specified": "غير محدد",
+
+  
+  "destination_shed": "العنبر الوجهة",
+  "choose_destination": "اختر العنبر الوجهة",
+  "current": "الحالي",
+  "move_selected": "نقل {{count}} محدد",
+  "moving_animals": "جارٍ النقل...",
+  "failed_to_fetch_shed": "فشل في جلب بيانات العنبر",
+  "select_destination_first": "يرجى اختيار العنبر الوجهة أولاً",
+  "cannot_move_same_shed": "لا يمكن النقل لنفس العنبر",
+  "select_animals_first": "يرجى اختيار الحيوانات أولاً",
+  "moved_success": "تم نقل {{count}} حيوان بنجاح إلى {{shed}}",
+  "failed_to_move_animals": "فشل في نقل الحيوانات",
+  
+  "no_animals_in_shed": "لا يوجد حيوانات في هذا العنبر",
+  "selected": "المحدد",
+  "clear_selection": "مسح التحديد",
+  "select_all": "تحديد الكل",
+  "unselect_all": "إلغاء تحديد الكل"
 
 
 }

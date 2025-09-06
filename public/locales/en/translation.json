@@ -1072,13 +1072,74 @@
   "vaccine_details": "Vaccine Details",
   "unknown_vaccine": "Unknown vaccine",
   "date_information": "Date Information",
-  "failed_to_load_vaccines": "Failed to load vaccine list"
+  "failed_to_load_vaccines": "Failed to load vaccine list",
 
 
+  "current_treatments": "Current Treatments",
+  "no_treatments": "No treatments available",
+
+  "current_feeds": "Current Feeds",
+  "no_feeds": "No feeds available",
+
+  "downloading": "Downloading…",
+  "download_pdf": "Download PDF",
+  "apply": "Apply",
+  "loading_report": "Loading report…",
+  "download_error": "Error downloading PDF",
+ 
+    "unexpectedResponse": "Unexpected response from server",
+
+ 
+  "avg_cost_animal": "Avg Cost/Animal",
+  "mortality_rate": "Mortality Rate",
+  "treatment_incidence": "Treatment Incidence",
+  "vaccination_coverage": "Vaccination Coverage",
+  "fcr_overall": "FCR Overall",
+  "revenue": "Revenue",
+  "profit": "Profit",
+  "shed_costs": "Per-Shed Feed Cost",
+  "shed": "Shed",
+  "consumed": "Consumed",
+  "cost": "Cost",
+  "no_data": "No data",
+  "shed_excluded": "Per-Shed Excluded",
+  "reason": "Reason",
+  "count": "Count",
+  "per_breed_animals": "Animals per Breed",
+  "avg_adg": "Avg ADG",
+  "stock": "Stock",
+  "daily_use": "Daily Use",
+  "days_cover": "Days Cover",
+  "warn": "Warn",
+
+  "shed_details": "Shed Details",
+  "total": "Total",
+  "males": "Males",
+  "females": "Females",
+  "goats": "Goats",
+  "animals_in": "Animals in",
+  "age": "Age",
+  "unknown": "Unknown",
+  "not_specified": "Not Specified",
 
 
-
-
+  
+  "destination_shed": "Destination Shed",
+  "choose_destination": "Choose destination shed",
+  "current": "Current",
+  "move_selected": "Move {{count}} selected",
+  "moving_animals": "Moving...",
+  "failed_to_fetch_shed": "Failed to fetch shed details",
+  "select_destination_first": "Please select a destination shed first",
+  "cannot_move_same_shed": "Cannot move to the same shed",
+  "select_animals_first": "Please select animals first",
+  "moved_success": "Successfully moved {{count}} animals to {{shed}}",
+  "failed_to_move_animals": "Failed to move animals",
+  "no_animals_in_shed": "No animals in this shed",
+  "selected": "Selected",
+  "clear_selection": "Clear selection",
+  "select_all": "Select all",
+  "unselect_all": "Unselect all"
 
 
 

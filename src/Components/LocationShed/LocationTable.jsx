@@ -1,4 +1,4 @@
-import  { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { LocationContext } from "../../Context/LocationContext";
 import Swal from "sweetalert2";
 import { FaRegEdit } from "react-icons/fa";
@@ -7,6 +7,8 @@ import { Rings } from "react-loader-spinner";
 import { useNavigate } from "react-router-dom";
 import "../Vaccine/styles.css";
 import { useTranslation } from "react-i18next";
+import { IoEyeOutline } from "react-icons/io5";
+
 
 function LocationTable() {
   let navigate = useNavigate();
@@ -63,6 +65,10 @@ function LocationTable() {
   // التوجه لتعديل الموقع
   function editLocations(id) {
     navigate(`/editLocation/${id}`);
+  }
+
+  function veiwLocations(id) {
+    navigate(`/detailsLocation/${id}`);
   }
 
   // Modern pagination rendering function
@@ -147,13 +153,12 @@ function LocationTable() {
           />
         </div>
       ) : (
-                <div className="container mt-4">
-            <h2 className="vaccine-table-title">{t("location_shed")}</h2>
+        <div className="container mt-4">
+          <h2 className="vaccine-table-title">{t("location_shed")}</h2>
 
-        <div className="container mt-5 vaccine-table-container">
-          <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mt-5 mb-3">
-
-            {/* 
+          <div className="container mt-5 vaccine-table-container">
+            <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mt-5 mb-3">
+              {/* 
         <div className="d-flex flex-wrap gap-2">
           <button className="btn btn-outline-dark" onClick={handleExportToExcel} title={t('export_all_data')}>
             <i className="fas fa-download me-1"></i> {t('export_all_data')}
@@ -166,56 +171,66 @@ function LocationTable() {
             <input type="file" hidden accept=".xlsx,.xls" onChange={handleImportFromExcel} />
           </label>
         </div> */}
-          </div>
+            </div>
 
-          <div className="table-responsive">
-            <div className="full-width-table">
-              <table className="table table-hover mt-2">
-                <thead>
-                  <tr>
-                    <th className="text-center bg-color">#</th>
-                    <th className="text-center bg-color">
-                      {t("location_shed_name")}
-                    </th>
-                    <th className="text-center bg-color">{t("actions")}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {locations.map((location, index) => (
-                    <tr key={location._id}>
-                      <td>{(currentPage - 1) * locationPerPage + index + 1}</td>
-                      <td>{location.locationShedName}</td>
-
-                      <td className="text-center">
-                        <button
-                          className="btn btn-link p-0 me-2"
-                          onClick={() => editLocations(location._id)}
-                          title={t("edit")}
-                          style={{ color: "#0f7e34ff" }}
-                        >
-                          <FaRegEdit />
-                        </button>
-                        <button
-                          className="btn btn-link p-0"
-                          style={{ color:"#d33" }}
-                          onClick={() => handleClick(location._id)}
-                          title={t("delete")}
-                        >
-                          <RiDeleteBinLine />
-                        </button>
-                      </td>
+            <div className="table-responsive">
+              <div className="full-width-table">
+                <table className="table table-hover mt-2">
+                  <thead>
+                    <tr>
+                      <th className="text-center bg-color">#</th>
+                      <th className="text-center bg-color">
+                        {t("location_shed_name")}
+                      </th>
+                      <th className="text-center bg-color">{t("actions")}</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {locations.map((location, index) => (
+                      <tr key={location._id}>
+                        <td>
+                          {(currentPage - 1) * locationPerPage + index + 1}
+                        </td>
+                        <td>{location.locationShedName}</td>
+
+                        <td className="text-center">
+                          <button
+                            className="btn btn-link p-0 me-2"
+                            onClick={() => veiwLocations(location._id)}
+                            title={t("view")}
+                            style={{ color: "#0f40e1ff" }}
+                          >
+                            <IoEyeOutline />
+                          </button>
+                          <button
+                            className="btn btn-link p-0 me-2"
+                            onClick={() => editLocations(location._id)}
+                            title={t("edit")}
+                            style={{ color: "#0f7e34ff" }}
+                          >
+                            <FaRegEdit />
+                          </button>
+                          <button
+                            className="btn btn-link p-0"
+                            style={{ color: "#d33" }}
+                            onClick={() => handleClick(location._id)}
+                            title={t("delete")}
+                          >
+                            <RiDeleteBinLine />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Pagination */}
+            <div className="d-flex justify-content-center mt-4">
+              <nav>{renderModernPagination()}</nav>
             </div>
           </div>
-
-          {/* Pagination */}
-          <div className="d-flex justify-content-center mt-4">
-            <nav>{renderModernPagination()}</nav>
-          </div>
-        </div>
         </div>
       )}
     </>

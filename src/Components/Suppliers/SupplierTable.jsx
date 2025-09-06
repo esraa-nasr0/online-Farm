@@ -248,8 +248,8 @@ function SupplierTable() {
                     <th className="text-center bg-color">{t("email")}</th>
                     <th className="text-center bg-color">{t("phone")}</th>
                     <th className="text-center bg-color">{t("company")}</th>
-                    <th className="text-center bg-color">{t("treatments")}</th>
-                    <th className="text-center bg-color">{t("feeds")}</th>
+                    {/* <th className="text-center bg-color">{t("treatments")}</th>
+                    <th className="text-center bg-color">{t("feeds")}</th> */}
                     <th className="text-center bg-color">{t("notes")}</th>
                     <th className="text-center bg-color">{t("actions")}</th>
                   </tr>
@@ -265,7 +265,7 @@ function SupplierTable() {
                         <td className="text-center">{supplier.email}</td>
                         <td className="text-center">{supplier.phone}</td>
                         <td className="text-center">{supplier.company}</td>
-                        <td className="text-center">
+                        {/* <td className="text-center">
                           {supplier.treatments?.length > 0
                             ? supplier.treatments.map((t, i) => (
                                 <div key={i}>{t.name}</div>
@@ -278,7 +278,7 @@ function SupplierTable() {
                                 <div key={i}>{f.name}</div>
                               ))
                             : "—"}
-                        </td>
+                        </td> */}
                         <td className="text-center">{supplier.notes}</td>
                         <td className="text-center">
                           <button
