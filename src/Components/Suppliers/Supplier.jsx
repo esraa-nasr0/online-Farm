@@ -188,7 +188,7 @@ function Supplier() {
               <input
                 placeholder={t("placeholder_name")}
                 type="text"
-                {...formik.getFieldProps("Name")}
+                {...formik.getFieldProps("name")}
                 disabled={isSubmitted}
               />
               {formik.touched.name && formik.errors.name && (
