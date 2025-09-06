@@ -460,7 +460,7 @@ function Report() {
 
             <div className={style.card}>
               <div className={style.cardHead}>
-                <h3 className={style.sectionTitle}>ADG</h3>
+                <h3 className={style.sectionTitle}>{t("adg") }</h3>
               </div>
               <div className={style.chartWrapMd}>
                 <Bar data={adgChart.data} options={adgChart.options} />
@@ -470,7 +470,7 @@ function Report() {
                   <thead>
                     <tr>
                       <th>{t("breed") || "Breed"}</th>
-                      <th>{t("avg_adg") || "Avg ADG"}</th>
+                      <th>{t("adg") || "Avg ADG"}</th>
                       <th>{t("total_gain") || "Total Gain"}</th>
                       <th>{t("animals") || "Animals"}</th>
                     </tr>
@@ -577,7 +577,7 @@ function Report() {
                 <thead>
                   <tr>
                     <th>{t("vaccine_name") || "Vaccine"}</th>
-                    <th>{t("remaining_doses") || "Remaining Doses"}</th>
+                    <th>{t("Remaining Doses") || "Remaining Doses"}</th>
                     <th>{t("daily_use") || "Daily Use"}</th>
                     <th>{t("days_cover") || "Days Cover"}</th>
                     <th>{t("warn") || "Warn"}</th>

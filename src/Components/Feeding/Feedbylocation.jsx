@@ -1,7 +1,7 @@
-import  { useContext, useState, useEffect } from 'react';
-import { useFormik } from 'formik';
+import axios from "axios";
+import { useFormik } from "formik";
+import { useContext, useState, useEffect } from 'react';
 import { IoIosSave } from 'react-icons/io';
-import axios from 'axios';
 import { Feedcontext } from '../../Context/FeedContext';
 import Swal from 'sweetalert2';
 import { useNavigate } from "react-router-dom";
@@ -112,6 +112,14 @@ export default function Feedbylocation() {
     formik.setFieldValue("feeds", [...formik.values.feeds, { feedId: "", quantity: "" }]);
   };
 
+  const removeFeed = (index) => {
+    if (!isSubmitted) {
+      const updatedFeeds = [...formik.values.feeds];
+      updatedFeeds.splice(index, 1);
+      formik.setFieldValue("feeds", updatedFeeds);
+    }
+  };
+
   return (
     <div className="feeding-container">
       <div className="feeding-header container">
@@ -185,6 +193,19 @@ export default function Feedbylocation() {
                   onBlur={formik.handleBlur}
                   placeholder={t("enter_quantity")}
                 />
+
+                {/* زرار إزالة الـ feed */}
+                {formik.values.feeds.length > 1 && !isSubmitted && (
+                  <div className="remove-treatment-wrapper">
+                    <button
+                      type="button"
+                      className="remove-treatment-button  mt-2"
+                      onClick={() => removeFeed(index)}
+                    >
+                      ×
+                    </button>
+                  </div>
+                )}
               </div>
             ))}
             <button type="button" onClick={addFeed} className="add-feed-button">
@@ -204,18 +225,18 @@ export default function Feedbylocation() {
             )}
           </button>
           
-                    {isSubmitted && (
-        <button
-            type="button"
-            className="save-button"
-            onClick={() => {
+          {isSubmitted && (
+            <button
+              type="button"
+              className="save-button"
+              onClick={() => {
                 formik.resetForm();
                 setIsSubmitted(false);
-            }}
-        >
-             {t('add_new_feed')}
-        </button>
-    )}
+              }}
+            >
+              {t('add_new_feed')}
+            </button>
+          )}
         </div>
       </form>
     </div>

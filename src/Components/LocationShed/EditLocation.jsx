@@ -1,38 +1,47 @@
 import { useFormik } from "formik";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import * as Yup from "yup";
 import { IoIosSave } from "react-icons/io";
 import axios from "axios";
-import {  useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from "react-router-dom";
 import './LocationShed.css';
-
-
 
 function EditLocation() {
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
-    const { id } = useParams(); // Get the animal ID from the URL params
-    
+    const { id } = useParams(); 
     const { t } = useTranslation();
     const navigate = useNavigate();
 
-    // Helper function to generate headers with the latest token
     const getHeaders = () => {
         const Authorization = localStorage.getItem("Authorization");
         const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
         return { Authorization: formattedToken };
     };
 
+    async function fetchLocation() {
+        try {
+            const headers = getHeaders();
+            let { data } = await axios.get(
+                `https://farm-project-bbzj.onrender.com/api/location/GetSingle-Locationshed/${id}`,
+                { headers }
+            );
+            if (data.status === "success") {
+                formik.setValues({
+                    locationShedName: data.data.locationShed.locationShedName || "",
+                });
+            }
+        } catch (err) {
+            setError(err.response?.data?.message || "Failed to fetch location data");
+        }
+    }
+
     async function submitWeight(values) {
         const headers = getHeaders();
         setIsLoading(true);
         setError(null);
-
-        console.log("Sending data:", values);
-        console.log("Headers:", headers);
 
         try {
             let { data } = await axios.patch(
@@ -44,12 +53,12 @@ function EditLocation() {
             if (data.status === "success") {
                 setIsLoading(false);
                 Swal.fire({
-                    title: "Success!",
-                    text: "Location data added successfully!",
+                    title: t("success"),
+                    text: t("location_updated_successfully"),
                     icon: "success",
                     confirmButtonText: "OK",
                 });
-                navigate("/locationTable"); // Redirect to the location table after successful submission
+                navigate("/locationTable");
             }
         } catch (err) {
             setIsLoading(false);
@@ -57,16 +66,20 @@ function EditLocation() {
         }
     }
 
-    // **Formik Setup**
     let formik = useFormik({
         initialValues: {
-            locationShedName: "", 
+            locationShedName: "",
         },
         validationSchema: Yup.object({
             locationShedName: Yup.string().required("Location Shed is required"),
         }),
         onSubmit: submitWeight,
     });
+
+    useEffect(() => {
+        fetchLocation();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [id]);
 
     return (
         <div className="animal-details-container ">
@@ -85,7 +98,7 @@ function EditLocation() {
                                 onBlur={formik.handleBlur}
                                 onChange={formik.handleChange}
                                 value={formik.values.locationShedName}
-                                placeholder="Enter Location Shed"
+                                placeholder={t("enter_location_shed")}
                                 id="locationShedName"
                                 type="text"
                                 className="input2"

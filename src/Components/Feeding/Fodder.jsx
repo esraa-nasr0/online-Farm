@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useFormik } from 'formik';
-import  { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import Swal from 'sweetalert2';
 import { IoIosSave } from 'react-icons/io';
 import { Feedcontext } from '../../Context/FeedContext';
@@ -38,9 +38,7 @@ export default function Fodder() {
   }, [getFodderMenue]);
 
   async function submitFodder(value) {
-    if (isSubmitted) {
-      return;
-    }
+    if (isSubmitted) return;
     const headers = getHeaders();
     setIsLoading(true);
     setError(null);
@@ -81,6 +79,14 @@ export default function Fodder() {
   const addFeed = () => {
     if (!isSubmitted) {
       formik.setFieldValue('feeds', [...formik.values.feeds, { feedId: '', quantity: '' }]);
+    }
+  };
+
+  const removeFeed = (index) => {
+    if (!isSubmitted) {
+      const updatedFeeds = [...formik.values.feeds];
+      updatedFeeds.splice(index, 1);
+      formik.setFieldValue('feeds', updatedFeeds);
     }
   };
 
@@ -155,9 +161,6 @@ export default function Fodder() {
                     </option>
                   ))}
                 </select>
-                {formik.errors.feeds && formik.touched.feeds && (
-                  <p className="text-danger">{formik.errors.feeds}</p>
-                )}
 
                 <label htmlFor={`feeds[${index}].quantity`}>{t('quantity')}</label>
                 <input
@@ -170,6 +173,19 @@ export default function Fodder() {
                   placeholder={t('enterQuantity')}
                   disabled={isSubmitted}
                 />
+
+                {/* زرار الحذف */}
+                {formik.values.feeds.length > 1 && !isSubmitted && (
+                  <div className="remove-treatment-wrapper">
+                    <button
+                      type="button"
+                      className="remove-treatment-button  mt-2"
+                      onClick={() => removeFeed(index)}
+                    >
+                      ×
+                    </button>
+                  </div>
+                )}
               </div>
             ))}
             <button type="button" onClick={addFeed} className="add-feed-button" disabled={isSubmitted}>
@@ -189,18 +205,15 @@ export default function Fodder() {
             )}
           </button>
           
-                    {isSubmitted && (
-        <button
-            type="button"
-            className="save-button"
-            onClick={() => {
-                formik.resetForm();
-                setIsSubmitted(false);
-            }}
-        >
-             {t('add_new_feed')}
-        </button>
-    )}
+          {isSubmitted && (
+            <button
+              type="button"
+              className="save-button"
+              onClick={resetForm}
+            >
+              {t('add_new_feed')}
+            </button>
+          )}
         </div>
       </form>
     </div>
