@@ -147,6 +147,12 @@ export default function EditFeedbyLocation() {
     ]);
   };
 
+  const removeFeed = (indexToRemove) => {
+    const updatedFeeds = [...formik.values.feeds];
+    updatedFeeds.splice(indexToRemove, 1);
+    formik.setFieldValue("feeds", updatedFeeds);
+  };
+
   return (
     <div className="feeding-container">
       <div className="feeding-header container">
@@ -194,7 +200,7 @@ export default function EditFeedbyLocation() {
           <div className="form-section">
             <h2>{t("feed_details")}</h2>
             {formik.values.feeds.map((feed, index) => (
-              <div key={index} className="input-group">
+              <div key={index} className="input-group feed-row">
                 <label htmlFor={`feeds[${index}].feedId`}>
                   {t("feed_name")}
                 </label>
@@ -229,6 +235,19 @@ export default function EditFeedbyLocation() {
                   onBlur={formik.handleBlur}
                   placeholder={t("enter_quantity")}
                 />
+
+                {/* زرار الريموف */}
+                {formik.values.feeds.length > 1 && (
+                  <div className="remove-treatment-wrapper">
+                      <button
+                        type="button"
+                        className="remove-treatment-button mt-2"
+                        onClick={() => removeFeed(index)}
+                      >
+                        ×
+                      </button>
+                    </div>
+                )}
               </div>
             ))}
             <button type="button" onClick={addFeed} className="add-feed-button">
@@ -239,13 +258,7 @@ export default function EditFeedbyLocation() {
 
         <div className="form-actions">
           <button type="submit" className="save-button" disabled={isLoading}>
-            {isLoading ? (
-              <span className="loading-spinner">{t("loading")}</span>
-            ) : (
-              <>
-                <IoIosSave /> {t("save")}
-              </>
-            )}
+          {isLoading ? <span className="loading-spinner"></span> : <><IoIosSave /> {t("save")}</>}
           </button>
         </div>
       </form>

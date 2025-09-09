@@ -23,46 +23,38 @@ function EditTreatment() {
   };
 
   async function submitTreatment(values) {
-    const headers = getHeaders();
-    setIsLoading(true);
-    setError(null);
+  const headers = getHeaders();
+  setIsLoading(true);
+  setError(null);
 
-    const payload = {
-      name: values.name,
-      type: values.type,
-      expireDate: values.expireDate,
-      stock: {
-        bottles: values.bottles,
-        dosesPerBottle: values.dosesPerBottle,
-      },
-      pricing: {
-        bottlePrice: values.bottlePrice,
-      },
-    };
+  const payload = {
+    name: values.name,
+    type: values.type,
+    bottles: Number(values.bottles),
+    volumePerBottle: Number(values.volumePerBottle),
+    unitOfMeasure: values.unitOfMeasure,
+    bottlePrice: Number(values.bottlePrice),
+    expireDate: values.expireDate,
+  };
 
-    try {
-      const { data } = await axios.patch(
-        `https://farm-project-bbzj.onrender.com/api/treatment/updatetreatment/${id}`,
-        payload,
-        { headers }
-      );
+  try {
+    const { data } = await axios.patch(
+      `https://farm-project-bbzj.onrender.com/api/treatment/updatetreatment/${id}`,
+      payload,
+      { headers }
+    );
 
-      if (data.status === "success") {
-        Swal.fire({
-          title: t("successTitle"),
-          text: t("treatmentUpdated"),
-          icon: "success",
-          confirmButtonText: t("ok"),
-        });
-        navigate("/treatmentTable");
-      }
-    } catch (err) {
-      setError(err.response?.data?.message || t("errorOccurred"));
-    } finally {
-      setIsLoading(false);
+    if (data.status === "success") {
+      Swal.fire({ title: t("successTitle"), text: t("treatmentUpdated"), icon: "success", confirmButtonText: t("ok") });
+      // اختياري: حطي كويري بسيط يضمن إعادة الجلب
+      navigate(`/treatmentTable?ts=${Date.now()}`);
     }
+  } catch (err) {
+    setError(err.response?.data?.message || t("errorOccurred"));
+  } finally {
+    setIsLoading(false);
   }
-
+}
   useEffect(() => {
     async function fetchTreatment() {
       const headers = getHeaders();

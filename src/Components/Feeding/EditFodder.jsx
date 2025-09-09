@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useFormik } from 'formik';
-import  { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import Swal from 'sweetalert2';
 import { IoIosSave } from 'react-icons/io';
 import { Feedcontext } from '../../Context/FeedContext';
@@ -18,7 +18,9 @@ export default function EditFodder() {
 
   const getHeaders = () => {
     const Authorization = localStorage.getItem('Authorization');
-    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
+    const formattedToken = Authorization.startsWith("Bearer ")
+      ? Authorization
+      : `Bearer ${Authorization}`;
     return { Authorization: formattedToken };
   };
 
@@ -49,16 +51,17 @@ export default function EditFodder() {
           const fodder = data.data.fodder;
           formik.setValues({
             name: fodder.name || '',
-            feeds: fodder.components.map(comp => ({
-              feedId: comp.feedId || '',
-              quantity: comp.quantity || '',
-            })) || [{ feedId: '', quantity: '' }],
+            feeds:
+              fodder.components.map((comp) => ({
+                feedId: comp.feedId || '',
+                quantity: comp.quantity || '',
+              })) || [{ feedId: '', quantity: '' }],
           });
         } else {
-          throw new Error("Unexpected API response structure");
+          throw new Error('Unexpected API response structure');
         }
       } catch (error) {
-        console.error("Failed to fetch fodder data:", error);
+        console.error('Failed to fetch fodder data:', error);
         setError(t('fetchFodderError'));
       }
     };
@@ -100,7 +103,16 @@ export default function EditFodder() {
   });
 
   const addFeed = () => {
-    formik.setFieldValue('feeds', [...formik.values.feeds, { feedId: '', quantity: '' }]);
+    formik.setFieldValue('feeds', [
+      ...formik.values.feeds,
+      { feedId: '', quantity: '' },
+    ]);
+  };
+
+  const removeFeed = (indexToRemove) => {
+    const updatedFeeds = [...formik.values.feeds];
+    updatedFeeds.splice(indexToRemove, 1);
+    formik.setFieldValue('feeds', updatedFeeds);
   };
 
   const handleFeedChange = (index, field, value) => {
@@ -135,13 +147,15 @@ export default function EditFodder() {
           <div className="form-section">
             <h2>{t('feedComponents')}</h2>
             {formik.values.feeds.map((feed, index) => (
-              <div key={index} className="input-group">
+              <div key={index} className="input-group feed-row">
                 <label htmlFor={`feeds[${index}].feedId`}>{t('feedName')}</label>
                 <select
                   id={`feeds[${index}].feedId`}
                   name={`feeds[${index}].feedId`}
                   value={feed.feedId}
-                  onChange={(e) => handleFeedChange(index, 'feedId', e.target.value)}
+                  onChange={(e) =>
+                    handleFeedChange(index, 'feedId', e.target.value)
+                  }
                   onBlur={formik.handleBlur}
                 >
                   <option value="">{t('selectFeed')}</option>
@@ -158,10 +172,25 @@ export default function EditFodder() {
                   id={`feeds[${index}].quantity`}
                   name={`feeds[${index}].quantity`}
                   value={feed.quantity}
-                  onChange={(e) => handleFeedChange(index, 'quantity', e.target.value)}
+                  onChange={(e) =>
+                    handleFeedChange(index, 'quantity', e.target.value)
+                  }
                   onBlur={formik.handleBlur}
                   placeholder={t('enterQuantity')}
                 />
+
+                {/* زرار الريموف */}
+                {formik.values.feeds.length > 1 && (
+                  <div className="remove-treatment-wrapper">
+                    <button
+                      type="button"
+                      className="remove-treatment-button mt-2"
+                      onClick={() => removeFeed(index)}
+                    >
+                      ×
+                    </button>
+                  </div>
+                )}
               </div>
             ))}
             <button type="button" onClick={addFeed} className="add-feed-button">

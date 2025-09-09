@@ -1,15 +1,14 @@
-import  { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import { TreatmentContext } from "../../Context/TreatmentContext";
 import { Rings } from "react-loader-spinner";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import {  RiDeleteBinLine } from "react-icons/ri";
+import { RiDeleteBinLine } from "react-icons/ri";
 import { FaRegEdit } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import "../Vaccine/styles.css";
 import axios from "axios";
 import { FiSearch } from "react-icons/fi";
-
 
 function TreatmentTable() {
   const { t } = useTranslation();
@@ -342,57 +341,56 @@ function TreatmentTable() {
           />
         </div>
       ) : (
-                <div className="container mt-4">
-                                <h2 className="vaccine-table-title">{t("Pharmacy")}</h2>
-                                <div className="container mt-5 vaccine-table-container">
-  <h6 className="mb-3 fw-bold custom-section-title">
-    {t("filter_data")}
-  </h6>
+        <div className="container mt-4">
+          <h2 className="vaccine-table-title">{t("Pharmacy")}</h2>
+          <div className="container mt-5 vaccine-table-container">
+            <h6 className="mb-3 fw-bold custom-section-title">
+              {t("filter_data")}
+            </h6>
 
-  <div className="row g-2 mt-3 mb-3 align-items-end">
-    {/* Search by Name */}
-    <div className="col-12 col-sm-6 col-md-3">
-      <label htmlFor="searchNameInput" className="form-label">
-        {t("name")}
-      </label>
-      <input
-        type="text"
-        id="searchNameInput"
-        className="form-control"
-        placeholder={t("search_by_name")}
-        value={searchName}
-        onChange={(e) => setSearchName(e.target.value)}
-      />
-    </div>
+            <div className="row g-2 mt-3 mb-3 align-items-end">
+              {/* Search by Name */}
+              <div className="col-12 col-sm-6 col-md-3">
+                <label htmlFor="searchNameInput" className="form-label">
+                  {t("name")}
+                </label>
+                <input
+                  type="text"
+                  id="searchNameInput"
+                  className="form-control"
+                  placeholder={t("search_by_name")}
+                  value={searchName}
+                  onChange={(e) => setSearchName(e.target.value)}
+                />
+              </div>
 
-    {/* Search by Type */}
-    <div className="col-12 col-sm-6 col-md-3">
-      <label htmlFor="searchTypeInput" className="form-label">
-        {t("type")}
-      </label>
-      <input
-        type="text"
-        id="searchTypeInput"
-        className="form-control"
-        placeholder={t("search_by_type")}
-        value={searchType}
-        onChange={(e) => setSearchType(e.target.value)}
-      />
-    </div>
+              {/* Search by Type */}
+              <div className="col-12 col-sm-6 col-md-3">
+                <label htmlFor="searchTypeInput" className="form-label">
+                  {t("type")}
+                </label>
+                <input
+                  type="text"
+                  id="searchTypeInput"
+                  className="form-control"
+                  placeholder={t("search_by_type")}
+                  value={searchType}
+                  onChange={(e) => setSearchType(e.target.value)}
+                />
+              </div>
 
-    {/* Search Button */}
-    <div className="col-12 d-flex justify-content-end mt-2">
-      <button className="btn btn-success" onClick={handleSearch}>
-        <FiSearch /> {t("search")}
-      </button>
-    </div>
-  </div>
-</div>
+              {/* Search Button */}
+              <div className="col-12 d-flex justify-content-end mt-2">
+                <button className="btn btn-success" onClick={handleSearch}>
+                  <FiSearch /> {t("search")}
+                </button>
+              </div>
+            </div>
+          </div>
 
-
-        <div className="container mt-5 vaccine-table-container">
-          <div className="container mt-3">
-            {/* <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mt-3 mb-3">
+          <div className="container mt-5 vaccine-table-container">
+            <div className="container mt-3">
+              {/* <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mt-3 mb-3">
               <div className="d-flex flex-wrap gap-2">
                 <button
                   className="btn btn-outline-dark"
@@ -426,119 +424,120 @@ function TreatmentTable() {
                 </label>
               </div>
             </div> */}
+            </div>
 
-    
-          </div>
+            {error && <p className="text-danger mt-3">{error}</p>}
 
-          {error && <p className="text-danger mt-3">{error}</p>}
+            <div className="table-responsive ">
+              <div className="full-width-table">
+                <table
+                  className="table align-middle mt-3"
+                  aria-label={t("treatment_table")}
+                >
+                  <thead>
+                    <tr>
+                      <th scope="col" className="text-center bg-color">
+                        #
+                      </th>
+                      <th scope="col" className="text-center bg-color">
+                        {t("name")}
+                      </th>
+                      <th scope="col" className="text-center bg-color">
+                        {t("type")}
+                      </th>
+                      <th scope="col" className="text-center bg-color">
+                        {t("stock")}
+                      </th>
+                      <th scope="col" className="text-center bg-color">
+                        {t("price")}
+                      </th>
+                      <th scope="col" className="text-center bg-color">
+                        {t("expire_date")}
+                      </th>
+                      <th className="text-center bg-color">{t("actions")}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {treatment.length > 0 ? (
+                      treatment.map((item, index) => (
+                        <tr key={item._id || index}>
+                          <th scope="row">
+                            {(currentPage - 1) * treatmentPerPage + index + 1}
+                          </th>
+                          <td>{item.name}</td>
+                          <td>{item.type}</td>
+                          <td>
+                            <div>
+                              <strong>{t("bottles")}:</strong>{" "}
+                              {item.stock?.bottles}
+                            </div>
+                            <div>
+                              <strong>{t("volumePerBottle")}:</strong>{" "}
+                              {item.stock?.volumePerBottle}
+                            </div>
+                            <div>
+                              <strong>{t("unitOfMeasure")}:</strong>{" "}
+                              {item.stock?.unitOfMeasure}
+                            </div>
+                            <div>
+                              <strong>{t("totalVolume")}:</strong>{" "}
+                              {item.stock?.totalVolume}
+                            </div>
+                          </td>
+                          <td>
+                            <div>
+                              <strong>{t("bottle_price")}:</strong>{" "}
+                              {item.pricing?.bottlePrice} EGP
+                            </div>
+                            <div>
+                              <strong>{t("dose_price")}:</strong>{" "}
+                              {item.pricePerMl ??
+                                item.pricing?.dosePrice ??
+                                "-"}{" "}
+                              EGP
+                            </div>
+                          </td>
 
-          <div className="table-responsive ">
-            <div className="full-width-table">
-              <table
-                className="table align-middle mt-3"
-                aria-label={t("treatment_table")}
-              >
-                <thead>
-                  <tr>
-                    <th scope="col" className="text-center bg-color">
-                      #
-                    </th>
-                    <th scope="col" className="text-center bg-color">
-                      {t("name")}
-                    </th>
-                    <th scope="col" className="text-center bg-color">
-                      {t("type")}
-                    </th>
-                    <th scope="col" className="text-center bg-color">
-                      {t("stock")}
-                    </th>
-                    <th scope="col" className="text-center bg-color">
-                      {t("price")}
-                    </th>
-                    <th scope="col" className="text-center bg-color">
-                      {t("expire_date")}
-                    </th>
-                    <th className="text-center bg-color">{t("actions")}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {treatment.length > 0 ? (
-                    treatment.map((item, index) => (
-                      <tr key={item._id || index}>
-                        <th scope="row">
-                          {(currentPage - 1) * treatmentPerPage + index + 1}
-                        </th>
-                        <td>{item.name}</td>
-                        <td>{item.type}</td>
-                        <td>
-                          <div>
-                            <strong>{t("bottles")}:</strong>{" "}
-                            {item.stock?.bottles}
-                          </div>
-                          <div>
-                            <strong>{t("volumePerBottle")}:</strong>{" "}
-                            {item.stock?.volumePerBottle}
-                          </div>
-                          <div>
-                            <strong>{t("unitOfMeasure")}:</strong>{" "}
-                            {item.stock?.unitOfMeasure}
-                          </div>
-                          <div>
-                            <strong>{t("totalVolume")}:</strong>{" "}
-                            {item.stock?.totalVolume}
-                          </div>
-                        </td>
-                        <td>
-                          <div>
-                            <strong>{t("bottle_price")}:</strong>{" "}
-                            {item.pricing?.bottlePrice} EGP
-                          </div>
-                          <div>
-                            <strong>{t("dose_price")}:</strong>{" "}
-                            {item.pricing?.dosePrice} EGP
-                          </div>
-                        </td>
-                        
-                        <td>
-                          {new Date(item.expireDate).toLocaleDateString()}
-                        </td>
+                          <td>
+                            {new Date(item.expireDate).toLocaleDateString()}
+                          </td>
 
-                        <td className="text-center">
-                          <button
-                            className="btn btn-link p-0 me-2"
-                            onClick={() => editTreatment(item._id)}
-                            title={t("edit")}
-                            style={{ color: "#0f7e34ff" }}
-                          >
-                            <FaRegEdit />
-                          </button>
-                          <button
-                            className="btn btn-link  p-0"
-                            style={{ color:"#d33" }}
-                            onClick={() => confirmDelete(item._id)}
-                            title={t("delete")}
-                          >
-                            <RiDeleteBinLine />
-                          </button>
+                          <td className="text-center">
+                            <button
+                              className="btn btn-link p-0 me-2"
+                              onClick={() => editTreatment(item._id)}
+                              title={t("edit")}
+                              style={{ color: "#0f7e34ff" }}
+                            >
+                              <FaRegEdit />
+                            </button>
+                            <button
+                              className="btn btn-link  p-0"
+                              style={{ color: "#d33" }}
+                              onClick={() => confirmDelete(item._id)}
+                              title={t("delete")}
+                            >
+                              <RiDeleteBinLine />
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="7" className="text-center">
+                          {t("no_treatments_found")}
                         </td>
                       </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="7" className="text-center">
-                        {t("no_treatments_found")}
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div className="d-flex justify-content-center mt-4">
+              <nav>{renderModernPagination()}</nav>
             </div>
           </div>
-
-          <div className="d-flex justify-content-center mt-4">
-            <nav>{renderModernPagination()}</nav>
-          </div>
-        </div>
         </div>
       )}
     </>

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useFormik } from "formik";
-import  { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { IoIosSave } from "react-icons/io";
 import * as Yup from "yup";
@@ -84,27 +84,7 @@ function EditTreatAnimal() {
     fetchInitialData();
   }, [id]);
 
-  const validationSchema = Yup.object({
-    tagId: Yup.string().required(t("tagId_required")),
-    locationShed: Yup.string().required(t("location_shed_required")),
-    date: Yup.date().required(t("date_required")),
-    treatments: Yup.array()
-      .of(
-        Yup.object({
-          treatmentId: Yup.string().required(t("treatment_id_required")),
-          volumePerAnimal: Yup.number()
-            .required(t("volume_required"))
-            .positive(t("volume_positive"))
-            .typeError(t("volume_valid_number")),
-          numberOfDoses: Yup.number()
-            .required(t("doses_required"))
-            .positive(t("doses_positive"))
-            .integer(t("doses_integer"))
-            .typeError(t("doses_number")),
-        })
-      )
-      .min(1, t("at_least_one_treatment")),
-  });
+  
 
   const formik = useFormik({
     initialValues: {
@@ -124,13 +104,36 @@ function EditTreatAnimal() {
         doses: [],
       }],
     },
-    validationSchema,
     onSubmit: async (values) => {
       setIsLoading(true);
       try {
+        // Prepare data for API - ensure proper date formatting
+        const submitData = {
+          tagId: values.tagId,
+          locationShed: values.locationShed,
+          date: values.date ? new Date(values.date).toISOString() : null,
+          eyeCheck: values.eyeCheck,
+          rectalCheck: values.rectalCheck,
+          respiratoryCheck: values.respiratoryCheck,
+          rumenCheck: values.rumenCheck,
+          diagnosis: values.diagnosis,
+          temperature: values.temperature,
+          treatments: values.treatments.map(treatment => ({
+            treatmentId: treatment.treatmentId,
+            volumePerAnimal: treatment.volumePerAnimal,
+            numberOfDoses: treatment.numberOfDoses,
+            doses: treatment.doses.map(dose => ({
+              date: dose.date ? new Date(dose.date).toISOString() : null,
+              taken: dose.taken
+            }))
+          }))
+        };
+
+        console.log("Submitting data:", submitData); // For debugging
+
         const res = await axios.patch(
           `https://farm-project-bbzj.onrender.com/api/treatment/updatetreatmentforAnimals/${id}`,
-          values,
+          submitData,
           { headers: getHeaders() }
         );
 
@@ -141,15 +144,19 @@ function EditTreatAnimal() {
             text: res.data.message || t("animal_update_success"),
             icon: "success",
             confirmButtonText: t("ok"),
+          }).then(() => {
+            navigate(-1); // Go back to previous page after success
           });
         } else {
           throw new Error(res.data.message);
         }
       } catch (err) {
-        setError(err.message || t("error_occurred"));
+        console.error("Update error:", err.response?.data || err.message);
+        const errorMessage = err.response?.data?.message || err.message || t("error_occurred");
+        setError(errorMessage);
         Swal.fire({
           title: t("error"),
-          text: err.message || t("error_occurred"),
+          text: errorMessage,
           icon: "error",
         });
       } finally {
@@ -163,11 +170,14 @@ function EditTreatAnimal() {
     const treatments = [...formik.values.treatments];
 
     if (name === "numberOfDoses") {
-      treatments[index].numberOfDoses = value;
-      treatments[index].doses = Array.from({ length: Number(value) || 0 }, () => ({
-        date: "",
-        taken: false,
-      }));
+      const numDoses = parseInt(value) || 0;
+      treatments[index].numberOfDoses = numDoses;
+      
+      // Preserve existing doses if reducing the number
+      const existingDoses = treatments[index].doses || [];
+      treatments[index].doses = Array.from({ length: numDoses }, (_, i) => 
+        i < existingDoses.length ? existingDoses[i] : { date: "", taken: false }
+      );
     } else {
       treatments[index][name] = value;
     }
@@ -197,6 +207,7 @@ function EditTreatAnimal() {
     <div className="treatment-container">
       <div className="treatment-header container">
         <h1>{t("edit_treatment")}</h1>
+        
       </div>
 
       {error && <div className="error-message">{error}</div>}
@@ -209,12 +220,23 @@ function EditTreatAnimal() {
 
             <div className="input-group">
               <label>{t("tag_id")}</label>
-              <input type="text" readOnly {...formik.getFieldProps("tagId")} />
+              <input 
+                type="text" 
+                readOnly 
+                {...formik.getFieldProps("tagId")} 
+                className={formik.touched.tagId && formik.errors.tagId ? "error" : ""}
+              />
+              {formik.touched.tagId && formik.errors.tagId && (
+                <div className="error-text">{formik.errors.tagId}</div>
+              )}
             </div>
 
             <div className="input-group">
               <label>{t("location_shed")}</label>
-              <select {...formik.getFieldProps("locationShed")}>
+              <select 
+                {...formik.getFieldProps("locationShed")}
+                className={formik.touched.locationShed && formik.errors.locationShed ? "error" : ""}
+              >
                 <option value="">{t("select_location_shed")}</option>
                 {locationSheds.map((shed) => (
                   <option key={shed._id} value={shed._id}>
@@ -222,11 +244,21 @@ function EditTreatAnimal() {
                   </option>
                 ))}
               </select>
+              {formik.touched.locationShed && formik.errors.locationShed && (
+                <div className="error-text">{formik.errors.locationShed}</div>
+              )}
             </div>
 
             <div className="input-group">
               <label>{t("date")}</label>
-              <input type="date" {...formik.getFieldProps("date")} />
+              <input 
+                type="date" 
+                {...formik.getFieldProps("date")} 
+                className={formik.touched.date && formik.errors.date ? "error" : ""}
+              />
+              {formik.touched.date && formik.errors.date && (
+                <div className="error-text">{formik.errors.date}</div>
+              )}
             </div>
           </div>
 
@@ -234,17 +266,28 @@ function EditTreatAnimal() {
           <div className="form-section">
             <h2>{t("animal_exminetion_and_diagnosis")}</h2>
 
-            {["eyeCheck", "rectalCheck", "respiratoryCheck", "rumenCheck", "diagnosis", "temperature"].map((field) => (
+            {["eyeCheck", "rectalCheck", "respiratoryCheck", "rumenCheck", "diagnosis"].map((field) => (
               <div className="input-group" key={field}>
                 <label>{t(field)}</label>
                 <input
-                  type={field === "temperature" ? "number" : "text"}
+                  type="text"
                   name={field}
                   value={formik.values[field]}
                   onChange={formik.handleChange}
                 />
               </div>
             ))}
+            
+            <div className="input-group">
+              <label>{t("temperature")}</label>
+              <input
+                type="number"
+                step="0.1"
+                name="temperature"
+                value={formik.values.temperature}
+                onChange={formik.handleChange}
+              />
+            </div>
           </div>
 
           {/* Treatments */}
@@ -258,6 +301,7 @@ function EditTreatAnimal() {
                   name="treatmentId"
                   value={treatment.treatmentId}
                   onChange={(e) => handleTreatmentChange(e, index)}
+                  className={formik.touched.treatments && formik.touched.treatments[index]?.treatmentId && formik.errors.treatments && formik.errors.treatments[index]?.treatmentId ? "error" : ""}
                 >
                   <option value="">{t("select_treatment")}</option>
                   {treatmentOptions.map((option) => (
@@ -266,16 +310,24 @@ function EditTreatAnimal() {
                     </option>
                   ))}
                 </select>
+                {formik.touched.treatments && formik.touched.treatments[index]?.treatmentId && formik.errors.treatments && formik.errors.treatments[index]?.treatmentId && (
+                  <div className="error-text">{formik.errors.treatments[index].treatmentId}</div>
+                )}
               </div>
 
               <div className="input-group">
                 <label>{t("volumePerAnimal")}</label>
                 <input
                   type="number"
+                  step="0.01"
                   name="volumePerAnimal"
                   value={treatment.volumePerAnimal}
                   onChange={(e) => handleTreatmentChange(e, index)}
+                  className={formik.touched.treatments && formik.touched.treatments[index]?.volumePerAnimal && formik.errors.treatments && formik.errors.treatments[index]?.volumePerAnimal ? "error" : ""}
                 />
+                {formik.touched.treatments && formik.touched.treatments[index]?.volumePerAnimal && formik.errors.treatments && formik.errors.treatments[index]?.volumePerAnimal && (
+                  <div className="error-text">{formik.errors.treatments[index].volumePerAnimal}</div>
+                )}
               </div>
 
               <div className="input-group">
@@ -285,7 +337,11 @@ function EditTreatAnimal() {
                   name="numberOfDoses"
                   value={treatment.numberOfDoses}
                   onChange={(e) => handleTreatmentChange(e, index)}
+                  className={formik.touched.treatments && formik.touched.treatments[index]?.numberOfDoses && formik.errors.treatments && formik.errors.treatments[index]?.numberOfDoses ? "error" : ""}
                 />
+                {formik.touched.treatments && formik.touched.treatments[index]?.numberOfDoses && formik.errors.treatments && formik.errors.treatments[index]?.numberOfDoses && (
+                  <div className="error-text">{formik.errors.treatments[index].numberOfDoses}</div>
+                )}
               </div>
 
               {/* Dose Inputs */}
@@ -335,7 +391,7 @@ function EditTreatAnimal() {
 
         <div className="form-actions">
           <button type="button" onClick={addTreat} className="add-treatment-button">
-            +
+            + 
           </button>
 
           <button type="submit" className="save-button" disabled={isLoading}>
