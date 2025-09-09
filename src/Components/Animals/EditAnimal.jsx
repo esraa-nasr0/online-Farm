@@ -1,4 +1,4 @@
-import  { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import axios from "axios";
 import { IoIosSave } from "react-icons/io";
@@ -18,6 +18,8 @@ function EditAnimal() {
   const [locationSheds, setLocationSheds] = useState([]);
   const [breeds, setBreeds] = useState([]);
   const [isFattening, setIsFattening] = useState(false);
+  const [showEmpty, setShowEmpty] = useState(false); // ⬅️ سويتش إظهار الحقول الفارغة
+
   const { LocationMenue } = useContext(LocationContext);
   const { BreedMenue } = useContext(BreedContext);
   const { id } = useParams();
@@ -43,6 +45,25 @@ function EditAnimal() {
     const date = new Date(dateString);
     return isNaN(date) ? undefined : date.toISOString();
   };
+
+  // ==== من يظهر وإمتى (إخفاء الحقول الفارغة) ====
+  const hasValue = (v) => {
+    if (v === undefined || v === null) return false;
+    if (typeof v === "string") return v.trim() !== "";
+    if (typeof v === "number") return true; // 0 يعتبر قيمة صحيحة
+    if (typeof v === "object" && v !== null) {
+      if ("years" in v && "months" in v && "days" in v) {
+        return (Number(v.years) || 0) > 0 ||
+               (Number(v.months) || 0) > 0 ||
+               (Number(v.days) || 0) > 0;
+      }
+      return Object.values(v).some(hasValue);
+    }
+    return !!v;
+  };
+
+  const ShowIf = ({ value, children }) =>
+    showEmpty || hasValue(value) ? children : null;
 
   // ===== Decode token to detect fattening mode =====
   useEffect(() => {
@@ -236,7 +257,8 @@ function EditAnimal() {
   const hasBornAtFarmData =
     !!(formik.values.motherId?.trim() ||
        formik.values.fatherId?.trim() ||
-       formik.values.birthDate);
+       formik.values.birthDate ||
+       formik.values.marketValue !== "" && formik.values.marketValue != null);
 
   const shouldShowPurchaseSection =
     formik.values.animaleCondation === "purchase" || hasPurchaseData;
@@ -255,154 +277,189 @@ function EditAnimal() {
 
       {error && <div className="error-message">{error}</div>}
 
+      {/* سويتش إظهار/إخفاء الحقول الفارغة */}
+      <div className="form-actions" style={{ marginBottom: 12 }}>
+        <label style={{ display: "inline-flex", gap: 8, alignItems: "center", cursor: "pointer" }}>
+          <input
+            type="checkbox"
+            checked={showEmpty}
+            onChange={() => setShowEmpty((v) => !v)}
+          />
+          {showEmpty ? (t("hide_empty_fields") || "إخفاء الحقول الفارغة")
+                     : (t("show_empty_fields") || "إظهار الحقول الفارغة")}
+        </label>
+      </div>
+
       <form onSubmit={formik.handleSubmit} className="animal-form container">
         <div className="form-grid">
           {/* ===== Basic Info ===== */}
           <div className="form-section">
             <h2>{t("basic_info")}</h2>
 
-            <div className="input-group">
-              <label htmlFor="tagId">{t("tag_id")}</label>
-              <input
-                type="text"
-                id="tagId"
-                name="tagId"
-                value={formik.values.tagId}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                placeholder={t("enter_tag_id")}
-              />
-            </div>
+            <ShowIf value={formik.values.tagId}>
+              <div className="input-group">
+                <label htmlFor="tagId">{t("tag_id")}</label>
+                <input
+                  type="text"
+                  id="tagId"
+                  name="tagId"
+                  value={formik.values.tagId}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  placeholder={t("enter_tag_id")}
+                />
+              </div>
+            </ShowIf>
 
-            <div className="input-group">
-              <label htmlFor="breed">{t("breed")}</label>
-              <select
-                id="breed"
-                name="breed"
-                value={formik.values.breed}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-              >
-                <option value="">{t("select_breed")}</option>
-                {breeds.map((breed) => (
-                  <option key={breed._id} value={breed._id}>
-                    {breed.breedName}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <ShowIf value={formik.values.breed}>
+              <div className="input-group">
+                <label htmlFor="breed">{t("breed")}</label>
+                <select
+                  id="breed"
+                  name="breed"
+                  value={formik.values.breed}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                >
+                  <option value="">{t("select_breed")}</option>
+                  {breeds.map((breed) => (
+                    <option key={breed._id} value={breed._id}>
+                      {breed.breedName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </ShowIf>
 
-            <div className="input-group">
-              <label htmlFor="locationShedName">{t("location_shed")}</label>
-              <select
-                id="locationShedName"
-                name="locationShedName"
-                value={formik.values.locationShedName}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-              >
-                <option value="">{t("select_location_shed")}</option>
-                {locationSheds.map((shed) => (
-                  <option key={shed._id} value={shed._id}>
-                    {shed.locationShedName}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <ShowIf value={formik.values.locationShedName}>
+              <div className="input-group">
+                <label htmlFor="locationShedName">{t("location_shed")}</label>
+                <select
+                  id="locationShedName"
+                  name="locationShedName"
+                  value={formik.values.locationShedName}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                >
+                  <option value="">{t("select_location_shed")}</option>
+                  {locationSheds.map((shed) => (
+                    <option key={shed._id} value={shed._id}>
+                      {shed.locationShedName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </ShowIf>
 
-            <div className="input-group">
-              <label>{t("age")}</label>
-              <div className="age-input-container">
-                <div className="age-input">
-                  <label htmlFor="age-years">{t("years")}</label>
-                  <input
-                    type="number"
-                    id="age-years"
-                    name="age.years"
-                    min="0"
-                    value={formik.values.age.years}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                  />
-                </div>
-                <div className="age-input">
-                  <label htmlFor="age-months">{t("months")}</label>
-                  <input
-                    type="number"
-                    id="age-months"
-                    name="age.months"
-                    min="0"
-                    max="11"
-                    value={formik.values.age.months}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                  />
-                </div>
-                <div className="age-input">
-                  <label htmlFor="age-days">{t("days")}</label>
-                  <input
-                    type="number"
-                    id="age-days"
-                    name="age.days"
-                    min="0"
-                    max="30"
-                    value={formik.values.age.days}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                  />
+            {/* العمر: اعرض البلوك كله لو فيه أي قيمة (>0) */}
+            <ShowIf value={formik.values.age}>
+              <div className="input-group">
+                <label>{t("age")}</label>
+                <div className="age-input-container">
+                  <ShowIf value={formik.values.age.years}>
+                    <div className="age-input">
+                      <label htmlFor="age-years">{t("years")}</label>
+                      <input
+                        type="number"
+                        id="age-years"
+                        name="age.years"
+                        min="0"
+                        value={formik.values.age.years}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                      />
+                    </div>
+                  </ShowIf>
+
+                  <ShowIf value={formik.values.age.months}>
+                    <div className="age-input">
+                      <label htmlFor="age-months">{t("months")}</label>
+                      <input
+                        type="number"
+                        id="age-months"
+                        name="age.months"
+                        min="0"
+                        max="11"
+                        value={formik.values.age.months}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                      />
+                    </div>
+                  </ShowIf>
+
+                  <ShowIf value={formik.values.age.days}>
+                    <div className="age-input">
+                      <label htmlFor="age-days">{t("days")}</label>
+                      <input
+                        type="number"
+                        id="age-days"
+                        name="age.days"
+                        min="0"
+                        max="30"
+                        value={formik.values.age.days}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                      />
+                    </div>
+                  </ShowIf>
                 </div>
               </div>
-            </div>
+            </ShowIf>
           </div>
 
           {/* ===== Animal Details ===== */}
           <div className="form-section">
             <h2>{t("animal_details")}</h2>
 
-            <div className="input-group">
-              <label htmlFor="animalType">{t("animal_type")}</label>
-              <select
-                id="animalType"
-                name="animalType"
-                value={formik.values.animalType}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-              >
-                <option value="">{t("select_animal_type")}</option>
-                <option value="goat">{t("goat")}</option>
-                <option value="sheep">{t("sheep")}</option>
-              </select>
-            </div>
-
-            <div className="input-group">
-              <label htmlFor="gender">{t("gender")}</label>
-              <select
-                id="gender"
-                name="gender"
-                value={formik.values.gender}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-              >
-                <option value="">{t("select_gender")}</option>
-                <option value="female">{t("female")}</option>
-                <option value="male">{t("male")}</option>
-              </select>
-            </div>
-
-            {/* Female condition: show if gender is female OR has saved data (and not fattening) */}
-            {shouldShowFemaleCondition && (
+            <ShowIf value={formik.values.animalType}>
               <div className="input-group">
-                <label htmlFor="female_Condition">{t("female_condition")}</label>
-                <input
-                  type="text"
-                  id="female_Condition"
-                  name="female_Condition"
-                  value={formik.values.female_Condition}
+                <label htmlFor="animalType">{t("animal_type")}</label>
+                <select
+                  id="animalType"
+                  name="animalType"
+                  value={formik.values.animalType}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  placeholder={t("enter_female_condition")}
-                />
+                >
+                  <option value="">{t("select_animal_type")}</option>
+                  <option value="goat">{t("goat")}</option>
+                  <option value="sheep">{t("sheep")}</option>
+                </select>
               </div>
+            </ShowIf>
+
+            <ShowIf value={formik.values.gender}>
+              <div className="input-group">
+                <label htmlFor="gender">{t("gender")}</label>
+                <select
+                  id="gender"
+                  name="gender"
+                  value={formik.values.gender}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                >
+                  <option value="">{t("select_gender")}</option>
+                  <option value="female">{t("female")}</option>
+                  <option value="male">{t("male")}</option>
+                </select>
+              </div>
+            </ShowIf>
+
+            {shouldShowFemaleCondition && (
+              <ShowIf value={formik.values.female_Condition}>
+                <div className="input-group">
+                  <label htmlFor="female_Condition">{t("female_condition")}</label>
+                  <input
+                    type="text"
+                    id="female_Condition"
+                    name="female_Condition"
+                    value={formik.values.female_Condition}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    placeholder={t("enter_female_condition")}
+                  />
+                </div>
+              </ShowIf>
             )}
           </div>
 
@@ -410,121 +467,135 @@ function EditAnimal() {
           <div className="form-section">
             <h2>{t("acquisition_details")}</h2>
 
-            <div className="input-group">
-              <label htmlFor="animaleCondation">{t("animal_condition")}</label>
-              <select
-                id="animaleCondation"
-                name="animaleCondation"
-                value={formik.values.animaleCondation}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-              >
-                <option value="">{t("select_condition")}</option>
-                <option value="purchase">{t("purchase")}</option>
-                {!isFattening && (
-                  <option value="born at farm">{t("born_at_farm")}</option>
-                )}
-              </select>
-            </div>
+            <ShowIf value={formik.values.animaleCondation}>
+              <div className="input-group">
+                <label htmlFor="animaleCondation">{t("animal_condition")}</label>
+                <select
+                  id="animaleCondation"
+                  name="animaleCondation"
+                  value={formik.values.animaleCondation}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                >
+                  <option value="">{t("select_condition")}</option>
+                  <option value="purchase">{t("purchase")}</option>
+                  {!isFattening && (
+                    <option value="born at farm">{t("born_at_farm")}</option>
+                  )}
+                </select>
+              </div>
+            </ShowIf>
 
-            {/* Purchase section: show if selected OR data exists */}
+            {/* Purchase section */}
             {shouldShowPurchaseSection && (
               <>
-                <div className="input-group">
-                  <label htmlFor="traderName">{t("trader_name")}</label>
-                  <input
-                    type="text"
-                    id="traderName"
-                    name="traderName"
-                    value={formik.values.traderName}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    placeholder={t("enter_trader_name")}
-                  />
-                </div>
+                <ShowIf value={formik.values.traderName}>
+                  <div className="input-group">
+                    <label htmlFor="traderName">{t("trader_name")}</label>
+                    <input
+                      type="text"
+                      id="traderName"
+                      name="traderName"
+                      value={formik.values.traderName}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      placeholder={t("enter_trader_name")}
+                    />
+                  </div>
+                </ShowIf>
 
-                <div className="input-group">
-                  <label htmlFor="purchaseDate">{t("purchase_date")}</label>
-                  <input
-                    type="date"
-                    id="purchaseDate"
-                    name="purchaseDate"
-                    value={formik.values.purchaseDate}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                  />
-                </div>
+                <ShowIf value={formik.values.purchaseDate}>
+                  <div className="input-group">
+                    <label htmlFor="purchaseDate">{t("purchase_date")}</label>
+                    <input
+                      type="date"
+                      id="purchaseDate"
+                      name="purchaseDate"
+                      value={formik.values.purchaseDate}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                    />
+                  </div>
+                </ShowIf>
 
-                <div className="input-group">
-                  <label htmlFor="purchasePrice">{t("purchase_price")}</label>
-                  <input
-                    type="number"
-                    id="purchasePrice"
-                    name="purchasePrice"
-                    value={formik.values.purchasePrice}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    placeholder={t("enter_purchase_price")}
-                  />
-                </div>
-
-                
+                <ShowIf value={formik.values.purchasePrice}>
+                  <div className="input-group">
+                    <label htmlFor="purchasePrice">{t("purchase_price")}</label>
+                    <input
+                      type="number"
+                      id="purchasePrice"
+                      name="purchasePrice"
+                      value={formik.values.purchasePrice}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      placeholder={t("enter_purchase_price")}
+                    />
+                  </div>
+                </ShowIf>
               </>
             )}
 
-            {/* Born at farm section: show if selected OR data exists (and not fattening) */}
+            {/* Born at farm section */}
             {shouldShowBornSection && (
               <>
-                <div className="input-group">
-                  <label htmlFor="motherId">{t("mother_id")}</label>
-                  <input
-                    type="text"
-                    id="motherId"
-                    name="motherId"
-                    value={formik.values.motherId}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    placeholder={t("enter_mother_id")}
-                  />
-                </div>
+                <ShowIf value={formik.values.motherId}>
+                  <div className="input-group">
+                    <label htmlFor="motherId">{t("mother_id")}</label>
+                    <input
+                      type="text"
+                      id="motherId"
+                      name="motherId"
+                      value={formik.values.motherId}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      placeholder={t("enter_mother_id")}
+                    />
+                  </div>
+                </ShowIf>
 
-                <div className="input-group">
-                  <label htmlFor="fatherId">{t("father_id")}</label>
-                  <input
-                    type="text"
-                    id="fatherId"
-                    name="fatherId"
-                    value={formik.values.fatherId}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    placeholder={t("enter_father_id")}
-                  />
-                </div>
+                <ShowIf value={formik.values.fatherId}>
+                  <div className="input-group">
+                    <label htmlFor="fatherId">{t("father_id")}</label>
+                    <input
+                      type="text"
+                      id="fatherId"
+                      name="fatherId"
+                      value={formik.values.fatherId}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      placeholder={t("enter_father_id")}
+                    />
+                  </div>
+                </ShowIf>
 
-                <div className="input-group">
-                  <label htmlFor="birthDate">{t("birth_date")}</label>
-                  <input
-                    type="date"
-                    id="birthDate"
-                    name="birthDate"
-                    value={formik.values.birthDate}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                  />
-                </div>
+                <ShowIf value={formik.values.birthDate}>
+                  <div className="input-group">
+                    <label htmlFor="birthDate">{t("birth_date")}</label>
+                    <input
+                      type="date"
+                      id="birthDate"
+                      name="birthDate"
+                      value={formik.values.birthDate}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                    />
+                  </div>
+                </ShowIf>
 
-                <div className="input-group">
-                  <label htmlFor="marketValue">{t("market_value")}</label>
-                  <input
-                    type="number"
-                    id="marketValue"
-                    name="marketValue"
-                    value={formik.values.marketValue}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    placeholder={t("enter_market_value")}
-                  />
-                </div>
+                <ShowIf value={formik.values.marketValue}>
+                  <div className="input-group">
+                    <label htmlFor="marketValue">{t("market_value")}</label>
+                    <input
+                      type="number"
+                      id="marketValue"
+                      name="marketValue"
+                      value={formik.values.marketValue}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      placeholder={t("enter_market_value")}
+                    />
+                  </div>
+                </ShowIf>
               </>
             )}
           </div>

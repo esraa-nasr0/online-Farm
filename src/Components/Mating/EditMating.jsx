@@ -1,8 +1,8 @@
 import { useFormik } from "formik";
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { IoIosSave } from "react-icons/io";
 import axios from "axios";
-import {  useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "./Mating.css";
 import Swal from "sweetalert2";
@@ -192,7 +192,9 @@ function EditMating() {
               >
                 <option value="">{t("mating_type")}</option>
                 <option value={t("natural")}>{t("natural")}</option>
-                <option value={t('Artificial insemination')}>{t('Artificial insemination')}</option>
+                <option value={t("Artificial insemination")}>
+                  {t("Artificial insemination")}
+                </option>
               </select>
               {formik.errors.matingType && formik.touched.matingType && (
                 <p className="text-danger">{formik.errors.matingType}</p>
@@ -270,9 +272,10 @@ function EditMating() {
                 onBlur={formik.handleBlur}
               >
                 <option value="">{t("select_sonar_result")}</option>
-                <option value={t("positive")}>{t("positive")}</option>
-                <option value={t("negative")}>{t("negative")}</option>
+                <option value="positive">{t("positive")}</option>
+                <option value="negative">{t("negative")}</option>
               </select>
+
               {formik.errors.sonarResult && formik.touched.sonarResult && (
                 <p className="text-danger">{formik.errors.sonarResult}</p>
               )}
