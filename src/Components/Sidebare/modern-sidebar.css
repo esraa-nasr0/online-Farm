@@ -2,11 +2,11 @@
 
 /* ===== Theme (قابلة للتعديل) ===== */
 :root {
-  --msb-bg: rgb(11, 49, 34);             /* الخلفية الأساسية */
-  --msb-bg-2: #717b8c;           /* خلفية ثانوية غامقة قليلاً */
+  --msb-bg:white ;             /* الخلفية الأساسية */
+  --msb-bg-2: #717b8c52;           /* خلفية ثانوية غامقة قليلاً */
   --msb-accent: #717b8c;         /* لون مميز */
-  --msb-text: #e1e7f5;           /* النصوص + الأيقونات */
-  --msb-muted: #c6d0ea;          /* نص خافت */
+  --msb-text: black;           /* النصوص + الأيقونات */
+  --msb-muted: black;          /* نص خافت */
   --msb-border: rgba(225, 231, 245, 0.2); /* حدود فاتحة شفافة */
   --msb-pill: #ff4757;           
   --msb-shadow: 0 12px 30px rgba(0, 0, 0, .3);
@@ -404,4 +404,14 @@ html, body, #root {
 .panel-nav,
 .msb-rail-items {
   overflow-y: auto;
+}
+
+
+@media (max-width: 768px) {
+  .msb {
+    display: none; /* من غير !important */
+  }
+  .msb.open {
+    display: grid; /* ترجع تظهر لو واخدة كلاس open */
+  }
 }
