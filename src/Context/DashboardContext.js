@@ -16,13 +16,13 @@ const getHeaders = () => {
   };
 
 function getUsers(page, limit, filters = {}) {
-    const headers = getHeaders(); // Get the latest headers
+    const headers = getHeaders(); 
 
     return axios.get('https://farm-project-bbzj.onrender.com/api/getusers', {
         params: {
             page,
             limit,
-            ...filters // Pass additional filters like tagId, breed, etc.
+            ...filters 
         },
         headers
     })

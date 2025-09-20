@@ -106,6 +106,8 @@ import SupplierContextProvider from "./Context/SupplierContext.js";
 import EditSupplier from "./Components/Suppliers/EditSupplier.jsx";
 import SupplierServices from "./Components/Services/SupplierServices.jsx";
 import DetailsLocation from "./Components/LocationShed/DetailsLocation.jsx";
+import AdminDashboard from "./Components/AdminDashboard/AdminDashboard.jsx";
+import AdminContextProvider from "./Context/AdminContext.jsx";
 
 
 
@@ -170,7 +172,8 @@ let routers = createBrowserRouter([
       { path: "fodder", element: <ProtectedRoute><Fodder/></ProtectedRoute> },
       { path: "fodderTable", element: <ProtectedRoute><FodderTable/></ProtectedRoute> },
       { path: "editFodder/:id", element: <ProtectedRoute><EditFodder/></ProtectedRoute> },
-      { path: "dashboard", element: <ProtectedRoute  allowedRoles={['admin']}><Dashboard/></ProtectedRoute> },
+      { path: "dashboard", element: <ProtectedRoute  ><Dashboard/></ProtectedRoute> },
+      { path: "AdminDashboard", element: <ProtectedRoute allowedRoles={['admin']}><AdminDashboard/></ProtectedRoute> },
 
       { path: "editVaccineanimals/:id", element: <ProtectedRoute><EditVaccineanimals/></ProtectedRoute> },
       { path: "vaccinebytagid", element: <ProtectedRoute><Vaccinebytagid/></ProtectedRoute> },
@@ -231,7 +234,8 @@ export default function App() {
   },[]);
 
   return <>
-      <SidebarProvider>
+  <AdminContextProvider>
+     <SidebarProvider>
         <SupplierContextProvider>
         <NewvaccineContextProvider>
     <VaccinetableentriescontextProvider>
@@ -271,6 +275,8 @@ export default function App() {
         </NewvaccineContextProvider>
 </SupplierContextProvider>
   </SidebarProvider>
+  </AdminContextProvider>
+ 
 
   </>
 }

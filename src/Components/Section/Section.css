@@ -26,7 +26,7 @@
     color: #0d0d1f;
   }
   .text-area h1 span {
-    color: #36b487;
+    color: #21763e;
   }
   .text-area ul {
     list-style: none;
@@ -44,7 +44,7 @@
     content: "✔";
     position: absolute;
     left: 0;
-    color: #36b487;
+    color: #21763e;
     font-weight: bold;
   }
   

@@ -4,10 +4,9 @@ import { useFormik } from "formik";
 import { Link, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { UserContext } from "../../Context/UserContext";
-import { jwtDecode } from 'jwt-decode';
+import { jwtDecode } from "jwt-decode";
 import style from "./Login.module.css";
 import { CgShapeRhombus } from "react-icons/cg";
-
 
 export default function Login() {
   let { setAuthorization } = useContext(UserContext);
@@ -20,25 +19,33 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      let { data } = await axios.post(`https://farm-project-bbzj.onrender.com/api/login`, value);
+      let { data } = await axios.post(
+        `https://farm-project-bbzj.onrender.com/api/login`,
+        value
+      );
 
       if (data.status === "success") {
         setIsLoading(false);
         const decodedToken = jwtDecode(data.data.token);
-        localStorage.setItem("Authorization", data.data.token);
-        setAuthorization(data.data.token);
-        console.log("Decoded Token:", decodedToken);
-        const userRole = decodedToken.role;
 
+        // 🟢 خزّن التوكن + الدور
+        localStorage.setItem("Authorization", data.data.token);
+        localStorage.setItem("role", decodedToken.role);
+
+        setAuthorization(data.data.token);
+
+        const userRole = decodedToken.role;
         if (userRole === "admin") {
-          navigate("/dashboard");
+          navigate("/AdminDashboard");
         } else {
           navigate("/");
         }
       }
     } catch (err) {
       setIsLoading(false);
-      setError(err.response?.data?.message || "Login failed. Please try again.");
+      setError(
+        err.response?.data?.message || "Login failed. Please try again."
+      );
     }
   }
 
@@ -48,33 +55,23 @@ export default function Login() {
       password: "",
     },
     onSubmit: submitLogin,
-    validateOnMount: true, // Add this to ensure validation runs on mount
+    validateOnMount: true,
   });
-
-  React.useEffect(() => {
-    formik.setValues({
-      email: '',
-      password: ''
-    });
-    formik.setTouched({});
-    formik.setErrors({});
-  }, []);
-
-  React.useEffect(() => {
-    formik.resetForm();
-    // Clear any potential stored values from localStorage/sessionStorage
-    localStorage.removeItem('formData');
-    sessionStorage.removeItem('formData');
-  }, []);
 
   return (
     <div className={style.loginPageBg}>
       <div className={style.loginCard}>
-        <div className={style.logo}><CgShapeRhombus /></div>
+        <div className={style.logo}>
+          <CgShapeRhombus />
+        </div>
         <h2 className={style.title}>Log in to your account</h2>
-        <p className={style.subtitle}>Welcome back! Please enter your details.</p>
+        <p className={style.subtitle}>
+          Welcome back! Please enter your details.
+        </p>
         <form onSubmit={formik.handleSubmit}>
-          <label className={style.label} htmlFor="email">Email</label>
+          <label className={style.label} htmlFor="email">
+            Email
+          </label>
           <input
             className={style.input}
             id="email"
@@ -85,10 +82,9 @@ export default function Login() {
             onBlur={formik.handleBlur}
             value={formik.values.email}
           />
-          {formik.errors.email && formik.touched.email ? (
-            <p className="text-danger">{formik.errors.email}</p>
-          ) : null}
-          <label className={style.label} htmlFor="password">Password</label>
+          <label className={style.label} htmlFor="password">
+            Password
+          </label>
           <input
             className={style.input}
             id="password"
@@ -99,20 +95,9 @@ export default function Login() {
             onBlur={formik.handleBlur}
             value={formik.values.password}
           />
-          {formik.errors.password && formik.touched.password ? (
-            <p className="text-danger">{formik.errors.password}</p>
-          ) : null}
-          <div className={style.optionsRow}>
-            <label className={style.checkboxLabel}>
-              <input type="checkbox" name="remember" />
-              Remember me
-            </label>
-            <Link className={style.forgotLink} to="/forgetpassword">Forgot password</Link>
-          </div>
-          <button className={style.signInBtn} type="submit">Sign in</button>
-          {/* <button className={style.googleBtn} type="button">
-            <span className={style.googleIcon}>G</span> Sign in with Google
-          </button> */}
+          <button className={style.signInBtn} type="submit">
+            Sign in
+          </button>
           <div className={style.signupPrompt}>
             Don’t have an account? <Link to="/register">Sign up</Link>
           </div>

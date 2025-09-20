@@ -14,7 +14,7 @@ import { CiLogout } from "react-icons/ci";
 import { RiLuggageCartFill } from "react-icons/ri";
 import { useTranslation } from "react-i18next";
 import "./modern-sidebar.css";
-
+import { HiUsers } from "react-icons/hi2";
 export default function ModernSidebar({
   isOpen,
   isRTL = false,
@@ -28,14 +28,16 @@ export default function ModernSidebar({
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [langOpen, setLangOpen] = useState(false);
   const { t } = useTranslation();
-
+const role = localStorage.getItem("role"); 
   const baseMenu = useMemo(() => ([
     {
       title: t("MAIN MENU"),
       items: [
         { name: t("Home"), icon: <IoHome />, path: "/" },
         { name: t("Notifications"), icon: <FaBell />, path: "/notificationPage", badge: notificationCount },
-      ],
+ ...(role === "admin" 
+        ? [{ name: "All Users", icon: <HiUsers />, path: "/dashboard", badge: notificationCount }] 
+        : [])      ],
     },
     {
       title: t("Supplier"),
@@ -213,6 +215,7 @@ export default function ModernSidebar({
             <Link to="/" className="rail-btn" title={t("Home")} data-tooltip={t("Home")} onClick={onToggle}>
               <IoHome />
             </Link>
+            
             <button className="rail-btn" onClick={() => setLangOpen((v) => !v)} title={t("Language")} data-tooltip={t("Language")}>
               <MdOutlineLanguage />
             </button>

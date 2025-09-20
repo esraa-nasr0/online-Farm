@@ -285,6 +285,7 @@ code {
   padding: 50px 20px;
   background: #f4f6f9;
   min-height: 100vh;
+  
 }
 
 .section h2 {
@@ -1059,7 +1060,6 @@ code {
   }
 }
 
-/* Ensure proper spacing for navbar items */
 .navbar-nav {
   align-items: center;
 }
@@ -1077,7 +1077,7 @@ html[dir="ltr"] {
   direction: ltr;
   text-align: left;
 }
-/* Main Navbar Styles */
+
 .main-navbar {
   width: 100%;
   background: #fff;
@@ -1087,6 +1087,7 @@ html[dir="ltr"] {
   top: 0;
   left: 0;
   z-index: 1000;
+  margin-bottom: 10px;
 }
 
 .navbar-inner {
@@ -1098,7 +1099,7 @@ html[dir="ltr"] {
   padding: 0 2rem;
 }
 
-/* Logo Styles */
+
 .navbar-logo {
   display: flex;
   align-items: center;
@@ -1119,7 +1120,6 @@ html[dir="ltr"] {
   letter-spacing: 1px;
 }
 
-/* Navigation Links */
 .navbar-links {
   display: flex;
   gap: 2.2rem;
@@ -1135,7 +1135,7 @@ html[dir="ltr"] {
 }
 
 .navbar-links a:hover, .navbar-links a.active {
-  color: #2bb673;
+  color: #21763e;
 }
 
 /* Action Buttons */
@@ -1147,8 +1147,8 @@ html[dir="ltr"] {
 
 .language-toggle {
   background: #fff;
-  color: #2bb673;
-  border: 2px solid #2bb673;
+  color: #21763e;
+  border: 2px solid #21763e;
   border-radius: 2rem;
   padding: 0.6rem 1.5rem;
   font-size: 1rem;
@@ -1159,11 +1159,11 @@ html[dir="ltr"] {
 
 .language-toggle:hover {
    background: #e6f9f0;
-  color: #219e5c;
+  color: #21763e;
 }
 
 .navbar-login-btn {
-  background: #2bb673;
+  background: #21763e;
   color: #fff;
   border: none;
   border-radius: 2rem;
@@ -1175,13 +1175,13 @@ html[dir="ltr"] {
 }
 
 .navbar-login-btn:hover {
-  background: #2bb673;
+  background: #21763e;
 }
 
 .navbar-signup-btn {
   background: #fff;
-  color: #2bb673;
-  border: 2px solid #2bb673;
+  color: #21763e !important;
+  border: 2px solid #21763e !important;
   border-radius: 2rem;
   padding: 0.6rem 1.5rem;
   font-size: 1rem;
