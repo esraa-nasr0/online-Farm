@@ -9,7 +9,7 @@ export default function HomeHero() {
   const handleGetStarted = () => {
     const token = localStorage.getItem("Authorization"); 
     if (token) {
-      navigate("/homeServices");
+      navigate("/userDashboard");
     } else {
       navigate("/login");
     }

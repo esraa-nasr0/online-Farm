@@ -10,14 +10,14 @@
   --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-.location-container {
+.animal-cost-container {
   padding: 20px 15px;
   background: var(--background);
   min-height: 100vh;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   color: var(--text-dark);
 }
-.location-container.rtl { direction: rtl; }
+.animal-cost-container.rtl { direction: rtl; }
 
 /* Loading */
 .loading-wrap {
@@ -39,15 +39,78 @@
   border-radius: 12px;
   box-shadow: var(--shadow);
 }
-.shed-title { 
+.animal-cost-title { 
   font-size: 22px; 
   margin: 0 0 4px; 
   color: var(--secondary);
 }
-.shed-subtitle { 
+.animal-cost-subtitle { 
   color: var(--muted); 
   margin: 0; 
   font-size: 14px;
+}
+
+/* Search Section */
+.search-section {
+  background: var(--white);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+}
+.search-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--secondary);
+  margin-bottom: 15px;
+}
+.search-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
+  align-items: end;
+}
+.search-field {
+  display: flex;
+  flex-direction: column;
+}
+.search-label {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 14px;
+}
+.search-input {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.2s ease;
+}
+.search-input:focus {
+  outline: none;
+  border-color: var(--secondary);
+}
+.search-button {
+  display: flex;
+  align-items: flex-end;
+  height: 100%;
+}
+.btn-search {
+  background: var(--secondary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.2s ease;
+}
+.btn-search:hover {
+  background: var(--secondary-600);
 }
 
 /* Mobile Cards View (shown on small screens) */
@@ -58,7 +121,7 @@
   margin-bottom: 20px;
 }
 
-.location-card {
+.animal-cost-card {
   background: var(--white);
   border-radius: 12px;
   padding: 16px;
@@ -92,14 +155,9 @@
 .card-value {
   color: var(--text-dark);
   text-align: right;
-}
-
-.card-actions {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  padding-top: 12px;
-  border-top: 1px solid #f0f0f0;
+  max-width: 60%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .no-data-mobile {
@@ -141,48 +199,6 @@
   padding: 30px !important;
   color: var(--muted);
   font-style: italic;
-}
-
-/* Action Buttons */
-.action-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-}
-.btn-view, .btn-edit, .btn-delete {
-  border: none;
-  border-radius: 6px;
-  padding: 8px 10px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.btn-view {
-  background-color: #e6f0ff;
-  color: #0f40e1ff;
-}
-.btn-view:hover {
-  background-color: #d0e2ff;
-  transform: translateY(-2px);
-}
-.btn-edit {
-  background-color: #e6f6ea;
-  color: #0f7e34ff;
-}
-.btn-edit:hover {
-  background-color: #d0ecd4;
-  transform: translateY(-2px);
-}
-.btn-delete {
-  background-color: #ffe6e6;
-  color: #d33;
-}
-.btn-delete:hover {
-  background-color: #ffd0d0;
-  transform: translateY(-2px);
 }
 
 /* Pagination */
@@ -243,7 +259,7 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .location-container {
+  .animal-cost-container {
     padding: 15px 10px;
   }
   .toolbar {
@@ -252,8 +268,12 @@
     gap: 10px;
     padding: 12px 16px;
   }
-  .shed-title {
+  .animal-cost-title {
     font-size: 20px;
+  }
+  
+  .search-fields {
+    grid-template-columns: 1fr;
   }
   
   /* Hide table on mobile, show cards */
@@ -262,10 +282,6 @@
   }
   .mobile-cards {
     display: flex;
-  }
-  
-  .action-buttons {
-    flex-wrap: wrap;
   }
   
   .pagination {
@@ -301,8 +317,9 @@
   }
   .card-value {
     text-align: left;
+    max-width: 100%;
   }
-  .location-container.rtl .card-value {
+  .animal-cost-container.rtl .card-value {
     text-align: right;
   }
   

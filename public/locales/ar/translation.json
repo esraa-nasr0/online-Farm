@@ -1224,7 +1224,25 @@
   "selected": "المحدد",
   "clear_selection": "مسح التحديد",
   "select_all": "تحديد الكل",
-  "unselect_all": "إلغاء تحديد الكل"
+  "unselect_all": "إلغاء تحديد الكل",
+
+
+  "manage_excluded": "إدارة المستبعدة",
+  "manage_location_sheds": "إدارة الحظائر",
+  "manage_breeds": "إدارة السلالات",
+  "manage_suppliers": "إدارة الموردين",
+  "manage_animals": "إدارة الحيوانات",
+  "manage_mating_records": "إدارة سجلات التزاوج",
+  "manage_breeding_records": "إدارة سجلات التربية",
+  "manage_weight_records": "إدارة سجلات الأوزان",
+  "manage_growth_data": "إدارة بيانات النمو",
+  "manage_vaccine_records": "إدارة سجلات اللقاحات",
+  "manage_vaccines": "إدارة اللقاحات",
+  "manage_treatments": "إدارة العلاجات",
+  "manage_animals_cost": "إدارة تكاليف الحيوانات",
+  "manage_feed_by_location": "إدارة العلف حسب الموقع",
+  "fodder_manage": "إدارة الأعلاف",
+  "manage_feeds": "إدارة التغذية"
 
 
 }

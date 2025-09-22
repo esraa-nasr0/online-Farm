@@ -6,9 +6,8 @@ import { ExcludedContext } from "../../Context/ExcludedContext";
 import { Rings } from "react-loader-spinner";
 import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
-import axios from "axios";
-import "../Vaccine/styles.css";
 import { FiSearch } from "react-icons/fi";
+import "./ExcludedTable.css";
 
 const NO_DATE = "No Date";
 
@@ -26,7 +25,8 @@ function formatDate(date) {
 }
 
 function ExcludedTable() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === "ar";
   const navigate = useNavigate();
   const { getExcluted, deleteExcluted } = useContext(ExcludedContext);
 
@@ -39,7 +39,6 @@ function ExcludedTable() {
     tagId: "",
     excludedDate: "",
     animalType: "",
-    locationShed: "",
   });
 
   async function fetchExcluded() {
@@ -93,18 +92,14 @@ function ExcludedTable() {
     });
   };
 
-  const editExcluded = (id) => {
-    navigate(`/editExcluded/${id}`);
-  };
+  const editExcluded = (id) => navigate(`/editExcluded/${id}`);
 
   const handleSearch = () => {
     setCurrentPage(1);
     fetchExcluded();
   };
 
-  const paginate = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const renderModernPagination = () => {
     const totalPages = pagination.totalPages || 1;
@@ -129,29 +124,17 @@ function ExcludedTable() {
     } else {
       addPage(1);
       if (currentPage > 3) {
-        pageButtons.push(
-          <li key="start-ellipsis" className="pagination-ellipsis">
-            ...
-          </li>
-        );
+        pageButtons.push(<li key="start-ellipsis">...</li>);
       }
-
       let start = Math.max(2, currentPage - 1);
       let end = Math.min(totalPages - 1, currentPage + 1);
-
       if (currentPage <= 3) end = 4;
       if (currentPage >= totalPages - 2) start = totalPages - 3;
-
       for (let i = start; i <= end; i++) {
         if (i > 1 && i < totalPages) addPage(i);
       }
-
       if (currentPage < totalPages - 2) {
-        pageButtons.push(
-          <li key="end-ellipsis" className="pagination-ellipsis">
-            ...
-          </li>
-        );
+        pageButtons.push(<li key="end-ellipsis">...</li>);
       }
       addPage(totalPages);
     }
@@ -188,52 +171,39 @@ function ExcludedTable() {
   return (
     <>
       {isLoading ? (
-        <div className="animal">
-          <Rings
-            visible={true}
-            height="100"
-            width="100"
-            color="#21763e"
-            ariaLabel="rings-loading"
-          />
+        <div className="loading-wrap">
+          <Rings visible={true} height="100" width="100" color="#21763e" />
         </div>
       ) : (
-        <div className="container mt-4">
-          <h2 className="vaccine-table-title">{t("Excluded Records")}</h2>
+        <div className={`excluded-container ${isRTL ? "rtl" : ""}`}>
+          <div className="toolbar">
+            <div className="excluded-info">
+              <h2 className="excluded-title">{t("Excluded Records")}</h2>
+              <p className="excluded-subtitle">{t("manage_excluded")}</p>
+            </div>
+          </div>
 
-          {/* Filters */}
-          <div className="container mt-5 vaccine-table-container">
-            <h6 className="mb-3 fw-bold custom-section-title">
-              {t("filter_excluded")}
-            </h6>
-
-            <div className="row g-2 mt-3 mb-3 align-items-end">
-              <div className="col-12 col-sm-6 col-md-3">
-                <label htmlFor="tagIdInput" className="form-label">
-                  {t("tag_id")}
-                </label>
+          {/* Search Section */}
+          <div className="search-section">
+            <h6 className="search-title">{t("filter_excluded")}</h6>
+            <div className="search-fields">
+              <div className="search-field">
+                <label className="search-label">{t("tag_id")}</label>
                 <input
                   type="text"
-                  id="tagIdInput"
-                  className="form-control"
+                  className="search-input"
                   placeholder={t("search_by_tag_id")}
                   value={searchCriteria.tagId}
                   onChange={(e) =>
-                    setSearchCriteria({
-                      ...searchCriteria,
-                      tagId: e.target.value,
-                    })
+                    setSearchCriteria({ ...searchCriteria, tagId: e.target.value })
                   }
                 />
               </div>
-              <div className="col-12 col-sm-6 col-md-3">
-                <label htmlFor="animalTypeInput" className="form-label">
-                  {t("animal_type")}
-                </label>
+              <div className="search-field">
+                <label className="search-label">{t("animal_type")}</label>
                 <select
+                  className="search-input"
                   value={searchCriteria.animalType}
-                  id="animalTypeInput"
-                  className="form-select"
                   onChange={(e) =>
                     setSearchCriteria({
                       ...searchCriteria,
@@ -246,14 +216,11 @@ function ExcludedTable() {
                   <option value="sheep">{t("sheep")}</option>
                 </select>
               </div>
-              <div className="col-12 col-sm-6 col-md-3">
-                <label htmlFor="excludedDateInput" className="form-label">
-                  {t("date")}
-                </label>
+              <div className="search-field">
+                <label className="search-label">{t("date")}</label>
                 <input
-                  id="excludedDateInput"
                   type="text"
-                  className="form-control"
+                  className="search-input"
                   placeholder={t("search_excluded_date")}
                   value={searchCriteria.excludedDate}
                   onChange={(e) =>
@@ -264,83 +231,129 @@ function ExcludedTable() {
                   }
                 />
               </div>
-              <div className="col-12 d-flex justify-content-end mt-2">
-                <button className="btn btn-success" onClick={handleSearch}>
+              <div className="search-button">
+                <button className="btn-search" onClick={handleSearch}>
                   <FiSearch /> {t("search")}
                 </button>
               </div>
             </div>
           </div>
 
-          {/* Table */}
-          <div className="container mt-5 vaccine-table-container">
-            <div className="table-responsive mt-4">
-              <table className="table align-middle">
-                <thead>
-                  <tr>
-                    <th className="text-center bg-color">#</th>
-                    <th className="text-center bg-color">{t("tag_id")}</th>
-                    <th className="text-center bg-color">{t("date")}</th>
-                    <th className="text-center bg-color">{t("excluded_type")}</th>
-                    <th className="text-center bg-color">
-                      {t("excluded_reason")}
-                    </th>
-                    <th className="text-center bg-color">{t("price")}</th>
-                    <th className="text-center bg-color">{t("weight")}</th>
-                    <th className="text-center bg-color">{t("actions")}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {excluded.length > 0 ? (
-                    excluded.map((item, index) => (
-                      <tr key={item._id}>
-                        <td className="text-center">
-                          {(currentPage - 1) * itemsPerPage + index + 1}
-                        </td>
-                        <td className="text-center">{item.tagId}</td>
-                        <td className="text-center">{formatDate(item.Date)}</td>
-                        <td className="text-center">{item.excludedType}</td>
-                        <td className="text-center">
-                          {item.reasoneOfDeath || "_"}
-                        </td>
-                        <td className="text-center">{item.price || "_"}</td>
-                        <td className="text-center">{item.weight || "_"}</td>
-                        <td className="text-center">
-                          <button
-                            className="btn btn-link p-0 me-2"
-                            onClick={() => editExcluded(item._id)}
-                            title={t("edit")}
-                            style={{ color: "#0f7e34ff" }}
-                          >
-                            <FaRegEdit />
-                          </button>
-                          <button
-                            className="btn btn-link p-0"
-                            style={{ color: "#d33" }}
-                            onClick={() => confirmDelete(item._id)}
-                            title={t("delete")}
-                          >
-                            <RiDeleteBinLine />
-                          </button>
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="8" className="text-center py-4 text-muted">
-                        {t("no_excluded_records")}
+          {/* Mobile Cards */}
+          <div className="mobile-cards">
+            {excluded.length > 0 ? (
+              excluded.map((item, index) => (
+                <div key={item._id} className="excluded-card">
+                  <div className="card-content">
+                    <div className="card-row">
+                      <span className="card-label">#</span>
+                      <span className="card-value">
+                        {(currentPage - 1) * itemsPerPage + index + 1}
+                      </span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("tag_id")}</span>
+                      <span className="card-value">{item.tagId}</span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("date")}</span>
+                      <span className="card-value">{formatDate(item.Date)}</span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("excluded_type")}</span>
+                      <span className="card-value">{item.excludedType}</span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("excluded_reason")}</span>
+                      <span className="card-value">
+                        {item.reasoneOfDeath || "-"}
+                      </span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("price")}</span>
+                      <span className="card-value">{item.price || "-"}</span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("weight")}</span>
+                      <span className="card-value">{item.weight || "-"}</span>
+                    </div>
+                  </div>
+                  <div className="card-actions">
+                    <button
+                      className="btn-edit"
+                      onClick={() => editExcluded(item._id)}
+                    >
+                      <FaRegEdit />
+                    </button>
+                    <button
+                      className="btn-delete"
+                      onClick={() => confirmDelete(item._id)}
+                    >
+                      <RiDeleteBinLine />
+                    </button>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="no-data-mobile">{t("no_excluded_records")}</div>
+            )}
+          </div>
+
+          {/* Desktop Table */}
+          <div className="table-wrapper">
+            <table className="modern-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>{t("tag_id")}</th>
+                  <th>{t("date")}</th>
+                  <th>{t("excluded_type")}</th>
+                  <th>{t("excluded_reason")}</th>
+                  <th>{t("price")}</th>
+                  <th>{t("weight")}</th>
+                  <th>{t("actions")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {excluded.length > 0 ? (
+                  excluded.map((item, index) => (
+                    <tr key={item._id}>
+                      <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
+                      <td>{item.tagId}</td>
+                      <td>{formatDate(item.Date)}</td>
+                      <td>{item.excludedType}</td>
+                      <td>{item.reasoneOfDeath || "-"}</td>
+                      <td>{item.price || "-"}</td>
+                      <td>{item.weight || "-"}</td>
+                      <td className="action-buttons">
+                        <button
+                          className="btn-edit"
+                          onClick={() => editExcluded(item._id)}
+                        >
+                          <FaRegEdit />
+                        </button>
+                        <button
+                          className="btn-delete"
+                          onClick={() => confirmDelete(item._id)}
+                        >
+                          <RiDeleteBinLine />
+                        </button>
                       </td>
                     </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-
-            {/* Pagination */}
-            <div className="d-flex justify-content-center mt-4">
-              <nav>{renderModernPagination()}</nav>
-            </div>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="8" className="no-data">
+                      {t("no_excluded_records")}
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
+
+          {/* Pagination */}
+          <div className="pagination-container">{renderModernPagination()}</div>
         </div>
       )}
     </>

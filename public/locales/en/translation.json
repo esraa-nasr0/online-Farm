@@ -1139,7 +1139,24 @@
   "selected": "Selected",
   "clear_selection": "Clear selection",
   "select_all": "Select all",
-  "unselect_all": "Unselect all"
+  "unselect_all": "Unselect all",
+
+  "manage_excluded": "Manage Excluded",
+  "manage_location_sheds": "Manage Location Sheds",
+  "manage_breeds": "Manage Breeds",
+  "manage_suppliers": "Manage Suppliers",
+  "manage_animals": "Manage Animals",
+  "manage_mating_records": "Manage Mating Records",
+  "manage_breeding_records": "Manage Breeding Records",
+  "manage_weight_records": "Manage Weight Records",
+  "manage_growth_data": "Manage Growth Data",
+  "manage_vaccine_records": "Manage Vaccine Records",
+  "manage_vaccines": "Manage Vaccines",
+  "manage_treatments": "Manage Treatments",
+  "manage_animals_cost": "Manage Animals Cost",
+  "manage_feed_by_location": "Manage Feed by Location",
+  "fodder_manage": "Manage Fodder",
+  "manage_feeds": "Manage Feeds"
 
 
 
