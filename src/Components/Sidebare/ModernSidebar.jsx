@@ -210,11 +210,13 @@ export default function ModernSidebar({
           </div>
 
           <div className="msb-rail-items">
-            <Link to="/" className="rail-btn" title={t("Home")} data-tooltip={t("Home")}><IoHome /></Link>
+            <Link to="/" className="rail-btn" title={t("Home")} data-tooltip={t("Home")} onClick={onToggle}>
+              <IoHome />
+            </Link>
             <button className="rail-btn" onClick={() => setLangOpen((v) => !v)} title={t("Language")} data-tooltip={t("Language")}>
               <MdOutlineLanguage />
             </button>
-            <Link to="/notificationPage" className="rail-btn badge-parent" title={t("Notifications")} data-tooltip={t("Notifications")}>
+            <Link to="/notificationPage" className="rail-btn badge-parent" title={t("Notifications")} data-tooltip={t("Notifications")} onClick={onToggle}>
               <FaBell />{notificationCount > 0 && <span className="badge">{notificationCount}</span>}
             </Link>
           </div>
@@ -274,7 +276,11 @@ export default function ModernSidebar({
                             <ul className="submenu">
                               {item.subItems.map((sub, subIdx) => (
                                 <li key={subIdx}>
-                                  <Link to={sub.path} className={`sub-link ${pathname === sub.path ? "current" : ""}`}>
+                                  <Link
+                                    to={sub.path}
+                                    className={`sub-link ${pathname === sub.path ? "current" : ""}`}
+                                    onClick={onToggle}   // ⬅️ يقفل بعد الضغط
+                                  >
                                     {sub.name}
                                   </Link>
                                 </li>
@@ -283,7 +289,12 @@ export default function ModernSidebar({
                           )}
                         </>
                       ) : (
-                        <Link to={item.path} className="item-btn" title={getTitle(item)}>
+                        <Link
+                          to={item.path}
+                          className="item-btn"
+                          title={getTitle(item)}
+                          onClick={onToggle}   
+                        >
                           <span className="ico">{item.icon}</span>
                           <span className="txt">{item.name}</span>
                           {item.badge ? <span className="pill">{item.badge}</span> : null}

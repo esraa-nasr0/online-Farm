@@ -1,4 +1,3 @@
-// src/components/Layout/Layout.jsx
 import React, { useState, useEffect } from "react";
 import Navbar from "../Navbar/Navbar";
 import { Outlet, useLocation } from "react-router-dom";
@@ -7,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import ModernSidebar from "../Sidebare/ModernSidebar";
+import MobileNavbar from "../MobileNavbar/MobileNavbar";
 
 const BASE_URL = "https://farm-project-bbzj.onrender.com";
 
@@ -14,17 +14,15 @@ export default function Layout() {
   const location = useLocation();
   const { i18n } = useTranslation();
 
-  // ——— الحالة ثابتة ومحفوظة في localStorage ———
   const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
     const saved = localStorage.getItem("sidebarOpen");
-    return saved ? saved === "1" : false; // يبدأ مغلقاً لو مفيش قيمة محفوظة
+    return saved ? saved === "1" : false;
   });
 
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const isRTL = i18n.language === "ar";
   const [isFattening, setIsFattening] = useState(false);
 
-  // المسارات التي نخفي فيها الـ Sidebar
   const hideSidebarPaths = [
     "/",
     "/home",
@@ -42,7 +40,6 @@ export default function Layout() {
       : {};
   };
 
-  // جلب الإشعارات
   const { data: notifications = [] } = useQuery({
     queryKey: ["notifications"],
     queryFn: async () => {
@@ -55,33 +52,30 @@ export default function Layout() {
 
   const unreadCount = notifications.filter((n) => !n.isRead).length;
 
-  // ——— تحديث الـ isMobile بدون ما نقفل السايدبار ———
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // ——— حفظ حالة الفتح/الغلق ———
   useEffect(() => {
     localStorage.setItem("sidebarOpen", isSidebarOpen ? "1" : "0");
   }, [isSidebarOpen]);
 
-  // ——— مفيش إغلاق عند الضغط خارج السايدبار ———
-  // (اتشال الـ useEffect الخاص بـ mousedown والإغلاق)
-
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
-  // منطق إظهار الـ Sidebar و Navbar
   const shouldShowSidebar = !hideSidebarPaths.includes(location.pathname);
   const shouldShowNavbar =
     location.pathname === "/" || location.pathname === "/home";
 
   return (
-    <div className={`app-container ${isSidebarOpen && shouldShowSidebar ? "app-has-wide-sidebar" : ""}`}>
-      {shouldShowNavbar && (
+    <div
+      className={`app-container ${
+        isSidebarOpen && shouldShowSidebar ? "app-has-wide-sidebar" : ""
+      }`}
+    >
+      {/* ✨ Navbar العادي يظهر بس في المسارات المحددة */}
+      {shouldShowNavbar && !isMobile && (
         <Navbar
           toggleSidebar={toggleSidebar}
           isSidebarOpen={isSidebarOpen}
@@ -89,10 +83,22 @@ export default function Layout() {
         />
       )}
 
-      <div className={`content-wrapper ${isRTL ? "rtl" : "ltr"} ${shouldShowSidebar ? "should-show-sidebar" : "no-sidebar"}`}>
+      {/* ✨ Navbar خاص بالموبايل */}
+      {isMobile && shouldShowSidebar && (
+        <MobileNavbar
+          toggleSidebar={toggleSidebar}
+          notificationCount={unreadCount}
+        />
+      )}
+
+      <div
+        className={`content-wrapper ${isRTL ? "rtl" : "ltr"} ${
+          shouldShowSidebar ? "should-show-sidebar" : "no-sidebar"
+        }`}
+      >
         {shouldShowSidebar && (
           <>
-            {/* السايدبار نفسه */}
+            {/* Sidebar */}
             <ModernSidebar
               isOpen={isSidebarOpen}
               isMobile={isMobile}
@@ -108,15 +114,21 @@ export default function Layout() {
                 localStorage.setItem("lang", lang);
                 document.dir = lang === "ar" ? "rtl" : "ltr";
               }}
-              onToggle={toggleSidebar} // يفتح/يقفل من زرار الكولابس أو اللوجو فقط
+              onToggle={toggleSidebar}
             />
 
-            {/* Scrim للموبايل للـ dim فقط — بدون onClick */}
-            {isSidebarOpen && isMobile && <div className="sidebar-scrim" />}
+            {/* scrim في الموبايل */}
+            {isSidebarOpen && isMobile && (
+              <div className="sidebar-scrim" onClick={toggleSidebar} />
+            )}
           </>
         )}
 
-        <main className={`main-content ${shouldShowSidebar && isSidebarOpen ? "with-sidebar" : "full-width"}`}>
+        <main
+          className={`main-content ${
+            shouldShowSidebar && isSidebarOpen ? "with-sidebar" : "full-width"
+          }`}
+        >
           <Outlet />
         </main>
       </div>
