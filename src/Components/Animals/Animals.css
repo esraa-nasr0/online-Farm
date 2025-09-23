@@ -570,3 +570,43 @@
     font-size: 12px;
   }
 }
+
+/* تعزيز مظهر الهاتف للبطاقات في mobile */
+.mobile-cards .animal-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+  border: 1px solid #eaeaea;
+}
+
+.mobile-cards .card-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.mobile-cards .card-label {
+  font-weight: 600;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.mobile-cards .card-value {
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-dark);
+  font-size: 14px;
+}
+@media (max-width: 768px) {
+  .mobile-cards .card-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+.mobile-cards .card-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  padding-top: 12px;
+}

@@ -304,7 +304,7 @@ export default function Animals() {
 
   // Modern pagination rendering function
   const renderModernPagination = () => {
-    const total = pagination.totalPages;
+    const total = pagination.totalPages || 1;
     const pageButtons = [];
     const maxButtons = 5;
 
@@ -491,8 +491,9 @@ export default function Animals() {
             </div>
           </div>
 
-          <div className="import-export-section">
-            <div className="import-export-buttons">
+          {/* Action Buttons Section */}
+          <div className="action-buttons-container">
+            <div className="action-buttons">
               <button
                 className="btn-export"
                 onClick={handleExportToExcel}
@@ -557,8 +558,7 @@ export default function Animals() {
                     <span className="card-label">{t("gender")}</span>
                     <span className="card-value">{animal.gender}</span>
                   </div>
-                </div>
-                <div className="card-actions">
+                  <div className="card-actions">
                   <button
                     className="btn-view"
                     onClick={() => viewAnimal(animal._id)}
@@ -581,6 +581,8 @@ export default function Animals() {
                     <RiDeleteBinLine />
                   </button>
                 </div>
+                </div>
+                
               </div>
             ))}
             {animals.length === 0 && (
