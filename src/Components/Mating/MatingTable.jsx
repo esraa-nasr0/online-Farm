@@ -7,15 +7,16 @@ import { Rings } from "react-loader-spinner";
 import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
 import axios from "axios";
-import "../Vaccine/styles.css";
 import { FiSearch } from "react-icons/fi";
+import "./MatingTable.css"; // سيتم إنشاء هذا الملف
 
 const NO_DATE = "No Date";
 
 function MatingTable() {
   const navigate = useNavigate();
   const { getMating, deleteMating } = useContext(MatingContext);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === "ar";
 
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -332,33 +333,32 @@ function MatingTable() {
   return (
     <>
       {isLoading ? (
-        <div className="animal">
-          <Rings
-            visible={true}
-            height="100"
-            width="100"
-            color="#21763e"
-            ariaLabel="rings-loading"
-          />
+        <div className="loading-wrap">
+          <Rings visible={true} height="100" width="100" color="#21763e" />
         </div>
       ) : (
-        <div className="container mt-4">
-          <h2 className="vaccine-table-title">{t("Mating Records")}</h2>
+        <div className={`mating-container ${isRTL ? "rtl" : ""}`}>
+          <div className="toolbar">
+            <div className="mating-info">
+              <h2 className="mating-title">{t("Mating Records")}</h2>
+              <p className="mating-subtitle">{t("manage_mating_records")}</p>
+            </div>
+            
+          </div>
 
-          <div className="container mt-5 vaccine-table-container">
-            <h6 className="mb-3 fw-bold custom-section-title">
-              {t("filter_mating")}
-            </h6>
+          {/* Search Section */}
+          <div className="search-section">
+            <h6 className="search-title">{t("filter_mating")}</h6>
 
-            <div className="row g-2 mt-3 mb-3 align-items-end">
-              <div className="col-12 col-sm-6 col-md-3">
-                <label htmlFor="tagIdInput" className="form-label">
+            <div className="search-fields">
+              <div className="search-field">
+                <label htmlFor="tagIdInput" className="search-label">
                   {t("tag_id")}
                 </label>
                 <input
                   type="text"
                   id="tagIdInput"
-                  className="form-control"
+                  className="search-input"
                   placeholder={t("search_by_tag_id")}
                   value={searchCriteria.tagId}
                   onChange={(e) =>
@@ -369,14 +369,14 @@ function MatingTable() {
                   }
                 />
               </div>
-              <div className="col-12 col-sm-6 col-md-3">
-                <label htmlFor="animalTypeInput" className="form-label">
+              <div className="search-field">
+                <label htmlFor="animalTypeInput" className="search-label">
                   {t("animal_type")}
                 </label>
                 <select
                   value={searchCriteria.animalType}
                   id="animalTypeInput"
-                  className="form-select"
+                  className="search-input"
                   onChange={(e) =>
                     setSearchCriteria({
                       ...searchCriteria,
@@ -389,14 +389,14 @@ function MatingTable() {
                   <option value="sheep">{t("sheep")}</option>
                 </select>
               </div>
-              <div className="col-12 col-sm-6 col-md-3">
-                <label htmlFor="matingDateInput" className="form-label">
+              <div className="search-field">
+                <label htmlFor="matingDateInput" className="search-label">
                   {t("mating_date")}
                 </label>
                 <input
                   id="matingDateInput"
                   type="text"
-                  className="form-control"
+                  className="search-input"
                   placeholder={t("search_mating_date")}
                   value={searchCriteria.matingDate}
                   onChange={(e) =>
@@ -407,145 +407,216 @@ function MatingTable() {
                   }
                 />
               </div>
-              <div className="col-12 d-flex justify-content-end mt-2">
-                <button className="btn btn-success" onClick={handleSearch}>
+              <div className="search-button">
+                <button className="btn-search" onClick={handleSearch}>
                   <FiSearch /> {t("search")}
                 </button>
               </div>
             </div>
           </div>
+          
+<div className="action-buttons-container">
+  <div className="action-buttons">
+    <button
+      className="btn-export"
+      onClick={handleExportToExcel}
+      title={t("export_all_data")}
+    >
+      <i className="fas fa-download me-1"></i> {t("export_all_data")}
+    </button>
 
-          <div className="container mt-5 vaccine-table-container">
-            <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mt-3 mb-3">
-              <div className="d-flex flex-wrap gap-2">
-                <button
-                  className="btn btn-outline-dark"
-                  onClick={handleExportToExcel}
-                >
-                  <i className="fas fa-download me-1"></i>{" "}
-                  {t("export_all_data")}
-                </button>
-                <button
-                  className="btn btn-success"
-                  onClick={handleDownloadTemplate}
-                >
-                  <i className="fas fa-file-arrow-down me-1"></i>{" "}
-                  {t("download_template")}
-                </button>
-                <label
-                  className="btn btn-dark d-flex align-items-center"
-                  style={{ color: "white" }}
-                >
-                  <i className="fas fa-file-import me-1"></i>{" "}
-                  {t("import_from_excel")}
-                  <input
-                    type="file"
-                    hidden
-                    accept=".xlsx,.xls"
-                    onChange={handleImportFromExcel}
-                  />
-                </label>
-                <label
-                  className="btn btn-warning d-flex align-items-center"
-                  style={{ color: "white" }}
-                >
-                  <i className="fas fa-sync-alt me-1"></i>{" "}
-                  {t("update_from_excel")}
-                  <input
-                    type="file"
-                    hidden
-                    accept=".xlsx,.xls"
-                    onChange={handleUpdateFromExcel}
-                  />
-                </label>
+    <button
+      className="btn-template"
+      onClick={handleDownloadTemplate}
+      title={t("download_template")}
+    >
+      <i className="fas fa-file-arrow-down me-1"></i> {t("download_template")}
+    </button>
+
+    <label className="btn-import" title={t("import_from_excel")}>
+      <i className="fas fa-file-import me-1"></i> {t("import_from_excel")}
+      <input
+        type="file"
+        hidden
+        accept=".xlsx,.xls"
+        onChange={handleImportFromExcel}
+      />
+    </label>
+
+    <label className="btn-update" title={t("update_from_excel")}>
+      <i className="fas fa-sync-alt me-1"></i> {t("update_from_excel")}
+      <input
+        type="file"
+        hidden
+        accept=".xlsx,.xls"
+        onChange={handleUpdateFromExcel}
+      />
+    </label>
+  </div>
+</div>
+
+          {/* Mobile Cards View */}
+          <div className="mobile-cards">
+            {displayedMatings.length > 0 ? (
+              displayedMatings.map((mating, index) => (
+                <div key={mating._id} className="mating-card">
+                  <div className="card-content">
+                    <div className="card-row">
+                      <span className="card-label">#</span>
+                      <span className="card-value">
+                        {(currentPage - 1) * itemsPerPage + index + 1}
+                      </span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("female_tag_id")}</span>
+                      <span className="card-value">{mating.tagId}</span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("male_tag_id")}</span>
+                      <span className="card-value">{mating.maleTag_id}</span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("mating_type")}</span>
+                      <span className="card-value">{mating.matingType}</span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("mating_date")}</span>
+                      <span className="card-value">
+                        {mating.matingDate
+                          ? new Date(mating.matingDate).toLocaleDateString()
+                          : NO_DATE}
+                      </span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("sonar_date")}</span>
+                      <span className="card-value">
+                        {mating.sonarDate
+                          ? new Date(mating.sonarDate).toLocaleDateString()
+                          : NO_DATE}
+                      </span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("sonar_result")}</span>
+                      <span className="card-value">
+                        {mating.sonarResult || "N/A"}
+                      </span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">
+                        {t("expected_delivery_date")}
+                      </span>
+                      <span className="card-value">
+                        {mating.expectedDeliveryDate
+                          ? new Date(
+                              mating.expectedDeliveryDate
+                            ).toLocaleDateString()
+                          : NO_DATE}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="card-actions">
+                    <button
+                      className="btn-edit"
+                      onClick={() => editMating(mating._id)}
+                      title={t("edit")}
+                    >
+                      <FaRegEdit />
+                    </button>
+                    <button
+                      className="btn-delete"
+                      onClick={() => confirmDelete(mating._id)}
+                      title={t("delete")}
+                    >
+                      <RiDeleteBinLine />
+                    </button>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="no-data-mobile">
+                {t("no_mating_records")}
               </div>
-            </div>
+            )}
+          </div>
 
-            {/* Search */}
-
-            {/* Table */}
-            <div className="table-responsive">
-              <table className="table align-middle mt-4">
-                <thead>
-                  <tr>
-                    <th className="text-center bg-color">#</th>
-                    <th className="text-center bg-color">
-                      {t("female_tag_id")}
-                    </th>
-                    <th className="text-center bg-color">{t("male_tag_id")}</th>
-                    <th className="text-center bg-color">{t("mating_type")}</th>
-                    <th className="text-center bg-color">{t("mating_date")}</th>
-                    <th className="text-center bg-color">{t("sonar_date")}</th>
-                    <th className="text-center bg-color">
-                      {t("sonar_result")}
-                    </th>
-                    <th className="text-center bg-color">
-                      {t("expected_delivery_date")}
-                    </th>
-                    <th className="text-center bg-color">{t("actions")}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {displayedMatings.length > 0 ? (
-                    displayedMatings.map((mating, index) => (
-                      <tr key={mating._id}>
-                        <th className="text-center">
-                          {(currentPage - 1) * itemsPerPage + index + 1}
-                        </th>
-                        <td className="text-center">{mating.tagId}</td>
-                        <td className="text-center">{mating.maleTag_id}</td>
-                        <td className="text-center">{mating.matingType}</td>
-                        <td className="text-center">
-                          {mating.matingDate
-                            ? new Date(mating.matingDate).toLocaleDateString()
-                            : NO_DATE}
-                        </td>
-                        <td className="text-center">
-                          {mating.sonarDate
-                            ? new Date(mating.sonarDate).toLocaleDateString()
-                            : NO_DATE}
-                        </td>
-                        <td className="text-center">
-                          {mating.sonarResult || "N/A"}
-                        </td>
-                        <td className="text-center">
-                          {mating.expectedDeliveryDate
-                            ? new Date(
-                                mating.expectedDeliveryDate
-                              ).toLocaleDateString()
-                            : NO_DATE}
-                        </td>
-                        <td className="text-center">
-                          <button
-                            className="btn btn-link p-0 me-2"
-                            style={{ color: "#0f7e34ff" }}
-                            onClick={() => editMating(mating._id)}
-                          >
-                            <FaRegEdit />
-                          </button>
-                          <button
-                            className="btn btn-link p-0"
-                            style={{ color: "#ff4d4f" }}
-                            onClick={() => confirmDelete(mating._id)}
-                          >
-                            <RiDeleteBinLine />
-                          </button>
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="9" className="text-center">
-                        {t("no_mating_records")}
+          {/* Desktop Table View */}
+          <div className="table-wrapper">
+            <table className="modern-table">
+              <thead>
+                <tr>
+                  <th className="text-center">#</th>
+                  <th className="text-center">{t("female_tag_id")}</th>
+                  <th className="text-center">{t("male_tag_id")}</th>
+                  <th className="text-center">{t("mating_type")}</th>
+                  <th className="text-center">{t("mating_date")}</th>
+                  <th className="text-center">{t("sonar_date")}</th>
+                  <th className="text-center">{t("sonar_result")}</th>
+                  <th className="text-center">{t("expected_delivery_date")}</th>
+                  <th className="text-center">{t("actions")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {displayedMatings.length > 0 ? (
+                  displayedMatings.map((mating, index) => (
+                    <tr key={mating._id}>
+                      <td className="text-center">
+                        {(currentPage - 1) * itemsPerPage + index + 1}
+                      </td>
+                      <td className="text-center">{mating.tagId}</td>
+                      <td className="text-center">{mating.maleTag_id}</td>
+                      <td className="text-center">{mating.matingType}</td>
+                      <td className="text-center">
+                        {mating.matingDate
+                          ? new Date(mating.matingDate).toLocaleDateString()
+                          : NO_DATE}
+                      </td>
+                      <td className="text-center">
+                        {mating.sonarDate
+                          ? new Date(mating.sonarDate).toLocaleDateString()
+                          : NO_DATE}
+                      </td>
+                      <td className="text-center">
+                        {mating.sonarResult || "N/A"}
+                      </td>
+                      <td className="text-center">
+                        {mating.expectedDeliveryDate
+                          ? new Date(
+                              mating.expectedDeliveryDate
+                            ).toLocaleDateString()
+                          : NO_DATE}
+                      </td>
+                      <td className="text-center action-buttons">
+                        <button
+                          className="btn-edit"
+                          onClick={() => editMating(mating._id)}
+                          title={t("edit")}
+                        >
+                          <FaRegEdit />
+                        </button>
+                        <button
+                          className="btn-delete"
+                          onClick={() => confirmDelete(mating._id)}
+                          title={t("delete")}
+                        >
+                          <RiDeleteBinLine />
+                        </button>
                       </td>
                     </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-            <div className="d-flex justify-content-center mt-4">
-              {renderModernPagination()}
-            </div>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="9" className="text-center no-data">
+                      {t("no_mating_records")}
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Pagination */}
+          <div className="pagination-container">
+            {renderModernPagination()}
           </div>
         </div>
       )}

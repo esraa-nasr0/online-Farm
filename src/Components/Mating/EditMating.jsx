@@ -261,6 +261,20 @@ function EditMating() {
                 <p className="text-danger">{formik.errors.checkDays}</p>
               )}
             </div>
+            <div className="input-group">
+              <label htmlFor="sonarDate">{t("sonar_date")}</label>
+              <input
+                type="date"
+                id="sonarDate"
+                name="sonarDate"
+                value={formik.values.sonarDate}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              />
+              {formik.errors.sonarDate && formik.touched.sonarDate && (
+                <p className="text-danger">{formik.errors.sonarDate}</p>
+              )}
+            </div>
 
             <div className="input-group">
               <label htmlFor="sonarResult">{t("sonar_result")}</label>
@@ -319,20 +333,7 @@ function EditMating() {
               </>
             )}
 
-            <div className="input-group">
-              <label htmlFor="sonarDate">{t("sonar_date")}</label>
-              <input
-                type="date"
-                id="sonarDate"
-                name="sonarDate"
-                value={formik.values.sonarDate}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-              />
-              {formik.errors.sonarDate && formik.touched.sonarDate && (
-                <p className="text-danger">{formik.errors.sonarDate}</p>
-              )}
-            </div>
+            
             {formik.values.expectedDeliveryDate && (
               <div className="input-group">
                 <label htmlFor="expectedDeliveryDate">

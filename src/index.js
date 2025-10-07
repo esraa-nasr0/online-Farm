@@ -1,5 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import "./impersonationBootstrap";   // اختياري لكنه مفيد
+import "./axiosImpersonationPatch";  // المهم
+
 import App from './App';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -11,7 +14,6 @@ import './index.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import UserContextProvider from './Context/UserContext';
 import './i18n'; // Import the i18n configuration
-
 // import{ReactQueryDevtools} from 'react-query/devtools'
 
 

@@ -1224,7 +1224,45 @@
   "selected": "المحدد",
   "clear_selection": "مسح التحديد",
   "select_all": "تحديد الكل",
-  "unselect_all": "إلغاء تحديد الكل"
+  "unselect_all": "إلغاء تحديد الكل",
+
+
+  "manage_excluded": "إدارة المستبعدة",
+  "manage_location_sheds": "إدارة الحظائر",
+  "manage_breeds": "إدارة السلالات",
+  "manage_suppliers": "إدارة الموردين",
+  "manage_animals": "إدارة الحيوانات",
+  "manage_mating_records": "إدارة سجلات التزاوج",
+  "manage_breeding_records": "إدارة سجلات التربية",
+  "manage_weight_records": "إدارة سجلات الأوزان",
+  "manage_growth_data": "إدارة بيانات النمو",
+  "manage_vaccine_records": "إدارة سجلات اللقاحات",
+  "manage_vaccines": "إدارة اللقاحات",
+  "manage_treatments": "إدارة العلاجات",
+  "manage_animals_cost": "إدارة تكاليف الحيوانات",
+  "manage_feed_by_location": "إدارة العلف حسب الموقع",
+  "fodder_manage": "إدارة الأعلاف",
+  "manage_feeds": "إدارة التغذية",
+
+
+  "farmDashboard": "لوحة تحكم المزرعة",
+  "totalAnimals": "إجمالي الحيوانات",
+  "birthsLast30d": "الولادات (آخر 30 يومًا)",
+  "deathsLast30d": "الوفيات (آخر 30 يومًا)",
+  "positiveSonar": "سونار إيجابي",
+  "dueSoon": "قرب موعد الولادة",
+  "withinDays": "خلال {{days}} يومًا",
+  "netProfit": "صافي الأرباح",
+  "expenses": "المصروفات",
+  "monthlyAnimalDistribution": "توزيع الحيوانات الشهري",
+  "numberOfAnimals": "عدد الحيوانات",
+  "expenseDistribution": "توزيع المصروفات",
+  "animalsByShed": "توزيع الحيوانات حسب الحظيرة",
+  "animalPurchase": "شراء الحيوانات",
+  "animalFeed": "علف الحيوانات",
+  "healthCare": "الرعاية الصحية",
+  "vaccinations": "التحصينات",
+  "Dashboard":"لوحة التحكم"
 
 
 }

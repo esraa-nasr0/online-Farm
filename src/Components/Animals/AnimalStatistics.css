@@ -1,0 +1,162 @@
+/* AnimalStatistics.css */
+:root {
+  --primary: #21763e;
+  --primary-600: #1a5d31;
+  --background: #f9fbf9;
+  --text-dark: #333;
+  --muted: #6b7280;
+  --white: #fff;
+  --shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  --goat-color: #d97706;
+  --sheep-color: #198754;
+  --male-color: #0d6efd;
+  --female-color: #dc3545;
+  --total-color: #6f42c1;
+}
+
+.animal-statistics {
+  padding: 20px;
+  background: var(--background);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--text-dark);
+  border-radius: 12px;
+  margin: 20px 0;
+}
+
+.animal-statistics.rtl {
+  direction: rtl;
+}
+
+.stats-header {
+  color: var(--primary);
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 24px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.stat-card {
+  background: var(--white);
+  padding: 20px;
+  border-radius: 14px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+}
+
+.stat-card.total::before { background-color: var(--total-color); }
+.stat-card.males::before { background-color: var(--male-color); }
+.stat-card.females::before { background-color: var(--female-color); }
+.stat-card.goats::before { background-color: var(--goat-color); }
+.stat-card.sheep::before { background-color: var(--sheep-color); }
+
+.stat-icon {
+  font-size: 32px;
+  margin-bottom: 12px;
+}
+
+.stat-card.total .stat-icon { color: var(--total-color); }
+.stat-card.males .stat-icon { color: var(--male-color); }
+.stat-card.females .stat-icon { color: var(--female-color); }
+.stat-card.goats .stat-icon { color: var(--goat-color); }
+.stat-card.sheep .stat-icon { color: var(--sheep-color); }
+
+.stat-card h4 {
+  margin: 8px 0;
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.stat-card p {
+  font-size: 24px;
+  font-weight: 800;
+  margin: 8px 0 4px;
+}
+
+.stat-card.total p { color: var(--total-color); }
+.stat-card.males p { color: var(--male-color); }
+.stat-card.females p { color: var(--female-color); }
+.stat-card.goats p { color: var(--goat-color); }
+.stat-card.sheep p { color: var(--sheep-color); }
+
+.gender-breakdown {
+  display: block;
+  font-size: 14px;
+  font-weight: normal;
+  margin-top: 5px;
+  color: var(--muted);
+}
+
+/* Loading */
+.loading-wrap {
+  display: grid;
+  place-items: center;
+  height: 200px;
+  gap: 15px;
+  color: var(--primary);
+}
+
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid #d1e9d8;
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.error-message {
+  text-align: center;
+  padding: 20px;
+  color: #dc3545;
+  background: #f8d7da;
+  border-radius: 8px;
+  margin: 20px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
+  
+  .stat-card {
+    padding: 15px;
+  }
+  
+  .stat-icon {
+    font-size: 28px;
+  }
+  
+  .stat-card p {
+    font-size: 20px;
+  }
+}

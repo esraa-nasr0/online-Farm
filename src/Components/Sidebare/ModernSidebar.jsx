@@ -13,6 +13,8 @@ import { GiGoat } from "react-icons/gi";
 import { CiLogout } from "react-icons/ci";
 import { RiLuggageCartFill } from "react-icons/ri";
 import { useTranslation } from "react-i18next";
+import { RiDashboardHorizontalLine } from "react-icons/ri"; 
+
 import "./modern-sidebar.css";
 
 export default function ModernSidebar({
@@ -37,6 +39,16 @@ export default function ModernSidebar({
         { name: t("Notifications"), icon: <FaBell />, path: "/notificationPage", badge: notificationCount },
       ],
     },
+    {
+  title: t("User"),
+  items: [
+    {
+      name: t("Dashboard"),
+      icon: <RiDashboardHorizontalLine />,
+      path: "/userDashboard",
+    },
+  ],
+},
     {
       title: t("Supplier"),
       items: [
@@ -212,6 +224,9 @@ export default function ModernSidebar({
           <div className="msb-rail-items">
             <Link to="/" className="rail-btn" title={t("Home")} data-tooltip={t("Home")} onClick={onToggle}>
               <IoHome />
+            </Link>
+            <Link to="/userDashboard" className="rail-btn" title={t("Dashboard")} data-tooltip={t("Dashboard")} onClick={onToggle}>
+              <RiDashboardHorizontalLine />
             </Link>
             <button className="rail-btn" onClick={() => setLangOpen((v) => !v)} title={t("Language")} data-tooltip={t("Language")}>
               <MdOutlineLanguage />

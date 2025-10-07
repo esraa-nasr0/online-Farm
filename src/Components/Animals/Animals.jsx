@@ -8,15 +8,16 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import AnimalStatistics from "./AnimalStatistics";
 import axios from "axios";
-import "../Vaccine/styles.css";
 import { IoEyeOutline } from "react-icons/io5";
 import { FiSearch } from "react-icons/fi";
 import { BreedContext } from "../../Context/BreedContext";
+import "./Animals.css"; // سيتم إنشاء هذا الملف
 
 export default function Animals() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { removeAnimals, getAnimals } = useContext(AnimalContext);
+  const isRTL = i18n.language === "ar";
 
   const [animals, setAnimals] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -303,11 +304,10 @@ export default function Animals() {
 
   // Modern pagination rendering function
   const renderModernPagination = () => {
-    const total = pagination.totalPages;
+    const total = pagination.totalPages || 1;
     const pageButtons = [];
-    const maxButtons = 5; // How many page numbers to show (excluding ellipsis)
+    const maxButtons = 5;
 
-    // Helper to add a page button
     const addPage = (page) => {
       pageButtons.push(
         <li
@@ -321,7 +321,6 @@ export default function Animals() {
       );
     };
 
-    // Always show first, last, current, and neighbors
     if (total <= maxButtons) {
       for (let i = 1; i <= total; i++) addPage(i);
     } else {
@@ -378,7 +377,7 @@ export default function Animals() {
   return (
     <>
       {isLoading ? (
-        <div className="animal">
+        <div className="loading-wrap">
           <Rings
             visible={true}
             height="100"
@@ -388,234 +387,281 @@ export default function Animals() {
           />
         </div>
       ) : (
-        <>
-          <div className="container mt-4">
-            <h2 className="vaccine-table-title">{t("animals")}</h2>
-
-            <div className="container mt-5 vaccine-table-container">
-              <AnimalStatistics className="mt-3 mb-5" />
+        <div className={`animal-container ${isRTL ? "rtl" : ""}`}>
+          <div className="toolbar">
+            <div className="animal-info">
+              <h2 className="animal-title">{t("animals")}</h2>
+              <p className="animal-subtitle">{t("manage_animals")}</p>
             </div>
+          </div>
 
-            <div className="container mt-5 vaccine-table-container">
-              <h6 className="mb-3 fw-bold custom-section-title">
-                {t("filter_animals")}
-              </h6>
+          <div className="statistics-section">
+            <AnimalStatistics />
+          </div>
 
-              {/* Filter Row: 5 inputs with labels + Search button */}
-              <div className="row g-2 mt-3 mb-3 align-items-end">
-                {/* Input 1: Tag ID */}
-                <div className="col-12 col-sm-6 col-md-3">
-                  <label htmlFor="tagIdInput" className="form-label">
-                    {t("tag_id")}
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="tagIdInput"
-                    placeholder={t("search_by_tag_id")}
-                    value={searchTagId}
-                    onChange={(e) => setSearchTagId(e.target.value)}
-                  />
-                </div>
+          {/* Search Section */}
+          <div className="search-section">
+            <h6 className="search-title">{t("filter_animals")}</h6>
 
-                {/* Input 2: Animal Type */}
-                <div className="col-12 col-sm-6 col-md-3">
-                  <label htmlFor="animalTypeInput" className="form-label">
-                    {t("animal_type")}
-                  </label>{" "}
-                  <select
-                    className="form-control"
-                    id="animalTypeInput"
-                    value={searchAnimalType}
-                    onChange={(e) => setSearchAnimalType(e.target.value)}
-                  >
-                    <option value="">{t("select_animal_type")}</option>
-                    <option value="goat">{t("goat")}</option>
-                    <option value="sheep">{t("sheep")}</option>
-                  </select>
-                </div>
-
-                {/* Input 3: Location/Shed */}
-                <div className="col-12 col-sm-6 col-md-3">
-                  <label htmlFor="locationShedInput" className="form-label">
-                    {t("location_shed")}
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="locationShedInput"
-                    placeholder={t("search_by_location_shed")}
-                    value={searchLocationShed}
-                    onChange={(e) => setSearchLocationShed(e.target.value)}
-                  />
-                </div>
-
-                {/* Input 4: Breed */}
-                <div className="col-12 col-sm-6 col-md-3">
-                  <label htmlFor="breedInput" className="form-label">
-                    {t("breed")}
-                  </label>{" "}
-                  <select
-                    className="form-control"
-                    id="breedInput"
-                    value={searchBreed}
-                    onChange={(e) => setSearchBreed(e.target.value)}
-                  >
-                    <option value="">{t("select_breed")}</option>
-                    {breeds.map((breed) => (
-                      <option key={breed._id} value={breed._id}>
-                        {breed.breedName}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Input 5: Gender */}
-                <div className="col-12 col-sm-6 col-md-3">
-                  <label htmlFor="genderInput" className="form-label">
-                    {t("gender")}
-                  </label>
-                  <select
-                    type="text"
-                    className="form-control"
-                    id="genderInput"
-                    value={searchGender}
-                    onChange={(e) => setSearchGender(e.target.value)}
-                  >
-                    <option value="">{t("select_gender")}</option>
-                    <option value="female">{t("female")}</option>
-                    <option value="male">{t("male")}</option>
-                  </select>
-                </div>
-
-                {/* Button Row */}
-                <div className="col-12 d-flex justify-content-end mt-2">
-                  <button className="btn btn-success" onClick={handleSearch}>
-                    <FiSearch /> {t("search")}
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div className="container mt-5 vaccine-table-container">
-              <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mt-5 mb-3">
-                <div className="d-flex flex-wrap gap-2">
-                  <button
-                    className="btn btn-outline-dark"
-                    onClick={handleExportToExcel}
-                    title={t("export_all_data")}
-                  >
-                    <i className="fas fa-download me-1"></i>{" "}
-                    {t("export_all_data")}
-                  </button>
-                  <button
-                    className="btn btn-success"
-                    onClick={handleDownloadTemplate}
-                    title={t("download_template")}
-                  >
-                    <i className="fas fa-file-arrow-down me-1"></i>{" "}
-                    {t("download_template")}
-                  </button>
-                  <label
-                    className="btn btn-dark btn-outline-dark mb-0 d-flex align-items-center"
-                    style={{ cursor: "pointer", color: "white" }}
-                    title={t("import_from_excel")}
-                  >
-                    <i className="fas fa-file-import me-1"></i>{" "}
-                    {t("import_from_excel")}
-                    <input
-                      type="file"
-                      hidden
-                      accept=".xlsx,.xls"
-                      onChange={handleImportFromExcel}
-                    />
-                  </label>
-                </div>
-              </div>
-              <div className="table-responsive mt-5">
-                <div className="full-width-table">
-                  <table className="table vaccine-modern-table align-middle">
-                    <thead>
-                      <tr>
-                        <th scope="col" className="bg-color">
-                          #
-                        </th>
-                        <th scope="col" className="bg-color">
-                          {t("tag_id")}
-                        </th>
-                        <th scope="col" className="bg-color">
-                          {t("animal_type")}
-                        </th>
-                        <th scope="col" className="bg-color">
-                          {t("breed")}
-                        </th>
-                        <th scope="col" className="bg-color">
-                          {t("location_shed")}
-                        </th>
-                        <th scope="col" className="text-center bg-color">
-                          {t("gender")}
-                        </th>
-                        <th className="bg-color">{t("actions")}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {animals.map((animal, index) => (
-                        <tr key={`${animal.id || animal._id}-${index}`}>
-                          <th scope="row">
-                            {(currentPage - 1) * animalsPerPage + index + 1}
-                          </th>
-                          <td>{animal.tagId}</td>
-                          <td>{animal.animalType}</td>
-                          <td>
-                            {animal.breed?.breedName || animal.breed || "-"}
-                          </td>
-                          <td>
-                            {animal.locationShed?.locationShedName ||
-                              animal.locationShed ||
-                              "-"}
-                          </td>
-                          <td>{animal.gender}</td>
-                          <td className="text-center">
-                            <button
-                              className="btn btn-link p-0 me-2"
-                              onClick={() => viewAnimal(animal._id)}
-                              title={t("view")}
-                              style={{ color: "#0f40e1ff" }}
-                            >
-                              <IoEyeOutline />
-                            </button>
-                            <button
-                              className="btn btn-link p-0 me-2"
-                              style={{ color: "#0f7e34ff" }}
-                              onClick={() => editAnimal(animal._id)}
-                              title={t("edit")}
-                            >
-                              <FaRegEdit />
-                            </button>
-                            <button
-                              className="btn btn-link p-0"
-                              style={{ color: "#d33" }}
-                              onClick={() =>
-                                handleClick(animal.id || animal._id)
-                              }
-                              title={t("delete")}
-                            >
-                              <RiDeleteBinLine />
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+            <div className="search-fields">
+              <div className="search-field">
+                <label htmlFor="tagIdInput" className="search-label">
+                  {t("tag_id")}
+                </label>
+                <input
+                  type="text"
+                  className="search-input"
+                  id="tagIdInput"
+                  placeholder={t("search_by_tag_id")}
+                  value={searchTagId}
+                  onChange={(e) => setSearchTagId(e.target.value)}
+                />
               </div>
 
-              <div className="d-flex justify-content-center mt-4">
-                <nav>{renderModernPagination()}</nav>
+              <div className="search-field">
+                <label htmlFor="animalTypeInput" className="search-label">
+                  {t("animal_type")}
+                </label>
+                <select
+                  className="search-input"
+                  id="animalTypeInput"
+                  value={searchAnimalType}
+                  onChange={(e) => setSearchAnimalType(e.target.value)}
+                >
+                  <option value="">{t("select_animal_type")}</option>
+                  <option value="goat">{t("goat")}</option>
+                  <option value="sheep">{t("sheep")}</option>
+                </select>
+              </div>
+
+              <div className="search-field">
+                <label htmlFor="locationShedInput" className="search-label">
+                  {t("location_shed")}
+                </label>
+                <input
+                  type="text"
+                  className="search-input"
+                  id="locationShedInput"
+                  placeholder={t("search_by_location_shed")}
+                  value={searchLocationShed}
+                  onChange={(e) => setSearchLocationShed(e.target.value)}
+                />
+              </div>
+
+              <div className="search-field">
+                <label htmlFor="breedInput" className="search-label">
+                  {t("breed")}
+                </label>
+                <select
+                  className="search-input"
+                  id="breedInput"
+                  value={searchBreed}
+                  onChange={(e) => setSearchBreed(e.target.value)}
+                >
+                  <option value="">{t("select_breed")}</option>
+                  {breeds.map((breed) => (
+                    <option key={breed._id} value={breed._id}>
+                      {breed.breedName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="search-field">
+                <label htmlFor="genderInput" className="search-label">
+                  {t("gender")}
+                </label>
+                <select
+                  className="search-input"
+                  id="genderInput"
+                  value={searchGender}
+                  onChange={(e) => setSearchGender(e.target.value)}
+                >
+                  <option value="">{t("select_gender")}</option>
+                  <option value="female">{t("female")}</option>
+                  <option value="male">{t("male")}</option>
+                </select>
+              </div>
+
+              <div className="search-button">
+                <button className="btn-search" onClick={handleSearch}>
+                  <FiSearch /> {t("search")}
+                </button>
               </div>
             </div>
           </div>
-        </>
+
+          {/* Action Buttons Section */}
+          <div className="action-buttons-container">
+            <div className="action-buttons">
+              <button
+                className="btn-export"
+                onClick={handleExportToExcel}
+                title={t("export_all_data")}
+              >
+                <i className="fas fa-download me-1"></i> {t("export_all_data")}
+              </button>
+              <button
+                className="btn-template"
+                onClick={handleDownloadTemplate}
+                title={t("download_template")}
+              >
+                <i className="fas fa-file-arrow-down me-1"></i> {t("download_template")}
+              </button>
+              <label
+                className="btn-import"
+                title={t("import_from_excel")}
+              >
+                <i className="fas fa-file-import me-1"></i> {t("import_from_excel")}
+                <input
+                  type="file"
+                  hidden
+                  accept=".xlsx,.xls"
+                  onChange={handleImportFromExcel}
+                />
+              </label>
+            </div>
+          </div>
+
+          {/* Mobile Cards View */}
+          <div className="mobile-cards">
+            {animals.map((animal, index) => (
+              <div key={`${animal.id || animal._id}-${index}`} className="animal-card">
+                <div className="card-content">
+                  <div className="card-row">
+                    <span className="card-label">#</span>
+                    <span className="card-value">
+                      {(currentPage - 1) * animalsPerPage + index + 1}
+                    </span>
+                  </div>
+                  <div className="card-row">
+                    <span className="card-label">{t("tag_id")}</span>
+                    <span className="card-value">{animal.tagId}</span>
+                  </div>
+                  <div className="card-row">
+                    <span className="card-label">{t("animal_type")}</span>
+                    <span className="card-value">{animal.animalType}</span>
+                  </div>
+                  <div className="card-row">
+                    <span className="card-label">{t("breed")}</span>
+                    <span className="card-value">
+                      {animal.breed?.breedName || animal.breed || "-"}
+                    </span>
+                  </div>
+                  <div className="card-row">
+                    <span className="card-label">{t("location_shed")}</span>
+                    <span className="card-value">
+                      {animal.locationShed?.locationShedName || animal.locationShed || "-"}
+                    </span>
+                  </div>
+                  <div className="card-row">
+                    <span className="card-label">{t("gender")}</span>
+                    <span className="card-value">{animal.gender}</span>
+                  </div>
+                  <div className="card-actions">
+                  <button
+                    className="btn-view"
+                    onClick={() => viewAnimal(animal._id)}
+                    title={t("view")}
+                  >
+                    <IoEyeOutline />
+                  </button>
+                  <button
+                    className="btn-edit"
+                    onClick={() => editAnimal(animal._id)}
+                    title={t("edit")}
+                  >
+                    <FaRegEdit />
+                  </button>
+                  <button
+                    className="btn-delete"
+                    onClick={() => handleClick(animal.id || animal._id)}
+                    title={t("delete")}
+                  >
+                    <RiDeleteBinLine />
+                  </button>
+                </div>
+                </div>
+                
+              </div>
+            ))}
+            {animals.length === 0 && (
+              <div className="no-data-mobile">
+                {t("no_animals_found")}
+              </div>
+            )}
+          </div>
+
+          {/* Desktop Table View */}
+          <div className="table-wrapper">
+            <table className="modern-table">
+              <thead>
+                <tr>
+                  <th className="text-center">#</th>
+                  <th className="text-center">{t("tag_id")}</th>
+                  <th className="text-center">{t("animal_type")}</th>
+                  <th className="text-center">{t("breed")}</th>
+                  <th className="text-center">{t("location_shed")}</th>
+                  <th className="text-center">{t("gender")}</th>
+                  <th className="text-center">{t("actions")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {animals.map((animal, index) => (
+                  <tr key={`${animal.id || animal._id}-${index}`}>
+                    <td className="text-center">
+                      {(currentPage - 1) * animalsPerPage + index + 1}
+                    </td>
+                    <td className="text-center">{animal.tagId}</td>
+                    <td className="text-center">{animal.animalType}</td>
+                    <td className="text-center">
+                      {animal.breed?.breedName || animal.breed || "-"}
+                    </td>
+                    <td className="text-center">
+                      {animal.locationShed?.locationShedName || animal.locationShed || "-"}
+                    </td>
+                    <td className="text-center">{animal.gender}</td>
+                    <td className="text-center action-buttons">
+                      <button
+                        className="btn-view"
+                        onClick={() => viewAnimal(animal._id)}
+                        title={t("view")}
+                      >
+                        <IoEyeOutline />
+                      </button>
+                      <button
+                        className="btn-edit"
+                        onClick={() => editAnimal(animal._id)}
+                        title={t("edit")}
+                      >
+                        <FaRegEdit />
+                      </button>
+                      <button
+                        className="btn-delete"
+                        onClick={() => handleClick(animal.id || animal._id)}
+                        title={t("delete")}
+                      >
+                        <RiDeleteBinLine />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+                {animals.length === 0 && (
+                  <tr>
+                    <td colSpan="7" className="text-center no-data">
+                      {t("no_animals_found")}
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Pagination */}
+          <div className="pagination-container">
+            {renderModernPagination()}
+          </div>
+        </div>
       )}
     </>
   );
