@@ -1156,7 +1156,26 @@
   "manage_animals_cost": "Manage Animals Cost",
   "manage_feed_by_location": "Manage Feed by Location",
   "fodder_manage": "Manage Fodder",
-  "manage_feeds": "Manage Feeds"
+  "manage_feeds": "Manage Feeds",
+
+
+  "farmDashboard": "Farm Dashboard",
+  "totalAnimals": "Total Animals",
+  "birthsLast30d": "Births (Last 30 days)",
+  "deathsLast30d": "Deaths (Last 30 days)",
+  "positiveSonar": "Positive Sonar",
+  "dueSoon": "Due Soon",
+  "withinDays": "Within {{days}} days",
+  "netProfit": "Net Profit",
+  "expenses": "Expenses",
+  "monthlyAnimalDistribution": "Monthly Animal Distribution",
+  "numberOfAnimals": "Number of Animals",
+  "expenseDistribution": "Expense Distribution",
+  "animalsByShed": "Animals Distribution by Shed",
+  "animalPurchase": "Animal Purchase",
+  "animalFeed": "Animal Feed",
+  "healthCare": "Health Care",
+  "vaccinations": "Vaccinations"
 
 
 

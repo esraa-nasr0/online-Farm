@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -11,9 +12,15 @@ import {
   ArcElement,
 } from "chart.js";
 import { Bar, Doughnut } from "react-chartjs-2";
+import {
+  FaSkullCrossbones,
+  FaCheckCircle,
+  FaCalendarAlt,
+  FaMoneyBillWave,
+} from "react-icons/fa";
+import { GiSheep, GiGoat } from "react-icons/gi";
 import "./UserDashboard.css";
 
-// تسجيل مكونات Chart.js
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -34,6 +41,7 @@ const getHeaders = () => {
 
 export default function UserDashboard() {
   const [data, setData] = useState(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     axios
@@ -44,96 +52,83 @@ export default function UserDashboard() {
       .catch((err) => console.error(err));
   }, []);
 
-  if (!data) return <p className="loading">Loading...</p>;
+  if (!data) return <p className="loading">{t("loading")}</p>;
 
-  // تحضير البيانات للرسم البياني الشهري
   const monthlyLabels = data.trends.animalsPerMonth.map(
     (item) => `${item._id.m}/${item._id.y}`
   );
   const monthlyValues = data.trends.animalsPerMonth.map((item) => item.count);
 
   const monthlyData = {
-  labels: monthlyLabels,
-  datasets: [
-    {
-      label: "Number of Animals",
-      data: monthlyValues,
-      backgroundColor: ['#A8A8F0', '#C3F7C3', '#000000', '#B8E9F5', '#A0BCD6', '#C3F7C3'],
-      borderColor: ['#A8A8F0', '#C3F7C3', '#000000', '#B8E9F5', '#A0BCD6', '#C3F7C3'],
-      borderWidth: 1,
-      borderRadius: 6,
-      barThickness: 20,
-    },
-  ],
-};
+    labels: monthlyLabels,
+    datasets: [
+      {
+        label: t("numberOfAnimals"),
+        data: monthlyValues,
+        backgroundColor: [
+          "#A8A8F0",
+          "#C3F7C3",
+          "#B8E9F5",
+          "#A0BCD6",
+          "#FFD580",
+        ],
+        borderWidth: 1,
+        borderRadius: 6,
+        barThickness: 20,
+      },
+    ],
+  };
 
   const monthlyOptions = {
     responsive: true,
     plugins: {
-      legend: {
-        display: false,
-      },
+      legend: { display: false },
       title: {
         display: true,
-        text: "Monthly Animal Distribution",
-        font: {
-          size: 16,
-          weight: "bold",
-        },
+        text: t("monthlyAnimalDistribution"),
+        font: { size: 16, weight: "bold" },
         color: "#2c3e50",
-        padding: {
-          bottom: 20,
-        },
       },
     },
-    scales: {
-      y: {
-        beginAtZero: true,
-        grid: {
-          color: "#e0e6ed",
-        },
-        ticks: {
-          color: "#72849a",
-        },
-      },
-      x: {
-        grid: {
-          display: false,
-        },
-        ticks: {
-          color: "#72849a",
-        },
-      },
-    },
+    scales: { y: { beginAtZero: true }, x: { grid: { display: false } } },
   };
 
-  // تحضير بيانات التصنيفات المصروفات
-  const expenseLabels = data.finances.month.topExpenseCategories.map((item) => {
-    // تحويل أسماء الفئات إلى الإنجليزية
-    const categoryMap = {
-      animal_purchase: "Animal Purchase",
-      feed_consume: "Animal Feed",
-      treatment_course: "Health Care",
-      "Booster Dose": "Vaccinations",
-    };
-    return categoryMap[item.category] || item.category;
-  });
-  const expenseValues = data.finances.month.topExpenseCategories.map(
-    (item) => item.total
-  );
+  const expenseLabels =
+    data.finances.month.topExpenseCategories.length > 0
+      ? data.finances.month.topExpenseCategories.map((item) => {
+          const categoryMap = {
+            animal_purchase: t("animalPurchase"),
+            feed_consume: t("animalFeed"),
+            treatment_course: t("healthCare"),
+            "Booster Dose": t("vaccinations"),
+          };
+          return categoryMap[item.category] || item.category;
+        })
+      : [];
+
+  const expenseValues =
+    data.finances.month.topExpenseCategories.length > 0
+      ? data.finances.month.topExpenseCategories.map((item) => item.total)
+      : [];
 
   const expenseData = {
-  labels: expenseLabels,
-  datasets: [
-    {
-      data: expenseValues,
-      backgroundColor: ['#A8A8F0', '#C3F7C3', '#000000', '#B8E9F5', '#A0BCD6', '#C3F7C3'],
-      borderColor: "#fff",
-      borderWidth: 2,
-      hoverOffset: 8,
-    },
-  ],
-};
+    labels: expenseLabels,
+    datasets: [
+      {
+        data: expenseValues,
+        backgroundColor: [
+          "#A8A8F0",
+          "#C3F7C3",
+          "#B8E9F5",
+          "#F8D7DA",
+          "#FFD580",
+        ],
+        borderColor: "#fff",
+        borderWidth: 2,
+        hoverOffset: 8,
+      },
+    ],
+  };
 
   const expenseOptions = {
     responsive: true,
@@ -141,200 +136,151 @@ export default function UserDashboard() {
       legend: {
         position: "bottom",
         labels: {
-          padding: 20,
           usePointStyle: true,
           pointStyle: "circle",
-          font: {
-            size: 12,
-          },
+          font: { size: 12 },
         },
       },
       title: {
         display: true,
-        text: "Expense Distribution",
-        font: {
-          size: 16,
-          weight: "bold",
-        },
+        text: t("expenseDistribution"),
+        font: { size: 16, weight: "bold" },
         color: "#2c3e50",
-        padding: {
-          bottom: 10,
-        },
       },
     },
     cutout: "70%",
   };
 
-  // تحضير بيانات العنابر
   const shedsLabels = data.sheds.map((shed) => shed.shedName);
   const shedsValues = data.sheds.map((shed) => shed.animals);
 
   const shedsData = {
-  labels: shedsLabels,
-  datasets: [
-    {
-      label: "Number of Animals",
-      data: shedsValues,
-      backgroundColor: ['#A8A8F0', '#C3F7C3', '#000000', '#B8E9F5', '#A0BCD6', '#C3F7C3'],
-      borderColor: ['#A8A8F0', '#C3F7C3', '#000000', '#B8E9F5', '#A0BCD6', '#C3F7C3'],
-      borderWidth: 1,
-      borderRadius: 6,
-      barThickness: 20,
-    },
-  ],
-};
-
+    labels: shedsLabels,
+    datasets: [
+      {
+        label: t("numberOfAnimals"),
+        data: shedsValues,
+        backgroundColor: [
+          "#A8A8F0",
+          "#C3F7C3",
+          "#B8E9F5",
+          "#0b0b0bff",
+          "#F8D7DA",
+          "#FFD580",
+          "#A0BCD6",
+          "#2c3e50",
+          "#a8f0cdff",
+          "#bfa0d6ff",
+        ],
+        borderWidth: 1,
+        borderRadius: 6,
+        barThickness: 20,
+      },
+    ],
+  };
 
   const shedsOptions = {
     indexAxis: "y",
     responsive: true,
     plugins: {
-      legend: {
-        display: false,
-      },
+      legend: { display: false },
       title: {
         display: true,
-        text: "Animals Distribution by Shed",
-        font: {
-          size: 16,
-          weight: "bold",
-        },
+        text: t("animalsByShed"),
+        font: { size: 16, weight: "bold" },
         color: "#2c3e50",
-        padding: {
-          bottom: 20,
-        },
-      },
-    },
-    scales: {
-      x: {
-        beginAtZero: true,
-        grid: {
-          color: "#e0e6ed",
-        },
-        ticks: {
-          color: "#72849a",
-        },
-      },
-      y: {
-        grid: {
-          display: false,
-        },
-        ticks: {
-          color: "#72849a",
-        },
       },
     },
   };
 
   return (
     <div className="dashboard-container">
-      <h1 className="dashboard-title">Farm Dashboard</h1>
+      <h1 className="dashboard-title">{t("farmDashboard")}</h1>
 
-      {/* البطاقات الإحصائية - الصف الأول */}
+      {/* Row 1 */}
       <div className="cards-row">
         <div className="stat-card card-blue">
           <div className="card-header">
-            <h3>Total Animals</h3>
-            <div className="card-icon">🐐</div>
+            <h3>{t("totalAnimals")}</h3>
+            <GiSheep className="card-icon" />
           </div>
           <div className="stat-number">{data.totals.animals}</div>
-          <div className="stat-comparison positive">
-            <span className="comparison-arrow">↑</span>
-            <span className="comparison-text">Goats: {data.totals.goats}</span>
-          </div>
           <div className="stat-details">
-            <span>Sheep: {data.totals.sheep}</span>
+            <span>{t("goats")}: {data.totals.goats}</span>
+            <span>{t("sheep")}: {data.totals.sheep}</span>
           </div>
         </div>
 
         <div className="stat-card card-green">
           <div className="card-header">
-            <h3>Births (Last 30d)</h3>
-            <div className="card-icon">🐣</div>
+            <h3>{t("birthsLast30d")}</h3>
+            <GiGoat className="card-icon" />
           </div>
           <div className="stat-number">{data.last30d.births}</div>
-          <div className="stat-comparison positive">
-            <span className="comparison-arrow">↑</span>
-            <span className="comparison-text">+0%</span>
-          </div>
         </div>
 
         <div className="stat-card card-red">
           <div className="card-header">
-            <h3>Deaths (Last 30d)</h3>
-            <div className="card-icon">⚰️</div>
+            <h3>{t("deathsLast30d")}</h3>
+            <FaSkullCrossbones className="card-icon" />
           </div>
           <div className="stat-number">{data.last30d.deaths}</div>
-          <div className="stat-comparison negative">
-            <span className="comparison-arrow">↓</span>
-            <span className="comparison-text">+0%</span>
-          </div>
         </div>
       </div>
 
-      {/* البطاقات الإحصائية - الصف الثاني */}
+      {/* Row 2 */}
       <div className="cards-row">
         <div className="stat-card card-purple">
           <div className="card-header">
-            <h3>Positive Sonar</h3>
-            <div className="card-icon">✅</div>
+            <h3>{t("positiveSonar")}</h3>
+            <FaCheckCircle className="card-icon" />
           </div>
           <div className="stat-number">{data.last30d.sonarPositive}</div>
-          <div className="stat-comparison positive">
-            <span className="comparison-arrow">↑</span>
-            <span className="comparison-text">+100%</span>
-          </div>
         </div>
 
         <div className="stat-card card-orange">
           <div className="card-header">
-            <h3>Due Soon</h3>
-            <div className="card-icon">📅</div>
+            <h3>{t("dueSoon")}</h3>
+            <FaCalendarAlt className="card-icon" />
           </div>
           <div className="stat-number">{data.dueSoon.count}</div>
-          <div className="stat-comparison">
-            <span className="comparison-text">
-              Within {data.dueSoon.horizonDays} days
-            </span>
+          <div className="stat-details">
+            <span>{t("withinDays", { days: data.dueSoon.horizonDays })}</span>
           </div>
         </div>
 
         <div className="stat-card card-teal">
           <div className="card-header">
-            <h3>Net Profit</h3>
-            <div className="card-icon">💰</div>
+            <h3>{t("netProfit")}</h3>
+            <FaMoneyBillWave className="card-icon" />
           </div>
-          <div className="stat-number">{data.finances.month.net} SAR</div>
-          <div className="stat-comparison positive">
-            <span className="comparison-arrow">↑</span>
-            <span className="comparison-text">
-              +
-              {Math.round(
-                (data.finances.month.net / data.finances.month.revenue) * 100
-              )}
-              %
-            </span>
-          </div>
+          <div className="stat-number">{data.finances.month.net}</div>
           <div className="stat-details">
-            <span>Revenue: {data.finances.month.revenue} SAR</span>
-            <span>Expenses: {data.finances.month.expenses} SAR</span>
+            <span>{t("revenue")}: {data.finances.month.revenue}</span>
+            <span>{t("expenses")}: {data.finances.month.expenses}</span>
           </div>
         </div>
       </div>
 
-      {/* الرسوم البيانية - 3 في صف واحد */}
+      {/* Charts */}
       <div className="charts-row">
-        <div className="chart-card">
-          <Bar options={monthlyOptions} data={monthlyData} />
-        </div>
+        {monthlyValues.length > 0 && (
+          <div className="chart-card">
+            <Bar options={monthlyOptions} data={monthlyData} />
+          </div>
+        )}
 
-        <div className="chart-card">
-          <Doughnut options={expenseOptions} data={expenseData} />
-        </div>
+        {expenseLabels.length > 0 && (
+          <div className="chart-card">
+            <Doughnut options={expenseOptions} data={expenseData} />
+          </div>
+        )}
 
-        <div className="chart-card">
-          <Bar options={shedsOptions} data={shedsData} />
-        </div>
+        {shedsValues.length > 0 && (
+          <div className="chart-card">
+            <Bar options={shedsOptions} data={shedsData} />
+          </div>
+        )}
       </div>
     </div>
   );
