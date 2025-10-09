@@ -23,4 +23,7 @@
     padding-left: 0;
     padding-right: 0;
   }
+  .app-container{
+    margin-top: 48px;
+  }
 }
