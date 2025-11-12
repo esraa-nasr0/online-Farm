@@ -2,7 +2,6 @@ import { useFormik } from 'formik';
 import  { useState } from 'react';
 import { IoIosSave } from "react-icons/io";
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { useTranslation } from 'react-i18next';
 import './Weight.css';

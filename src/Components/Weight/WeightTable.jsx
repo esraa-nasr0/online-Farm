@@ -7,7 +7,7 @@ import { WeightContext } from "../../Context/WeightContext";
 import { Rings } from "react-loader-spinner";
 import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
-import axios from "axios";
+// import axios from "axios";
 import "./WeightTable.css"; // سيتم إنشاء هذا الملف
 
 function WeightTable() {
@@ -167,103 +167,103 @@ function WeightTable() {
     );
   };
 
-  const getHeaders = () => {
-    const token = localStorage.getItem("Authorization");
-    if (!token) {
-      navigate("/login");
-      throw new Error("No authorization token found");
-    }
-    return {
-      Authorization: token.startsWith("Bearer ") ? token : `Bearer ${token}`,
-    };
-  };
+  // const getHeaders = () => {
+  //   const token = localStorage.getItem("Authorization");
+  //   if (!token) {
+  //     navigate("/login");
+  //     throw new Error("No authorization token found");
+  //   }
+  //   return {
+  //     Authorization: token.startsWith("Bearer ") ? token : `Bearer ${token}`,
+  //   };
+  // };
 
-  const handleDownloadTemplate = async () => {
-    const headers = getHeaders();
-    try {
-      setIsLoading(true);
-      const response = await axios.get(
-        "https://farm-project-bbzj.onrender.com/api/weight/downloadWeightTemplate",
-        {
-          responseType: "blob",
-          headers: {
-            ...headers,
-            Accept:
-              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-          },
-        }
-      );
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", "weight_template.xlsx");
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
-    } catch {
-      Swal.fire(t("error"), t("failed_to_download_template"), "error");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // const handleDownloadTemplate = async () => {
+  //   const headers = getHeaders();
+  //   try {
+  //     setIsLoading(true);
+  //     const response = await axios.get(
+  //       "https://farm-project-bbzj.onrender.com/api/weight/downloadWeightTemplate",
+  //       {
+  //         responseType: "blob",
+  //         headers: {
+  //           ...headers,
+  //           Accept:
+  //             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  //         },
+  //       }
+  //     );
+  //     const url = window.URL.createObjectURL(new Blob([response.data]));
+  //     const link = document.createElement("a");
+  //     link.href = url;
+  //     link.setAttribute("download", "weight_template.xlsx");
+  //     document.body.appendChild(link);
+  //     link.click();
+  //     link.remove();
+  //     window.URL.revokeObjectURL(url);
+  //   } catch {
+  //     Swal.fire(t("error"), t("failed_to_download_template"), "error");
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
-  const handleExportToExcel = async () => {
-    const headers = getHeaders();
-    try {
-      setIsLoading(true);
-      const response = await axios.get(
-        "https://farm-project-bbzj.onrender.com/api/weight/exportWeightsToExcel",
-        {
-          responseType: "blob",
-          headers: {
-            ...headers,
-            Accept:
-              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-          },
-        }
-      );
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", "weights.xlsx");
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
-    } catch {
-      Swal.fire(t("error"), t("failed_to_export_to_excel"), "error");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // const handleExportToExcel = async () => {
+  //   const headers = getHeaders();
+  //   try {
+  //     setIsLoading(true);
+  //     const response = await axios.get(
+  //       "https://farm-project-bbzj.onrender.com/api/weight/exportWeightsToExcel",
+  //       {
+  //         responseType: "blob",
+  //         headers: {
+  //           ...headers,
+  //           Accept:
+  //             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  //         },
+  //       }
+  //     );
+  //     const url = window.URL.createObjectURL(new Blob([response.data]));
+  //     const link = document.createElement("a");
+  //     link.href = url;
+  //     link.setAttribute("download", "weights.xlsx");
+  //     document.body.appendChild(link);
+  //     link.click();
+  //     link.remove();
+  //     window.URL.revokeObjectURL(url);
+  //   } catch {
+  //     Swal.fire(t("error"), t("failed_to_export_to_excel"), "error");
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
-  const handleImportFromExcel = async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-    const headers = getHeaders();
-    const formData = new FormData();
-    try {
-      setIsLoading(true);
-      formData.append("file", file);
-      const response = await axios.post(
-        "https://farm-project-bbzj.onrender.com/api/weight/importWeightsFromExcel",
-        formData,
-        { headers: { ...headers, "Content-Type": "multipart/form-data" } }
-      );
-      if (response.data?.status === "success") {
-        Swal.fire(t("success"), t("weights_imported_successfully"), "success");
-        fetchWeights();
-      } else {
-        throw new Error("Import failed");
-      }
-    } catch {
-      Swal.fire(t("error"), t("failed_to_import_from_excel"), "error");
-    } finally {
-      setIsLoading(false);
-      event.target.value = "";
-    }
-  };
+  // const handleImportFromExcel = async (event) => {
+  //   const file = event.target.files[0];
+  //   if (!file) return;
+  //   const headers = getHeaders();
+  //   const formData = new FormData();
+  //   try {
+  //     setIsLoading(true);
+  //     formData.append("file", file);
+  //     const response = await axios.post(
+  //       "https://farm-project-bbzj.onrender.com/api/weight/importWeightsFromExcel",
+  //       formData,
+  //       { headers: { ...headers, "Content-Type": "multipart/form-data" } }
+  //     );
+  //     if (response.data?.status === "success") {
+  //       Swal.fire(t("success"), t("weights_imported_successfully"), "success");
+  //       fetchWeights();
+  //     } else {
+  //       throw new Error("Import failed");
+  //     }
+  //   } catch {
+  //     Swal.fire(t("error"), t("failed_to_import_from_excel"), "error");
+  //   } finally {
+  //     setIsLoading(false);
+  //     event.target.value = "";
+  //   }
+  // };
 
   return (
     <>

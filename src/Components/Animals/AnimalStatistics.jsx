@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { FaUsers, FaMars, FaVenus, FaHorse } from 'react-icons/fa';
+import {  FaMars, FaVenus} from 'react-icons/fa';
 import { GiGoat, GiSheep } from 'react-icons/gi';
 import { PiFarmLight } from "react-icons/pi";
 import { useTranslation } from 'react-i18next';
@@ -38,7 +38,8 @@ function AnimalStatistics() {
       setError(t("failed_to_load_stats"));
     }
   };
-
+  
+// eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     fetchAnimalStatistics();
   }, []);

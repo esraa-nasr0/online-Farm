@@ -126,7 +126,7 @@ function AnimalsDetails() {
       traderName: "",
       purchaseDate: "",
       purchasePrice: "",
-      teething: "",
+      // teething: "",
       marketValue: "",
       age: {
         years: 0,

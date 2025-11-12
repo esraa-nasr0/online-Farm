@@ -13,7 +13,7 @@ const GoatCard = () => {
       <div className="col-lg-4 px-3 mb-4">
         <div className="card-hover bg-white rounded-md shadow-md p-2">
           <div className="border ll border-2 p-3 rounded">
-            <img src={img1} alt="goat" className="w-100 immg rounded-md" />
+            <img src={img1} alt="goat" loading="lazy" className="w-100 immg rounded-md" />
           </div>
       
           <div className="text-center mt-3">
@@ -29,7 +29,7 @@ const GoatCard = () => {
       <div className="col-lg-4 px-3 mb-4">
         <div className="card-hover bg-white rounded-md shadow-md p-2">
           <div className="border border-2 p-3 rounded">
-            <img src={trader} alt="goat" className="w-100 immg rounded-md" />
+            <img src={trader} alt="goat" loading="lazy" className="w-100 immg rounded-md" />
           </div>
       
           <div className="text-center mt-3">
@@ -43,7 +43,7 @@ const GoatCard = () => {
       <div className="col-lg-4 px-3 mb-4">
         <div className="card-hover bg-white rounded-md shadow-md p-2">
           <div className="border border-2 p-3 rounded">
-            <img src={butchers} alt="goat" className="w-100 immg rounded-md" />
+            <img src={butchers} alt="goat" loading="lazy" className="w-100 immg rounded-md" />
           </div>
       
           <div className="text-center mt-3">
