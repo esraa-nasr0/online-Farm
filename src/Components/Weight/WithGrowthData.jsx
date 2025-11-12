@@ -42,7 +42,8 @@ function WithGrowthData() {
     useEffect(() => {
         fetchGrowthData(currentPage, searchCriteria);
     }, [currentPage]);
-
+    
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const handlePageChange = (page) => {
         setCurrentPage(page);
     };

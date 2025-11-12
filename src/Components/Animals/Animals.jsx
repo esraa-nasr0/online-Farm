@@ -265,6 +265,7 @@ export default function Animals() {
     }
   };
 
+// eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     fetchAnimals();
   }, [currentPage]);

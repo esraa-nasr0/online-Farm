@@ -16,7 +16,7 @@ export default function Section() {
         </div>
 
         <div className="image-area">
-          <img src={section} alt="employee preview" />
+          <img src={section} loading="lazy" alt="employee preview" />
         </div>
       </div>
     </div>
