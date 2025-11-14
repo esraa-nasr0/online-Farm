@@ -47,16 +47,16 @@ function chipColor(kind, value) {
 export default function NotificationPage() {
   const queryClient = useQueryClient();
   const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === "ar";
 
   // ------ Local state for filters & paging ------
   const [page, setPage] = useState(1);
-  const [limit] = useState(10); // ثابت—غيّريه لو عايزة
+  const [limit] = useState(10);
   const [filterUnreadOnly, setFilterUnreadOnly] = useState(false);
-  const [filterType, setFilterType] = useState('');       // Treatment | Vaccine | Weight | ''
-  const [filterStage, setFilterStage] = useState('');     // expired | due_soon | ''
-  const [filterSeverity, setFilterSeverity] = useState(''); // high | medium | low | ''
-  const [search, setSearch] = useState('');
-  const [selected, setSelected] = useState({}); // {id: true}
+  const [filterType, setFilterType] = useState('');
+  const [filterStage, setFilterStage] = useState('');
+  const [filterSeverity, setFilterSeverity] = useState('');
+  const [selected, setSelected] = useState({});
 
   const resetSelection = () => setSelected({});
 
@@ -67,11 +67,10 @@ export default function NotificationPage() {
     stage: filterStage || undefined,
     severity: filterSeverity || undefined,
     unreadOnly: filterUnreadOnly || undefined,
-    search: search?.trim() || undefined,
     lang: i18n.language || 'en',
-  }), [page, limit, filterType, filterStage, filterSeverity, filterUnreadOnly, search, i18n.language]);
+  }), [page, limit, filterType, filterStage, filterSeverity, filterUnreadOnly,  i18n.language]);
 
-  // ------ Main fetch (check + list) ------
+  // ------ Main fetch ------
   const {
     data,
     isLoading,
@@ -81,17 +80,15 @@ export default function NotificationPage() {
     queryKey: ['notifications', params],
     queryFn: async () => {
       const lang = i18n.language || "en";
-      // 1) trigger check
       await axios.get(`${BASE_URL}/api/notifications/check`, {
         headers: getHeaders(),
         params: { lang },
       });
-      // 2) fetch list with pagination & filters
+      
       const res = await axios.get(`${BASE_URL}/api/notifications`, {
         headers: getHeaders(),
         params,
       });
-      // expected: { data: { notifications: [], pagination: {...}, unreadCount } }
       return res.data?.data || { notifications: [], pagination: null, unreadCount: 0 };
     },
     keepPreviousData: true,
@@ -102,7 +99,13 @@ export default function NotificationPage() {
   });
 
   const notifications = data?.notifications || [];
-  const pagination = data?.pagination || { currentPage: 1, totalPages: 1, hasNextPage: false, hasPrevPage: false };
+  const pagination = data?.pagination || { 
+    currentPage: 1, 
+    totalPages: 1, 
+    hasNextPage: false, 
+    hasPrevPage: false,
+    total: 0
+  };
   const unreadCount = data?.unreadCount ?? notifications.filter(n => !n.isRead).length;
 
   const activeNotifications = notifications.filter((n) => !n.isArchived);
@@ -126,7 +129,6 @@ export default function NotificationPage() {
   const selectedIds = useMemo(() => Object.keys(selected).filter(id => selected[id]), [selected]);
 
   // ------ Mutations ------
-  // Mark single as read
   const markAsReadMutation = useMutation({
     mutationFn: async (id) => {
       const lang = i18n.language || "en";
@@ -156,7 +158,6 @@ export default function NotificationPage() {
     },
   });
 
-  // Mark all as read (server endpoint موجود)
   const markAllAsReadMutation = useMutation({
     mutationFn: async () => {
       const lang = i18n.language || "en";
@@ -186,7 +187,6 @@ export default function NotificationPage() {
     },
   });
 
-  // Delete single
   const deleteNotificationMutation = useMutation({
     mutationFn: async (id) => {
       const lang = i18n.language || "en";
@@ -222,14 +222,13 @@ export default function NotificationPage() {
     },
   });
 
-  // Bulk mark read (Promise.all على الـ single)
   const bulkMarkRead = async () => {
     const ids = selectedIds.filter(id => {
       const n = activeNotifications.find(x => x._id === id);
       return n && !n.isRead;
     });
     if (ids.length === 0) return;
-    // optimistic
+    
     await queryClient.cancelQueries({ queryKey: ['notifications'] });
     const prev = queryClient.getQueryData(['notifications', params]);
     queryClient.setQueryData(['notifications', params], (old) => {
@@ -238,6 +237,7 @@ export default function NotificationPage() {
       const unreadDelta = (old.notifications || []).filter(n => ids.includes(n._id) && !n.isRead).length;
       return { ...old, notifications: updated, unreadCount: Math.max(0, (old.unreadCount ?? 0) - unreadDelta) };
     });
+    
     try {
       await Promise.all(ids.map(id =>
         axios.patch(`${BASE_URL}/api/notifications/${id}/read`, {}, { headers: getHeaders(), params: { lang: i18n.language || 'en' } })
@@ -252,7 +252,6 @@ export default function NotificationPage() {
     }
   };
 
-  // Bulk delete
   const bulkDelete = async () => {
     const ids = selectedIds;
     if (ids.length === 0) return;
@@ -268,7 +267,6 @@ export default function NotificationPage() {
     });
     if (!confirm.isConfirmed) return;
 
-    // optimistic
     await queryClient.cancelQueries({ queryKey: ['notifications'] });
     const prev = queryClient.getQueryData(['notifications', params]);
     queryClient.setQueryData(['notifications', params], (old) => {
@@ -292,7 +290,82 @@ export default function NotificationPage() {
     }
   };
 
-  // ------ UI handlers ------
+  // ------ Pagination Logic (مثل Animals) ------
+  const renderModernPagination = () => {
+    const total = pagination.totalPages || 1;
+    const pageButtons = [];
+    const maxButtons = 5;
+
+    const addPage = (pageNum) => {
+      pageButtons.push(
+        <li
+          key={pageNum}
+          className={`page-item${pageNum === page ? " active" : ""}`}
+        >
+          <button 
+            className="page-link" 
+            onClick={() => { setPage(pageNum); resetSelection(); }}
+            disabled={isFetching}
+          >
+            {pageNum}
+          </button>
+        </li>
+      );
+    };
+
+    if (total <= maxButtons) {
+      for (let i = 1; i <= total; i++) addPage(i);
+    } else {
+      addPage(1);
+      if (page > 3) {
+        pageButtons.push(
+          <li key="start-ellipsis" className="pagination-ellipsis">
+            ...
+          </li>
+        );
+      }
+      let start = Math.max(2, page - 1);
+      let end = Math.min(total - 1, page + 1);
+      if (page <= 3) end = 4;
+      if (page >= total - 2) start = total - 3;
+      for (let i = start; i <= end; i++) {
+        if (i > 1 && i < total) addPage(i);
+      }
+      if (page < total - 2) {
+        pageButtons.push(
+          <li key="end-ellipsis" className="pagination-ellipsis">
+            ...
+          </li>
+        );
+      }
+      addPage(total);
+    }
+
+    return (
+      <ul className="pagination">
+        <li className={`page-item${page === 1 ? " disabled" : ""}`}>
+          <button
+            className="page-link pagination-arrow"
+            onClick={() => { setPage(page - 1); resetSelection(); }}
+            disabled={page === 1 || isFetching}
+          >
+            &lt; {t("back")}
+          </button>
+        </li>
+        {pageButtons}
+        <li className={`page-item${page === total ? " disabled" : ""}`}>
+          <button
+            className="page-link pagination-arrow"
+            onClick={() => { setPage(page + 1); resetSelection(); }}
+            disabled={page === total || isFetching}
+          >
+            {t("Next")} &gt;
+          </button>
+        </li>
+      </ul>
+    );
+  };
+
   const handleDelete = (id) => {
     Swal.fire({
       title: t("confirm_title"),
@@ -315,7 +388,7 @@ export default function NotificationPage() {
   if (isError) return <div className="error">{t("error_loading")}</div>;
 
   return (
-    <div className="notification-page container">
+    <div className={`notification-page container ${isRTL ? "rtl" : ""}`}>
       <nav>
         <header className="header">
           <div className="header-title">
@@ -325,7 +398,7 @@ export default function NotificationPage() {
           <div className="header-actions">
             {unreadCount > 0 && (
               <button
-                className="btn btn-primary"
+                className="btn btn-secondary"
                 onClick={() => markAllAsReadMutation.mutate()}
                 disabled={markAllAsReadMutation.isLoading || isFetching}
               >
@@ -339,13 +412,7 @@ export default function NotificationPage() {
       <main className="main-content">
         {/* Filters */}
         <section className="filters">
-          <input
-            type="text"
-            className="input"
-            placeholder={t("search_placeholder")}
-            value={search}
-            onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-          />
+          
 
           <select
             className="select"
@@ -403,6 +470,7 @@ export default function NotificationPage() {
 
           <button
             className="btn"
+            style={{backgroundColor: "#e6f0ff",color: "#0f40e1", border: '#0f40e1 ', borderRadius: '5px'}}
             onClick={bulkMarkRead}
             disabled={selectedIds.length === 0}
             title={t("mark_selected")}
@@ -410,14 +478,6 @@ export default function NotificationPage() {
             <FaCheck /> {t("mark_selected")}
           </button>
 
-          <button
-            className="btn btn-danger"
-            onClick={bulkDelete}
-            disabled={selectedIds.length === 0}
-            title={t("delete_selected")}
-          >
-            <RiDeleteBin6Line /> {t("delete_selected")}
-          </button>
         </section>
 
         <div className="divider"></div>
@@ -453,47 +513,28 @@ export default function NotificationPage() {
                     <p className="notification-message">{msg}</p>
 
                     <div className="badges">
-                      <span className="chip" style={{ backgroundColor: '#374151' }}>
+                      <span className="chip-type chip" >
                         {n.type}
                       </span>
-                      <span className="chip" style={{ backgroundColor: chipColor('severity', n.severity) }}>
+                      <span className="chip-severity chip" >
                         {n.severity}
                       </span>
-                      <span className="chip" style={{ backgroundColor: chipColor('stage', n.stage) }}>
+                      <span className="chip-stage chip" >
                         {n.stage}
                       </span>
                       {dueText && (
-                        <span className="chip" title="Due date">
+                        <span className="chip-dueText chip" title="Due date">
                           🗓 {dueText}
                         </span>
                       )}
                       {Array.isArray(n.relatedNotifications) && n.relatedNotifications.length > 0 && (
-                        <span className="chip" title={t("related_tooltip")}>
+                        <span className="chip-length chip" title={t("related_tooltip")}>
                           🔗 {n.relatedNotifications.length}
                         </span>
                       )}
                     </div>
 
                     <p className="notification-time">{createdText}</p>
-
-                    {Array.isArray(n.details?.history) && n.details.history.length > 0 && (
-                      <details className="history">
-                        <summary>{t("view_history")}</summary>
-                        <ul>
-                          {n.details.history.map((h, idx) => (
-                            <li key={idx}>
-                              <span className="history-time">
-                                {new Date(h.at).toLocaleString(i18n.language, {
-                                  year: 'numeric', month: 'short', day: 'numeric',
-                                  hour: '2-digit', minute: '2-digit',
-                                })}
-                              </span>
-                              <span className="history-text"> — {h.message}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </details>
-                    )}
                   </div>
 
                   <div className="notification-actions">
@@ -520,27 +561,9 @@ export default function NotificationPage() {
           )}
         </ul>
 
-        {/* Pagination */}
-        <div className="pagination">
-          <button
-            className="btn"
-            onClick={() => { setPage(p => Math.max(1, p - 1)); resetSelection(); }}
-            disabled={!pagination.hasPrevPage || isFetching}
-          >
-            <FaChevronLeft /> {t("prev")}
-          </button>
-
-          <span className="page-indicator">
-            {t("page")} {pagination.currentPage} {t("of")} {pagination.totalPages}
-          </span>
-
-          <button
-            className="btn"
-            onClick={() => { setPage(p => p + 1); resetSelection(); }}
-            disabled={!pagination.hasNextPage || isFetching}
-          >
-            {t("next")} <FaChevronRight />
-          </button>
+        {/* Pagination - Updated to match Animals style */}
+        <div className="pagination-container">
+          {renderModernPagination()}
         </div>
       </main>
     </div>

@@ -1262,7 +1262,30 @@
   "animalFeed": "علف الحيوانات",
   "healthCare": "الرعاية الصحية",
   "vaccinations": "التحصينات",
-  "Dashboard":"لوحة التحكم"
+  "Dashboard":"لوحة التحكم",
+
+  "type_all": "كل الأنواع",
+  "type_treatment": "علاج",
+  "type_vaccine": "لقاح",
+  "type_weight": "وزن",
+
+  "severity_all": "كل مستويات الخطورة",
+  "severity_high": "عالي",
+  "severity_medium": "متوسط",
+  "severity_low": "منخفض",
+
+  "stage_all": "كل المراحل",
+  "stage_expired": "منتهي",
+  "stage_due_soon": "قرب موعده",
+
+  "unread_only": "غير المقروء فقط",
+
+  "select_page": "تحديد هذه الصفحة",
+  "mark_selected": "تحديد المختار",
+  "delete_selected": "حذف المختار",
+
+
+  "related_tooltip": "إشعارات مرتبطة"
 
 
 }
