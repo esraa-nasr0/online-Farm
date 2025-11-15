@@ -3,11 +3,9 @@ import axios from 'axios';
 
 const VaccineanimalContext = React.createContext();
 
-// Helper function to generate headers with the latest token
 const getHeaders = () => {
     const Authorization = localStorage.getItem('Authorization');
 
-    // Ensure the token has only one "Bearer" prefix
     const formattedToken = Authorization?.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
 
     return {
