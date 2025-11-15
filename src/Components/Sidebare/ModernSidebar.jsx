@@ -87,65 +87,55 @@ const role = localStorage.getItem("role");
         },
       ],
     },
+   {
+  title: t("Health and Breeding"),
+  items: [
     {
-      title: t("Health and Breeding"),
-      items: [
-        {
-          name: t("mating"),
-          icon: <FaHeart />,
-          subItems: [
-            { name: t("mating Data"), path: "/matingTable" },
-            { name: t("add Mating"), path: "/mating" },
-            { name: t("add By LocationShed"), path: "/matingLocation" },
-          ],
-        },
-        {
-          name: t("vaccine"),
-          icon: <FaSyringe />,
-          subItems: [
-            { name: t("vaccine Data"), path: "/vaccineTable" },
-            { name: t("vaccine Animal Data"), path: "/Vaccinebyanimalsstable" },
-            { name: t("Add Vaccine"), path: "/addVaccine" },
-            { name: t("Add By Animal"), path: "/vaccinebytagid" },
-            { name: t("Add By Location"), path: "/vaccinebylocationshed" },
-          ],
-        },
-        {
-          name: t("Pharmacy"),
-          icon: <MdOutlineLocalPharmacy />,
-          subItems: [
-            { name: t("Pharmacy Data"), path: "/treatmentTable" },
-            { name: t("add Pharmacy"), path: "/treatment" },
-          ],
-        },
-        {
-          name: t("treatment"),
-          icon: <FaPills />,
-          subItems: [
-            { name: t("show By Animal"), path: "/treatAnimalTable" },
-            { name: t("add By Animal"), path: "/treatmentAnimal" },
-            { name: t("add By Location"), path: "/treatmentLocation" },
-          ],
-        },
-        {
-          name: t("weight"),
-          icon: <FaWeight />,
-          subItems: [
-            { name: t("weight Data"), path: "/weightTable" },
-            { name: t("add Weight"), path: "/weight" },
-            { name: t("Animal Growth"), path: "/withGrowthData" },
-          ],
-        },
-        {
-          name: t("breeding"),
-          icon: <FaSeedling />,
-          subItems: [
-            { name: t("breeding Data"), path: "/breadingTable" },
-            { name: t("add Breeding"), path: "/breeding" },
-          ],
-        },
+      name: t("mating"),
+      icon: <FaHeart />,
+      subItems: [
+        { name: t("mating Data"), path: "/matingTable" },
+        { name: t("add Mating"), path: "/mating" },
+        { name: t("add By LocationShed"), path: "/matingLocation" },
       ],
     },
+    {
+      name: t("vaccine"),
+      icon: <FaSyringe />,
+      subItems: [
+        { name: t("vaccine Data"), path: "/vaccineTable" },
+        { name: t("vaccine Animal Data"), path: "/Vaccinebyanimalsstable" },
+        { name: t("Add Vaccine"), path: "/addVaccine" },
+        { name: t("Add By Animal"), path: "/vaccinebytagid" },
+        { name: t("Add By Location"), path: "/vaccinebylocationshed" },
+      ],
+    },
+
+  
+    ...(role === "admin"
+      ? [
+          {
+            name: t("vaccine Type"),
+            icon: <FaSyringe />,
+            subItems: [
+              { name: t("Add Vaccine Type"), path: "/addVaccineType" },
+              { name: t("Show all Vaccine Types"), path: "/vaccineTypetable" },
+            ],
+          },
+        ]
+      : []),
+
+    {
+      name: t("Pharmacy"),
+      icon: <MdOutlineLocalPharmacy />,
+      subItems: [
+        { name: t("Pharmacy Data"), path: "/treatmentTable" },
+        { name: t("add Pharmacy"), path: "/treatment" },
+      ],
+    },
+  ],
+},
+
     {
       title: t("Feeding and Reports"),
       items: [
@@ -183,6 +173,7 @@ const role = localStorage.getItem("role");
         },
       ],
     },
+    
   ]), [notificationCount, t]);
 
   const toggleDropdown = (key) =>
