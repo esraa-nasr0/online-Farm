@@ -209,6 +209,61 @@ export default function DetailsLocation() {
 
       {/* جدول الحيوانات */}
       <h3 className="table-title">🐑 {t("animals_in")} {shed?.name}</h3>
+      {/* Mobile Cards View */}
+<div className="mobile-cards">
+  {animals.length > 0 ? (
+    animals.map((animal) => {
+      const checked = selected.has(animal._id);
+      return (
+        <div key={animal._id} className={`animal-card ${checked ? "row-selected" : ""}`}>
+          <div className="card-content">
+            <div className="card-row">
+              <span className="card-label">{t("tag_id")}</span>
+              <span className="card-value">{animal.tagId}</span>
+            </div>
+            <div className="card-row">
+              <span className="card-label">{t("type")}</span>
+              <span className="card-value">
+                {animal.animalType === "goat" ? t("goat") : t("sheep")}
+              </span>
+            </div>
+            <div className="card-row">
+              <span className="card-label">{t("gender")}</span>
+              <span className="card-value">
+                {animal.gender === "male" ? t("male") : t("female")}
+              </span>
+            </div>
+            <div className="card-row">
+              <span className="card-label">{t("age")}</span>
+              <span className="card-value">
+                {animal.age
+                  ? `${animal.age.years} ${t("years")} - ${animal.age.months} ${t("months")} - ${animal.age.days} ${t("days")}`
+                  : t("unknown")}
+              </span>
+            </div>
+            <div className="card-row">
+              <span className="card-label">{t("breed")}</span>
+              <span className="card-value">
+                {animal.breed ? animal.breed.breedName : t("not_specified")}
+              </span>
+            </div>
+          </div>
+          <div className="card-actions">
+            <input
+              type="checkbox"
+              checked={checked}
+              onChange={() => toggleOne(animal._id)}
+              title={checked ? t("unselect") : t("select")}
+            />
+          </div>
+        </div>
+      );
+    })
+  ) : (
+    <div className="no-data-mobile">{t("no_animals_in_shed")}</div>
+  )}
+</div>
+
       <div className="table-wrapper">
         <table className="modern-table">
           <thead>

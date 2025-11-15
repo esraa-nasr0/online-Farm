@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Rings } from 'react-loader-spinner';
 import { useTranslation } from 'react-i18next';
-import "../Vaccine/styles.css";
 import { FiSearch } from "react-icons/fi";
-
+import "./GrowthData.css"; // سيتم إنشاء هذا الملف
 
 function WithGrowthData() {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
+    const isRTL = i18n.language === "ar";
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 10;
     const [searchCriteria, setSearchCriteria] = useState({ tagId: '' });
@@ -42,7 +42,8 @@ function WithGrowthData() {
     useEffect(() => {
         fetchGrowthData(currentPage, searchCriteria);
     }, [currentPage]);
-
+    
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const handlePageChange = (page) => {
         setCurrentPage(page);
     };
@@ -104,98 +105,159 @@ function WithGrowthData() {
     return (
         <>
             {isLoading ? (
-                <div className="animal">
+                <div className="loading-wrap">
                     <Rings visible={true} height="100" width="100" color="#21763e" ariaLabel="rings-loading" />
                 </div>
             ) : (
-                        <div className="container mt-4">
-
-                    <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-3">
-                        <h2 className="vaccine-table-title">{t('Animal Growth')}</h2>
-                    </div>
-                <div className="container mt-5 vaccine-table-container">
-  <h6 className="mb-3 fw-bold custom-section-title">
-    {t("filter_animals")}
-  </h6>
-
-  <div className="row g-2 mt-3 mb-3 align-items-end">
-    {/* Input: Tag ID */}
-    <div className="col-12 col-sm-6 col-md-3">
-      <label htmlFor="tagIdInput" className="form-label">
-        {t("tag_id")}
-      </label>
-      <input
-        type="text"
-        id="tagIdInput"
-        className="form-control"
-        placeholder={t("search_by_tag_id")}
-        value={searchCriteria.tagId}
-        onChange={(e) =>
-          setSearchCriteria({
-            ...searchCriteria,
-            tagId: e.target.value,
-          })
-        }
-      />
-    </div>
-
-    {/* زر البحث */}
-    <div className="col-12 d-flex justify-content-end mt-2">
-      <button className="btn btn-success" onClick={handleSearch}>
-        <FiSearch /> {t("search")}
-      </button>
-    </div>
-  </div>
-</div>
-
-
-                <div className="container mt-5 vaccine-table-container">
-                    
-                    <div className="table-responsive">
-                        <div className="full-width-table">
-                            <table className="table align-middle mt-4">
-                                <thead>
-                                    <tr>
-                                        <th className="bg-color">#</th>
-                                        <th className="bg-color">{t('tag_id')}</th>
-                                        <th className="bg-color">{t('first_weight')}</th>
-                                        <th className="bg-color">{t('last_weight')}</th>
-                                        <th className="bg-color">{t('total_gain')}</th>
-                                        <th className="bg-color">{t('adg')}</th>
-                                        <th className="bg-color">{t('conversion_efficiency')}</th>
-                                        <th className="bg-color">{t('growth_period_days')}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {growthData.length > 0 ? (
-                                        growthData.map((item, index) => (
-                                            <tr key={item._id}>
-                                                <td>{(currentPage - 1) * limit + index + 1}</td>
-                                                <td>{item.tagId}</td>
-                                                <td>{item.growthData.firstWeight.weight} kg<br />{item.growthData.firstWeight.date?.split('T')[0]}</td>
-                                                <td>{item.growthData.lastWeight.weight} kg<br />{item.growthData.lastWeight.date?.split('T')[0]}</td>
-                                                <td>{item.growthData.overallGrowth.totalWeightGain} kg</td>
-                                                <td>{item.growthData.overallGrowth.ADG?.toFixed(2)}</td>
-                                                <td>{item.growthData.overallGrowth.conversionEfficiency?.toFixed(2)}</td>
-                                                <td>{item.growthData.overallGrowth.growthPeriodDays} {t('days')}</td>
-                                            </tr>
-                                        ))
-                                    ) : (
-                                        <tr>
-                                            <td colSpan="8" className="text-center text-muted py-4">{t('no_data_found')}</td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </table>
+                <div className={`growth-container ${isRTL ? "rtl" : ""}`}>
+                    <div className="toolbar">
+                        <div className="growth-info">
+                            <h2 className="growth-title">{t('Animal Growth')}</h2>
+                            <p className="growth-subtitle">{t('manage_growth_data')}</p>
                         </div>
                     </div>
 
-                    <div className="d-flex justify-content-center mt-4">
-                        <nav>
-                            {renderModernPagination()}
-                        </nav>
+                    {/* Search Section */}
+                    <div className="search-section">
+                        <h6 className="search-title">{t("filter_animals")}</h6>
+
+                        <div className="search-fields">
+                            <div className="search-field">
+                                <label htmlFor="tagIdInput" className="search-label">
+                                    {t("tag_id")}
+                                </label>
+                                <input
+                                    type="text"
+                                    id="tagIdInput"
+                                    className="search-input"
+                                    placeholder={t("search_by_tag_id")}
+                                    value={searchCriteria.tagId}
+                                    onChange={(e) =>
+                                        setSearchCriteria({
+                                            ...searchCriteria,
+                                            tagId: e.target.value,
+                                        })
+                                    }
+                                />
+                            </div>
+                            <div className="search-button">
+                                <button className="btn-search" onClick={handleSearch}>
+                                    <FiSearch /> {t("search")}
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                </div>
+
+                    {/* Mobile Cards View */}
+                    <div className="mobile-cards">
+                        {growthData.length > 0 ? (
+                            growthData.map((item, index) => (
+                                <div key={item._id} className="growth-card">
+                                    <div className="card-content">
+                                        <div className="card-row">
+                                            <span className="card-label">#</span>
+                                            <span className="card-value">
+                                                {(currentPage - 1) * limit + index + 1}
+                                            </span>
+                                        </div>
+                                        <div className="card-row">
+                                            <span className="card-label">{t('tag_id')}</span>
+                                            <span className="card-value">{item.tagId}</span>
+                                        </div>
+                                        <div className="card-row">
+                                            <span className="card-label">{t('first_weight')}</span>
+                                            <span className="card-value">
+                                                {item.growthData.firstWeight.weight} kg
+                                                <br />
+                                                <small>{item.growthData.firstWeight.date?.split('T')[0]}</small>
+                                            </span>
+                                        </div>
+                                        <div className="card-row">
+                                            <span className="card-label">{t('last_weight')}</span>
+                                            <span className="card-value">
+                                                {item.growthData.lastWeight.weight} kg
+                                                <br />
+                                                <small>{item.growthData.lastWeight.date?.split('T')[0]}</small>
+                                            </span>
+                                        </div>
+                                        <div className="card-row">
+                                            <span className="card-label">{t('total_gain')}</span>
+                                            <span className="card-value">{item.growthData.overallGrowth.totalWeightGain} kg</span>
+                                        </div>
+                                        <div className="card-row">
+                                            <span className="card-label">{t('adg')}</span>
+                                            <span className="card-value">{item.growthData.overallGrowth.ADG?.toFixed(2)}</span>
+                                        </div>
+                                        <div className="card-row">
+                                            <span className="card-label">{t('conversion_efficiency')}</span>
+                                            <span className="card-value">{item.growthData.overallGrowth.conversionEfficiency?.toFixed(2)}</span>
+                                        </div>
+                                        <div className="card-row">
+                                            <span className="card-label">{t('growth_period_days')}</span>
+                                            <span className="card-value">{item.growthData.overallGrowth.growthPeriodDays} {t('days')}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="no-data-mobile">
+                                {t('no_data_found')}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Desktop Table View */}
+                    <div className="table-wrapper">
+                        <table className="modern-table">
+                            <thead>
+                                <tr>
+                                    <th className="text-center">#</th>
+                                    <th className="text-center">{t('tag_id')}</th>
+                                    <th className="text-center">{t('first_weight')}</th>
+                                    <th className="text-center">{t('last_weight')}</th>
+                                    <th className="text-center">{t('total_gain')}</th>
+                                    <th className="text-center">{t('adg')}</th>
+                                    <th className="text-center">{t('conversion_efficiency')}</th>
+                                    <th className="text-center">{t('growth_period_days')}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {growthData.length > 0 ? (
+                                    growthData.map((item, index) => (
+                                        <tr key={item._id}>
+                                            <td className="text-center">{(currentPage - 1) * limit + index + 1}</td>
+                                            <td className="text-center">{item.tagId}</td>
+                                            <td className="text-center">
+                                                {item.growthData.firstWeight.weight} kg
+                                                <br />
+                                                <small>{item.growthData.firstWeight.date?.split('T')[0]}</small>
+                                            </td>
+                                            <td className="text-center">
+                                                {item.growthData.lastWeight.weight} kg
+                                                <br />
+                                                <small>{item.growthData.lastWeight.date?.split('T')[0]}</small>
+                                            </td>
+                                            <td className="text-center">{item.growthData.overallGrowth.totalWeightGain} kg</td>
+                                            <td className="text-center">{item.growthData.overallGrowth.ADG?.toFixed(2)}</td>
+                                            <td className="text-center">{item.growthData.overallGrowth.conversionEfficiency?.toFixed(2)}</td>
+                                            <td className="text-center">{item.growthData.overallGrowth.growthPeriodDays} {t('days')}</td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan="8" className="text-center no-data">
+                                            {t('no_data_found')}
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {/* Pagination */}
+                    <div className="pagination-container">
+                        {renderModernPagination()}
+                    </div>
                 </div>
             )}
         </>

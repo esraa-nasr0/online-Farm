@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import "../Vaccine/styles.css";
 import { useTranslation } from "react-i18next";
 import { IoEyeOutline } from "react-icons/io5";
-
+import "./LocationTable.css";
 
 function LocationTable() {
   let navigate = useNavigate();
@@ -18,7 +18,8 @@ function LocationTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const locationPerPage = 10;
   const [pagination, setPagination] = useState({ totalPages: 1 });
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === "ar";
 
   async function fetchShed() {
     setIsLoading(true);
@@ -62,7 +63,6 @@ function LocationTable() {
     });
   };
 
-  // التوجه لتعديل الموقع
   function editLocations(id) {
     navigate(`/editLocation/${id}`);
   }
@@ -71,7 +71,6 @@ function LocationTable() {
     navigate(`/detailsLocation/${id}`);
   }
 
-  // Modern pagination rendering function
   const renderModernPagination = () => {
     const total = pagination.totalPages;
     const pageButtons = [];
@@ -143,7 +142,7 @@ function LocationTable() {
   return (
     <>
       {isLoading ? (
-        <div className="animal">
+        <div className="loading-wrap">
           <Rings
             visible={true}
             height="100"
@@ -153,83 +152,118 @@ function LocationTable() {
           />
         </div>
       ) : (
-        <div className="container mt-4">
-          <h2 className="vaccine-table-title">{t("location_shed")}</h2>
-
-          <div className="container mt-5 vaccine-table-container">
-            <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mt-5 mb-3">
-              {/* 
-        <div className="d-flex flex-wrap gap-2">
-          <button className="btn btn-outline-dark" onClick={handleExportToExcel} title={t('export_all_data')}>
-            <i className="fas fa-download me-1"></i> {t('export_all_data')}
-          </button>
-          <button className="btn btn-success" onClick={handleDownloadTemplate} title={t('download_template')}>
-            <i className="fas fa-file-arrow-down me-1"></i> {t('download_template')}
-          </button>
-          <label className="btn btn-dark  btn-outline-dark mb-0 d-flex align-items-center" style={{ cursor: 'pointer', color:"white" }} title={t('import_from_excel')}>
-            <i className="fas fa-file-import me-1"></i> {t('import_from_excel')}
-            <input type="file" hidden accept=".xlsx,.xls" onChange={handleImportFromExcel} />
-          </label>
-        </div> */}
+        <div className={`location-container ${isRTL ? "rtl" : ""}`}>
+          <div className="toolbar">
+            <div className="shed-info">
+              <h2 className="shed-title">{t("location_shed")}</h2>
+              <p className="shed-subtitle">{t("manage_location_sheds")}</p>
             </div>
+          </div>
 
-            <div className="table-responsive">
-              <div className="full-width-table">
-                <table className="table table-hover mt-2">
-                  <thead>
-                    <tr>
-                      <th className="text-center bg-color">#</th>
-                      <th className="text-center bg-color">
-                        {t("location_shed_name")}
-                      </th>
-                      <th className="text-center bg-color">{t("actions")}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {locations.map((location, index) => (
-                      <tr key={location._id}>
-                        <td>
-                          {(currentPage - 1) * locationPerPage + index + 1}
-                        </td>
-                        <td>{location.locationShedName}</td>
-
-                        <td className="text-center">
-                          <button
-                            className="btn btn-link p-0 me-2"
-                            onClick={() => veiwLocations(location._id)}
-                            title={t("view")}
-                            style={{ color: "#0f40e1ff" }}
-                          >
-                            <IoEyeOutline />
-                          </button>
-                          <button
-                            className="btn btn-link p-0 me-2"
-                            onClick={() => editLocations(location._id)}
-                            title={t("edit")}
-                            style={{ color: "#0f7e34ff" }}
-                          >
-                            <FaRegEdit />
-                          </button>
-                          <button
-                            className="btn btn-link p-0"
-                            style={{ color: "#d33" }}
-                            onClick={() => handleClick(location._id)}
-                            title={t("delete")}
-                          >
-                            <RiDeleteBinLine />
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+          {/* Mobile Cards View */}
+          <div className="mobile-cards">
+            {locations.map((location, index) => (
+              <div key={location._id} className="location-card">
+                <div className="card-content">
+                  <div className="card-row">
+                    <span className="card-label">#</span>
+                    <span className="card-value">
+                      {(currentPage - 1) * locationPerPage + index + 1}
+                    </span>
+                  </div>
+                  <div className="card-row">
+                    <span className="card-label">{t("location_shed_name")}</span>
+                    <span className="card-value">{location.locationShedName}</span>
+                  </div>
+                </div>
+                <div className="card-actions">
+                  <button
+                    className="btn-view"
+                    onClick={() => veiwLocations(location._id)}
+                    title={t("view")}
+                  >
+                    <IoEyeOutline />
+                  </button>
+                  <button
+                    className="btn-edit"
+                    onClick={() => editLocations(location._id)}
+                    title={t("edit")}
+                  >
+                    <FaRegEdit />
+                  </button>
+                  <button
+                    className="btn-delete"
+                    onClick={() => handleClick(location._id)}
+                    title={t("delete")}
+                  >
+                    <RiDeleteBinLine />
+                  </button>
+                </div>
               </div>
-            </div>
+            ))}
+            {locations.length === 0 && (
+              <div className="no-data-mobile">
+                {t("no_locations_found")}
+              </div>
+            )}
+          </div>
 
-            {/* Pagination */}
-            <div className="d-flex justify-content-center mt-4">
-              <nav>{renderModernPagination()}</nav>
-            </div>
+          {/* Desktop Table View */}
+          <div className="table-wrapper">
+            <table className="modern-table">
+              <thead>
+                <tr>
+                  <th className="text-center">#</th>
+                  <th className="text-center">{t("location_shed_name")}</th>
+                  <th className="text-center">{t("actions")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {locations.map((location, index) => (
+                  <tr key={location._id}>
+                    <td className="text-center">
+                      {(currentPage - 1) * locationPerPage + index + 1}
+                    </td>
+                    <td className="text-center">{location.locationShedName}</td>
+                    <td className="text-center action-buttons">
+                      <button
+                        className="btn-view"
+                        onClick={() => veiwLocations(location._id)}
+                        title={t("view")}
+                      >
+                        <IoEyeOutline />
+                      </button>
+                      <button
+                        className="btn-edit"
+                        onClick={() => editLocations(location._id)}
+                        title={t("edit")}
+                      >
+                        <FaRegEdit />
+                      </button>
+                      <button
+                        className="btn-delete"
+                        onClick={() => handleClick(location._id)}
+                        title={t("delete")}
+                      >
+                        <RiDeleteBinLine />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+                {locations.length === 0 && (
+                  <tr>
+                    <td colSpan={3} className="text-center no-data">
+                      {t("no_locations_found")}
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Pagination */}
+          <div className="pagination-container">
+            <nav>{renderModernPagination()}</nav>
           </div>
         </div>
       )}

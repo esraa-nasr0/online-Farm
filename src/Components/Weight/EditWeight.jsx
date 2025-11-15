@@ -88,6 +88,8 @@ function EditWeight() {
             }
         }
         fetchAnimal();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id]);
 
     const validationSchema = Yup.object({
@@ -105,6 +107,7 @@ function EditWeight() {
             .required(t('date_required'))
             .max(new Date(), t('date_cannot_be_future')),
     });
+
 
     const formik = useFormik({
         initialValues: {

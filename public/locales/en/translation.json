@@ -1139,7 +1139,67 @@
   "selected": "Selected",
   "clear_selection": "Clear selection",
   "select_all": "Select all",
-  "unselect_all": "Unselect all"
+  "unselect_all": "Unselect all",
+
+  "manage_excluded": "Manage Excluded",
+  "manage_location_sheds": "Manage Location Sheds",
+  "manage_breeds": "Manage Breeds",
+  "manage_suppliers": "Manage Suppliers",
+  "manage_animals": "Manage Animals",
+  "manage_mating_records": "Manage Mating Records",
+  "manage_breeding_records": "Manage Breeding Records",
+  "manage_weight_records": "Manage Weight Records",
+  "manage_growth_data": "Manage Growth Data",
+  "manage_vaccine_records": "Manage Vaccine Records",
+  "manage_vaccines": "Manage Vaccines",
+  "manage_treatments": "Manage Treatments",
+  "manage_animals_cost": "Manage Animals Cost",
+  "manage_feed_by_location": "Manage Feed by Location",
+  "fodder_manage": "Manage Fodder",
+  "manage_feeds": "Manage Feeds",
+
+
+  "farmDashboard": "Farm Dashboard",
+  "totalAnimals": "Total Animals",
+  "birthsLast30d": "Births (Last 30 days)",
+  "deathsLast30d": "Deaths (Last 30 days)",
+  "positiveSonar": "Positive Sonar",
+  "dueSoon": "Due Soon",
+  "withinDays": "Within {{days}} days",
+  "netProfit": "Net Profit",
+  "expenses": "Expenses",
+  "monthlyAnimalDistribution": "Monthly Animal Distribution",
+  "numberOfAnimals": "Number of Animals",
+  "expenseDistribution": "Expense Distribution",
+  "animalsByShed": "Animals Distribution by Shed",
+  "animalPurchase": "Animal Purchase",
+  "animalFeed": "Animal Feed",
+  "healthCare": "Health Care",
+  "vaccinations": "Vaccinations",
+
+
+  "type_all": "All Types",
+  "type_treatment": "Treatment",
+  "type_vaccine": "Vaccine",
+  "type_weight": "Weight",
+
+  "severity_all": "All Severity Levels",
+  "severity_high": "High",
+  "severity_medium": "Medium",
+  "severity_low": "Low",
+
+  "stage_all": "All Stages",
+  "stage_expired": "Expired",
+  "stage_due_soon": "Due Soon",
+
+  "unread_only": "Unread only",
+
+  "select_page": "Select this page",
+  "mark_selected": "Mark selected",
+  "delete_selected": "Delete selected",
+
+  "Next": "Next",
+  "related_tooltip": "Related notifications"
 
 
 

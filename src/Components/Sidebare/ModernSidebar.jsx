@@ -1,20 +1,32 @@
-// src/components/Sidebare/ModernSidebar.jsx
 import React, { useMemo, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
-  FaChevronDown, FaChevronUp, FaBell, FaChartBar, FaHeart, FaPaw, FaSyringe,
-  FaPills, FaWeight, FaSeedling, FaUtensils, FaBreadSlice, FaExclamationTriangle,
-  FaChevronLeft, FaChevronRight
+  FaChevronDown,
+  FaChevronUp,
+  FaBell,
+  FaChartBar,
+  FaHeart,
+  FaPaw,
+  FaSyringe,
+  FaPills,
+  FaWeight,
+  FaSeedling,
+  FaUtensils,
+  FaBreadSlice,
+  FaExclamationTriangle,
+  FaChevronLeft,
+  FaChevronRight,
 } from "react-icons/fa";
 import { IoHome } from "react-icons/io5";
 import { MdOutlineLanguage, MdOutlineLocalPharmacy } from "react-icons/md";
 import { FaLocationDot } from "react-icons/fa6";
 import { GiGoat } from "react-icons/gi";
 import { CiLogout } from "react-icons/ci";
-import { RiLuggageCartFill } from "react-icons/ri";
+import { RiLuggageCartFill, RiDashboardHorizontalLine } from "react-icons/ri";
 import { useTranslation } from "react-i18next";
+
 import "./modern-sidebar.css";
-import { HiUsers } from "react-icons/hi2";
+
 export default function ModernSidebar({
   isOpen,
   isRTL = false,
@@ -28,160 +40,178 @@ export default function ModernSidebar({
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [langOpen, setLangOpen] = useState(false);
   const { t } = useTranslation();
-const role = localStorage.getItem("role"); 
-  const baseMenu = useMemo(() => ([
-    {
-      title: t("MAIN MENU"),
-      items: [
-        { name: t("Home"), icon: <IoHome />, path: "/" },
-        { name: t("Notifications"), icon: <FaBell />, path: "/notificationPage", badge: notificationCount },
- ...(role === "admin" 
-        ? [{ name: "All Users", icon: <HiUsers />, path: "/dashboard", badge: notificationCount }] 
-        : [])      ],
-    },
-    {
-      title: t("Supplier"),
-      items: [
-        {
-          name: t("Supplier"),
-          icon: <RiLuggageCartFill />,
-          subItems: [
-            { name: t("Suppliers Data"), path: "/supplierTable" },
-            { name: t("Add Suppliers"), path: "/supplier" },
-          ],
-        },
-      ],
-    },
-    {
-      title: t("Basic information"),
-      items: [
-        {
-          name: t("Location Shed"),
-          icon: <FaLocationDot />,
-          subItems: [
-            { name: t("Location Data"), path: "/locationTable" },
-            { name: t("Add Location"), path: "/locationPost" },
-          ],
-        },
-        {
-          name: t("Breed"),
-          icon: <GiGoat />,
-          subItems: [
-            { name: t("Breed Data"), path: "/breedTable" },
-            { name: t("Add Breed"), path: "/breedPost" },
-          ],
-        },
-      ],
-    },
-    {
-      title: t("Animal Management"),
-      items: [
-        {
-          name: t("animal"),
-          icon: <FaPaw />,
-          subItems: [
-            { name: t("animals Data"), path: "/animals" },
-            { name: t("add Animal"), path: "/AnimalsDetails" },
-            { name: t("animal Cost"), path: "/animalCost" },
-          ],
-        },
-      ],
-    },
-   {
-  title: t("Health and Breeding"),
-  items: [
-    {
-      name: t("mating"),
-      icon: <FaHeart />,
-      subItems: [
-        { name: t("mating Data"), path: "/matingTable" },
-        { name: t("add Mating"), path: "/mating" },
-        { name: t("add By LocationShed"), path: "/matingLocation" },
-      ],
-    },
-    {
-      name: t("vaccine"),
-      icon: <FaSyringe />,
-      subItems: [
-        { name: t("vaccine Data"), path: "/vaccineTable" },
-        { name: t("vaccine Animal Data"), path: "/Vaccinebyanimalsstable" },
-        { name: t("Add Vaccine"), path: "/addVaccine" },
-        { name: t("Add By Animal"), path: "/vaccinebytagid" },
-        { name: t("Add By Location"), path: "/vaccinebylocationshed" },
-      ],
-    },
 
-  
-    ...(role === "admin"
-      ? [
+  const baseMenu = useMemo(
+    () => [
+      {
+        title: t("MAIN MENU"),
+        items: [
+          { name: t("Home"), icon: <IoHome />, path: "/" },
           {
-            name: t("vaccine Type"),
-            icon: <FaSyringe />,
+            name: t("Notifications"),
+            icon: <FaBell />,
+            path: "/notificationPage",
+            badge: notificationCount,
+          },
+        ],
+      },
+      {
+        title: t("User"),
+        items: [{ name: t("Dashboard"), icon: <RiDashboardHorizontalLine />, path: "/userDashboard" }],
+      },
+      {
+        title: t("Supplier"),
+        items: [
+          {
+            name: t("Supplier"),
+            icon: <RiLuggageCartFill />,
             subItems: [
-              { name: t("Add Vaccine Type"), path: "/addVaccineType" },
-              { name: t("Show all Vaccine Types"), path: "/vaccineTypetable" },
+              { name: t("Suppliers Data"), path: "/supplierTable" },
+              { name: t("Add Suppliers"), path: "/supplier" },
             ],
           },
-        ]
-      : []),
-
-    {
-      name: t("Pharmacy"),
-      icon: <MdOutlineLocalPharmacy />,
-      subItems: [
-        { name: t("Pharmacy Data"), path: "/treatmentTable" },
-        { name: t("add Pharmacy"), path: "/treatment" },
-      ],
-    },
-  ],
-},
-
-    {
-      title: t("Feeding and Reports"),
-      items: [
-        {
-          name: t("feeding"),
-          icon: <FaUtensils />,
-          subItems: [
-            { name: t("feeding Data"), path: "/feedingTable" },
-            { name: t("add Feeding"), path: "/feed" },
-            { name: t("data By Location"), path: "/feedlocationtable" },
-            { name: t("add  Location"), path: "/feedbylocation" },
-          ],
-        },
-        {
-          name: t("fodder"),
-          icon: <FaBreadSlice />,
-          subItems: [
-            { name: t("fodder Data"), path: "/fodderTable" },
-            { name: t("add Fodder"), path: "/fodder" },
-          ],
-        },
-        { name: t("reports"), icon: <FaChartBar />, path: "/report" },
-      ],
-    },
-    {
-      title: t("System"),
-      items: [
-        {
-          name: t("excluded"),
-          icon: <FaExclamationTriangle />,
-          subItems: [
-            { name: t("excluded Data"), path: "/excludedtable" },
-            { name: t("add Excluded"), path: "/excluded" },
-          ],
-        },
-      ],
-    },
-    
-  ]), [notificationCount, t]);
+        ],
+      },
+      {
+        title: t("Basic information"),
+        items: [
+          {
+            name: t("Location Shed"),
+            icon: <FaLocationDot />,
+            subItems: [
+              { name: t("Location Data"), path: "/locationTable" },
+              { name: t("Add Location"), path: "/locationPost" },
+            ],
+          },
+          {
+            name: t("Breed"),
+            icon: <GiGoat />,
+            subItems: [
+              { name: t("Breed Data"), path: "/breedTable" },
+              { name: t("Add Breed"), path: "/breedPost" },
+            ],
+          },
+        ],
+      },
+      {
+        title: t("Animal Management"),
+        items: [
+          {
+            name: t("animal"),
+            icon: <FaPaw />,
+            subItems: [
+              { name: t("animals Data"), path: "/animals" },
+              { name: t("add Animal"), path: "/AnimalsDetails" },
+              { name: t("animal Cost"), path: "/animalCost" },
+            ],
+          },
+        ],
+      },
+      {
+        title: t("Health and Breeding"),
+        items: [
+          {
+            name: t("mating"),
+            icon: <FaHeart />,
+            subItems: [
+              { name: t("mating Data"), path: "/matingTable" },
+              { name: t("add Mating"), path: "/mating" },
+              { name: t("add By LocationShed"), path: "/matingLocation" },
+            ],
+          },
+          {
+            name: t("vaccine"),
+            icon: <FaSyringe />,
+            subItems: [
+              { name: t("vaccine Data"), path: "/vaccineTable" },
+              { name: t("vaccine Animal Data"), path: "/Vaccinebyanimalsstable" },
+              { name: t("Add Vaccine"), path: "/addVaccine" },
+              { name: t("Add By Animal"), path: "/vaccinebytagid" },
+              { name: t("Add By Location"), path: "/vaccinebylocationshed" },
+            ],
+          },
+          {
+            name: t("Pharmacy"),
+            icon: <MdOutlineLocalPharmacy />,
+            subItems: [
+              { name: t("Pharmacy Data"), path: "/treatmentTable" },
+              { name: t("add Pharmacy"), path: "/treatment" },
+            ],
+          },
+          {
+            name: t("treatment"),
+            icon: <FaPills />,
+            subItems: [
+              { name: t("show By Animal"), path: "/treatAnimalTable" },
+              { name: t("add By Animal"), path: "/treatmentAnimal" },
+              { name: t("add By Location"), path: "/treatmentLocation" },
+            ],
+          },
+          {
+            name: t("weight"),
+            icon: <FaWeight />,
+            subItems: [
+              { name: t("weight Data"), path: "/weightTable" },
+              { name: t("add Weight"), path: "/weight" },
+              { name: t("Animal Growth"), path: "/withGrowthData" },
+            ],
+          },
+          {
+            name: t("breeding"),
+            icon: <FaSeedling />,
+            subItems: [
+              { name: t("breeding Data"), path: "/breadingTable" },
+              { name: t("add Breeding"), path: "/breeding" },
+            ],
+          },
+        ],
+      },
+      {
+        title: t("Feeding and Reports"),
+        items: [
+          {
+            name: t("feeding"),
+            icon: <FaUtensils />,
+            subItems: [
+              { name: t("feeding Data"), path: "/feedingTable" },
+              { name: t("add Feeding"), path: "/feed" },
+              { name: t("data By Location"), path: "/feedlocationtable" },
+              { name: t("add  Location"), path: "/feedbylocation" },
+            ],
+          },
+          {
+            name: t("fodder"),
+            icon: <FaBreadSlice />,
+            subItems: [
+              { name: t("fodder Data"), path: "/fodderTable" },
+              { name: t("add Fodder"), path: "/fodder" },
+            ],
+          },
+          { name: t("reports"), icon: <FaChartBar />, path: "/report" },
+        ],
+      },
+      {
+        title: t("System"),
+        items: [
+          {
+            name: t("excluded"),
+            icon: <FaExclamationTriangle />,
+            subItems: [
+              { name: t("excluded Data"), path: "/excludedtable" },
+              { name: t("add Excluded"), path: "/excluded" },
+            ],
+          },
+        ],
+      },
+    ],
+    [notificationCount, t]
+  );
 
   const toggleDropdown = (key) =>
     setActiveDropdown((cur) => (cur === key ? null : key));
 
   const dir = isRTL ? "rtl" : "ltr";
-  const getTitle = (item) =>
-    (typeof item === "string" ? item : item?.name || "");
+  const getTitle = (item) => (typeof item === "string" ? item : item?.name || "");
 
   return (
     <aside
@@ -199,23 +229,60 @@ const role = localStorage.getItem("role");
             title="HALAL LAB"
             style={{ cursor: "pointer" }}
           >
-            <div className="bars"><span/><span/><span/></div>
+            <div className="bars">
+              <span />
+              <span />
+              <span />
+            </div>
           </div>
 
           <div className="msb-rail-items">
-            <Link to="/" className="rail-btn" title={t("Home")} data-tooltip={t("Home")} onClick={onToggle}>
+            <Link
+              to="/"
+              className="rail-btn"
+              title={t("Home")}
+              data-tooltip={t("Home")}
+              onClick={onToggle}
+            >
               <IoHome />
             </Link>
-            
-            <button className="rail-btn" onClick={() => setLangOpen((v) => !v)} title={t("Language")} data-tooltip={t("Language")}>
+            <Link
+              to="/userDashboard"
+              className="rail-btn"
+              title={t("Dashboard")}
+              data-tooltip={t("Dashboard")}
+              onClick={onToggle}
+            >
+              <RiDashboardHorizontalLine />
+            </Link>
+            <button
+              className={`rail-btn ${langOpen ? "active" : ""}`}
+              onClick={() => setLangOpen((v) => !v)}
+              title={t("Language")}
+              data-tooltip={t("Language")}
+            >
               <MdOutlineLanguage />
             </button>
-            <Link to="/notificationPage" className="rail-btn badge-parent" title={t("Notifications")} data-tooltip={t("Notifications")} onClick={onToggle}>
-              <FaBell />{notificationCount > 0 && <span className="badge">{notificationCount}</span>}
+            <Link
+              to="/notificationPage"
+              className="rail-btn badge-parent"
+              title={t("Notifications")}
+              data-tooltip={t("Notifications")}
+              onClick={onToggle}
+            >
+              <FaBell />
+              {notificationCount > 0 && (
+                <span className="badge">{notificationCount}</span>
+              )}
             </Link>
           </div>
 
-          <button className="rail-btn logout" onClick={onLogout} title={t("Logout")} data-tooltip={t("Logout")}>
+          <button
+            className="rail-btn logout"
+            onClick={onLogout}
+            title={t("Logout")}
+            data-tooltip={t("Logout")}
+          >
             <CiLogout />
           </button>
         </div>
@@ -225,7 +292,11 @@ const role = localStorage.getItem("role");
       <div className="msb-panel">
         <div className="panel-header">
           <div className="panel-left">
-            <button className="collapse-btn" onClick={onToggle} aria-label="Toggle sidebar">
+            <button
+              className="collapse-btn"
+              onClick={onToggle}
+              aria-label="Toggle sidebar"
+            >
               {isRTL ? <FaChevronRight /> : <FaChevronLeft />}
             </button>
 
@@ -236,8 +307,13 @@ const role = localStorage.getItem("role");
           </div>
 
           <div className="lang-switch">
-            <button className={`chip ${langOpen ? "active" : ""}`} onClick={() => setLangOpen((v) => !v)}>
-              <MdOutlineLanguage /><span>{t("Language")}</span>{langOpen ? <FaChevronUp /> : <FaChevronDown />}
+            <button
+              className={`chip ${langOpen ? "active" : ""}`}
+              onClick={() => setLangOpen((v) => !v)}
+            >
+              <MdOutlineLanguage />
+              <span>{t("Language")}</span>
+              {langOpen ? <FaChevronUp /> : <FaChevronDown />}
             </button>
             {langOpen && (
               <div className="lang-menu">
@@ -261,10 +337,17 @@ const role = localStorage.getItem("role");
                     <li className={`nav-item ${active ? "active" : ""}`} key={iIdx}>
                       {hasChildren ? (
                         <>
-                          <button className="item-btn" onClick={() => toggleDropdown(k)} aria-expanded={activeDropdown === k} title={getTitle(item)}>
+                          <button
+                            className="item-btn"
+                            onClick={() => toggleDropdown(k)}
+                            aria-expanded={activeDropdown === k}
+                            title={getTitle(item)}
+                          >
                             <span className="ico">{item.icon}</span>
                             <span className="txt">{item.name}</span>
-                            <span className="chev">{activeDropdown === k ? <FaChevronUp /> : <FaChevronDown />}</span>
+                            <span className="chev">
+                              {activeDropdown === k ? <FaChevronUp /> : <FaChevronDown />}
+                            </span>
                           </button>
                           {activeDropdown === k && (
                             <ul className="submenu">
@@ -273,7 +356,7 @@ const role = localStorage.getItem("role");
                                   <Link
                                     to={sub.path}
                                     className={`sub-link ${pathname === sub.path ? "current" : ""}`}
-                                    onClick={onToggle}   // ⬅️ يقفل بعد الضغط
+                                    onClick={onToggle}
                                   >
                                     {sub.name}
                                   </Link>
@@ -287,7 +370,7 @@ const role = localStorage.getItem("role");
                           to={item.path}
                           className="item-btn"
                           title={getTitle(item)}
-                          onClick={onToggle}   
+                          onClick={onToggle}
                         >
                           <span className="ico">{item.icon}</span>
                           <span className="txt">{item.name}</span>
@@ -302,7 +385,10 @@ const role = localStorage.getItem("role");
           ))}
         </nav>
 
-        <button className="logout-wide" onClick={onLogout}><CiLogout /><span>{t("Logout")}</span></button>
+        <button className="logout-wide" onClick={onLogout}>
+          <CiLogout />
+          <span>{t("Logout")}</span>
+        </button>
       </div>
     </aside>
   );

@@ -10,7 +10,7 @@ export default function Footer() {
           {/* Logo & Description */}
           <div className="footer-section logo-desc">
             <div className="logo">
-              <img src={logo} alt="Logo" className="logoo" />
+              <img src={logo} loading="lazy" alt="Logo" className="logoo" />
             </div>
             <p className="description">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus hendrerit suscipit egestas.

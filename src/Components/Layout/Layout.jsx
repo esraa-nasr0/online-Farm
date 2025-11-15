@@ -36,21 +36,31 @@ export default function Layout() {
   const getHeaders = () => {
     const token = localStorage.getItem("Authorization");
     return token
-      ? { Authorization: token.startsWith("Bearer ") ? token : `Bearer ${token}` }
+      ? {
+          Authorization: token.startsWith("Bearer ")
+            ? token
+            : `Bearer ${token}`,
+        }
       : {};
   };
 
-  const { data: notifications = [] } = useQuery({
-    queryKey: ["notifications"],
+  const { data: notifCheckData } = useQuery({
+    queryKey: ["notifications", "check", i18n.language],
     queryFn: async () => {
-      const res = await axios.get(`${BASE_URL}/api/notifications`, {
+      const lang = i18n.language || "en";
+      const res = await axios.get(`${BASE_URL}/api/notifications/check`, {
         headers: getHeaders(),
+        params: { lang },
       });
-      return res.data.data.notifications;
+
+      // متوقع يرجع حاجة زي:
+      // { status: "success", data: { unreadCount, hasNew, ... } }
+      return res.data?.data || { unreadCount: 0, hasNew: false };
     },
+    refetchInterval: 60000, // كل 60 ثانية يشيك تاني (اختياري)
   });
 
-  const unreadCount = notifications.filter((n) => !n.isRead).length;
+  const unreadCount = notifCheckData?.unreadCount ?? 0;
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);

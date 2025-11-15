@@ -111,6 +111,7 @@ import AdminContextProvider from "./Context/AdminContext.jsx";
 import AddVaccineType from "./Components/VaccineType/AddVaccineType.jsx";
 import VaccineTypeContextProvider from "./Context/VaccineTypeContext.js";
 import VaccineTypetable from "./Components/VaccineType/VaccineTypetable.jsx";
+import UserDashboard from "./Components/Dashboard/UserDashboard.jsx";
 
 let routers = createBrowserRouter([
   {
@@ -118,6 +119,7 @@ let routers = createBrowserRouter([
     element: <Layout />, 
     children: [
       { index: true, element: <Home/> },
+
       { path: "homeServices", element: <ProtectedRoute ><HomeServices/></ProtectedRoute> },
       { path: "report", element: <ProtectedRoute><Report/></ProtectedRoute> },
       { path: "reportDaliy", element: <ProtectedRoute><ReportDaliy/></ProtectedRoute> },
@@ -208,6 +210,7 @@ let routers = createBrowserRouter([
       { path: "editSupplier/:id", element: <ProtectedRoute><EditSupplier/></ProtectedRoute> },
       { path: "SupplierServices", element: <ProtectedRoute><SupplierServices/></ProtectedRoute> },
       { path:"detailsLocation/:id", element: <ProtectedRoute><DetailsLocation /></ProtectedRoute> },
+      { path:"userDashboard", element: <ProtectedRoute><UserDashboard /></ProtectedRoute> },
 
     ],
   },
@@ -284,4 +287,3 @@ export default function App() {
 
   </>
 }
-

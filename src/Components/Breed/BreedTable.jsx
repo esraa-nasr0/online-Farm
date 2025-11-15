@@ -1,13 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
-import { LocationContext } from "../../Context/LocationContext";
+import { BreedContext } from "../../Context/BreedContext";
 import Swal from "sweetalert2";
 import { FaRegEdit } from "react-icons/fa";
-import { RiDeleteBin6Line, RiDeleteBinLine } from "react-icons/ri";
+import { RiDeleteBinLine } from "react-icons/ri";
 import { Rings } from "react-loader-spinner";
 import { useNavigate } from "react-router-dom";
-import { BreedContext } from "../../Context/BreedContext";
-import "../Vaccine/styles.css";
 import { useTranslation } from "react-i18next";
+import "./BreedTable.css"; // سيتم إنشاء هذا الملف
 
 function BreedTable() {
   let navigate = useNavigate();
@@ -17,7 +16,8 @@ function BreedTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const breedPerPage = 10;
   const [pagination, setPagination] = useState({ totalPages: 1 });
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === "ar";
 
   async function fetchBreed() {
     setIsLoading(true);
@@ -138,7 +138,7 @@ function BreedTable() {
   return (
     <>
       {isLoading ? (
-        <div className="animal">
+        <div className="loading-wrap">
           <Rings
             visible={true}
             height="100"
@@ -148,67 +148,135 @@ function BreedTable() {
           />
         </div>
       ) : (
-        <div className="container mt-4">
-          <h2 className="vaccine-table-title">{t('breed')}</h2>
-
-        <div className="container mt-5 vaccine-table-container">
-
-          <div className="table-responsive">
-            <div className="full-width-table">
-              <table className="table table-hover mt-2">
-  <thead>
-    <tr>
-      <th className="text-center bg-color">#</th>
-      <th className="text-center bg-color">{t('breed_name')}</th>
-      <th className="text-center bg-color">{t('average_daily_gain')}</th>
-      <th className="text-center bg-color">{t('feed_conversion_ratio')}</th>
-      <th className="text-center bg-color">{t('birth_weight')}</th>
-      <th className="text-center bg-color">{t('actions')}</th>
-    </tr>
-  </thead>
-  <tbody>
-    {breed.map((breeds, index) => (
-      <tr key={breeds._id}>
-        <td>{(currentPage - 1) * breedPerPage + index + 1}</td>
-        <td>{breeds.breedName}</td>
-        <td className="text-center">
-          {breeds.standards?.adg !== null ? breeds.standards.adg : "-"}
-        </td>
-        <td className="text-center">
-          {breeds.standards?.fcr !== null ? breeds.standards.fcr : "-"}
-        </td>
-        <td className="text-center">
-          {breeds.standards?.birthWeight !== null ? breeds.standards.birthWeight : "-"}
-        </td>
-        <td className="text-center">
-          <button
-            className="btn btn-link p-0 me-2"
-            onClick={() => editBreed(breeds._id)}
-            title={t('edit')}
-            style={{ color: "#0f7e34ff" }}
-          >
-            <FaRegEdit />
-          </button>
-          <button
-            className="btn btn-link p-0"
-            style={{ color: "#d33" }}
-            onClick={() => handleClick(breeds._id)}
-            title={t('delete')}
-          >
-            <RiDeleteBinLine />
-          </button>
-        </td>
-      </tr>
-    ))}
-  </tbody>
-</table>
+        <div className={`breed-container ${isRTL ? "rtl" : ""}`}>
+          <div className="toolbar">
+            <div className="breed-info">
+              <h2 className="breed-title">{t('breed')}</h2>
+              <p className="breed-subtitle">{t('manage_breeds')}</p>
             </div>
           </div>
 
-          <div className="d-flex justify-content-center mt-4">
+          {/* Mobile Cards View */}
+          <div className="mobile-cards">
+            {breed.map((breeds, index) => (
+              <div key={breeds._id} className="breed-card">
+                <div className="card-content">
+                  <div className="card-row">
+                    <span className="card-label">#</span>
+                    <span className="card-value">
+                      {(currentPage - 1) * breedPerPage + index + 1}
+                    </span>
+                  </div>
+                  <div className="card-row">
+                    <span className="card-label">{t('breed_name')}</span>
+                    <span className="card-value">{breeds.breedName}</span>
+                  </div>
+                  <div className="card-row">
+                    <span className="card-label">{t('average_daily_gain')}</span>
+                    <span className="card-value">
+                      {breeds.standards?.adg !== null ? breeds.standards.adg : "-"}
+                    </span>
+                  </div>
+                  <div className="card-row">
+                    <span className="card-label">{t('feed_conversion_ratio')}</span>
+                    <span className="card-value">
+                      {breeds.standards?.fcr !== null ? breeds.standards.fcr : "-"}
+                    </span>
+                  </div>
+                  <div className="card-row">
+                    <span className="card-label">{t('birth_weight')}</span>
+                    <span className="card-value">
+                      {breeds.standards?.birthWeight !== null ? breeds.standards.birthWeight : "-"}
+                    </span>
+                  </div>
+                </div>
+                <div className="card-actions">
+                  <button
+                    className="btn-edit"
+                    onClick={() => editBreed(breeds._id)}
+                    title={t('edit')}
+                  >
+                    <FaRegEdit />
+                  </button>
+                  <button
+                    className="btn-delete"
+                    onClick={() => handleClick(breeds._id)}
+                    title={t('delete')}
+                  >
+                    <RiDeleteBinLine />
+                  </button>
+                </div>
+              </div>
+            ))}
+            {breed.length === 0 && (
+              <div className="no-data-mobile">
+                {t("no_breeds_found")}
+              </div>
+            )}
+          </div>
+
+          {/* Desktop Table View */}
+          <div className="table-wrapper">
+            <table className="modern-table">
+              <thead>
+                <tr>
+                  <th className="text-center">#</th>
+                  <th className="text-center">{t('breed_name')}</th>
+                  <th className="text-center">{t('average_daily_gain')}</th>
+                  <th className="text-center">{t('feed_conversion_ratio')}</th>
+                  <th className="text-center">{t('birth_weight')}</th>
+                  <th className="text-center">{t('actions')}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {breed.map((breeds, index) => (
+                  <tr key={breeds._id}>
+                    <td className="text-center">
+                      {(currentPage - 1) * breedPerPage + index + 1}
+                    </td>
+                    <td className="text-center">{breeds.breedName}</td>
+                    <td className="text-center">
+                      {breeds.standards?.adg !== null ? breeds.standards.adg : "-"}
+                    </td>
+                    <td className="text-center">
+                      {breeds.standards?.fcr !== null ? breeds.standards.fcr : "-"}
+                    </td>
+                    <td className="text-center">
+                      {breeds.standards?.birthWeight !== null ? breeds.standards.birthWeight : "-"}
+                    </td>
+                    <td className="text-center action-buttons">
+                      <button
+                        className="btn-edit"
+                        onClick={() => editBreed(breeds._id)}
+                        title={t('edit')}
+                      >
+                        <FaRegEdit />
+                      </button>
+                      <button
+                        className="btn-delete"
+                        onClick={() => handleClick(breeds._id)}
+                        title={t('delete')}
+                      >
+                        <RiDeleteBinLine />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+                {breed.length === 0 && (
+                  <tr>
+                    <td colSpan={6} className="text-center no-data">
+                      {t("no_breeds_found")}
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Pagination */}
+          <div className="pagination-container">
             <nav>{renderModernPagination()}</nav>
           </div>
-        </div>
         </div>
       )}
     </>

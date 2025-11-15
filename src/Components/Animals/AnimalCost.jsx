@@ -1,12 +1,15 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Rings } from "react-loader-spinner";
 import { AnimalContext } from "../../Context/AnimalContext";
-import "../Vaccine/styles.css";
 import { useTranslation } from "react-i18next";
 import { FiSearch } from "react-icons/fi";
+import "./AnimalCost.css"; // سيتم إنشاء هذا الملف
 
 function AnimalCost() {
   const { costAnimal } = useContext(AnimalContext);
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === "ar";
+
   const [isLoading, setIsLoading] = useState(false);
   const [animalCost, setAnimalCost] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -15,7 +18,6 @@ function AnimalCost() {
   const [searchCriteria, setSearchCriteria] = useState({
     animalTagId: "",
   });
-  const { t } = useTranslation();
 
   const getCostAnimal = async () => {
     setIsLoading(true);
@@ -30,7 +32,8 @@ function AnimalCost() {
       setIsLoading(false);
     }
   };
-
+  
+// eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     getCostAnimal();
   }, [currentPage]);
@@ -116,36 +119,33 @@ function AnimalCost() {
   };
 
   return (
-    <div>
+    <>
       {isLoading ? (
-        <div className="animal">
-          <Rings
-            visible={true}
-            height="100"
-            width="100"
-            color="#21763e"
-            ariaLabel="rings-loading"
-          />
+        <div className="loading-wrap">
+          <Rings visible={true} height="100" width="100" color="#21763e" />
         </div>
       ) : (
-        <div className="container mt-4">
-          <h2 className="vaccine-table-title">{t("animals_cost")}</h2>
+        <div className={`animal-cost-container ${isRTL ? "rtl" : ""}`}>
+          <div className="toolbar">
+            <div className="animal-cost-info">
+              <h2 className="animal-cost-title">{t("animals_cost")}</h2>
+              <p className="animal-cost-subtitle">{t("manage_animals_cost")}</p>
+            </div>
+          </div>
 
-          {/* 🔍 Filter Section */}
-          <div className="container mt-5 vaccine-table-container">
-            <h6 className="mb-3 fw-bold custom-section-title">
-              {t("filter_animals_cost")}
-            </h6>
+          {/* Search Section */}
+          <div className="search-section">
+            <h6 className="search-title">{t("filter_animals_cost")}</h6>
 
-            <div className="row g-2 mt-3 mb-3 align-items-end">
-              <div className="col-12 col-sm-6 col-md-3">
-                <label htmlFor="animalTagInput" className="form-label">
+            <div className="search-fields">
+              <div className="search-field">
+                <label htmlFor="animalTagInput" className="search-label">
                   {t("animal_tag_id")}
                 </label>
                 <input
                   type="text"
                   id="animalTagInput"
-                  className="form-control"
+                  className="search-input"
                   placeholder={t("search_by_tag_id")}
                   value={searchCriteria.animalTagId}
                   onChange={(e) =>
@@ -156,74 +156,123 @@ function AnimalCost() {
                   }
                 />
               </div>
-
-              <div className="col-12 d-flex justify-content-end mt-2">
-                <button className="btn btn-success" onClick={handleSearch}>
+              <div className="search-button">
+                <button className="btn-search" onClick={handleSearch}>
                   <FiSearch /> {t("search")}
                 </button>
               </div>
             </div>
           </div>
 
-          {/* 📊 Table */}
-          <div className="container mt-5 vaccine-table-container">
-            <div className="table-responsive">
-              <table className="table align-middle mt-4">
-                <thead>
-                  <tr>
-                    <th className="text-center bg-color">#</th>
-                    <th className="text-center bg-color">{t("animal_tag_id")}</th>
-                    <th className="text-center bg-color">{t("feed_cost")}</th>
-                    <th className="text-center bg-color">
-                      {t("treatment_cost")}
-                    </th>
-                    <th className="text-center bg-color">{t("vaccine_cost")}</th>
-                    <th className="text-center bg-color">
-                      {t("purchase_price")}
-                    </th>
-                    <th className="text-center bg-color">{t("market_value")}</th>
-                    <th className="text-center bg-color">{t("date")}</th>
-                    <th className="text-center bg-color">{t("total_cost")}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {animalCost.length > 0 ? (
-                    animalCost.map((item, index) => (
-                      <tr key={index}>
-                        <th className="text-center">
-                          {(currentPage - 1) * itemsPerPage + index + 1}
-                        </th>
-                        <td className="text-center">{item.animalTagId}</td>
-                        <td className="text-center">{item.feedCost}</td>
-                        <td className="text-center">{item.treatmentCost}</td>
-                        <td className="text-center">{item.vaccineCost}</td>
-                        <td className="text-center">{item.purchasePrice}</td>
-                        <td className="text-center">{item.marketValue}</td>
-                        <td className="text-center">
-                          {new Date(item.date).toLocaleDateString()}
-                        </td>
-                        <td className="text-center">{item.totalCost}</td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="9" className="text-center">
-                        {t("no_records_found")}
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
+          {/* Mobile Cards View */}
+          <div className="mobile-cards">
+            {animalCost.length > 0 ? (
+              animalCost.map((item, index) => (
+                <div key={index} className="animal-cost-card">
+                  <div className="card-content">
+                    <div className="card-row">
+                      <span className="card-label">#</span>
+                      <span className="card-value">
+                        {(currentPage - 1) * itemsPerPage + index + 1}
+                      </span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("animal_tag_id")}</span>
+                      <span className="card-value">{item.animalTagId}</span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("feed_cost")}</span>
+                      <span className="card-value">{item.feedCost}</span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("treatment_cost")}</span>
+                      <span className="card-value">{item.treatmentCost}</span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("vaccine_cost")}</span>
+                      <span className="card-value">{item.vaccineCost}</span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("purchase_price")}</span>
+                      <span className="card-value">{item.purchasePrice}</span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("market_value")}</span>
+                      <span className="card-value">{item.marketValue}</span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("date")}</span>
+                      <span className="card-value">
+                        {new Date(item.date).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("total_cost")}</span>
+                      <span className="card-value">{item.totalCost}</span>
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="no-data-mobile">
+                {t("no_records_found")}
+              </div>
+            )}
+          </div>
 
-            {/* 📄 Pagination */}
-            <div className="d-flex justify-content-center mt-4">
-              {renderModernPagination()}
-            </div>
+          {/* Desktop Table View */}
+          <div className="table-wrapper">
+            <table className="modern-table">
+              <thead>
+                <tr>
+                  <th className="text-center">#</th>
+                  <th className="text-center">{t("animal_tag_id")}</th>
+                  <th className="text-center">{t("feed_cost")}</th>
+                  <th className="text-center">{t("treatment_cost")}</th>
+                  <th className="text-center">{t("vaccine_cost")}</th>
+                  <th className="text-center">{t("purchase_price")}</th>
+                  <th className="text-center">{t("market_value")}</th>
+                  <th className="text-center">{t("date")}</th>
+                  <th className="text-center">{t("total_cost")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {animalCost.length > 0 ? (
+                  animalCost.map((item, index) => (
+                    <tr key={index}>
+                      <td className="text-center">
+                        {(currentPage - 1) * itemsPerPage + index + 1}
+                      </td>
+                      <td className="text-center">{item.animalTagId}</td>
+                      <td className="text-center">{item.feedCost}</td>
+                      <td className="text-center">{item.treatmentCost}</td>
+                      <td className="text-center">{item.vaccineCost}</td>
+                      <td className="text-center">{item.purchasePrice}</td>
+                      <td className="text-center">{item.marketValue}</td>
+                      <td className="text-center">
+                        {new Date(item.date).toLocaleDateString()}
+                      </td>
+                      <td className="text-center">{item.totalCost}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="9" className="text-center no-data">
+                      {t("no_records_found")}
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Pagination */}
+          <div className="pagination-container">
+            {renderModernPagination()}
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
 
