@@ -11,6 +11,77 @@
 .Toastify__toast-container {
   z-index: 9999 !important;
 }
+/* Mobile Cards */
+.mobile-cards {
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.animal-card {
+  background: var(--white);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: var(--card-shadow);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.card-content {
+  flex: 1;
+}
+
+.card-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.card-row:last-child {
+  border-bottom: none;
+}
+
+.card-label {
+  font-weight: 600;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.card-value {
+  color: var(--text-dark);
+  text-align: right;
+  max-width: 60%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 14px;
+}
+
+.card-actions {
+  margin-left: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.no-data-mobile {
+  text-align: center;
+  color: var(--muted);
+  padding: 20px;
+  font-size: 14px;
+}
+
+/* Responsive Switch */
+@media (max-width: 768px) {
+  .modern-table {
+    display: none;
+  }
+  .mobile-cards {
+    display: flex;
+  }
+}
 
 .location-container {
   padding: 30px;

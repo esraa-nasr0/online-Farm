@@ -9,7 +9,7 @@ export default function HomeHero() {
   const handleGetStarted = () => {
     const token = localStorage.getItem("Authorization"); 
     if (token) {
-      navigate("/homeServices");
+      navigate("/userDashboard");
     } else {
       navigate("/login");
     }
@@ -18,7 +18,7 @@ export default function HomeHero() {
   
   return (
     <div className="hero-bg">
-      <img src={gardenImg} className="background_img" alt="Farm background"/>
+      <img src={gardenImg} className="background_img"  alt="Farm background"/>
       <div className="hero-overlay">
         <div className="hero-content-center">
           <h2 className="hero-title-main">ONLINE FARM</h2>

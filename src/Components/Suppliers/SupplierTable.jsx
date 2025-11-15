@@ -6,13 +6,14 @@ import { Rings } from "react-loader-spinner";
 import Swal from "sweetalert2";
 import { SupplierContext } from "../../Context/SupplierContext";
 import { useTranslation } from "react-i18next";
-import "../Vaccine/styles.css";
 import { FiSearch } from "react-icons/fi";
+import "./SupplierTable.css"; // سيتم إنشاء هذا الملف
 
 function SupplierTable() {
   const navigate = useNavigate();
   const { getSupplier, deleteSupplier } = useContext(SupplierContext);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === "ar";
 
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -179,28 +180,31 @@ function SupplierTable() {
   return (
     <>
       {isLoading ? (
-        <div className="animal">
+        <div className="loading-wrap">
           <Rings visible={true} height="100" width="100" color="#21763e" />
         </div>
       ) : (
-        <div className="container mt-4">
-          <h2 className="vaccine-table-title">{t("Suppliers")}</h2>
+        <div className={`supplier-container ${isRTL ? "rtl" : ""}`}>
+          <div className="toolbar">
+            <div className="supplier-info">
+              <h2 className="supplier-title">{t("Suppliers")}</h2>
+              <p className="supplier-subtitle">{t("manage_suppliers")}</p>
+            </div>
+          </div>
 
           {/* Search Section */}
-          <div className="container mt-5 vaccine-table-container">
-            <h6 className="mb-3 fw-bold custom-section-title">
-              {t("filter_suppliers")}
-            </h6>
+          <div className="search-section">
+            <h6 className="search-title">{t("filter_suppliers")}</h6>
 
-            <div className="row g-2 mt-3 mb-3 align-items-end">
-              <div className="col-12 col-sm-6 col-md-3">
-                <label htmlFor="emailInput" className="form-label">
+            <div className="search-fields">
+              <div className="search-field">
+                <label htmlFor="emailInput" className="search-label">
                   {t("email")}
                 </label>
                 <input
                   type="text"
                   id="emailInput"
-                  className="form-control"
+                  className="search-input"
                   placeholder={t("search_by_email")}
                   value={searchCriteria.email}
                   onChange={(e) =>
@@ -211,14 +215,14 @@ function SupplierTable() {
                   }
                 />
               </div>
-              <div className="col-12 col-sm-6 col-md-3">
-                <label htmlFor="companyInput" className="form-label">
+              <div className="search-field">
+                <label htmlFor="companyInput" className="search-label">
                   {t("company")}
                 </label>
                 <input
                   type="text"
                   id="companyInput"
-                  className="form-control"
+                  className="search-input"
                   placeholder={t("search_by_company")}
                   value={searchCriteria.company}
                   onChange={(e) =>
@@ -229,90 +233,130 @@ function SupplierTable() {
                   }
                 />
               </div>
-              <div className="col-12 d-flex justify-content-end mt-2">
-                <button className="btn btn-success" onClick={handleSearch}>
+              <div className="search-button">
+                <button className="btn-search" onClick={handleSearch}>
                   <FiSearch /> {t("search")}
                 </button>
               </div>
             </div>
           </div>
 
-          {/* Table Section */}
-          <div className="container mt-5 vaccine-table-container">
-            <div className="table-responsive">
-              <table className="table align-middle mt-4">
-                <thead>
-                  <tr>
-                    <th className="text-center bg-color">#</th>
-                    <th className="text-center bg-color">{t("name")}</th>
-                    <th className="text-center bg-color">{t("email")}</th>
-                    <th className="text-center bg-color">{t("phone")}</th>
-                    <th className="text-center bg-color">{t("company")}</th>
-                    {/* <th className="text-center bg-color">{t("treatments")}</th>
-                    <th className="text-center bg-color">{t("feeds")}</th> */}
-                    <th className="text-center bg-color">{t("notes")}</th>
-                    <th className="text-center bg-color">{t("actions")}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {suppliers.length > 0 ? (
-                    suppliers.map((supplier, index) => (
-                      <tr key={supplier._id}>
-                        <td className="text-center">
-                          {(currentPage - 1) * itemsPerPage + index + 1}
-                        </td>
-                        <td className="text-center">{supplier.name}</td>
-                        <td className="text-center">{supplier.email}</td>
-                        <td className="text-center">{supplier.phone}</td>
-                        <td className="text-center">{supplier.company}</td>
-                        {/* <td className="text-center">
-                          {supplier.treatments?.length > 0
-                            ? supplier.treatments.map((t, i) => (
-                                <div key={i}>{t.name}</div>
-                              ))
-                            : "—"}
-                        </td>
-                        <td className="text-center">
-                          {supplier.feeds?.length > 0
-                            ? supplier.feeds.map((f, i) => (
-                                <div key={i}>{f.name}</div>
-                              ))
-                            : "—"}
-                        </td> */}
-                        <td className="text-center">{supplier.notes}</td>
-                        <td className="text-center">
-                          <button
-                            className="btn btn-link p-0 me-2"
-                            style={{ color: "#0f7e34ff" }}
-                            onClick={() =>
-                              navigate(`/editSupplier/${supplier._id}`)
-                            }
-                          >
-                            <FaRegEdit />
-                          </button>
-                          <button
-                            className="btn btn-link p-0"
-                            style={{ color: "#ff4d4f" }}
-                            onClick={() => confirmDelete(supplier._id)}
-                          >
-                            <RiDeleteBinLine />
-                          </button>
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="9" className="text-center">
-                        {t("no_suppliers_found")}
+          {/* Mobile Cards View */}
+          <div className="mobile-cards">
+            {suppliers.length > 0 ? (
+              suppliers.map((supplier, index) => (
+                <div key={supplier._id} className="supplier-card">
+                  <div className="card-content">
+                    <div className="card-row">
+                      <span className="card-label">#</span>
+                      <span className="card-value">
+                        {(currentPage - 1) * itemsPerPage + index + 1}
+                      </span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("name")}</span>
+                      <span className="card-value">{supplier.name}</span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("email")}</span>
+                      <span className="card-value">{supplier.email}</span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("phone")}</span>
+                      <span className="card-value">{supplier.phone}</span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("company")}</span>
+                      <span className="card-value">{supplier.company}</span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("notes")}</span>
+                      <span className="card-value">{supplier.notes || "-"}</span>
+                    </div>
+                  </div>
+                  <div className="card-actions">
+                    <button
+                      className="btn-edit"
+                      onClick={() => navigate(`/editSupplier/${supplier._id}`)}
+                      title={t("edit")}
+                    >
+                      <FaRegEdit />
+                    </button>
+                    <button
+                      className="btn-delete"
+                      onClick={() => confirmDelete(supplier._id)}
+                      title={t("delete")}
+                    >
+                      <RiDeleteBinLine />
+                    </button>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="no-data-mobile">
+                {t("no_suppliers_found")}
+              </div>
+            )}
+          </div>
+
+          {/* Desktop Table View */}
+          <div className="table-wrapper">
+            <table className="modern-table">
+              <thead>
+                <tr>
+                  <th className="text-center">#</th>
+                  <th className="text-center">{t("name")}</th>
+                  <th className="text-center">{t("email")}</th>
+                  <th className="text-center">{t("phone")}</th>
+                  <th className="text-center">{t("company")}</th>
+                  <th className="text-center">{t("notes")}</th>
+                  <th className="text-center">{t("actions")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {suppliers.length > 0 ? (
+                  suppliers.map((supplier, index) => (
+                    <tr key={supplier._id}>
+                      <td className="text-center">
+                        {(currentPage - 1) * itemsPerPage + index + 1}
+                      </td>
+                      <td className="text-center">{supplier.name}</td>
+                      <td className="text-center">{supplier.email}</td>
+                      <td className="text-center">{supplier.phone}</td>
+                      <td className="text-center">{supplier.company}</td>
+                      <td className="text-center">{supplier.notes || "-"}</td>
+                      <td className="text-center action-buttons">
+                        <button
+                          className="btn-edit"
+                          onClick={() => navigate(`/editSupplier/${supplier._id}`)}
+                          title={t("edit")}
+                        >
+                          <FaRegEdit />
+                        </button>
+                        <button
+                          className="btn-delete"
+                          onClick={() => confirmDelete(supplier._id)}
+                          title={t("delete")}
+                        >
+                          <RiDeleteBinLine />
+                        </button>
                       </td>
                     </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-            <div className="d-flex justify-content-center mt-4">
-              {renderModernPagination()}
-            </div>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="7" className="text-center no-data">
+                      {t("no_suppliers_found")}
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Pagination */}
+          <div className="pagination-container">
+            {renderModernPagination()}
           </div>
         </div>
       )}

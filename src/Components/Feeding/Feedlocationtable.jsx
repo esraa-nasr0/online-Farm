@@ -5,13 +5,16 @@ import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { FaRegEdit } from "react-icons/fa";
-import "../Vaccine/styles.css";
 import { useTranslation } from "react-i18next";
 import { FiSearch } from "react-icons/fi";
+import "./FeedlocationTable.css"; // سيتم إنشاء هذا الملف
 
 function FeedlocationTable() {
   const navigate = useNavigate();
   const { getAllfeeds, Deletfeed } = useContext(Feedbylocationcontext);
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === "ar";
+
   const [feedData, setFeedData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [searchCriteria, setSearchCriteria] = useState({
@@ -19,9 +22,13 @@ function FeedlocationTable() {
     date: "",
   });
   const [currentPage, setCurrentPage] = useState(1);
-  const animalsPerPage = 10;
-  const [totalPages, setTotalPages] = useState(1);
-  const { t } = useTranslation();
+  const itemsPerPage = 10;
+  const [pagination, setPagination] = useState({
+    total: 0,
+    page: 1,
+    limit: itemsPerPage,
+    totalPages: 1,
+  });
 
   const fetchFeedData = async () => {
     try {
@@ -30,12 +37,22 @@ function FeedlocationTable() {
         date: searchCriteria.date,
       };
       setIsLoading(true);
-      const { data } = await getAllfeeds(currentPage, animalsPerPage, filters);
+      const { data } = await getAllfeeds(currentPage, itemsPerPage, filters);
       setFeedData(data.data.feedShed || []);
-      setTotalPages(data.data.pagination?.totalPages ?? 1);
+      setPagination(
+        data.data.pagination || {
+          total: data.data.feedShed?.length || 0,
+          page: currentPage,
+          limit: itemsPerPage,
+          totalPages: Math.ceil(
+            (data.data.feedShed?.length || 0) / itemsPerPage
+          ),
+        }
+      );
     } catch (error) {
       console.error("Error fetching feed data:", error);
       setFeedData([]);
+      Swal.fire(t("error"), t("fetch_error"), "error");
     } finally {
       setIsLoading(false);
     }
@@ -79,7 +96,7 @@ function FeedlocationTable() {
   };
 
   const renderModernPagination = () => {
-    const total = totalPages;
+    const totalPages = pagination.totalPages || 1;
     const pageButtons = [];
     const maxButtons = 5;
 
@@ -96,8 +113,8 @@ function FeedlocationTable() {
       );
     };
 
-    if (total <= maxButtons) {
-      for (let i = 1; i <= total; i++) addPage(i);
+    if (totalPages <= maxButtons) {
+      for (let i = 1; i <= totalPages; i++) addPage(i);
     } else {
       addPage(1);
       if (currentPage > 3) {
@@ -108,20 +125,20 @@ function FeedlocationTable() {
         );
       }
       let start = Math.max(2, currentPage - 1);
-      let end = Math.min(total - 1, currentPage + 1);
+      let end = Math.min(totalPages - 1, currentPage + 1);
       if (currentPage <= 3) end = 4;
-      if (currentPage >= total - 2) start = total - 3;
+      if (currentPage >= totalPages - 2) start = totalPages - 3;
       for (let i = start; i <= end; i++) {
-        if (i > 1 && i < total) addPage(i);
+        if (i > 1 && i < totalPages) addPage(i);
       }
-      if (currentPage < total - 2) {
+      if (currentPage < totalPages - 2) {
         pageButtons.push(
           <li key="end-ellipsis" className="pagination-ellipsis">
             ...
           </li>
         );
       }
-      addPage(total);
+      addPage(totalPages);
     }
 
     return (
@@ -136,11 +153,15 @@ function FeedlocationTable() {
           </button>
         </li>
         {pageButtons}
-        <li className={`page-item${currentPage === total ? " disabled" : ""}`}>
+        <li
+          className={`page-item${
+            currentPage === totalPages ? " disabled" : ""
+          }`}
+        >
           <button
             className="page-link pagination-arrow"
             onClick={() => setCurrentPage(currentPage + 1)}
-            disabled={currentPage === total}
+            disabled={currentPage === totalPages}
           >
             {t("next")} &gt;
           </button>
@@ -152,34 +173,31 @@ function FeedlocationTable() {
   return (
     <>
       {isLoading ? (
-        <div className="animal">
-          <Rings
-            visible={true}
-            height="100"
-            width="100"
-            color="#21763e"
-            ariaLabel="rings-loading"
-          />
+        <div className="loading-wrap">
+          <Rings visible={true} height="100" width="100" color="#21763e" />
         </div>
       ) : (
-        <div className="container mt-4">
-          <h2 className="vaccine-table-title">{t("feed_by_location")}</h2>
+        <div className={`feedlocation-container ${isRTL ? "rtl" : ""}`}>
+          <div className="toolbar">
+            <div className="feedlocation-info">
+              <h2 className="feedlocation-title">{t("feed_by_location")}</h2>
+              <p className="feedlocation-subtitle">{t("manage_feed_by_location")}</p>
+            </div>
+          </div>
 
-          {/* فلترة */}
-          <div className="container mt-5 vaccine-table-container">
-            <h6 className="mb-3 fw-bold custom-section-title">
-              {t("filter_feed_by_location")}
-            </h6>
+          {/* Search Section */}
+          <div className="search-section">
+            <h6 className="search-title">{t("filter_feed_by_location")}</h6>
 
-            <div className="row g-2 mt-3 mb-3 align-items-end">
-              <div className="col-12 col-sm-6 col-md-3">
-                <label htmlFor="locationInput" className="form-label">
+            <div className="search-fields">
+              <div className="search-field">
+                <label htmlFor="locationInput" className="search-label">
                   {t("location_shed")}
                 </label>
                 <input
                   type="text"
                   id="locationInput"
-                  className="form-control"
+                  className="search-input"
                   placeholder={t("search_location_placeholder")}
                   value={searchCriteria.locationShed}
                   onChange={(e) =>
@@ -191,14 +209,14 @@ function FeedlocationTable() {
                 />
               </div>
 
-              <div className="col-12 col-sm-6 col-md-3">
-                <label htmlFor="dateInput" className="form-label">
+              <div className="search-field">
+                <label htmlFor="dateInput" className="search-label">
                   {t("date")}
                 </label>
                 <input
                   type="date"
                   id="dateInput"
-                  className="form-control"
+                  className="search-input"
                   value={searchCriteria.date}
                   onChange={(e) =>
                     setSearchCriteria({
@@ -209,89 +227,154 @@ function FeedlocationTable() {
                 />
               </div>
 
-              <div className="col-12 d-flex justify-content-end mt-2">
-                <button className="btn btn-success" onClick={handleSearch}>
+              <div className="search-button">
+                <button className="btn-search" onClick={handleSearch}>
                   <FiSearch /> {t("search")}
                 </button>
               </div>
             </div>
           </div>
 
-          {/* جدول */}
-          <div className="container mt-5 vaccine-table-container">
-            <div className="table-responsive">
-              <table className="table align-middle">
-                <thead>
-                  <tr>
-                    <th className="text-center bg-color">#</th>
-                    <th className="text-center bg-color">
-                      {t("location_shed")}
-                    </th>
-                    <th className="text-center bg-color">{t("quantity")}</th>
-                    <th className="text-center bg-color">{t("date")}</th>
-                    <th className="text-center bg-color">{t("feed_name")}</th>
-                    <th className="text-center bg-color">{t("feed_price")}</th>
-                    <th className="text-center bg-color">{t("actions")}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {feedData.length > 0 ? (
-                    feedData.map((item, index) => (
-                      <tr key={item._id}>
-                        <td className="text-center">
-                          {(currentPage - 1) * animalsPerPage + index + 1}
-                        </td>
-                        <td className="text-center">
-                          {item.locationShed?.locationShedName ||
-                            item.locationShed ||
-                            "-"}
-                        </td>
-                        <td className="text-center">
-                          {item?.feeds?.[0]?.quantity || "N/A"}
-                        </td>
-                        <td className="text-center">
-                          {item.date ? item.date.split("T")[0] : "N/A"}
-                        </td>
-                        <td className="text-center">
-                          {item?.feeds?.[0]?.feedName}
-                        </td>
-                        <td className="text-center">
-                          {item?.feeds?.[0]?.feedPrice}
-                        </td>
-                        <td className="text-center">
-                          <button
-                            className="btn btn-link p-0 me-2"
-                            onClick={() => Editfeed(item._id)}
-                            title={t("edit")}
-                            style={{ color: "#0f7e34ff" }}
-                          >
-                            <FaRegEdit />
-                          </button>
-                          <button
-                            className="btn btn-link p-0"
-                            style={{ color: "#d33" }}
-                            onClick={() => handleDelete(item._id)}
-                            title={t("delete")}
-                          >
-                            <RiDeleteBinLine />
-                          </button>
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="7" className="text-center">
-                        {t("no_records_found")}
+          {/* Mobile Cards View */}
+          <div className="mobile-cards">
+            {feedData.length > 0 ? (
+              feedData.map((item, index) => (
+                <div key={item._id} className="feedlocation-card">
+                  <div className="card-content">
+                    <div className="card-row">
+                      <span className="card-label">#</span>
+                      <span className="card-value">
+                        {(currentPage - 1) * itemsPerPage + index + 1}
+                      </span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("location_shed")}</span>
+                      <span className="card-value">
+                        {item.locationShed?.locationShedName ||
+                          item.locationShed ||
+                          "-"}
+                      </span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("quantity")}</span>
+                      <span className="card-value">
+                        {item?.feeds?.[0]?.quantity || "N/A"}
+                      </span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("date")}</span>
+                      <span className="card-value">
+                        {item.date ? item.date.split("T")[0] : "N/A"}
+                      </span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("feed_name")}</span>
+                      <span className="card-value">
+                        {item?.feeds?.[0]?.feedName || "N/A"}
+                      </span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("feed_price")}</span>
+                      <span className="card-value">
+                        {item?.feeds?.[0]?.feedPrice || "N/A"}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="card-actions">
+                    <button
+                      className="btn-edit"
+                      onClick={() => Editfeed(item._id)}
+                      title={t("edit")}
+                    >
+                      <FaRegEdit />
+                    </button>
+                    <button
+                      className="btn-delete"
+                      onClick={() => handleDelete(item._id)}
+                      title={t("delete")}
+                    >
+                      <RiDeleteBinLine />
+                    </button>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="no-data-mobile">
+                {t("no_records_found")}
+              </div>
+            )}
+          </div>
+
+          {/* Desktop Table View */}
+          <div className="table-wrapper">
+            <table className="modern-table">
+              <thead>
+                <tr>
+                  <th className="text-center">#</th>
+                  <th className="text-center">{t("location_shed")}</th>
+                  <th className="text-center">{t("quantity")}</th>
+                  <th className="text-center">{t("date")}</th>
+                  <th className="text-center">{t("feed_name")}</th>
+                  <th className="text-center">{t("feed_price")}</th>
+                  <th className="text-center">{t("actions")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {feedData.length > 0 ? (
+                  feedData.map((item, index) => (
+                    <tr key={item._id}>
+                      <td className="text-center">
+                        {(currentPage - 1) * itemsPerPage + index + 1}
+                      </td>
+                      <td className="text-center">
+                        {item.locationShed?.locationShedName ||
+                          item.locationShed ||
+                          "-"}
+                      </td>
+                      <td className="text-center">
+                        {item?.feeds?.[0]?.quantity || "N/A"}
+                      </td>
+                      <td className="text-center">
+                        {item.date ? item.date.split("T")[0] : "N/A"}
+                      </td>
+                      <td className="text-center">
+                        {item?.feeds?.[0]?.feedName || "N/A"}
+                      </td>
+                      <td className="text-center">
+                        {item?.feeds?.[0]?.feedPrice || "N/A"}
+                      </td>
+                      <td className="text-center action-buttons">
+                        <button
+                          className="btn-edit"
+                          onClick={() => Editfeed(item._id)}
+                          title={t("edit")}
+                        >
+                          <FaRegEdit />
+                        </button>
+                        <button
+                          className="btn-delete"
+                          onClick={() => handleDelete(item._id)}
+                          title={t("delete")}
+                        >
+                          <RiDeleteBinLine />
+                        </button>
                       </td>
                     </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="7" className="text-center no-data">
+                      {t("no_records_found")}
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
 
-            <div className="d-flex justify-content-center mt-4">
-              {renderModernPagination()}
-            </div>
+          {/* Pagination */}
+          <div className="pagination-container">
+            {renderModernPagination()}
           </div>
         </div>
       )}

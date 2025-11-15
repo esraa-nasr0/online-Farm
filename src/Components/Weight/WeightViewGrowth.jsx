@@ -2,7 +2,6 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { Rings } from 'react-loader-spinner';
 import Swal from 'sweetalert2';
 import { useTranslation } from 'react-i18next';
 
@@ -28,7 +27,7 @@ function WeightViewGrowth() {
     return response.data.data;
   };
 
-  const { data, isLoading, isError, error } = useQuery({
+  const { data, isError, error } = useQuery({
     queryKey: ['animalGrowth', id],
     queryFn: fetchAnimalGrowth,
     enabled: !!id

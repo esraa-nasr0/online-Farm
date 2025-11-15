@@ -6,12 +6,13 @@ import Swal from "sweetalert2";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { FaRegEdit } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
-import "../Vaccine/styles.css";
 import axios from "axios";
 import { FiSearch } from "react-icons/fi";
+import "./TreatmentTable.css"; // سيتم إنشاء هذا الملف
 
 function TreatmentTable() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === "ar";
   const { getTreatment, deleteTreatment } = useContext(TreatmentContext);
   const [isLoading, setIsLoading] = useState(false);
   const [treatment, setTreatment] = useState([]);
@@ -153,7 +154,7 @@ function TreatmentTable() {
             onClick={() => paginate(currentPage - 1)}
             disabled={currentPage === 1}
           >
-            &lt; Back
+            &lt; {t("Back")}
           </button>
         </li>
         {pageButtons}
@@ -163,7 +164,7 @@ function TreatmentTable() {
             onClick={() => paginate(currentPage + 1)}
             disabled={currentPage === total}
           >
-            Next &gt;
+            {t("Next")} &gt;
           </button>
         </li>
       </ul>
@@ -245,13 +246,13 @@ function TreatmentTable() {
       Swal.fire({
         title: t("error"),
         html: `
-                    <div>
-                        <p>${t("please_select_file")}</p>
-                        <p style="color: #666; margin-top: 10px; font-size: 0.9em;">
-                            ${t("supported_formats")}: .xlsx, .xls
-                        </p>
-                    </div>
-                `,
+          <div>
+            <p>${t("please_select_file")}</p>
+            <p style="color: #666; margin-top: 10px; font-size: 0.9em;">
+              ${t("supported_formats")}: .xlsx, .xls
+            </p>
+          </div>
+        `,
         icon: "error",
       });
       return;
@@ -262,13 +263,13 @@ function TreatmentTable() {
       Swal.fire({
         title: t("error"),
         html: `
-                    <div>
-                        <p>${t("please_upload_valid_excel")}</p>
-                        <p style="color: #666; margin-top: 10px; font-size: 0.9em;">
-                            ${t("supported_formats")}: .xlsx, .xls
-                        </p>
-                    </div>
-                `,
+          <div>
+            <p>${t("please_upload_valid_excel")}</p>
+            <p style="color: #666; margin-top: 10px; font-size: 0.9em;">
+              ${t("supported_formats")}: .xlsx, .xls
+            </p>
+          </div>
+        `,
         icon: "error",
       });
       return;
@@ -313,10 +314,10 @@ function TreatmentTable() {
       Swal.fire({
         title: t("error"),
         html: `
-                    <div>
-                        <p>${errorMessage}</p>
-                    </div>
-                `,
+          <div>
+            <p>${errorMessage}</p>
+          </div>
+        `,
         icon: "error",
       });
     } finally {
@@ -328,10 +329,7 @@ function TreatmentTable() {
   return (
     <>
       {isLoading ? (
-        <div
-          className="d-flex justify-content-center align-items-center"
-          style={{ height: "100vh" }}
-        >
+        <div className="loading-wrap">
           <Rings
             visible={true}
             height="100"
@@ -341,202 +339,227 @@ function TreatmentTable() {
           />
         </div>
       ) : (
-        <div className="container mt-4">
-          <h2 className="vaccine-table-title">{t("Pharmacy")}</h2>
-          <div className="container mt-5 vaccine-table-container">
-            <h6 className="mb-3 fw-bold custom-section-title">
-              {t("filter_data")}
-            </h6>
+        <div className={`treatment-container ${isRTL ? "rtl" : ""}`}>
+          <div className="toolbar">
+            <div className="treatment-info">
+              <h2 className="treatment-title">{t("Pharmacy")}</h2>
+              <p className="treatment-subtitle">{t("manage_treatments")}</p>
+            </div>
+          </div>
 
-            <div className="row g-2 mt-3 mb-3 align-items-end">
-              {/* Search by Name */}
-              <div className="col-12 col-sm-6 col-md-3">
-                <label htmlFor="searchNameInput" className="form-label">
+          {/* Search Section */}
+          <div className="search-section">
+            <h6 className="search-title">{t("filter_data")}</h6>
+
+            <div className="search-fields">
+              <div className="search-field">
+                <label htmlFor="searchNameInput" className="search-label">
                   {t("name")}
                 </label>
                 <input
                   type="text"
                   id="searchNameInput"
-                  className="form-control"
+                  className="search-input"
                   placeholder={t("search_by_name")}
                   value={searchName}
                   onChange={(e) => setSearchName(e.target.value)}
                 />
               </div>
 
-              {/* Search by Type */}
-              <div className="col-12 col-sm-6 col-md-3">
-                <label htmlFor="searchTypeInput" className="form-label">
+              <div className="search-field">
+                <label htmlFor="searchTypeInput" className="search-label">
                   {t("type")}
                 </label>
                 <input
                   type="text"
                   id="searchTypeInput"
-                  className="form-control"
+                  className="search-input"
                   placeholder={t("search_by_type")}
                   value={searchType}
                   onChange={(e) => setSearchType(e.target.value)}
                 />
               </div>
 
-              {/* Search Button */}
-              <div className="col-12 d-flex justify-content-end mt-2">
-                <button className="btn btn-success" onClick={handleSearch}>
+              <div className="search-button">
+                <button className="btn-search" onClick={handleSearch}>
                   <FiSearch /> {t("search")}
                 </button>
               </div>
             </div>
           </div>
 
-          <div className="container mt-5 vaccine-table-container">
-            <div className="container mt-3">
-              {/* <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mt-3 mb-3">
-              <div className="d-flex flex-wrap gap-2">
-                <button
-                  className="btn btn-outline-dark"
-                  onClick={handleExportToExcel}
-                  title={t("export_all_data")}
-                >
-                  <i className="fas fa-download me-1"></i>{" "}
-                  {t("export_all_data")}
-                </button>
-                <button
-                  className="btn btn-success"
-                  onClick={handleDownloadTemplate}
-                  title={t("download_template")}
-                >
-                  <i className="fas fa-file-arrow-down me-1"></i>{" "}
-                  {t("download_template")}
-                </button>
-                <label
-                  className="btn btn-dark btn-outline-dark mb-0 d-flex align-items-center"
-                  style={{ cursor: "pointer", color: "white" }}
-                  title={t("import_from_excel")}
-                >
-                  <i className="fas fa-file-import me-1"></i>{" "}
-                  {t("import_from_excel")}
-                  <input
-                    type="file"
-                    hidden
-                    accept=".xlsx,.xls"
-                    onChange={handleImportFromExcel}
-                  />
-                </label>
-              </div>
-            </div> */}
+          {/* Excel Buttons */}
+          {/* <div className="excel-buttons">
+            <div className="d-flex flex-wrap gap-2">
+              <button
+                className="btn-excel"
+                onClick={handleExportToExcel}
+                title={t("export_all_data")}
+              >
+                <i className="fas fa-download me-1"></i>{" "}
+                {t("export_all_data")}
+              </button>
+              <button
+                className="btn-excel"
+                onClick={handleDownloadTemplate}
+                title={t("download_template")}
+              >
+                <i className="fas fa-file-arrow-down me-1"></i>{" "}
+                {t("download_template")}
+              </button>
+              <label className="btn-excel d-flex align-items-center">
+                <i className="fas fa-file-import me-1"></i>{" "}
+                {t("import_from_excel")}
+                <input
+                  type="file"
+                  hidden
+                  accept=".xlsx,.xls"
+                  onChange={handleImportFromExcel}
+                />
+              </label>
             </div>
+          </div> */}
 
-            {error && <p className="text-danger mt-3">{error}</p>}
+          {/* Mobile Cards View */}
+          <div className="mobile-cards">
+            {treatment.length > 0 ? (
+              treatment.map((item, index) => (
+                <div key={item._id || index} className="treatment-card">
+                  <div className="card-content">
+                    <div className="card-row">
+                      <span className="card-label">#</span>
+                      <span className="card-value">
+                        {(currentPage - 1) * treatmentPerPage + index + 1}
+                      </span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("name")}</span>
+                      <span className="card-value">{item.name}</span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("type")}</span>
+                      <span className="card-value">{item.type}</span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("stock")}</span>
+                      <span className="card-value">
+                        <div><strong>{t("bottles")}:</strong> {item.stock?.bottles}</div>
+                        <div><strong>{t("volumePerBottle")}:</strong> {item.stock?.volumePerBottle}</div>
+                        <div><strong>{t("unitOfMeasure")}:</strong> {item.stock?.unitOfMeasure}</div>
+                        <div><strong>{t("totalVolume")}:</strong> {item.stock?.totalVolume}</div>
+                      </span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("price")}</span>
+                      <span className="card-value">
+                        <div><strong>{t("bottle_price")}:</strong> {item.pricing?.bottlePrice} EGP</div>
+                        <div><strong>{t("dose_price")}:</strong> {item.pricePerMl ?? item.pricing?.dosePrice ?? "-"} EGP</div>
+                      </span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("expire_date")}</span>
+                      <span className="card-value">
+                        {new Date(item.expireDate).toLocaleDateString()}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="card-actions">
+                    <button
+                      className="btn-edit"
+                      onClick={() => editTreatment(item._id)}
+                      title={t("edit")}
+                    >
+                      <FaRegEdit />
+                    </button>
+                    <button
+                      className="btn-delete"
+                      onClick={() => confirmDelete(item._id)}
+                      title={t("delete")}
+                    >
+                      <RiDeleteBinLine />
+                    </button>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="no-data-mobile">
+                {t("no_treatments_found")}
+              </div>
+            )}
+          </div>
 
-            <div className="table-responsive ">
-              <div className="full-width-table">
-                <table
-                  className="table align-middle mt-3"
-                  aria-label={t("treatment_table")}
-                >
-                  <thead>
-                    <tr>
-                      <th scope="col" className="text-center bg-color">
-                        #
-                      </th>
-                      <th scope="col" className="text-center bg-color">
-                        {t("name")}
-                      </th>
-                      <th scope="col" className="text-center bg-color">
-                        {t("type")}
-                      </th>
-                      <th scope="col" className="text-center bg-color">
-                        {t("stock")}
-                      </th>
-                      <th scope="col" className="text-center bg-color">
-                        {t("price")}
-                      </th>
-                      <th scope="col" className="text-center bg-color">
-                        {t("expire_date")}
-                      </th>
-                      <th className="text-center bg-color">{t("actions")}</th>
+          {/* Desktop Table View */}
+          <div className="table-wrapper">
+            <table className="modern-table">
+              <thead>
+                <tr>
+                  <th className="text-center">#</th>
+                  <th className="text-center">{t("name")}</th>
+                  <th className="text-center">{t("type")}</th>
+                  <th className="text-center">{t("stock")}</th>
+                  <th className="text-center">{t("price")}</th>
+                  <th className="text-center">{t("expire_date")}</th>
+                  <th className="text-center">{t("actions")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {treatment.length > 0 ? (
+                  treatment.map((item, index) => (
+                    <tr key={item._id || index}>
+                      <td className="text-center">
+                        {(currentPage - 1) * treatmentPerPage + index + 1}
+                      </td>
+                      <td className="text-center">{item.name}</td>
+                      <td className="text-center">{item.type}</td>
+                      <td className="text-center">
+                        <div className="stock-details">
+                          <div><strong>{t("bottles")}:</strong> {item.stock?.bottles}</div>
+                          <div><strong>{t("volumePerBottle")}:</strong> {item.stock?.volumePerBottle}</div>
+                          <div><strong>{t("unitOfMeasure")}:</strong> {item.stock?.unitOfMeasure}</div>
+                          <div><strong>{t("totalVolume")}:</strong> {item.stock?.totalVolume}</div>
+                        </div>
+                      </td>
+                      <td className="text-center">
+                        <div className="price-details">
+                          <div><strong>{t("bottle_price")}:</strong> {item.pricing?.bottlePrice} EGP</div>
+                          <div><strong>{t("dose_price")}:</strong> {item.pricePerMl ?? item.pricing?.dosePrice ?? "-"} EGP</div>
+                        </div>
+                      </td>
+                      <td className="text-center">
+                        {new Date(item.expireDate).toLocaleDateString()}
+                      </td>
+                      <td className="text-center action-buttons">
+                        <button
+                          className="btn-edit"
+                          onClick={() => editTreatment(item._id)}
+                          title={t("edit")}
+                        >
+                          <FaRegEdit />
+                        </button>
+                        <button
+                          className="btn-delete"
+                          onClick={() => confirmDelete(item._id)}
+                          title={t("delete")}
+                        >
+                          <RiDeleteBinLine />
+                        </button>
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {treatment.length > 0 ? (
-                      treatment.map((item, index) => (
-                        <tr key={item._id || index}>
-                          <th scope="row">
-                            {(currentPage - 1) * treatmentPerPage + index + 1}
-                          </th>
-                          <td>{item.name}</td>
-                          <td>{item.type}</td>
-                          <td>
-                            <div>
-                              <strong>{t("bottles")}:</strong>{" "}
-                              {item.stock?.bottles}
-                            </div>
-                            <div>
-                              <strong>{t("volumePerBottle")}:</strong>{" "}
-                              {item.stock?.volumePerBottle}
-                            </div>
-                            <div>
-                              <strong>{t("unitOfMeasure")}:</strong>{" "}
-                              {item.stock?.unitOfMeasure}
-                            </div>
-                            <div>
-                              <strong>{t("totalVolume")}:</strong>{" "}
-                              {item.stock?.totalVolume}
-                            </div>
-                          </td>
-                          <td>
-                            <div>
-                              <strong>{t("bottle_price")}:</strong>{" "}
-                              {item.pricing?.bottlePrice} EGP
-                            </div>
-                            <div>
-                              <strong>{t("dose_price")}:</strong>{" "}
-                              {item.pricePerMl ??
-                                item.pricing?.dosePrice ??
-                                "-"}{" "}
-                              EGP
-                            </div>
-                          </td>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="7" className="text-center no-data">
+                      {t("no_treatments_found")}
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
 
-                          <td>
-                            {new Date(item.expireDate).toLocaleDateString()}
-                          </td>
-
-                          <td className="text-center">
-                            <button
-                              className="btn btn-link p-0 me-2"
-                              onClick={() => editTreatment(item._id)}
-                              title={t("edit")}
-                              style={{ color: "#0f7e34ff" }}
-                            >
-                              <FaRegEdit />
-                            </button>
-                            <button
-                              className="btn btn-link  p-0"
-                              style={{ color: "#d33" }}
-                              onClick={() => confirmDelete(item._id)}
-                              title={t("delete")}
-                            >
-                              <RiDeleteBinLine />
-                            </button>
-                          </td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan="7" className="text-center">
-                          {t("no_treatments_found")}
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <div className="d-flex justify-content-center mt-4">
-              <nav>{renderModernPagination()}</nav>
-            </div>
+          {/* Pagination */}
+          <div className="pagination-container">
+            {renderModernPagination()}
           </div>
         </div>
       )}

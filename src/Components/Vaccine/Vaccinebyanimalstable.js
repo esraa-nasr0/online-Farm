@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import {  useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { FaRegEdit } from "react-icons/fa";
 import { Vaccinetableentriescontext } from '../../Context/Vaccinetableentriescontext';
 import { Rings } from 'react-loader-spinner';
@@ -7,18 +7,13 @@ import Swal from 'sweetalert2';
 import { useTranslation } from 'react-i18next';
 import { VaccineanimalContext } from '../../Context/VaccineanimalContext';
 import axios from 'axios';
-import "./styles.css";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { FiSearch } from "react-icons/fi";
-
-if (typeof document !== 'undefined' && !document.getElementById('vaccine-modern-table-style')) {
-  const style = document.createElement('style');
-  style.id = 'vaccine-modern-table-style';
-  document.head.appendChild(style);
-}
+import "./VaccineByAnimalTable.css"; // سيتم إنشاء هذا الملف
 
 function Vaccinebyanimaltable() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === "ar";
   const navigate = useNavigate();
   const { getallVaccineanimalEntries, DeletVaccineanimal } = useContext(Vaccinetableentriescontext);
   const { getallVaccineanimal } = useContext(VaccineanimalContext);
@@ -354,166 +349,217 @@ function Vaccinebyanimaltable() {
 
   return (
     isLoading ? (
-      <div className='d-flex justify-content-center align-items-center' style={{ height: '100vh' }}>
+      <div className="loading-wrap">
         <Rings visible={true} height="100" width="100" color="#21763e" ariaLabel="rings-loading" />
       </div>
     ) : (
-      <div className='container mt-4'>
-                  <h2 className="vaccine-table-title">{t('Vaccines')}</h2>
+      <div className={`vaccine-by-animal-container ${isRTL ? "rtl" : ""}`}>
+        <div className="toolbar">
+          <div className="vaccine-info">
+            <h2 className="vaccine-title">{t('Vaccines')}</h2>
+            <p className="vaccine-subtitle">{t('manage_vaccine_records')}</p>
+          </div>
+        </div>
 
-            <div className="container mt-5 vaccine-table-container">
-  <h6 className="mb-3 fw-bold custom-section-title">
-    {t("filter_vaccines")}
-  </h6>
+        {/* Search Section */}
+        <div className="search-section">
+          <h6 className="search-title">{t("filter_vaccines")}</h6>
 
-  <div className="row g-2 mt-3 mb-3 align-items-end">
-    {/* Tag ID */}
-    <div className="col-12 col-sm-6 col-md-3">
-      <label htmlFor="tagIdInput" className="form-label">
-        {t("tag_id")}
-      </label>
-      <input
-        type="text"
-        id="tagIdInput"
-        className="form-control"
-        placeholder={t("search_tag_id")}
-        value={searchCriteria.tagId}
-        onChange={(e) =>
-          setSearchCriteria({
-            ...searchCriteria,
-            tagId: e.target.value,
-          })
-        }
-      />
-    </div>
+          <div className="search-fields">
+            <div className="search-field">
+              <label htmlFor="tagIdInput" className="search-label">
+                {t("tag_id")}
+              </label>
+              <input
+                type="text"
+                id="tagIdInput"
+                className="search-input"
+                placeholder={t("search_tag_id")}
+                value={searchCriteria.tagId}
+                onChange={(e) =>
+                  setSearchCriteria({
+                    ...searchCriteria,
+                    tagId: e.target.value,
+                  })
+                }
+              />
+            </div>
 
-    {/* Vaccine Name */}
-    <div className="col-12 col-sm-6 col-md-3">
-      <label htmlFor="vaccineNameInput" className="form-label">
-        {t("vaccine_name")}
-      </label>
-      <input
-        type="text"
-        id="vaccineNameInput"
-        className="form-control"
-        placeholder={t("search_by_vaccine_name")}
-        value={searchCriteria.vaccineName}
-        onChange={(e) =>
-          setSearchCriteria({
-            ...searchCriteria,
-            vaccineName: e.target.value,
-          })
-        }
-      />
-    </div>
+            <div className="search-field">
+              <label htmlFor="vaccineNameInput" className="search-label">
+                {t("vaccine_name")}
+              </label>
+              <input
+                type="text"
+                id="vaccineNameInput"
+                className="search-input"
+                placeholder={t("search_by_vaccine_name")}
+                value={searchCriteria.vaccineName}
+                onChange={(e) =>
+                  setSearchCriteria({
+                    ...searchCriteria,
+                    vaccineName: e.target.value,
+                  })
+                }
+              />
+            </div>
 
-    {/* Location Shed */}
-    <div className="col-12 col-sm-6 col-md-3">
-      <label htmlFor="locationShedInput" className="form-label">
-        {t("location_shed")}
-      </label>
-      <input
-        type="text"
-        id="locationShedInput"
-        className="form-control"
-        placeholder={t("search_by_location_shed")}
-        value={searchCriteria.locationShed}
-        onChange={(e) =>
-          setSearchCriteria({
-            ...searchCriteria,
-            locationShed: e.target.value,
-          })
-        }
-      />
-    </div>
+            <div className="search-field">
+              <label htmlFor="locationShedInput" className="search-label">
+                {t("location_shed")}
+              </label>
+              <input
+                type="text"
+                id="locationShedInput"
+                className="search-input"
+                placeholder={t("search_by_location_shed")}
+                value={searchCriteria.locationShed}
+                onChange={(e) =>
+                  setSearchCriteria({
+                    ...searchCriteria,
+                    locationShed: e.target.value,
+                  })
+                }
+              />
+            </div>
 
-    {/* Search Button */}
-    <div className="col-12 d-flex justify-content-end mt-2">
-      <button className="btn btn-success" onClick={handleSearch}>
-        <FiSearch /> {t("search")}
-      </button>
-    </div>
-  </div>
-</div>
+            <div className="search-button">
+              <button className="btn-search" onClick={handleSearch}>
+                <FiSearch /> {t("search")}
+              </button>
+            </div>
+          </div>
+        </div>
 
-
-      <div className="container mt-5 vaccine-table-container">
-        {/* <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mt-3 mb-3">
+        {/* Excel Buttons */}
+        {/* <div className="excel-buttons">
           <div className="d-flex flex-wrap gap-2">
-            <button className="btn btn-outline-dark" onClick={handleExportToExcel} title={t('export_all_data')}>
+            <button className="btn-excel" onClick={handleExportToExcel} title={t('export_all_data')}>
               <i className="fas fa-download me-1"></i> {t('export_all_data')}
             </button>
-            <button className="btn btn-success" onClick={handleDownloadTemplate} title={t('download_template')}>
+            <button className="btn-excel" onClick={handleDownloadTemplate} title={t('download_template')}>
               <i className="fas fa-file-arrow-down me-1"></i> {t('download_template')}
             </button>
-            <label className="btn btn-dark btn-outline-dark mb-0 d-flex align-items-center" style={{ cursor: 'pointer', color:"white" }} title={t('import_from_excel')}>
+            <label className="btn-excel d-flex align-items-center">
               <i className="fas fa-file-import me-1"></i> {t('import_from_excel')}
               <input type="file" hidden accept=".xlsx,.xls" onChange={handleImportFromExcel} />
             </label>
           </div>
         </div> */}
-        
-      
-        <div className="table-responsive mt-3">
-          <table className="table table-hover align-middle bg-white">
-            <thead className='bg-color'>
-              <tr className='bg-color'>  
-                <th className="bg-color">{t('tag_id')}</th>
-                <th className="bg-color">{t('vaccine_name')}</th>
-                <th className="bg-color">{t('dose_price')}</th>
-                <th className="bg-color">{t('Entry Type')}</th>
-                <th className="bg-color">{t('date')}</th>
-                <th className="bg-color">{t('location_shed')}</th>
-                <th className="text-center bg-color">{t('actions')}</th>
+
+        {/* Mobile Cards View */}
+        <div className="mobile-cards">
+          {vaccines.length > 0 ? (
+            vaccines.map(vaccine => (
+              <div key={vaccine._id} className="vaccine-card">
+                <div className="card-content">
+                  <div className="card-row">
+                    <span className="card-label">{t('tag_id')}</span>
+                    <span className="card-value">{vaccine.tagId}</span>
+                  </div>
+                  <div className="card-row">
+                    <span className="card-label">{t('vaccine_name')}</span>
+                    <span className="card-value">{vaccine.vaccine?.name || '--'}</span>
+                  </div>
+                  <div className="card-row">
+                    <span className="card-label">{t('dose_price')}</span>
+                    <span className="card-value">{vaccine.vaccine?.dosePrice ?? '--'}</span>
+                  </div>
+                  <div className="card-row">
+                    <span className="card-label">{t('Entry Type')}</span>
+                    <span className="card-value">{vaccine.entryType}</span>
+                  </div>
+                  <div className="card-row">
+                    <span className="card-label">{t('date')}</span>
+                    <span className="card-value">{new Date(vaccine.date).toLocaleDateString()}</span>
+                  </div>
+                  <div className="card-row">
+                    <span className="card-label">{t('location_shed')}</span>
+                    <span className="card-value">{vaccine.locationShed?.name || '--'}</span>
+                  </div>
+                </div>
+                <div className="card-actions">
+                  <button
+                    className="btn-edit"
+                    onClick={() => editVaccine(vaccine._id)}
+                    title={t('edit')}
+                  >
+                    <FaRegEdit />
+                  </button>
+                  <button
+                    className="btn-delete"
+                    onClick={() => handleClick(vaccine._id)}
+                    title={t('delete')}
+                  >
+                    <RiDeleteBinLine />
+                  </button>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="no-data-mobile">
+              {t('no_vaccine_records')}
+            </div>
+          )}
+        </div>
+
+        {/* Desktop Table View */}
+        <div className="table-wrapper">
+          <table className="modern-table">
+            <thead>
+              <tr>
+                <th className="text-center">{t('tag_id')}</th>
+                <th className="text-center">{t('vaccine_name')}</th>
+                <th className="text-center">{t('dose_price')}</th>
+                <th className="text-center">{t('Entry Type')}</th>
+                <th className="text-center">{t('date')}</th>
+                <th className="text-center">{t('location_shed')}</th>
+                <th className="text-center">{t('actions')}</th>
               </tr>
             </thead>
             <tbody>
-  {vaccines.length > 0 ? (
-    vaccines.map(vaccine => (
-      <tr key={vaccine._id}>
-        <td>{vaccine.tagId}</td>
-        <td>{vaccine.vaccine?.name || '--'}</td>
-        <td>{vaccine.vaccine?.dosePrice ?? '--'}</td>
-        <td>{vaccine.entryType}</td>
-        <td>{new Date(vaccine.date).toLocaleDateString()}</td>
-        <td>{vaccine.locationShed?.name || '--'}</td>
-        <td className="text-center">
-          <button
-            className="btn btn-link p-0 me-2"
-            onClick={() => editVaccine(vaccine._id)}
-            title={t('edit')}
-            style={{ color: "#0f7e34ff" }}
-          >
-            <FaRegEdit />
-          </button>
-          <button
-            className="btn btn-link p-0"
-            style={{ color: "#ff4d4f" }}
-            onClick={() => handleClick(vaccine._id)}
-            title={t('delete')}
-          >
-            <RiDeleteBinLine />
-          </button>
-        </td>
-      </tr>
-    ))
-  ) : (
-    <tr>
-      <td colSpan="7" className="text-center py-4 text-muted">
-        {t('no_vaccine_records')}
-      </td>
-    </tr>
-  )}
-</tbody>
-
+              {vaccines.length > 0 ? (
+                vaccines.map(vaccine => (
+                  <tr key={vaccine._id}>
+                    <td className="text-center">{vaccine.tagId}</td>
+                    <td className="text-center">{vaccine.vaccine?.name || '--'}</td>
+                    <td className="text-center">{vaccine.vaccine?.dosePrice ?? '--'}</td>
+                    <td className="text-center">{vaccine.entryType}</td>
+                    <td className="text-center">{new Date(vaccine.date).toLocaleDateString()}</td>
+                    <td className="text-center">{vaccine.locationShed?.name || '--'}</td>
+                    <td className="text-center action-buttons">
+                      <button
+                        className="btn-edit"
+                        onClick={() => editVaccine(vaccine._id)}
+                        title={t('edit')}
+                      >
+                        <FaRegEdit />
+                      </button>
+                      <button
+                        className="btn-delete"
+                        onClick={() => handleClick(vaccine._id)}
+                        title={t('delete')}
+                      >
+                        <RiDeleteBinLine />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="7" className="text-center no-data">
+                    {t('no_vaccine_records')}
+                  </td>
+                </tr>
+              )}
+            </tbody>
           </table>
         </div>
-        <div className="d-flex justify-content-center mt-4">
-          <nav>
-            {renderModernPagination()}
-          </nav>
+
+        {/* Pagination */}
+        <div className="pagination-container">
+          {renderModernPagination()}
         </div>
-      </div>
       </div>
     )
   );

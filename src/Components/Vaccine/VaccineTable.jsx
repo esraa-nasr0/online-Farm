@@ -7,10 +7,11 @@ import { VaccineanimalContext } from "../../Context/VaccineanimalContext";
 import { Rings } from "react-loader-spinner";
 import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
-import "./styles.css";
+import "./VaccineTable.css"; // سيتم إنشاء هذا الملف
 
 function VaccineTable() {
   const { i18n, t } = useTranslation();
+  const isRTL = i18n.language === "ar";
   const navigate = useNavigate();
   const { getallVaccineanimal, DeletVaccineanimal } =
     useContext(VaccineanimalContext);
@@ -200,13 +201,11 @@ function VaccineTable() {
       </ul>
     );
   };
+
   return (
     <>
       {isLoading ? (
-        <div
-          className="d-flex justify-content-center align-items-center"
-          style={{ height: "100vh" }}
-        >
+        <div className="loading-wrap">
           <Rings
             visible={true}
             height="100"
@@ -216,26 +215,27 @@ function VaccineTable() {
           />
         </div>
       ) : (
-        <div className="container mt-4">
-          <div className="d-flex flex-column flex-md-row justify-content-between align-items-center  mb-3">
-            <h2 className="vaccine-table-title">{t("Vaccines")}</h2>
+        <div className={`vaccine-container ${isRTL ? "rtl" : ""}`}>
+          <div className="toolbar">
+            <div className="vaccine-info">
+              <h2 className="vaccine-title">{t("Vaccines")}</h2>
+              <p className="vaccine-subtitle">{t("manage_vaccines")}</p>
+            </div>
           </div>
 
-          <div className="container mt-5 vaccine-table-container">
-            <h6 className="mb-3 fw-bold custom-section-title">
-              {t("filter_vaccines")}
-            </h6>
+          {/* Search Section */}
+          <div className="search-section">
+            <h6 className="search-title">{t("filter_vaccines")}</h6>
 
-            <div className="row g-2 mt-3 mb-3 align-items-end">
-              {/* Tag ID */}
-              <div className="col-12 col-sm-6 col-md-3">
-                <label htmlFor="tagIdInput" className="form-label">
+            <div className="search-fields">
+              <div className="search-field">
+                <label htmlFor="tagIdInput" className="search-label">
                   {t("tag_id")}
                 </label>
                 <input
                   type="text"
                   id="tagIdInput"
-                  className="form-control"
+                  className="search-input"
                   placeholder={t("search_tag_id")}
                   value={searchCriteria.tagId}
                   onChange={(e) =>
@@ -247,15 +247,14 @@ function VaccineTable() {
                 />
               </div>
 
-              {/* Vaccine Name */}
-              <div className="col-12 col-sm-6 col-md-3">
-                <label htmlFor="vaccineNameInput" className="form-label">
+              <div className="search-field">
+                <label htmlFor="vaccineNameInput" className="search-label">
                   {t("vaccine_name")}
                 </label>
                 <input
                   type="text"
                   id="vaccineNameInput"
-                  className="form-control"
+                  className="search-input"
                   placeholder={t("search_by_vaccine_name")}
                   value={searchCriteria.vaccineName}
                   onChange={(e) =>
@@ -267,147 +266,234 @@ function VaccineTable() {
                 />
               </div>
 
-              {/* Search Button */}
-              <div className="col-12 d-flex justify-content-end mt-2">
-                <button className="btn btn-success" onClick={handleSearch}>
+              <div className="search-button">
+                <button className="btn-search" onClick={handleSearch}>
                   <FiSearch /> {t("search")}
                 </button>
               </div>
             </div>
           </div>
 
-          <div className="container mt-5 vaccine-table-container">
-            <div className="table-responsive">
-              <table className="table table-hover mt-3 p-2">
-                <thead>
-                  <tr>
-                    <th className="text-center bg-color">#</th>
-                    <th className="text-center bg-color">
-                      {t("Vaccine Name")}
-                    </th>
-                    <th className="text-center bg-color">{t("Bottles")}</th>
-                    <th className="text-center bg-color">
-                      {t("Doses Per Bottle")}
-                    </th>
-                    <th className="text-center bg-color">{t("Total Doses")}</th>
-                    <th className="text-center bg-color">
-                      {t("Bottle Price")}
-                    </th>
-                    <th className="text-center bg-color">{t("Dose Price")}</th>
-                    <th className="text-center bg-color">
-                      {t("Booster Dose")}
-                    </th>
-                    <th className="text-center bg-color">{t("Annual Dose")}</th>
-                    <th className="text-center bg-color">{t("Expiry Date")}</th>
-                    <th className="text-center bg-color">{t("actions")}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {vaccines.length === 0 ? (
-                    <tr>
-                      <td colSpan="11" className="text-center">
-                        {t("No vaccines found")}
-                      </td>
-                    </tr>
-                  ) : (
-                    vaccines.map((vaccine, index) => (
-                      <tr key={vaccine._id}>
-                        <td className="text-center align-middle">
-                          {index + 1}
-                        </td>
-                        <td className="align-middle">
-                          <div className="d-flex flex-column align-items-center text-center">
-                            {vaccine.vaccineType?.image && (
-                              <img
-                                src={`https://farm-project-bbzj.onrender.com/${vaccine.vaccineType.image.replace(
-                                  /\\/g,
-                                  "/"
-                                )}`}
-                                alt={
-                                  i18n.language === "ar"
-                                    ? vaccine.vaccineType.arabicName
-                                    : vaccine.vaccineType.englishName
-                                }
-                                width="50"
-                                height="50"
-                                className="mb-2"
-                                style={{
-                                  borderRadius: "5px",
-                                  objectFit: "cover",
-                                  border: "1px solid #ddd",
-                                }}
-                              />
-                            )}
-                            <strong>
-                              {vaccine.vaccineType
-                                ? i18n.language === "ar"
+          {/* Mobile Cards View */}
+          <div className="mobile-cards">
+            {vaccines.length > 0 ? (
+              vaccines.map((vaccine, index) => (
+                <div key={vaccine._id} className="vaccine-card">
+                  <div className="card-content">
+                    <div className="card-row">
+                      <span className="card-label">#</span>
+                      <span className="card-value">{index + 1}</span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("Vaccine Name")}</span>
+                      <span className="card-value">
+                        {vaccine.vaccineType
+                          ? i18n.language === "ar"
+                            ? vaccine.vaccineType.arabicName
+                            : vaccine.vaccineType.englishName
+                          : vaccine.otherVaccineName || t("N/A")}
+                        {vaccine.vaccineType && (
+                          <small className="text-muted d-block">
+                            {i18n.language === "ar"
+                              ? vaccine.vaccineType.arabicDiseaseType
+                              : vaccine.vaccineType.englishDiseaseType}
+                          </small>
+                        )}
+                      </span>
+                    </div>
+                    {vaccine.vaccineType?.image && (
+                      <div className="card-row">
+                        <span className="card-label">{t("Image")}</span>
+                        <span className="card-value">
+                          <img
+                            src={`https://farm-project-bbzj.onrender.com/${vaccine.vaccineType.image.replace(
+                              /\\/g,
+                              "/"
+                            )}`}
+                            alt={
+                              i18n.language === "ar"
+                                ? vaccine.vaccineType.arabicName
+                                : vaccine.vaccineType.englishName
+                            }
+                            width="50"
+                            height="50"
+                            style={{
+                              borderRadius: "5px",
+                              objectFit: "cover",
+                              border: "1px solid #ddd",
+                            }}
+                          />
+                        </span>
+                      </div>
+                    )}
+                    <div className="card-row">
+                      <span className="card-label">{t("Bottles")}</span>
+                      <span className="card-value">{vaccine.stock?.bottles || "N/A"}</span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("Doses Per Bottle")}</span>
+                      <span className="card-value">{vaccine.stock?.dosesPerBottle || "N/A"}</span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("Total Doses")}</span>
+                      <span className="card-value">{vaccine.stock?.totalDoses || "N/A"}</span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("Bottle Price")}</span>
+                      <span className="card-value">{vaccine.pricing?.bottlePrice || "N/A"}</span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("Dose Price")}</span>
+                      <span className="card-value">{vaccine.pricing?.dosePrice || "N/A"}</span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("Booster Dose")}</span>
+                      <span className="card-value">{vaccine.BoosterDose || "N/A"}</span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("Annual Dose")}</span>
+                      <span className="card-value">{vaccine.AnnualDose || "N/A"}</span>
+                    </div>
+                    <div className="card-row">
+                      <span className="card-label">{t("Expiry Date")}</span>
+                      <span className="card-value">
+                        {vaccine.expiryDate
+                          ? new Date(vaccine.expiryDate).toLocaleDateString()
+                          : "N/A"}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="card-actions">
+                    <button
+                      className="btn-edit"
+                      onClick={() => editVaccine(vaccine._id)}
+                      title={t("edit")}
+                    >
+                      <FaRegEdit />
+                    </button>
+                    <button
+                      className="btn-delete"
+                      onClick={() => handleClick(vaccine._id)}
+                      title={t("delete")}
+                    >
+                      <RiDeleteBinLine />
+                    </button>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="no-data-mobile">
+                {t("No vaccines found")}
+              </div>
+            )}
+          </div>
+
+          {/* Desktop Table View */}
+          <div className="table-wrapper">
+            <table className="modern-table">
+              <thead>
+                <tr>
+                  <th className="text-center">#</th>
+                  <th className="text-center">{t("Vaccine Name")}</th>
+                  <th className="text-center">{t("Bottles")}</th>
+                  <th className="text-center">{t("Doses Per Bottle")}</th>
+                  <th className="text-center">{t("Total Doses")}</th>
+                  <th className="text-center">{t("Bottle Price")}</th>
+                  <th className="text-center">{t("Dose Price")}</th>
+                  <th className="text-center">{t("Booster Dose")}</th>
+                  <th className="text-center">{t("Annual Dose")}</th>
+                  <th className="text-center">{t("Expiry Date")}</th>
+                  <th className="text-center">{t("actions")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {vaccines.length > 0 ? (
+                  vaccines.map((vaccine, index) => (
+                    <tr key={vaccine._id}>
+                      <td className="text-center">{index + 1}</td>
+                      <td className="text-center">
+                        <div className="d-flex flex-column align-items-center">
+                          {vaccine.vaccineType?.image && (
+                            <img
+                              src={`https://farm-project-bbzj.onrender.com/${vaccine.vaccineType.image.replace(
+                                /\\/g,
+                                "/"
+                              )}`}
+                              alt={
+                                i18n.language === "ar"
                                   ? vaccine.vaccineType.arabicName
                                   : vaccine.vaccineType.englishName
-                                : vaccine.otherVaccineName || t("N/A")}
-                            </strong>
-                            <small className="text-muted">
-                              {vaccine.vaccineType
-                                ? i18n.language === "ar"
-                                  ? vaccine.vaccineType.arabicDiseaseType
-                                  : vaccine.vaccineType.englishDiseaseType
-                                : ""}
-                            </small>
-                          </div>
-                        </td>
-                        <td className="text-center align-middle">
-                          {vaccine.stock?.bottles || "N/A"}
-                        </td>
-                        <td className="text-center align-middle">
-                          {vaccine.stock?.dosesPerBottle || "N/A"}
-                        </td>
-                        <td className="text-center align-middle">
-                          {vaccine.stock?.totalDoses || "N/A"}
-                        </td>
-                        <td className="text-center align-middle">
-                          {vaccine.pricing?.bottlePrice || "N/A"}
-                        </td>
-                        <td className="text-center align-middle">
-                          {vaccine.pricing?.dosePrice || "N/A"}
-                        </td>
-                        <td className="text-center align-middle">
-                          {vaccine.BoosterDose || "N/A"}
-                        </td>
-                        <td className="text-center align-middle">
-                          {vaccine.AnnualDose || "N/A"}
-                        </td>
-                        <td className="text-center align-middle">
-                          {vaccine.expiryDate
-                            ? new Date(vaccine.expiryDate).toLocaleDateString()
-                            : "N/A"}
-                        </td>
-                        <td className="text-center align-middle">
-                          <button
-                            className="btn btn-link p-0 me-2"
-                            onClick={() => editVaccine(vaccine._id)}
-                            title={t("edit")}
-                            style={{ color: "#0f7e34ff" }}
-                          >
-                            <FaRegEdit />
-                          </button>
-                          <button
-                            className="btn btn-link p-0"
-                            style={{ color: "#d33" }}
-                            onClick={() => handleClick(vaccine._id)}
-                            title={t("delete")}
-                          >
-                            <RiDeleteBinLine />
-                          </button>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
+                              }
+                              width="50"
+                              height="50"
+                              className="mb-2"
+                              style={{
+                                borderRadius: "5px",
+                                objectFit: "cover",
+                                border: "1px solid #ddd",
+                              }}
+                            />
+                          )}
+                          <strong>
+                            {vaccine.vaccineType
+                              ? i18n.language === "ar"
+                                ? vaccine.vaccineType.arabicName
+                                : vaccine.vaccineType.englishName
+                              : vaccine.otherVaccineName || t("N/A")}
+                          </strong>
+                          <small className="text-muted">
+                            {vaccine.vaccineType
+                              ? i18n.language === "ar"
+                                ? vaccine.vaccineType.arabicDiseaseType
+                                : vaccine.vaccineType.englishDiseaseType
+                              : ""}
+                          </small>
+                        </div>
+                      </td>
+                      <td className="text-center">{vaccine.stock?.bottles || "N/A"}</td>
+                      <td className="text-center">{vaccine.stock?.dosesPerBottle || "N/A"}</td>
+                      <td className="text-center">{vaccine.stock?.totalDoses || "N/A"}</td>
+                      <td className="text-center">{vaccine.pricing?.bottlePrice || "N/A"}</td>
+                      <td className="text-center">{vaccine.pricing?.dosePrice || "N/A"}</td>
+                      <td className="text-center">{vaccine.BoosterDose || "N/A"}</td>
+                      <td className="text-center">{vaccine.AnnualDose || "N/A"}</td>
+                      <td className="text-center">
+                        {vaccine.expiryDate
+                          ? new Date(vaccine.expiryDate).toLocaleDateString()
+                          : "N/A"}
+                      </td>
+                      <td className="text-center action-buttons">
+                        <button
+                          className="btn-edit"
+                          onClick={() => editVaccine(vaccine._id)}
+                          title={t("edit")}
+                        >
+                          <FaRegEdit />
+                        </button>
+                        <button
+                          className="btn-delete"
+                          onClick={() => handleClick(vaccine._id)}
+                          title={t("delete")}
+                        >
+                          <RiDeleteBinLine />
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="11" className="text-center no-data">
+                      {t("No vaccines found")}
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
 
-            <div className="d-flex justify-content-center mt-4">
-              <nav>{renderModernPagination()}</nav>
-            </div>
+          {/* Pagination */}
+          <div className="pagination-container">
+            {renderModernPagination()}
           </div>
         </div>
       )}
