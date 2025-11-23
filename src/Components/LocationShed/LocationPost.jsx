@@ -31,7 +31,7 @@ function LocationPost() {
 
     try {
       let { data } = await axios.post(
-        `https://farm-project-bbzj.onrender.com/api/location/addlocationshed`,
+        `https://api.mazraaonline.com/api/location/addlocationshed`,
         values,
         { headers }
       );

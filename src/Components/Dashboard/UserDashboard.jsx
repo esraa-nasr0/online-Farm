@@ -45,7 +45,7 @@ export default function UserDashboard() {
 
   useEffect(() => {
     axios
-      .get("https://farm-project-bbzj.onrender.com/api/dashboard/stats-v2", {
+      .get("https://api.mazraaonline.com/api/dashboard/stats-v2", {
         headers: getHeaders(),
       })
       .then((res) => setData(res.data.data))

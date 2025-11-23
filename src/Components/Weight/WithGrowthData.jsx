@@ -24,7 +24,7 @@ function WithGrowthData() {
                 limit,
                 ...filters.tagId && { tagId: filters.tagId }
             };
-            const response = await axios.get(`https://farm-project-bbzj.onrender.com/api/weight/getAllAnimalsWithGrowthData`, {
+            const response = await axios.get(`https://api.mazraaonline.com/api/weight/getAllAnimalsWithGrowthData`, {
                 headers: {
                     Authorization: token?.startsWith("Bearer ") ? token : `Bearer ${token}`,
                 },

@@ -67,7 +67,7 @@ function EditVaccine() {
         };
 
         const response = await axios.patch(
-          `https://farm-project-bbzj.onrender.com/api/vaccine/UpdateVaccine/${id}`,
+          `https://api.mazraaonline.com/api/vaccine/UpdateVaccine/${id}`,
           payload,
           { headers: getHeaders() }
         );
@@ -108,7 +108,7 @@ function EditVaccine() {
 
         // 2) حمل بيانات اللقاح الحالي واملأ الفورم
         const details = await axios.get(
-          `https://farm-project-bbzj.onrender.com/api/vaccine/GetSingleVaccine/${id}`,
+          `https://api.mazraaonline.com/api/vaccine/GetSingleVaccine/${id}`,
           { headers: getHeaders() }
         );
         const vaccine = details.data?.data?.vaccine || {};
@@ -183,7 +183,7 @@ function EditVaccine() {
       filteredVaccines.map(item => ({
         value: item._id,
         label: i18n.language === "ar" ? item.arabicName : item.englishName,
-        image: item.image ? `https://farm-project-bbzj.onrender.com/${item.image.replace(/\\/g, "/")}` : '',
+        image: item.image ? `https://api.mazraaonline.com/${item.image.replace(/\\/g, "/")}` : '',
       })),
     [filteredVaccines, i18n.language]
   );

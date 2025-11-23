@@ -16,7 +16,7 @@ const getHeaders = () => {
 function LocationMenue() {
     const headers = getHeaders(); // Get the latest headers
 
-    return axios.get('https://farm-project-bbzj.onrender.com/api/location/GetAll-Locationsheds-menue', {
+    return axios.get('https://api.mazraaonline.com/api/location/GetAll-Locationsheds-menue', {
         headers
     })
     .then((response) => response)
@@ -26,7 +26,7 @@ function LocationMenue() {
 //Remove an animal by ID
 function removeLocation(id) {
     const headers = getHeaders(); 
-    return axios.delete(`https://farm-project-bbzj.onrender.com/api/location/deletelocationShed/${id}`, { headers })
+    return axios.delete(`https://api.mazraaonline.com/api/location/deletelocationShed/${id}`, { headers })
         .then((response) => response)
         .catch((error) => error);
 }
@@ -34,7 +34,7 @@ function removeLocation(id) {
 // Fetch all location shed
 function getLocation(page, limit, filters = {}) {
     const headers = getHeaders(); 
-    return axios.get(`https://farm-project-bbzj.onrender.com/api/location/GetAll-Locationsheds`, {
+    return axios.get(`https://api.mazraaonline.com/api/location/GetAll-Locationsheds`, {
         params: {
             page,
             limit,

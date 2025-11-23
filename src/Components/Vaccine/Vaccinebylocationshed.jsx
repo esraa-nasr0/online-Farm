@@ -90,7 +90,7 @@ function Vaccinebylocationshed() {
         };
 
         const { data } = await axios.post(
-          "https://farm-project-bbzj.onrender.com/api/vaccine/AddVaccineForAnimals",
+          "https://api.mazraaonline.com/api/vaccine/AddVaccineForAnimals",
           dataToSend,
           { headers }
         );

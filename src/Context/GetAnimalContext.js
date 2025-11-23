@@ -20,7 +20,7 @@ const getHeaders = () => {
 
         return axios
           .get(
-            `https://farm-project-bbzj.onrender.com/api/vaccine/GetVaccineForAnimal/${animalid}`,
+            `https://api.mazraaonline.com/api/vaccine/GetVaccineForAnimal/${animalid}`,
             { headers }
           )
           .then((response) => {
@@ -35,14 +35,14 @@ const getHeaders = () => {
 
     function getAnimalMating(animalid) {
       const headers = getHeaders(); // Get the latest headers
-        return axios.get(`https://farm-project-bbzj.onrender.com/api/mating/GetSingleAnimalMating/${animalid}` , {headers})
+        return axios.get(`https://api.mazraaonline.com/api/mating/GetSingleAnimalMating/${animalid}` , {headers})
         .then((response)=>response)
         .catch((err)=>err)
     }
 
     function getAnimalBreeding(animalid) {
       const headers = getHeaders(); // Get the latest headers
-      return axios.get(`https://farm-project-bbzj.onrender.com/api/breeding/GetSingleAnimalBreeding/${animalid}` , {headers})
+      return axios.get(`https://api.mazraaonline.com/api/breeding/GetSingleAnimalBreeding/${animalid}` , {headers})
       .then((response)=>response)
       .catch((err)=>err)
   }
@@ -51,7 +51,7 @@ const getHeaders = () => {
     
   function getAnimalWeight(animalid) {
     const headers = getHeaders(); // Get the latest headers
-      return axios.get(`https://farm-project-bbzj.onrender.com/api/weight/GetSingleAnimalWeight/${animalid}` , {headers})
+      return axios.get(`https://api.mazraaonline.com/api/weight/GetSingleAnimalWeight/${animalid}` , {headers})
       .then((response)=>response)
       .catch((err)=>err)
   }
@@ -59,7 +59,7 @@ const getHeaders = () => {
 
   function getAnimalTreatment(animalid) {
     const headers = getHeaders(); // Get the latest headers
-    return axios.get(`https://farm-project-bbzj.onrender.com/api/treatment/gettreatmentsForAnimal/${animalid}` , {headers})
+    return axios.get(`https://api.mazraaonline.com/api/treatment/gettreatmentsForAnimal/${animalid}` , {headers})
     .then((response)=>response)
     .catch((err)=>err)
 }

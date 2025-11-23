@@ -187,7 +187,7 @@ function Vaccinebyanimaltable() {
     try {
       setIsLoading(true);
       const response = await axios.get(
-        'https://farm-project-bbzj.onrender.com/api/vaccine/downloadTemplate',
+        'https://api.mazraaonline.com/api/vaccine/downloadTemplate',
         {
           responseType: 'blob',
           headers: {
@@ -218,7 +218,7 @@ function Vaccinebyanimaltable() {
     try {
       setIsLoading(true);
       const response = await axios.get(
-        'https://farm-project-bbzj.onrender.com/api/vaccine/export',
+        'https://api.mazraaonline.com/api/vaccine/export',
         {
           responseType: 'blob',
           headers: {
@@ -288,7 +288,7 @@ function Vaccinebyanimaltable() {
       formData.append('file', file);
 
       const response = await axios.post(
-        'https://farm-project-bbzj.onrender.com/api/vaccine/import',
+        'https://api.mazraaonline.com/api/vaccine/import',
         formData,
         {
           headers: {

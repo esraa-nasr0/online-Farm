@@ -44,7 +44,7 @@ export default function EditFodder() {
       setError(null);
       try {
         const { data } = await axios.get(
-          `https://farm-project-bbzj.onrender.com/api/fodder/getsinglefodder/${id}`,
+          `https://api.mazraaonline.com/api/fodder/getsinglefodder/${id}`,
           { headers }
         );
         if (data?.data?.fodder) {
@@ -74,7 +74,7 @@ export default function EditFodder() {
     setError(null);
     try {
       const { data } = await axios.patch(
-        `https://farm-project-bbzj.onrender.com/api/fodder/updatefodder/${id}`,
+        `https://api.mazraaonline.com/api/fodder/updatefodder/${id}`,
         values,
         { headers }
       );

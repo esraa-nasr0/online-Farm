@@ -26,7 +26,7 @@ function Excluded() {
         setIsLoading(true);
         try {
             const { data } = await axios.post(
-                'https://farm-project-bbzj.onrender.com/api/excluded/addexcluded',
+                'https://api.mazraaonline.com/api/excluded/addexcluded',
                 values,
                 { headers }
             );

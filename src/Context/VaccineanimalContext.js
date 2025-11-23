@@ -18,7 +18,7 @@ const getHeaders = () => {
 function getVaccineMenue() {
     const headers = getHeaders(); 
     return axios
-        .get(`https://farm-project-bbzj.onrender.com/api/vaccine/GetVaccine-menue`, { headers })
+        .get(`https://api.mazraaonline.com/api/vaccine/GetVaccine-menue`, { headers })
         .then((response) => response)
         .catch((err) => err);
 }
@@ -26,7 +26,7 @@ function getVaccineMenue() {
 async function getallVaccineanimal(page, limit, filters = {}) {
     try {
         const headers = getHeaders(); // Get the latest headers
-        const response = await axios.get('https://farm-project-bbzj.onrender.com/api/vaccine/GetAllVaccine', {
+        const response = await axios.get('https://api.mazraaonline.com/api/vaccine/GetAllVaccine', {
             headers,
             params: {
                 page,
@@ -44,7 +44,7 @@ async function getallVaccineanimal(page, limit, filters = {}) {
 async function DeletVaccineanimal(id) {
     try {
         const headers = getHeaders(); // Get the latest headers
-        const response = await axios.delete(`https://farm-project-bbzj.onrender.com/api/vaccine/DeleteVaccine/${id}`, { headers });
+        const response = await axios.delete(`https://api.mazraaonline.com/api/vaccine/DeleteVaccine/${id}`, { headers });
         return response.data;
     } catch (err) {
         console.error("Error deleting vaccine:", err.response ? err.response.data : err.message);

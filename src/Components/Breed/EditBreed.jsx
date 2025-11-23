@@ -68,7 +68,7 @@ function EditBreed() {
     const headers = getHeaders();
     try {
       let { data } = await axios.get(
-        `https://farm-project-bbzj.onrender.com/api/breed/GetSingle-breed/${id}`,
+        `https://api.mazraaonline.com/api/breed/GetSingle-breed/${id}`,
         { headers }
       );
 
@@ -102,7 +102,7 @@ function EditBreed() {
 
     try {
       let { data } = await axios.patch(
-        `https://farm-project-bbzj.onrender.com/api/breed/updatebreed/${id}`,
+        `https://api.mazraaonline.com/api/breed/updatebreed/${id}`,
         values,
         { headers }
       );

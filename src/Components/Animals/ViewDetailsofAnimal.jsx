@@ -33,7 +33,7 @@ export default function ViewDetailsofAnimal() {
         setError(null);
         try {
             let { data } = await axios.get(
-                `https://farm-project-bbzj.onrender.com/api/animal/getsinglanimals/${id}`,
+                `https://api.mazraaonline.com/api/animal/getsinglanimals/${id}`,
                 { headers }
             );
             if (data.status === 'success') {

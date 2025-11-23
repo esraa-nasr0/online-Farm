@@ -81,7 +81,7 @@ export default function EditFeedbyLocation() {
           })),
         };
         const response = await axios.patch(
-          `https://farm-project-bbzj.onrender.com/api/feed/updatefeedByShed/${id}`,
+          `https://api.mazraaonline.com/api/feed/updatefeedByShed/${id}`,
           requestData,
           { headers }
         );
@@ -109,7 +109,7 @@ export default function EditFeedbyLocation() {
       const headers = getHeaders();
       try {
         const { data } = await axios.get(
-          `https://farm-project-bbzj.onrender.com/api/feed/getsingleFeedByShed/${id}`,
+          `https://api.mazraaonline.com/api/feed/getsingleFeedByShed/${id}`,
           { headers }
         );
 

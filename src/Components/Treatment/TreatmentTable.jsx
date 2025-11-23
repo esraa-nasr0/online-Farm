@@ -181,7 +181,7 @@ function TreatmentTable() {
     try {
       setIsLoading(true);
       const response = await axios.get(
-        "https://farm-project-bbzj.onrender.com/api/treatment/downloadTemplate",
+        "https://api.mazraaonline.com/api/treatment/downloadTemplate",
         {
           responseType: "blob",
           headers: {
@@ -213,7 +213,7 @@ function TreatmentTable() {
     try {
       setIsLoading(true);
       const response = await axios.get(
-        "https://farm-project-bbzj.onrender.com/api/treatment/export",
+        "https://api.mazraaonline.com/api/treatment/export",
         {
           responseType: "blob",
           headers: {
@@ -283,7 +283,7 @@ function TreatmentTable() {
       formData.append("file", file);
 
       const response = await axios.post(
-        "https://farm-project-bbzj.onrender.com/api/treatment/import",
+        "https://api.mazraaonline.com/api/treatment/import",
         formData,
         {
           headers: {

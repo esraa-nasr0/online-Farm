@@ -18,7 +18,7 @@ const getHeaders = () => {
 function getUsers(page, limit, filters = {}) {
     const headers = getHeaders(); // Get the latest headers
 
-    return axios.get('https://farm-project-bbzj.onrender.com/api/getusers', {
+    return axios.get('https://api.mazraaonline.com/api/getusers', {
         params: {
             page,
             limit,

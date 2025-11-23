@@ -25,7 +25,7 @@ function Weight() {
         setError(null);
         try {
             let { data } = await axios.post(
-                `https://farm-project-bbzj.onrender.com/api/weight/AddWeight`,
+                `https://api.mazraaonline.com/api/weight/AddWeight`,
                 value,
                 { headers }
             );

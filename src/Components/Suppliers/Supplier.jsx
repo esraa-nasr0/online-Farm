@@ -68,7 +68,7 @@ function Supplier() {
     try {
       console.log("Submitting:", values);
       const { data } = await axios.post(
-        `https://farm-project-bbzj.onrender.com/api/supplier/addsupplier`,
+        `https://api.mazraaonline.com/api/supplier/addsupplier`,
         {
           ...values,
           treatmentIds: values.treatmentIds.filter((id) => id !== ""),

@@ -19,7 +19,7 @@ const getHeaders = () => {
 function getAnimals(page, limit, filters = {}) {
     const headers = getHeaders(); // Get the latest headers
 
-    return axios.get('https://farm-project-bbzj.onrender.com/api/animal/getallanimals', {
+    return axios.get('https://api.mazraaonline.com/api/animal/getallanimals', {
         params: {
             page,
             limit,
@@ -35,7 +35,7 @@ function getAnimals(page, limit, filters = {}) {
 function removeAnimals(id) {
     const headers = getHeaders(); // Get the latest headers
 
-    return axios.delete(`https://farm-project-bbzj.onrender.com/api/animal/deleteanimal/${id}`, { headers })
+    return axios.delete(`https://api.mazraaonline.com/api/animal/deleteanimal/${id}`, { headers })
         .then((response) => response)
         .catch((error) => error);
 }
@@ -44,7 +44,7 @@ function removeAnimals(id) {
 function costAnimal(page, limit, filters = {}) {
     const headers = getHeaders(); // Get the latest headers
 
-    return axios.get(`https://farm-project-bbzj.onrender.com/api/animal/getanimalCost`, {
+    return axios.get(`https://api.mazraaonline.com/api/animal/getanimalCost`, {
         params: {
             page,
             limit,

@@ -66,7 +66,7 @@ export default function Feedbylocation() {
       setIsLoading(true);
       setError(null);
       const response = await axios.post(
-        "https://farm-project-bbzj.onrender.com/api/feed/addfeedbylocationshed",
+        "https://api.mazraaonline.com/api/feed/addfeedbylocationshed",
         values,
         { headers }
       );

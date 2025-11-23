@@ -67,7 +67,7 @@ const getHeaders = () => {
                     item.sonarDate = !isNaN(expectedDeliveryDateObj) ? expectedDeliveryDateObj.toISOString() : null;
                 }
                 const response = await axios.post(
-                    'https://farm-project-bbzj.onrender.com/api/mating/import',
+                    'https://api.mazraaonline.com/api/mating/import',
                     item,
                     { headers: { ...headers, 'Content-Type': 'application/json' } }
                 );

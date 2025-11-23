@@ -27,7 +27,7 @@ function EditMating() {
   const fetchMaleTags = async () => {
     const headers = getHeaders();
     const res = await axios.get(
-      "https://farm-project-bbzj.onrender.com/api/animal/males",
+      "https://api.mazraaonline.com/api/animal/males",
       { headers }
     );
     return res.data.data;
@@ -63,7 +63,7 @@ function EditMating() {
       );
       console.log("Submitting form with values:", payload);
       let { data } = await axios.patch(
-        `https://farm-project-bbzj.onrender.com/api/mating/UpdateMating/${id}`,
+        `https://api.mazraaonline.com/api/mating/UpdateMating/${id}`,
         payload,
         { headers }
       );
@@ -94,7 +94,7 @@ function EditMating() {
       const headers = getHeaders();
       try {
         let { data } = await axios.get(
-          `https://farm-project-bbzj.onrender.com/api/mating/GetSingleMating/${id}`,
+          `https://api.mazraaonline.com/api/mating/GetSingleMating/${id}`,
           { headers }
         );
         console.log("API response:", data);

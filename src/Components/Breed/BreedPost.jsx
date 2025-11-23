@@ -71,7 +71,7 @@ function BreedPost() {
 
     try {
         let { data } = await axios.post(
-            `https://farm-project-bbzj.onrender.com/api/breed/addbreed`,
+            `https://api.mazraaonline.com/api/breed/addbreed`,
             values,
             { headers }
         );

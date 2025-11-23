@@ -264,6 +264,7 @@ export default function ModernSidebar({
               <div className="lang-menu">
                 <button onClick={() => onChangeLanguage?.("en")}>{t("English")}</button>
                 <button onClick={() => onChangeLanguage?.("ar")}>{t("العربية")}</button>
+                <button onClick={() => onChangeLanguage?.("ur")}>{t("اردو")}</button>
               </div>
             )}
           </div>

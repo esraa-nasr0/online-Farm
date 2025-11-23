@@ -19,7 +19,7 @@ async function Resetpassword(value) {
 
     try {
     let { data } = await axios.post(
-        `https://farm-project-bbzj.onrender.com/api/resetPassword`,
+        `https://api.mazraaonline.com/api/resetPassword`,
         value,
         {
         headers: {

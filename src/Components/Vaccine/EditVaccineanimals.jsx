@@ -49,7 +49,7 @@ function EditVaccine() {
     setIsLoading(true);
     try {
       const response = await axios.patch(
-        `https://farm-project-bbzj.onrender.com/api/vaccine/updateVaccineEntry/${id}`,
+        `https://api.mazraaonline.com/api/vaccine/updateVaccineEntry/${id}`,
         {
           tagId: values.tagId,
           date: values.date,
@@ -96,7 +96,7 @@ function EditVaccine() {
     async function fetchVaccineEntry() {
       try {
         const response = await axios.get(
-          `https://farm-project-bbzj.onrender.com/api/vaccine/getSingleVaccineEntry/${id}`,
+          `https://api.mazraaonline.com/api/vaccine/getSingleVaccineEntry/${id}`,
           { headers: getHeaders() }
         );
 

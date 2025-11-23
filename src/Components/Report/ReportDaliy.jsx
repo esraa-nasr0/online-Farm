@@ -20,7 +20,7 @@ function ReportDaily() {
         setIsLoading(true);
         setError(null);
         try {
-            const { data } = await axios.get(`https://farm-project-bbzj.onrender.com/api/report/daily`, {
+            const { data } = await axios.get(`https://api.mazraaonline.com/api/report/daily`, {
                 params: { animalType },
                 headers
             });

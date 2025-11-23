@@ -20,7 +20,7 @@ const getHeaders = () => {
     function getSupplier(page, limit, filters = {}) {
         const headers = getHeaders(); // Get the latest headers
 
-        return axios.get(`https://farm-project-bbzj.onrender.com/api/supplier/getallsuppliers` , {
+        return axios.get(`https://api.mazraaonline.com/api/supplier/getallsuppliers` , {
             params: {
                 page,
                 limit,
@@ -33,7 +33,7 @@ const getHeaders = () => {
     function deleteSupplier(id) {
         const headers = getHeaders(); // Get the latest headers
 
-        return axios.delete(`https://farm-project-bbzj.onrender.com/api/supplier/deletesupplier/${id}` , {headers})
+        return axios.delete(`https://api.mazraaonline.com/api/supplier/deletesupplier/${id}` , {headers})
         .then((response)=>response)
         .catch((err)=>err)
     }

@@ -16,7 +16,7 @@ export default function Register() {
     setisLoading(true);
     try {
       const { data } = await axios.post(
-        "https://farm-project-bbzj.onrender.com/api/register",
+        "https://api.mazraaonline.com/api/register",
         value
       );
       if (data.status === "success") {

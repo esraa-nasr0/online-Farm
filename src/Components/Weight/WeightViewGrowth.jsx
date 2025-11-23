@@ -16,7 +16,7 @@ function WeightViewGrowth() {
     };
 
     const response = await axios.get(
-      `https://farm-project-bbzj.onrender.com/api/weight/getAnimalWithGrowthData/${id}`,
+      `https://api.mazraaonline.com/api/weight/getAnimalWithGrowthData/${id}`,
       { headers }
     );
 

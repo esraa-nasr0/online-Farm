@@ -69,7 +69,7 @@ function VaccinebytagId() {
                 };
         
                 const {data} = await axios.post(
-                    'https://farm-project-bbzj.onrender.com/api/vaccine/AddVaccineForAnimal',
+                    'https://api.mazraaonline.com/api/vaccine/AddVaccineForAnimal',
                     dataToSend,
                     { headers }
                 );

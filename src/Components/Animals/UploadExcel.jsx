@@ -65,7 +65,7 @@ const getHeaders = () => {
                     item.purchaseDate = !isNaN(purchaseDateObj) ? purchaseDateObj.toISOString() : null;
                 }
                 const response = await axios.post(
-                    'https://farm-project-bbzj.onrender.com/api/animal/import',
+                    'https://api.mazraaonline.com/api/animal/import',
                     item,
                     { headers: { ...headers, 'Content-Type': 'application/json' } }
                 );

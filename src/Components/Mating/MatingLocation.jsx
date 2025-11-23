@@ -31,7 +31,7 @@ function MatingLocation() {
     const fetchMaleTags = async () => {
         const headers = getHeaders();
         const res = await axios.get(
-            'https://farm-project-bbzj.onrender.com/api/animal/males',
+            'https://api.mazraaonline.com/api/animal/males',
             { headers }
         );
         return res.data.data;
@@ -70,7 +70,7 @@ function MatingLocation() {
 
         try {
             let { data } = await axios.post(
-                `https://farm-project-bbzj.onrender.com/api/mating/AddMatingByLocation`,
+                `https://api.mazraaonline.com/api/mating/AddMatingByLocation`,
                 value,
                 { headers }
             );

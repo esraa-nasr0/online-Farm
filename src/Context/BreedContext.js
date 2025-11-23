@@ -16,7 +16,7 @@ const getHeaders = () => {
 function BreedMenue() {
     const headers = getHeaders(); // Get the latest headers
 
-    return axios.get('https://farm-project-bbzj.onrender.com/api/breed/GetAll-breeds-menue', {
+    return axios.get('https://api.mazraaonline.com/api/breed/GetAll-breeds-menue', {
         headers
     })
     .then((response) => response)
@@ -26,7 +26,7 @@ function BreedMenue() {
 //Remove an animal by ID
 function removeBreed(id) {
     const headers = getHeaders(); 
-    return axios.delete(`https://farm-project-bbzj.onrender.com/api/breed/deletebreed/${id}`, { headers })
+    return axios.delete(`https://api.mazraaonline.com/api/breed/deletebreed/${id}`, { headers })
         .then((response) => response)
         .catch((error) => error);
 }
@@ -34,7 +34,7 @@ function removeBreed(id) {
 // Fetch all breed
 function getBreed(page, limit, filters = {}) {
     const headers = getHeaders(); 
-    return axios.get(`https://farm-project-bbzj.onrender.com/api/breed/GetAll-breeds`, {
+    return axios.get(`https://api.mazraaonline.com/api/breed/GetAll-breeds`, {
         params: {
             page,
             limit,

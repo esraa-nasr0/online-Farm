@@ -19,7 +19,7 @@ const getHeaders = () => {
 export function getAllBreeding(page, limit, filters = {}) {
     const headers = getHeaders(); // Get the latest headers
 
-    return axios.get('https://farm-project-bbzj.onrender.com/api/breeding/GetAllBreeding', {
+    return axios.get('https://api.mazraaonline.com/api/breeding/GetAllBreeding', {
         params: {
             page,
             limit,
@@ -38,7 +38,7 @@ export function getAllBreeding(page, limit, filters = {}) {
 export function deleteBreeding(id) {
     const headers = getHeaders(); // Get the latest headers
 
-    return axios.delete(`https://farm-project-bbzj.onrender.com/api/breeding/DeleteBreeding/${id}`, { headers })
+    return axios.delete(`https://api.mazraaonline.com/api/breeding/DeleteBreeding/${id}`, { headers })
         .then((response) => response.data)
         .catch((err) => {
             console.error("Error deleting breeding entry:", err);

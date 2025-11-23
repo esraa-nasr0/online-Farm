@@ -20,7 +20,7 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      let { data } = await axios.post(`https://farm-project-bbzj.onrender.com/api/login`, value);
+      let { data } = await axios.post(`https://api.mazraaonline.com/api/login`, value);
 
       if (data.status === "success") {
         setIsLoading(false);
@@ -43,13 +43,24 @@ export default function Login() {
   }
 
   let formik = useFormik({
-    initialValues: {
-      email: "",
-      password: "",
-    },
-    onSubmit: submitLogin,
-    validateOnMount: true, // Add this to ensure validation runs on mount
-  });
+  initialValues: {
+    email: "",
+    password: "",
+  },
+
+  validationSchema: Yup.object({
+    email: Yup.string()
+      .email("Please enter a valid email address")
+      .required("Email is required"),
+
+    password: Yup.string()
+      .min(6, "Password must be at least 6 characters")
+      .required("Password is required"),
+  }),
+
+  onSubmit: submitLogin,
+});
+
 
   React.useEffect(() => {
     formik.setValues({

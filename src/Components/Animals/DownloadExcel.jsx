@@ -19,7 +19,7 @@ const getHeaders = () => {
         const headers = getHeaders(); // Get the latest headers
         try {
             const response = await axios.get(
-                'https://farm-project-bbzj.onrender.com/api/animal/exportAnimalsToExcel', 
+                'https://api.mazraaonline.com/api/animal/exportAnimalsToExcel', 
                 { headers, responseType: 'blob' }
             );
             const url = window.URL.createObjectURL(new Blob([response.data]));

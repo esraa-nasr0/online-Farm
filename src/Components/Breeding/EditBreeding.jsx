@@ -91,7 +91,7 @@ export default function EditBreeding() {
 
     try {
       const response = await axios.get(
-        `https://farm-project-bbzj.onrender.com/api/breeding/GetSingleBreeding/${id}`,
+        `https://api.mazraaonline.com/api/breeding/GetSingleBreeding/${id}`,
         { headers }
       );
 
@@ -235,7 +235,7 @@ export default function EditBreeding() {
       };
 
       const { data } = await axios.patch(
-        `https://farm-project-bbzj.onrender.com/api/breeding/UpdateBreeding/${id}`,
+        `https://api.mazraaonline.com/api/breeding/UpdateBreeding/${id}`,
         payload,
         { headers }
       );

@@ -17,7 +17,7 @@ const getHeaders = () => {
   };
     function getWeight(page, limit, filters = {}) {
         const headers = getHeaders(); // Get the latest headers
-        return axios.get(`https://farm-project-bbzj.onrender.com/api/weight/GetAllWeight` , {
+        return axios.get(`https://api.mazraaonline.com/api/weight/GetAllWeight` , {
             params: {
                 page,
                 limit,
@@ -30,7 +30,7 @@ const getHeaders = () => {
     
     function deleteWeight(id) {
         const headers = getHeaders(); // Get the latest headers
-        return axios.delete(`https://farm-project-bbzj.onrender.com/api/weight/DeleteWeight/${id}` , {headers})
+        return axios.delete(`https://api.mazraaonline.com/api/weight/DeleteWeight/${id}` , {headers})
         .then((response)=>response)
         .catch((err)=>err)
     }

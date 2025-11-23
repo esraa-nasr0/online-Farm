@@ -39,7 +39,7 @@ function EditTreatment() {
 
   try {
     const { data } = await axios.patch(
-      `https://farm-project-bbzj.onrender.com/api/treatment/updatetreatment/${id}`,
+      `https://api.mazraaonline.com/api/treatment/updatetreatment/${id}`,
       payload,
       { headers }
     );
@@ -61,7 +61,7 @@ function EditTreatment() {
       setError(null);
       try {
         const { data } = await axios.get(
-          `https://farm-project-bbzj.onrender.com/api/treatment/getsingletreatment/${id}`,
+          `https://api.mazraaonline.com/api/treatment/getsingletreatment/${id}`,
           { headers }
         );
         if (data?.data?.treatment) {

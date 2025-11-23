@@ -35,7 +35,7 @@ function EditWeight() {
                 Date: convertToISO(values.Date),
             };
             let { data } = await axios.patch(
-                `https://farm-project-bbzj.onrender.com/api/weight/updateweight/${id}`,
+                `https://api.mazraaonline.com/api/weight/updateweight/${id}`,
                 updatedValues,
                 { headers }
             );
@@ -65,7 +65,7 @@ function EditWeight() {
             const headers = getHeaders();
             try {
                 let { data } = await axios.get(
-                    `https://farm-project-bbzj.onrender.com/api/weight/GetSingleWeight/${id}`,
+                    `https://api.mazraaonline.com/api/weight/GetSingleWeight/${id}`,
                     { headers }
                 );
                 console.log("API response:", data);

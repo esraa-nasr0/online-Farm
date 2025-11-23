@@ -18,7 +18,7 @@ export let Feedbylocationcontext=createContext()
 function getAllfeeds(page, limit, filters = {}) {
     const headers = getHeaders(); // Get the latest headers
 
-    return axios.get('https://farm-project-bbzj.onrender.com/api/feed/getAllFeedByShed',{
+    return axios.get('https://api.mazraaonline.com/api/feed/getAllFeedByShed',{
         params: {
             page,
             limit,
@@ -35,7 +35,7 @@ async function Deletfeed(id){
     const headers = getHeaders(); // Get the latest headers
 
     try {
-        const response = await axios.delete(`https://farm-project-bbzj.onrender.com/api/feed/deletefeedByShed/${id}`, { headers });
+        const response = await axios.delete(`https://api.mazraaonline.com/api/feed/deletefeedByShed/${id}`, { headers });
         return response.data;
     } catch (err) {
         console.error("Error deleting vaccine:", err.response ? err.response.data : err.message);

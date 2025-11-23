@@ -19,7 +19,7 @@ const getHeaders = () => {
 function getTreatment(page, limit, filters = {}) {
     const headers = getHeaders(); 
     return axios
-        .get(`https://farm-project-bbzj.onrender.com/api/treatment/getalltreatmentes`, {
+        .get(`https://api.mazraaonline.com/api/treatment/getalltreatmentes`, {
             params: {
                 page,
                 limit,
@@ -32,7 +32,7 @@ function getTreatment(page, limit, filters = {}) {
 function deleteTreatment(id) {
     const headers = getHeaders(); 
     return axios
-        .delete(`https://farm-project-bbzj.onrender.com/api/treatment/deletetreatment/${id}`, { headers })
+        .delete(`https://api.mazraaonline.com/api/treatment/deletetreatment/${id}`, { headers })
         .then((response) => response)
         .catch((err) => err);
 }
@@ -40,7 +40,7 @@ function deleteTreatment(id) {
 function getTreatmentByAnimal(page, limit, filters = {}) {
     const headers = getHeaders(); 
     return axios
-        .get(`https://farm-project-bbzj.onrender.com/api/treatment/getAlltreatmentforAnimals`, {
+        .get(`https://api.mazraaonline.com/api/treatment/getAlltreatmentforAnimals`, {
             params: {
                 page,
                 limit,
@@ -54,7 +54,7 @@ function getTreatmentByAnimal(page, limit, filters = {}) {
 function deleteTreatmentByAnimal(id) {
     const headers = getHeaders(); 
     return axios
-        .delete(`https://farm-project-bbzj.onrender.com/api/treatment/deletetreatmentforAnimals/${id}`, { headers })
+        .delete(`https://api.mazraaonline.com/api/treatment/deletetreatmentforAnimals/${id}`, { headers })
         .then((response) => response)
         .catch((err) => err);
 }
@@ -63,7 +63,7 @@ function deleteTreatmentByAnimal(id) {
 function getTreatmentMenue() {
     const headers = getHeaders(); 
     return axios
-        .get(`https://farm-project-bbzj.onrender.com/api/treatment/gettreatments`, { headers })
+        .get(`https://api.mazraaonline.com/api/treatment/gettreatments`, { headers })
         .then((response) => response)
         .catch((err) => err);
 }

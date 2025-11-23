@@ -53,7 +53,7 @@ function Report() {
     setError(null);
     try {
       const headers = getHeaders();
-      const resp = await axios.get("https://farm-project-bbzj.onrender.com/api/filter/report", {
+      const resp = await axios.get("https://api.mazraaonline.com/api/filter/report", {
         params: { animalType, dateFrom, dateTo },
         headers,
       });
@@ -87,7 +87,7 @@ function Report() {
     setError(null);
     try {
       const headers = getHeaders();
-      const resp = await axios.get("https://farm-project-bbzj.onrender.com/api/report/download", {
+      const resp = await axios.get("https://api.mazraaonline.com/api/report/download", {
         params: { animalType, dateFrom, dateTo, lang: i18n.language },
         headers,
         responseType: "blob",

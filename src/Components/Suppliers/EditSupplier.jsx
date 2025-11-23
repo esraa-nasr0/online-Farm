@@ -44,7 +44,7 @@ function EditSupplier() {
   const fetchSupplier = useCallback(async () => {
     try {
       const { data } = await axios.get(
-        `https://farm-project-bbzj.onrender.com/api/supplier/getSinglesuppliers/${supplierId}`,
+        `https://api.mazraaonline.com/api/supplier/getSinglesuppliers/${supplierId}`,
         { headers: getHeaders() }
       );
 
@@ -89,7 +89,7 @@ function EditSupplier() {
     try {
       // تحديث بيانات المورد
       const { data } = await axios.patch(
-        `https://farm-project-bbzj.onrender.com/api/supplier/updatesupplier/${supplierId}`,
+        `https://api.mazraaonline.com/api/supplier/updatesupplier/${supplierId}`,
         {
           name: values.name,
           email: values.email,

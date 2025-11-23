@@ -1,3 +1,4 @@
+// src/components/Layout/Layout.jsx
 import React, { useState, useEffect } from "react";
 import Navbar from "../Navbar/Navbar";
 import { Outlet, useLocation } from "react-router-dom";
@@ -20,7 +21,7 @@ export default function Layout() {
   });
 
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const isRTL = i18n.language === "ar";
+  const isRTL = i18n.language === "ar" || i18n.language === "ur";
   const [isFattening, setIsFattening] = useState(false);
 
   const hideSidebarPaths = [
@@ -122,7 +123,7 @@ export default function Layout() {
               onChangeLanguage={(lang) => {
                 i18n.changeLanguage(lang);
                 localStorage.setItem("lang", lang);
-                document.dir = lang === "ar" ? "rtl" : "ltr";
+                document.dir = lang === "ar" || lang === "ur" ? "rtl" : "ltr";
               }}
               onToggle={toggleSidebar}
             />

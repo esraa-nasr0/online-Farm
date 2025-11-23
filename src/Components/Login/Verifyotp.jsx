@@ -18,7 +18,7 @@ async function Verifyotp(value) {
     setIsLoading(true);
 
     try {
-    let { data } = await axios.post(`https://farm-project-bbzj.onrender.com/api/verifyCode`, value);
+    let { data } = await axios.post(`https://api.mazraaonline.com/api/verifyCode`, value);
 
     if (data.status === "success") {
         localStorage.setItem("Authorization", data.token);

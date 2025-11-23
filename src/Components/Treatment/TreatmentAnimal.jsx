@@ -50,7 +50,7 @@ function TreatmentAnimal() {
     setError(null);
     try {
       const { data } = await axios.post(
-        `https://farm-project-bbzj.onrender.com/api/treatment/addtreatmentbyanimal`,
+        `https://api.mazraaonline.com/api/treatment/addtreatmentbyanimal`,
         values,
         { headers }
       );

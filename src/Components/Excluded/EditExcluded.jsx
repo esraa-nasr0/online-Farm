@@ -31,7 +31,7 @@ export default function EditExcluded() {
     setIsLoading(true);
     try {
       const response = await axios.get(
-        `https://farm-project-bbzj.onrender.com/api/excluded/getSingleExcludeds/${id}`,
+        `https://api.mazraaonline.com/api/excluded/getSingleExcludeds/${id}`,
         { headers }
       );
       const excludedData = response.data.data.excluded;
@@ -61,7 +61,7 @@ export default function EditExcluded() {
     setIsLoading(true);
     try {
       const { data } = await axios.patch(
-        `https://farm-project-bbzj.onrender.com/api/excluded/updateexcluded/${id}`,
+        `https://api.mazraaonline.com/api/excluded/updateexcluded/${id}`,
         values,
         { headers }
       );

@@ -16,7 +16,7 @@ async function forgetpassword(value) {
     setIsLoading(true);
 
     try {
-    let { data } = await axios.post(`https://farm-project-bbzj.onrender.com/api/forgetPassword`, value);
+    let { data } = await axios.post(`https://api.mazraaonline.com/api/forgetPassword`, value);
 
     if (data.status === "success") {
         navigate("/verifyotp"); 

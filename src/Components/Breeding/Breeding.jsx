@@ -154,7 +154,7 @@ export default function Breeding() {
       };
 
       const { data } = await axios.post(
-        `https://farm-project-bbzj.onrender.com/api/breeding/AddBreeding`,
+        `https://api.mazraaonline.com/api/breeding/AddBreeding`,
         dataToSubmit,
         { headers }
       );

@@ -34,7 +34,7 @@ export default function Feed() {
     setError("");
     try {
       const { data } = await axios.get(
-        "https://farm-project-bbzj.onrender.com/api/supplier/getallsuppliers",
+        "https://api.mazraaonline.com/api/supplier/getallsuppliers",
         { headers: getHeaders() }
       );
       if (data?.status === "success") {
@@ -69,7 +69,7 @@ export default function Feed() {
 };
 
     const { data } = await axios.post(
-      "https://farm-project-bbzj.onrender.com/api/feed/addfeed",
+      "https://api.mazraaonline.com/api/feed/addfeed",
       dataToSubmit,
       { headers }
     );

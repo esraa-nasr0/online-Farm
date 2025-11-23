@@ -210,7 +210,7 @@ function MatingTable() {
     try {
       setIsLoading(true);
       const response = await axios.get(
-        "https://farm-project-bbzj.onrender.com/api/mating/downloadTemplate",
+        "https://api.mazraaonline.com/api/mating/downloadTemplate",
         {
           responseType: "blob",
           headers: {
@@ -241,7 +241,7 @@ function MatingTable() {
     try {
       setIsLoading(true);
       const response = await axios.get(
-        "https://farm-project-bbzj.onrender.com/api/mating/export",
+        "https://api.mazraaonline.com/api/mating/export",
         {
           responseType: "blob",
           headers: {
@@ -270,7 +270,7 @@ function MatingTable() {
   const handleImportFromExcel = async (event) => {
     await importExcel(
       event,
-      "https://farm-project-bbzj.onrender.com/api/mating/import",
+      "https://api.mazraaonline.com/api/mating/import",
       t("matings_imported_successfully"),
       t("failed_to_import_from_excel")
     );
@@ -279,7 +279,7 @@ function MatingTable() {
   const handleUpdateFromExcel = async (event) => {
     await importExcel(
       event,
-      "https://farm-project-bbzj.onrender.com/api/mating/import?mode=update",
+      "https://api.mazraaonline.com/api/mating/import?mode=update",
       t("matings_updated_successfully"),
       t("failed_to_update_from_excel")
     );

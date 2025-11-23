@@ -25,7 +25,7 @@ function EditLocation() {
         try {
             const headers = getHeaders();
             let { data } = await axios.get(
-                `https://farm-project-bbzj.onrender.com/api/location/GetSingle-Locationshed/${id}`,
+                `https://api.mazraaonline.com/api/location/GetSingle-Locationshed/${id}`,
                 { headers }
             );
             if (data.status === "success") {
@@ -45,7 +45,7 @@ function EditLocation() {
 
         try {
             let { data } = await axios.patch(
-                `https://farm-project-bbzj.onrender.com/api/location/updatelocationShed/${id}`,
+                `https://api.mazraaonline.com/api/location/updatelocationShed/${id}`,
                 values,
                 { headers }
             );

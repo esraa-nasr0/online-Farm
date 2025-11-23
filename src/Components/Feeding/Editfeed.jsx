@@ -32,7 +32,7 @@ export default function Editfeed() {
       setError("");
       try {
         const { data } = await axios.get(
-          "https://farm-project-bbzj.onrender.com/api/supplier/getallsuppliers",
+          "https://api.mazraaonline.com/api/supplier/getallsuppliers",
           { headers: getHeaders() }
         );
         if (data?.status === "success") {
@@ -57,7 +57,7 @@ export default function Editfeed() {
       const headers = getHeaders();
       try {
         const { data } = await axios.get(
-          `https://farm-project-bbzj.onrender.com/api/feed/getsinglefeed/${id}`,
+          `https://api.mazraaonline.com/api/feed/getsinglefeed/${id}`,
           { headers }
         );
         if (data.data.feed) {
@@ -114,7 +114,7 @@ export default function Editfeed() {
         };
 
         const response = await axios.patch(
-          `https://farm-project-bbzj.onrender.com/api/feed/updatefeed/${id}`,
+          `https://api.mazraaonline.com/api/feed/updatefeed/${id}`,
           dataToSubmit,
           { headers }
         );

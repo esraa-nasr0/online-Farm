@@ -83,7 +83,7 @@ function Vaccinebyanimal() {
     const vaccineOptions = filteredVaccines.map((item) => ({
         value: item._id,
         label: i18n.language === "ar" ? item.arabicName : item.englishName,
-        image: `https://farm-project-bbzj.onrender.com/${item.image.replace(/\\/g, "/")}`,
+        image: `https://api.mazraaonline.com/${item.image.replace(/\\/g, "/")}`,
     }));
 
     const diseaseTypeOptions = diseaseTypes.map(disease => ({
@@ -145,7 +145,7 @@ function Vaccinebyanimal() {
         };
 
         const response = await axios.post(
-            'https://farm-project-bbzj.onrender.com/api/vaccine/AddVaccine',
+            'https://api.mazraaonline.com/api/vaccine/AddVaccine',
             dataToSend,
             { headers }
         );

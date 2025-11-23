@@ -47,7 +47,7 @@ function EditTreatAnimal() {
         }
 
         const { data } = await axios.get(
-          `https://farm-project-bbzj.onrender.com/api/treatment/getsingletreatmentforAnimals/${id}`,
+          `https://api.mazraaonline.com/api/treatment/getsingletreatmentforAnimals/${id}`,
           { headers: getHeaders() }
         );
 
@@ -132,7 +132,7 @@ function EditTreatAnimal() {
         console.log("Submitting data:", submitData); // For debugging
 
         const res = await axios.patch(
-          `https://farm-project-bbzj.onrender.com/api/treatment/updatetreatmentforAnimals/${id}`,
+          `https://api.mazraaonline.com/api/treatment/updatetreatmentforAnimals/${id}`,
           submitData,
           { headers: getHeaders() }
         );

@@ -18,7 +18,7 @@ function getAllFeed(page, limit, filters = {}) {
     const headers = getHeaders(); // Get the latest headers
 
     return axios
-        .get('https://farm-project-bbzj.onrender.com/api/feed/getallfeeds', {
+        .get('https://api.mazraaonline.com/api/feed/getallfeeds', {
             params: {
                 page,
                 limit,
@@ -38,7 +38,7 @@ function getAllFeed(page, limit, filters = {}) {
     const headers = getHeaders(); // Get the latest headers
 
     try {
-        const response = await axios.delete(`https://farm-project-bbzj.onrender.com/api/feed/DeleteFeed/${id}`, { headers });
+        const response = await axios.delete(`https://api.mazraaonline.com/api/feed/DeleteFeed/${id}`, { headers });
         return response.data;
     } catch (err) {
         console.error("Error deleting vaccine:", err.response ? err.response.data : err.message);
@@ -51,7 +51,7 @@ function getFodder(page, limit, filters = {}) {
     const headers = getHeaders(); // Get the latest headers
 
     return axios
-        .get(`https://farm-project-bbzj.onrender.com/api/fodder/getallfodder`, {
+        .get(`https://api.mazraaonline.com/api/fodder/getallfodder`, {
             params: {
                 page,
                 limit,
@@ -67,7 +67,7 @@ function deleteFodder(id) {
     const headers = getHeaders(); // Get the latest headers
 
     return axios
-        .delete(`hhttps://farm-project-bbzj.onrender.com/api/fodder/deletefodder/${id}`, { headers })
+        .delete(`hhttps://api.mazraaonline.com/api/fodder/deletefodder/${id}`, { headers })
         .then((response) => response)
         .catch((err) => err);
 }
@@ -76,7 +76,7 @@ function getFodderMenue() {
     const headers = getHeaders(); // Get the latest headers
 
     return axios
-        .get(`https://farm-project-bbzj.onrender.com/api/feed/getfeeds`, { headers })
+        .get(`https://api.mazraaonline.com/api/feed/getfeeds`, { headers })
         .then((response) => response)
         .catch((err) => err);
 }

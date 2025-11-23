@@ -17,7 +17,7 @@ const getHeaders = () => {
 function getExcluted(page, limit, filters = {}) {
     const headers = getHeaders(); 
 
-    return axios.get(`https://farm-project-bbzj.onrender.com/api/excluded/getallexcludeds`, {
+    return axios.get(`https://api.mazraaonline.com/api/excluded/getallexcludeds`, {
         params: {
             page,
             limit,
@@ -36,7 +36,7 @@ function getExcluted(page, limit, filters = {}) {
 export function deleteExcluted(id) {
     const headers = getHeaders(); 
 
-    return axios.delete(`https://farm-project-bbzj.onrender.com/api/excluded/deleteexcluded/${id}`, { headers })
+    return axios.delete(`https://api.mazraaonline.com/api/excluded/deleteexcluded/${id}`, { headers })
         .then((response) => response)
         .catch((err) => {
             console.error("Error deleting excluded data:", err);

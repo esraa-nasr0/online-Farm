@@ -62,7 +62,7 @@ export default function Animals() {
     try {
       setIsLoading(true);
       const response = await axios.get(
-        "https://farm-project-bbzj.onrender.com/api/animal/downloadAnimalTemplate",
+        "https://api.mazraaonline.com//api/animal/downloadAnimalTemplate",
         {
           responseType: "blob",
           headers: {
@@ -100,7 +100,7 @@ export default function Animals() {
     const headers = getHeaders();
     try {
       const response = await axios.get(
-        "https://farm-project-bbzj.onrender.com/api/animal/exportAnimalsToExcel",
+        "https://api.mazraaonline.com//api/animal/exportAnimalsToExcel",
         {
           responseType: "blob",
           headers,
@@ -164,7 +164,7 @@ export default function Animals() {
       formData.append("file", file);
 
       const response = await axios.post(
-        "https://farm-project-bbzj.onrender.com/api/animal/import",
+        "https://api.mazraaonline.com/api/animal/import",
         formData,
         {
           headers: {

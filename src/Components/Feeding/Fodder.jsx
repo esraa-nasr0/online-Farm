@@ -44,7 +44,7 @@ export default function Fodder() {
     setError(null);
     try {
       const { data } = await axios.post(
-        'https://farm-project-bbzj.onrender.com/api/fodder/addfodder',
+        'https://api.mazraaonline.com/api/fodder/addfodder',
         value,
         { headers }
       );

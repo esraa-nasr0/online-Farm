@@ -14,7 +14,7 @@ const getHeaders = () => {
 function getLocationtMenue() {
   return axios
     .get(
-      `https://farm-project-bbzj.onrender.com/api/location/GetAll-Locationsheds-menue`,
+      `https://api.mazraaonline.com/api/location/GetAll-Locationsheds-menue`,
       { headers: getHeaders() }
     )
     .then((response) => response)
@@ -27,7 +27,7 @@ function getLocationtMenue() {
 function getVaccineMenue() {
   return axios
     .get(
-      `https://farm-project-bbzj.onrender.com/api/vaccine/GetVaccine-menue`,
+      `https://api.mazraaonline.com/api/vaccine/GetVaccine-menue`,
       { headers: getHeaders() }
     )
     .then((response) => response)

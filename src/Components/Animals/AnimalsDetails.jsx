@@ -83,7 +83,7 @@ function AnimalsDetails() {
     setError(null);
     try {
       const { data } = await axios.post(
-        "https://farm-project-bbzj.onrender.com/api/animal/addanimal",
+        "https://api.mazraaonline.com/api/animal/addanimal",
         values,
         { headers }
       );

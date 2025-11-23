@@ -20,7 +20,7 @@ const getHeaders = () => {
     function getMating(page, limit, filters = {}) {
         const headers = getHeaders(); // Get the latest headers
 
-        return axios.get(`https://farm-project-bbzj.onrender.com/api/mating/getallmating` , {
+        return axios.get(`https://api.mazraaonline.com/api/mating/getallmating` , {
             params: {
                 page,
                 limit,
@@ -33,7 +33,7 @@ const getHeaders = () => {
     function deleteMating(id) {
         const headers = getHeaders(); // Get the latest headers
 
-        return axios.delete(`https://farm-project-bbzj.onrender.com/api/mating/deletemating/${id}` , {headers})
+        return axios.delete(`https://api.mazraaonline.com/api/mating/deletemating/${id}` , {headers})
         .then((response)=>response)
         .catch((err)=>err)
     }

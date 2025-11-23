@@ -269,7 +269,7 @@ function BreadingTable() {
     const headers = getHeaders();
     try {
       const response = await axios.get(
-        "https://farm-project-bbzj.onrender.com/api/breeding/downloadBreedingTemplate",
+        "https://api.mazraaonline.com/api/breeding/downloadBreedingTemplate",
         { responseType: "blob", headers }
       );
       const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -289,7 +289,7 @@ function BreadingTable() {
     const headers = getHeaders();
     try {
       const response = await axios.get(
-        "https://farm-project-bbzj.onrender.com/api/breeding/exportbreedingToExcel",
+        "https://api.mazraaonline.com/api/breeding/exportbreedingToExcel",
         { responseType: "blob", headers }
       );
       const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -314,7 +314,7 @@ function BreadingTable() {
 
     try {
       await axios.post(
-        "https://farm-project-bbzj.onrender.com/api/breeding/import",
+        "https://api.mazraaonline.com/api/breeding/import",
         formData,
         { headers: { ...headers, "Content-Type": "multipart/form-data" } }
       );

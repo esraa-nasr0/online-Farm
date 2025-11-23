@@ -70,7 +70,7 @@ function TreatmentLocation() {
     setError(null);
     try {
       const { data } = await axios.post(
-        `https://farm-project-bbzj.onrender.com/api/treatment/addtreatmentbylocationshed`,
+        `https://api.mazraaonline.com/api/treatment/addtreatmentbylocationshed`,
         values,
         { headers }
       );
