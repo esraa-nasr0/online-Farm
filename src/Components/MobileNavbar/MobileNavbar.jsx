@@ -35,7 +35,7 @@ export default function MobileNavbar({ toggleSidebar }) {
     }
 
     return (
-        <nav className="main-navbar">
+        <nav className="main-navbar " >
             <div className="navbar-inner">
                <PiNotebook 
         className="notebook-icon" 

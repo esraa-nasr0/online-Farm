@@ -45,7 +45,7 @@ export default function Navbar({ toggleSidebar, isSidebarOpen }) {
                 {/* Logo */}
                 <div className="navbar-logo">
                     <img src={logo} alt="Logo" className="navbar-logo-img" />
-                    <span className="navbar-title">ONLINE FARM</span>
+                    <span className="navbar-title" style={{color:" #21763e"}}>ONLINE FARM</span>
                 </div>
 
                 {/* Links */}
