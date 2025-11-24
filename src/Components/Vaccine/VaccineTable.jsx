@@ -306,7 +306,7 @@ function VaccineTable() {
                         <span className="card-label">{t("Image")}</span>
                         <span className="card-value">
                           <img
-                            src={`https://farm-project-bbzj.onrender.com/${vaccine.vaccineType.image.replace(
+                            src={`https://api.mazraaonline.com/${vaccine.vaccineType.image.replace(
                               /\\/g,
                               "/"
                             )}`}
@@ -415,7 +415,7 @@ function VaccineTable() {
                         <div className="d-flex flex-column align-items-center">
                           {vaccine.vaccineType?.image && (
                             <img
-                              src={`https://farm-project-bbzj.onrender.com/${vaccine.vaccineType.image.replace(
+                              src={`https://api.mazraaonline.com/${vaccine.vaccineType.image.replace(
                                 /\\/g,
                                 "/"
                               )}`}

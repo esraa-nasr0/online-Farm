@@ -11,6 +11,7 @@ import Weight from "./Components/Weight/Weight";
 import { UserContext } from "./Context/UserContext";
 import { useContext } from "react";
 import { useEffect } from "react";
+import { getToken } from "./utils/authToken";
 import ProtectedRoute from "./Components/ProtectedRoute/ProtectedRoute";
 import AnimalContextProvider from "./Context/AnimalContext";
 import EditAnimal from "./Components/Animals/EditAnimal";
@@ -231,8 +232,9 @@ export default function App() {
   }, [i18n.language]);
   
   useEffect(()=>{
-    if(localStorage.getItem('Authorization')!== null){
-      setAuthorization(localStorage.getItem('Authorization'))
+    const token = getToken();
+    if(token !== null){
+      setAuthorization(token)
     }
 
   },[]);

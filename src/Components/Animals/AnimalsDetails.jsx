@@ -1,12 +1,13 @@
 import { useContext, useEffect, useState } from "react";
 import { useFormik } from "formik";
-import axios from "axios";
+import axiosInstance from "../../api/axios";
 import { IoIosSave } from "react-icons/io";
 import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
 import { LocationContext } from "../../Context/LocationContext";
 import { BreedContext } from "../../Context/BreedContext";
 import { jwtDecode } from "jwt-decode";
+import { getToken } from "../../utils/authToken";
 import "./AnimalsDetails.css";
 
 function AnimalsDetails() {
@@ -22,7 +23,7 @@ function AnimalsDetails() {
   const [isFattening, setIsFattening] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("Authorization");
+    const token = getToken();
     if (token) {
       try {
         const decoded = jwtDecode(token);
@@ -32,17 +33,6 @@ function AnimalsDetails() {
       }
     }
   }, []);
-
-  const getHeaders = () => {
-    const Authorization = localStorage.getItem("Authorization");
-    return Authorization
-      ? {
-          Authorization: Authorization.startsWith("Bearer ")
-            ? Authorization
-            : `Bearer ${Authorization}`,
-        }
-      : {};
-  };
 
   useEffect(() => {
     const fetchLocation = async () => {
@@ -78,14 +68,12 @@ function AnimalsDetails() {
   const postAnimal = async (values) => {
     if (isSubmitted) return;
 
-    const headers = getHeaders();
     setIsLoading(true);
     setError(null);
     try {
-      const { data } = await axios.post(
-        "https://farm-project-bbzj.onrender.com/api/animal/addanimal",
-        values,
-        { headers }
+      const { data } = await axiosInstance.post(
+        "/animal/addanimal",
+        values
       );
 
       if (data.status === "success") {

@@ -2,7 +2,7 @@ import { useFormik } from "formik";
 import React, { useState, useEffect } from "react";
 import * as Yup from "yup";
 import { IoIosSave } from "react-icons/io";
-import axios from "axios";
+import axiosInstance from "../../api/axios";
 import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
@@ -56,20 +56,10 @@ function EditBreed() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const getHeaders = () => {
-    const Authorization = localStorage.getItem("Authorization");
-    const formattedToken = Authorization.startsWith("Bearer ")
-      ? Authorization
-      : `Bearer ${Authorization}`;
-    return { Authorization: formattedToken };
-  };
-
   async function fetchBreed() {
-    const headers = getHeaders();
     try {
-      let { data } = await axios.get(
-        `https://farm-project-bbzj.onrender.com/api/breed/GetSingle-breed/${id}`,
-        { headers }
+      let { data } = await axiosInstance.get(
+        `/breed/GetSingle-breed/${id}`
       );
 
       if (data && data.data && data.data.breed) {
@@ -96,15 +86,13 @@ function EditBreed() {
   }, [id]);
 
   async function submitBreed(values) {
-    const headers = getHeaders();
     setIsLoading(true);
     setError(null);
 
     try {
-      let { data } = await axios.patch(
-        `https://farm-project-bbzj.onrender.com/api/breed/updatebreed/${id}`,
-        values,
-        { headers }
+      let { data } = await axiosInstance.patch(
+        `/breed/updatebreed/${id}`,
+        values
       );
 
       if (data.status === "success") {

@@ -1,4 +1,4 @@
-import axios from "axios";
+import axiosInstance from "../../api/axios";
 import { useFormik } from "formik";
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
@@ -15,8 +15,8 @@ export default function Register() {
   async function submitRegister(value) {
     setisLoading(true);
     try {
-      const { data } = await axios.post(
-        "https://farm-project-bbzj.onrender.com/api/register",
+      const { data } = await axiosInstance.post(
+        "/register",
         value
       );
       if (data.status === "success") {

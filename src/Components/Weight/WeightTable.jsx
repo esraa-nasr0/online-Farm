@@ -183,7 +183,7 @@ function WeightTable() {
   //   try {
   //     setIsLoading(true);
   //     const response = await axios.get(
-  //       "https://farm-project-bbzj.onrender.com/api/weight/downloadWeightTemplate",
+  //       "https://api.mazraaonline.com/api/weight/downloadWeightTemplate",
   //       {
   //         responseType: "blob",
   //         headers: {
@@ -213,7 +213,7 @@ function WeightTable() {
   //   try {
   //     setIsLoading(true);
   //     const response = await axios.get(
-  //       "https://farm-project-bbzj.onrender.com/api/weight/exportWeightsToExcel",
+  //       "https://api.mazraaonline.com/api/weight/exportWeightsToExcel",
   //       {
   //         responseType: "blob",
   //         headers: {
@@ -247,7 +247,7 @@ function WeightTable() {
   //     setIsLoading(true);
   //     formData.append("file", file);
   //     const response = await axios.post(
-  //       "https://farm-project-bbzj.onrender.com/api/weight/importWeightsFromExcel",
+  //       "https://api.mazraaonline.com/api/weight/importWeightsFromExcel",
   //       formData,
   //       { headers: { ...headers, "Content-Type": "multipart/form-data" } }
   //     );

@@ -1,12 +1,13 @@
 import { useFormik } from 'formik';
 import { useContext, useEffect, useState } from 'react';
 import { IoIosSave } from "react-icons/io";
-import axios from 'axios';
+import axiosInstance from '../../api/axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { LocationContext } from '../../Context/Locationshedcontext';
 import { useTranslation } from 'react-i18next';
 import '../Animals/AnimalsDetails.css'; // ✅ ضفنا الاستيراد ده علشان ياخد نفس الستايل
+import { getToken } from '../../utils/authToken';
 
 function EditVaccine() {
   const { t, i18n } = useTranslation();
@@ -18,12 +19,13 @@ function EditVaccine() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const getHeaders = () => {
-    const token = localStorage.getItem('Authorization');
-    return {
-      'Authorization': token?.startsWith("Bearer ") ? token : `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    };
+  const ensureAuthenticated = () => {
+    const token = getToken();
+    if (!token) {
+      navigate('/login');
+      return false;
+    }
+    return true;
   };
 
   useEffect(() => {
@@ -48,15 +50,18 @@ function EditVaccine() {
   async function editVaccine(values) {
     setIsLoading(true);
     try {
-      const response = await axios.patch(
-        `https://farm-project-bbzj.onrender.com/api/vaccine/updateVaccineEntry/${id}`,
+      if (!ensureAuthenticated()) {
+        setIsLoading(false);
+        return;
+      }
+      const response = await axiosInstance.patch(
+        `/vaccine/updateVaccineEntry/${id}`,
         {
           tagId: values.tagId,
           date: values.date,
           entryType: values.entryType,
           vaccineId: values.vaccineId
-        },
-        { headers: getHeaders() }
+        }
       );
 
       if (response.data.status === "success") {
@@ -95,9 +100,11 @@ function EditVaccine() {
   useEffect(() => {
     async function fetchVaccineEntry() {
       try {
-        const response = await axios.get(
-          `https://farm-project-bbzj.onrender.com/api/vaccine/getSingleVaccineEntry/${id}`,
-          { headers: getHeaders() }
+        if (!ensureAuthenticated()) {
+          return;
+        }
+        const response = await axiosInstance.get(
+          `/vaccine/getSingleVaccineEntry/${id}`
         );
 
         const vaccineEntry = response.data.data.vaccineEntry;

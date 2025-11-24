@@ -1,4 +1,4 @@
-import axios from "axios";
+import axiosInstance from "../../api/axios";
 import { useFormik } from "formik";
 import { useContext, useEffect, useState } from "react";
 import Swal from "sweetalert2";
@@ -22,15 +22,6 @@ function EditTreatAnimal() {
   const navigate = useNavigate();
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const getHeaders = () => {
-    const token = localStorage.getItem("Authorization");
-    if (!token) return {};
-    return {
-      Authorization: token.startsWith("Bearer ") ? token : `Bearer ${token}`,
-      "Content-Type": "application/json",
-    };
-  };
-
   const formatDate = (isoString) => (isoString ? isoString.split("T")[0] : "");
 
   useEffect(() => {
@@ -46,9 +37,8 @@ function EditTreatAnimal() {
           setTreatmentOptions(treatmentResponse.data.data || []);
         }
 
-        const { data } = await axios.get(
-          `https://farm-project-bbzj.onrender.com/api/treatment/getsingletreatmentforAnimals/${id}`,
-          { headers: getHeaders() }
+        const { data } = await axiosInstance.get(
+          `/treatment/getsingletreatmentforAnimals/${id}`
         );
 
         const treatment = data?.data?.treatments?.[0];
@@ -131,10 +121,9 @@ function EditTreatAnimal() {
 
         console.log("Submitting data:", submitData); // For debugging
 
-        const res = await axios.patch(
-          `https://farm-project-bbzj.onrender.com/api/treatment/updatetreatmentforAnimals/${id}`,
-          submitData,
-          { headers: getHeaders() }
+        const res = await axiosInstance.patch(
+          `/treatment/updatetreatmentforAnimals/${id}`,
+          submitData
         );
 
         if (res.data.status === "SUCCESS") {

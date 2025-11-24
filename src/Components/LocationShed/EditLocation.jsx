@@ -2,7 +2,7 @@ import { useFormik } from "formik";
 import React, { useState, useEffect } from "react";
 import * as Yup from "yup";
 import { IoIosSave } from "react-icons/io";
-import axios from "axios";
+import axiosInstance from "../../api/axios";
 import { useParams, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useTranslation } from 'react-i18next';
@@ -15,18 +15,10 @@ function EditLocation() {
     const { t } = useTranslation();
     const navigate = useNavigate();
 
-    const getHeaders = () => {
-        const Authorization = localStorage.getItem("Authorization");
-        const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-        return { Authorization: formattedToken };
-    };
-
     async function fetchLocation() {
         try {
-            const headers = getHeaders();
-            let { data } = await axios.get(
-                `https://farm-project-bbzj.onrender.com/api/location/GetSingle-Locationshed/${id}`,
-                { headers }
+            let { data } = await axiosInstance.get(
+                `/location/GetSingle-Locationshed/${id}`
             );
             if (data.status === "success") {
                 formik.setValues({
@@ -39,15 +31,13 @@ function EditLocation() {
     }
 
     async function submitWeight(values) {
-        const headers = getHeaders();
         setIsLoading(true);
         setError(null);
 
         try {
-            let { data } = await axios.patch(
-                `https://farm-project-bbzj.onrender.com/api/location/updatelocationShed/${id}`,
-                values,
-                { headers }
+            let { data } = await axiosInstance.patch(
+                `/location/updatelocationShed/${id}`,
+                values
             );
 
             if (data.status === "success") {

@@ -1,31 +1,18 @@
 import React from 'react';
-import axios from 'axios';
+import axiosInstance from '../api/axios';
 
 const VaccineanimalContext = React.createContext();
 
-const getHeaders = () => {
-    const Authorization = localStorage.getItem('Authorization');
-
-    const formattedToken = Authorization?.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-
-    return {
-        Authorization: formattedToken
-    };
-};
-
 function getVaccineMenue() {
-    const headers = getHeaders(); 
-    return axios
-        .get(`https://farm-project-bbzj.onrender.com/api/vaccine/GetVaccine-menue`, { headers })
+    return axiosInstance
+        .get(`/vaccine/GetVaccine-menue`)
         .then((response) => response)
         .catch((err) => err);
 }
 
 async function getallVaccineanimal(page, limit, filters = {}) {
     try {
-        const headers = getHeaders(); // Get the latest headers
-        const response = await axios.get('https://farm-project-bbzj.onrender.com/api/vaccine/GetAllVaccine', {
-            headers,
+        const response = await axiosInstance.get('/vaccine/GetAllVaccine', {
             params: {
                 page,
                 limit,
@@ -41,8 +28,7 @@ async function getallVaccineanimal(page, limit, filters = {}) {
 
 async function DeletVaccineanimal(id) {
     try {
-        const headers = getHeaders(); // Get the latest headers
-        const response = await axios.delete(`https://farm-project-bbzj.onrender.com/api/vaccine/DeleteVaccine/${id}`, { headers });
+        const response = await axiosInstance.delete(`/vaccine/DeleteVaccine/${id}`);
         return response.data;
     } catch (err) {
         console.error("Error deleting vaccine:", err.response ? err.response.data : err.message);

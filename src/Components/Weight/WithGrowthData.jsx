@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../api/axios';
 import { Rings } from 'react-loader-spinner';
 import { useTranslation } from 'react-i18next';
 import { FiSearch } from "react-icons/fi";
@@ -18,16 +18,12 @@ function WithGrowthData() {
     const fetchGrowthData = async (page = 1, filters = {}) => {
         setIsLoading(true);
         try {
-            const token = localStorage.getItem('Authorization');
             const params = {
                 page,
                 limit,
                 ...filters.tagId && { tagId: filters.tagId }
             };
-            const response = await axios.get(`https://farm-project-bbzj.onrender.com/api/weight/getAllAnimalsWithGrowthData`, {
-                headers: {
-                    Authorization: token?.startsWith("Bearer ") ? token : `Bearer ${token}`,
-                },
+            const response = await axiosInstance.get(`/weight/getAllAnimalsWithGrowthData`, {
                 params
             });
             setGrowthData(response.data.data || []);

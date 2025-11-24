@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import axios from 'axios';
+import axiosInstance from '../../api/axios';
 import { IoIosSave } from 'react-icons/io';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -15,24 +15,11 @@ export default function EditExcluded() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  const getHeaders = () => {
-    const Authorization = localStorage.getItem('Authorization');
-    return Authorization
-      ? {
-          Authorization: Authorization.startsWith('Bearer ')
-            ? Authorization
-            : `Bearer ${Authorization}`,
-        }
-      : {};
-  };
-
   async function fetchExcludedData() {
-    const headers = getHeaders();
     setIsLoading(true);
     try {
-      const response = await axios.get(
-        `https://farm-project-bbzj.onrender.com/api/excluded/getSingleExcludeds/${id}`,
-        { headers }
+      const response = await axiosInstance.get(
+        `/excluded/getSingleExcludeds/${id}`
       );
       const excludedData = response.data.data.excluded;
       if (excludedData) {
@@ -57,13 +44,11 @@ export default function EditExcluded() {
   }, [id]);
 
   const editExcluded = async (values) => {
-    const headers = getHeaders();
     setIsLoading(true);
     try {
-      const { data } = await axios.patch(
-        `https://farm-project-bbzj.onrender.com/api/excluded/updateexcluded/${id}`,
-        values,
-        { headers }
+      const { data } = await axiosInstance.patch(
+        `/excluded/updateexcluded/${id}`,
+        values
       );
       if (data.status === 'success') {
         Swal.fire({

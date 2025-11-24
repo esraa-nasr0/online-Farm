@@ -1,7 +1,7 @@
 // src/pages/NotificationPage.jsx
 import React, { useMemo, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
+import axiosInstance from '../../api/axios';
 import { toast } from 'react-toastify';
 import { FaCheck, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { MdNotifications } from 'react-icons/md';
@@ -11,17 +11,6 @@ import './NotificationPage.css';
 import { useTranslation } from "react-i18next";
 
 const BASE_URL = 'https://farm-project-bbzj.onrender.com';
-
-// -------- Helpers --------
-const getHeaders = () => {
-  const token = localStorage.getItem("Authorization");
-  return token
-    ? {
-        Authorization: token.startsWith("Bearer ") ? token : `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    : {};
-};
 
 const pickMessageByLang = (n, lang) => {
   if (lang?.startsWith('ar')) return n.messageAr || n.message || n.messageEn || '';
@@ -80,13 +69,11 @@ export default function NotificationPage() {
     queryKey: ['notifications', params],
     queryFn: async () => {
       const lang = i18n.language || "en";
-      await axios.get(`${BASE_URL}/api/notifications/check`, {
-        headers: getHeaders(),
+      await axiosInstance.get(`${BASE_URL}/api/notifications/check`, {
         params: { lang },
       });
       
-      const res = await axios.get(`${BASE_URL}/api/notifications`, {
-        headers: getHeaders(),
+      const res = await axiosInstance.get(`${BASE_URL}/api/notifications`, {
         params,
       });
       return res.data?.data || { notifications: [], pagination: null, unreadCount: 0 };
@@ -132,10 +119,10 @@ export default function NotificationPage() {
   const markAsReadMutation = useMutation({
     mutationFn: async (id) => {
       const lang = i18n.language || "en";
-      return axios.patch(
+      return axiosInstance.patch(
         `${BASE_URL}/api/notifications/${id}/read`,
         {},
-        { headers: getHeaders(), params: { lang }, validateStatus: s => s < 500 }
+        { params: { lang }, validateStatus: s => s < 500 }
       );
     },
     onMutate: async (id) => {
@@ -161,10 +148,10 @@ export default function NotificationPage() {
   const markAllAsReadMutation = useMutation({
     mutationFn: async () => {
       const lang = i18n.language || "en";
-      return axios.patch(
+      return axiosInstance.patch(
         `${BASE_URL}/api/notifications/read-all`,
         {},
-        { headers: getHeaders(), params: { lang }, validateStatus: s => s < 500 }
+        { params: { lang }, validateStatus: s => s < 500 }
       );
     },
     onMutate: async () => {
@@ -190,9 +177,9 @@ export default function NotificationPage() {
   const deleteNotificationMutation = useMutation({
     mutationFn: async (id) => {
       const lang = i18n.language || "en";
-      const res = await axios.delete(
+      const res = await axiosInstance.delete(
         `${BASE_URL}/api/notifications/${id}`,
-        { headers: getHeaders(), params: { lang }, validateStatus: s => s < 500 }
+        { params: { lang }, validateStatus: s => s < 500 }
       );
       if (res.status === 400) throw new Error(res.data?.message || t("delete_error"));
       return res.data;
@@ -240,7 +227,7 @@ export default function NotificationPage() {
     
     try {
       await Promise.all(ids.map(id =>
-        axios.patch(`${BASE_URL}/api/notifications/${id}/read`, {}, { headers: getHeaders(), params: { lang: i18n.language || 'en' } })
+        axiosInstance.patch(`${BASE_URL}/api/notifications/${id}/read`, {}, { params: { lang: i18n.language || 'en' } })
       ));
       toast.success(t("mark_success"));
       resetSelection();
@@ -278,7 +265,7 @@ export default function NotificationPage() {
 
     try {
       await Promise.all(ids.map(id =>
-        axios.delete(`${BASE_URL}/api/notifications/${id}`, { headers: getHeaders(), params: { lang: i18n.language || 'en' } })
+        axiosInstance.delete(`${BASE_URL}/api/notifications/${id}`, { params: { lang: i18n.language || 'en' } })
       ));
       Swal.fire(t("deleted_title"), t("deleted_msg"), 'success');
       resetSelection();

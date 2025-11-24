@@ -1,26 +1,18 @@
-import axios from 'axios';
+import axiosInstance from '../../api/axios';
 import React from 'react';
+import { getToken } from '../../utils/authToken';
 
 function DownloadExcel() {
     
-// Helper function to generate headers with the latest token
-const getHeaders = () => {
-    const Authorization = localStorage.getItem('Authorization');
-
-    // Ensure the token has only one "Bearer" prefix
-    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-
-    return {
-        Authorization: formattedToken
-    };
-};
-
+// Helper to ensure token exists
+const hasToken = () => !!getToken();
+    
     const handleDownload = async () => {
-        const headers = getHeaders(); // Get the latest headers
+        if (!hasToken()) return;
         try {
-            const response = await axios.get(
-                'https://farm-project-bbzj.onrender.com/api/animal/exportAnimalsToExcel', 
-                { headers, responseType: 'blob' }
+            const response = await axiosInstance.get(
+                '/animal/exportAnimalsToExcel', 
+                { responseType: 'blob' }
             );
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');

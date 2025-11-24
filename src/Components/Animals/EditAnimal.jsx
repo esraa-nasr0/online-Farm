@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { useFormik } from "formik";
-import axios from "axios";
+import axiosInstance from "../../api/axios";
 import { IoIosSave } from "react-icons/io";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import { LocationContext } from "../../Context/LocationContext";
 import { BreedContext } from "../../Context/BreedContext";
 import { jwtDecode } from "jwt-decode";
+import { getToken } from "../../utils/authToken";
 import "./AnimalsDetails.css";
 
 function EditAnimal() {
@@ -24,18 +25,6 @@ function EditAnimal() {
   const { BreedMenue } = useContext(BreedContext);
   const { id } = useParams();
   const navigate = useNavigate();
-
-  // ===== Helpers =====
-  const getHeaders = () => {
-    const Authorization = localStorage.getItem("Authorization");
-    return Authorization
-      ? {
-          Authorization: Authorization.startsWith("Bearer ")
-            ? Authorization
-            : `Bearer ${Authorization}`,
-        }
-      : {};
-  };
 
   const formatDate = (dateString) =>
     dateString ? new Date(dateString).toISOString().split("T")[0] : "";
@@ -67,7 +56,7 @@ function EditAnimal() {
 
   // ===== Decode token to detect fattening mode =====
   useEffect(() => {
-    const token = localStorage.getItem("Authorization");
+    const token = getToken();
     if (token) {
       try {
         const decoded = jwtDecode(token);
@@ -109,11 +98,9 @@ function EditAnimal() {
 
   // ===== Fetch current animal =====
   async function fetchAnimal() {
-    const headers = getHeaders();
     try {
-      let { data } = await axios.get(
-        `https://farm-project-bbzj.onrender.com/api/animal/getsinglanimals/${id}`,
-        { headers }
+      let { data } = await axiosInstance.get(
+        `/animal/getsinglanimals/${id}`
       );
 
       if (data.status === "success") {
@@ -180,7 +167,6 @@ function EditAnimal() {
 
   // ===== Submit (PATCH) =====
   async function editAnimal(values) {
-    const headers = getHeaders();
     setIsLoading(true);
     try {
       const updatedValues = {
@@ -198,10 +184,9 @@ function EditAnimal() {
         )
       );
 
-      const { data } = await axios.patch(
-        `https://farm-project-bbzj.onrender.com/api/animal/updateanimal/${id}`,
-        payload,
-        { headers }
+      const { data } = await axiosInstance.patch(
+        `/animal/updateanimal/${id}`,
+        payload
       );
 
       if (data.status === "success") {

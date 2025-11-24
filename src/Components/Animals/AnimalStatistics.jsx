@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../api/axios';
 import {  FaMars, FaVenus} from 'react-icons/fa';
 import { GiGoat, GiSheep } from 'react-icons/gi';
 import { PiFarmLight } from "react-icons/pi";
@@ -14,23 +14,10 @@ function AnimalStatistics() {
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === "ar";
 
-  const getHeaders = () => {
-    const Authorization = localStorage.getItem("Authorization");
-    const formattedToken = Authorization?.startsWith("Bearer ") 
-      ? Authorization 
-      : `Bearer ${Authorization}`;
-    return { 
-      Authorization: formattedToken,
-      "Content-Type": "application/json"
-    };
-  };
-
   const fetchAnimalStatistics = async () => {
-    const headers = getHeaders();
     try {
-      const { data } = await axios.get(
-        `${BASE_URL}/api/animal/getAnimalStatistics`,
-        { headers }
+      const { data } = await axiosInstance.get(
+        `${BASE_URL}/api/animal/getAnimalStatistics`
       );
       setStats(data.data);
     } catch (error) {

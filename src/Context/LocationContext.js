@@ -1,46 +1,30 @@
-import axios from "axios";
+import axiosInstance from "../api/axios";
 import { createContext } from "react";
 
 export let LocationContext = createContext();
 
-// Helper function to generate headers with the latest token
-const getHeaders = () => {
-    const Authorization = localStorage.getItem('Authorization');
-    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-    return {
-        Authorization: formattedToken
-    };
-};
-
 // Fetch all animals
 function LocationMenue() {
-    const headers = getHeaders(); // Get the latest headers
-
-    return axios.get('https://farm-project-bbzj.onrender.com/api/location/GetAll-Locationsheds-menue', {
-        headers
-    })
+    return axiosInstance.get('/location/GetAll-Locationsheds-menue')
     .then((response) => response)
     .catch((err) => err);
 }
 
 //Remove an animal by ID
 function removeLocation(id) {
-    const headers = getHeaders(); 
-    return axios.delete(`https://farm-project-bbzj.onrender.com/api/location/deletelocationShed/${id}`, { headers })
+    return axiosInstance.delete(`/location/deletelocationShed/${id}`)
         .then((response) => response)
         .catch((error) => error);
 }
 
 // Fetch all location shed
 function getLocation(page, limit, filters = {}) {
-    const headers = getHeaders(); 
-    return axios.get(`https://farm-project-bbzj.onrender.com/api/location/GetAll-Locationsheds`, {
+    return axiosInstance.get(`/location/GetAll-Locationsheds`, {
         params: {
             page,
             limit,
             ...filters 
-        },
-        headers
+        }
     })
     .then((response) => response)
     .catch((error) => error);

@@ -1,4 +1,4 @@
-import axios from "axios";
+import axiosInstance from "../../api/axios";
 import React, { useContext, useState } from "react";
 import { useFormik } from "formik";
 import { Link, useNavigate } from "react-router-dom";
@@ -18,14 +18,9 @@ async function Resetpassword(value) {
     setIsLoading(true);
 
     try {
-    let { data } = await axios.post(
-        `https://farm-project-bbzj.onrender.com/api/resetPassword`,
-        value,
-        {
-        headers: {
-            Authorization:`Bearer ${Authorization}`, 
-        },
-        }
+    let { data } = await axiosInstance.post(
+        `/resetPassword`,
+        value
     );
 
     if (data.status === "success") {

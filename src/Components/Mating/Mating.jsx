@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from '../../api/axios';
 import { useFormik } from 'formik';
 import  { useState } from 'react';
 import { IoIosSave } from "react-icons/io";
@@ -15,17 +15,9 @@ function Mating() {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const { t } = useTranslation();
 
-    const getHeaders = () => {
-        const Authorization = localStorage.getItem('Authorization');
-        const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-        return { Authorization: formattedToken };
-    };
-
     const fetchMaleTags = async () => {
-        const headers = getHeaders();
-        const res = await axios.get(
-            'https://farm-project-bbzj.onrender.com/api/animal/males',
-            { headers }
+        const res = await axiosInstance.get(
+            '/animal/males'
         );
         return res.data.data;
     };
@@ -39,14 +31,12 @@ function Mating() {
         if (isSubmitted) return;
 
         value.checkDays = parseInt(value.checkDays, 10);
-        const headers = getHeaders();
         setisLoading(true);
 
         try {
-            let { data } = await axios.post(
-                `https://farm-project-bbzj.onrender.com/api/mating/addmating`,
-                value,
-                { headers }
+            let { data } = await axiosInstance.post(
+                `/mating/addmating`,
+                value
             );
 
             if (data.status === "success") {

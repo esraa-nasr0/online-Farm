@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import axios from "axios";
+import axiosInstance from "../../api/axios";
 import { IoIosSave } from "react-icons/io";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -27,18 +27,6 @@ export default function EditBreeding() {
       plannedWeights: [],
     },
   ]);
-
-  const getHeaders = () => {
-    const Authorization = localStorage.getItem("Authorization");
-    return Authorization
-      ? {
-          Authorization: Authorization.startsWith("Bearer ")
-            ? Authorization
-            : `Bearer ${Authorization}`,
-          "Content-Type": "application/json",
-        }
-      : { "Content-Type": "application/json" };
-  };
 
   // تنسيق تاريخ للعرض
   const fmt = (iso) => {
@@ -85,14 +73,12 @@ export default function EditBreeding() {
   };
 
   async function fetchBreedingData() {
-    const headers = getHeaders();
     setIsLoading(true);
     setError(null);
 
     try {
-      const response = await axios.get(
-        `https://farm-project-bbzj.onrender.com/api/breeding/GetSingleBreeding/${id}`,
-        { headers }
+      const response = await axiosInstance.get(
+        `/breeding/GetSingleBreeding/${id}`
       );
 
       const breeding = response.data?.data?.breeding;
@@ -202,7 +188,6 @@ export default function EditBreeding() {
 
   // PATCH
   const editBreeding = async (values) => {
-    const headers = getHeaders();
     setIsLoading(true);
     setError(null);
 
@@ -234,10 +219,9 @@ export default function EditBreeding() {
         })),
       };
 
-      const { data } = await axios.patch(
-        `https://farm-project-bbzj.onrender.com/api/breeding/UpdateBreeding/${id}`,
-        payload,
-        { headers }
+      const { data } = await axiosInstance.patch(
+        `/breeding/UpdateBreeding/${id}`,
+        payload
       );
 
       if (data.status === "success") {
