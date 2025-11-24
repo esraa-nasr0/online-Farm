@@ -22,9 +22,9 @@ export default function HomeHero() {
       <img src={gardenImg} className="background_img"  alt="Farm background"/>
       <div className="hero-overlay">
         <div className="hero-content-center">
-          <h2 className="hero-title-main">ONLINE FARM</h2>
+          <h2 className="hero-title-main">MAZRAA ONLINE</h2>
           <p className="hero-subtitle">
-            Welcome to Online Farm, the all-in-one solution for efficient <br /> 
+            Welcome to Mazraa Online, the all-in-one solution for efficient <br /> 
             goat and sheep farm management, designed to <br /> 
             simplify tracking of animal health, breeding, and productivity!
           </p>

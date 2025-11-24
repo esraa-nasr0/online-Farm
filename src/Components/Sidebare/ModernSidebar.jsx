@@ -252,7 +252,7 @@ export default function ModernSidebar({
 
             <div className="brand">
               <div className="mark" />
-              <span>ONLINE FARM</span>
+              <span>MAZRAA ONLINE</span>
             </div>
           </div>
 
