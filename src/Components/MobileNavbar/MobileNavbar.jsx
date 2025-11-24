@@ -44,7 +44,7 @@ export default function MobileNavbar({ toggleSidebar }) {
       />
                 <div className="navbar-logo">
                     {/* <img src={logo} alt="Logo" className="navbar-logo-img" /> */}
-                    <span className="navbar-title" style={{color:"#21763e"}}>ONLINE FARM</span>
+                    <span className="navbar-title" style={{color:"#21763e"}}>MAZRAA ONLINE</span>
                 </div>
 
              

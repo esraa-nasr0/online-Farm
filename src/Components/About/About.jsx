@@ -5,7 +5,7 @@ export default function About() {
     return (  
         <div className="container">  
             <div className="contact">  
-                <h2>Welcome to Online Farm</h2>  
+                <h2>Welcome to Mazraa Online</h2>  
                 <div className="about-content">  
                     <img 
                       className="aboutimg" 
@@ -14,7 +14,7 @@ export default function About() {
                     />  
                     <div className="aboutdiv">  
                         <p>  
-                            Online Farm is a comprehensive farm management solution designed for goat and sheep farmers.  
+                            Mazraa Online is a comprehensive farm management solution designed for goat and sheep farmers.  
                             Our user-friendly web application helps you track and manage your livestock's health,  
                             breeding, and productivity for efficient and profitable farming.  
                         </p>  
@@ -30,7 +30,7 @@ export default function About() {
                         </p>  
                         <h5>Join Us Today!</h5>  
                         <p>  
-                            Sign up for Online Farm to transform your farm management,  
+                            Sign up for Mazraa Online to transform your farm management,  
                             and follow us on [Social Media Links] for updates and resources.  
                         </p>  
                     </div>  
