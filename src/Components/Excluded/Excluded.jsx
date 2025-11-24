@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from '../../api/axios';
 import { useFormik } from 'formik';
 import { useState } from 'react';
 import { IoIosSave } from "react-icons/io";
@@ -14,21 +14,12 @@ function Excluded() {
     const [isLoading, setIsLoading] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
 
-    const getHeaders = () => {
-        const Authorization = localStorage.getItem('Authorization');
-        return Authorization
-            ? { Authorization: Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}` }
-            : {};
-    };
-
     async function submitExcluded(values) {
-        const headers = getHeaders(); 
         setIsLoading(true);
         try {
-            const { data } = await axios.post(
-                'https://api.mazraaonline.com/api/excluded/addexcluded',
-                values,
-                { headers }
+            const { data } = await axiosInstance.post(
+                '/excluded/addexcluded',
+                values
             );
             if (data.status === "success") {
                 setIsSubmitted(true);

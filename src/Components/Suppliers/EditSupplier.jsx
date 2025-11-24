@@ -1,6 +1,6 @@
 import  { useEffect, useState, useContext, useCallback } from "react";
 import { useFormik } from "formik";
-import axios from "axios";
+import axiosInstance from "../../api/axios";
 import { IoIosSave } from "react-icons/io";
 import { useParams, Link } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -22,13 +22,6 @@ function EditSupplier() {
   // للاطلاع والعرض
   const [supplier, setSupplier] = useState(null);
 
-  const getHeaders = () => {
-    const token = localStorage.getItem("Authorization");
-    return {
-      Authorization: token?.startsWith("Bearer ") ? token : `Bearer ${token}`,
-    };
-  };
-
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -43,9 +36,8 @@ function EditSupplier() {
 
   const fetchSupplier = useCallback(async () => {
     try {
-      const { data } = await axios.get(
-        `https://api.mazraaonline.com/api/supplier/getSinglesuppliers/${supplierId}`,
-        { headers: getHeaders() }
+      const { data } = await axiosInstance.get(
+        `/supplier/getSinglesuppliers/${supplierId}`
       );
 
       if (data.status === "success") {
@@ -88,16 +80,15 @@ function EditSupplier() {
     setIsLoading(true);
     try {
       // تحديث بيانات المورد
-      const { data } = await axios.patch(
-        `https://api.mazraaonline.com/api/supplier/updatesupplier/${supplierId}`,
+      const { data } = await axiosInstance.patch(
+        `/supplier/updatesupplier/${supplierId}`,
         {
           name: values.name,
           email: values.email,
           phone: values.phone,
           company: values.company,
           notes: values.notes,
-        },
-        { headers: getHeaders() }
+        }
       );
 
       

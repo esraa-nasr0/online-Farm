@@ -1,69 +1,52 @@
-import axios from "axios";
+import axiosInstance from "../api/axios";
 import { createContext } from "react";
 
 export let TreatmentContext = createContext();
 
-
-
-const getHeaders = () => {
-    const Authorization = localStorage.getItem('Authorization');
-  
-   
-    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-  
-    return {
-        Authorization: formattedToken
-    };
-  };
-
 function getTreatment(page, limit, filters = {}) {
-    const headers = getHeaders(); 
-    return axios
-        .get(`https://api.mazraaonline.com/api/treatment/getalltreatmentes`, {
+    return axiosInstance
+        .get(`/treatment/getalltreatmentes`, {
             params: {
                 page,
                 limit,
                 ...filters 
-            }, headers })
+            }
+        })
         .then((response) => response)
         .catch((err) => err);
 }
 
 function deleteTreatment(id) {
-    const headers = getHeaders(); 
-    return axios
-        .delete(`https://api.mazraaonline.com/api/treatment/deletetreatment/${id}`, { headers })
+    return axiosInstance
+        .delete(`/treatment/deletetreatment/${id}`)
         .then((response) => response)
         .catch((err) => err);
 }
 
 function getTreatmentByAnimal(page, limit, filters = {}) {
-    const headers = getHeaders(); 
-    return axios
-        .get(`https://api.mazraaonline.com/api/treatment/getAlltreatmentforAnimals`, {
+    return axiosInstance
+        .get(`/treatment/getAlltreatmentforAnimals`, {
             params: {
                 page,
                 limit,
                 ...filters 
-            },
-            headers })
+            }
+        })
         .then((response) => response)
         .catch((err) => err);
 }
 
 function deleteTreatmentByAnimal(id) {
-    const headers = getHeaders(); 
-    return axios
-        .delete(`https://api.mazraaonline.com/api/treatment/deletetreatmentforAnimals/${id}`, { headers })
+    return axiosInstance
+        .delete(`/treatment/deletetreatmentforAnimals/${id}`)
         .then((response) => response)
         .catch((err) => err);
 }
 
 
 function getTreatmentMenue() {
-    const headers = getHeaders(); 
-    return axios
-        .get(`https://api.mazraaonline.com/api/treatment/gettreatments`, { headers })
+    return axiosInstance
+        .get(`/treatment/gettreatments`)
         .then((response) => response)
         .catch((err) => err);
 }

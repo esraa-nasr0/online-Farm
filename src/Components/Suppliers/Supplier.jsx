@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { TreatmentContext } from "../../Context/TreatmentContext";
 import { Feedcontext } from "../../Context/FeedContext";
-import axios from "axios";
+import axiosInstance from "../../api/axios";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Swal from "sweetalert2";
@@ -52,29 +52,19 @@ function Supplier() {
     fetchTreatments();
   }, []);
 
-  const getHeaders = () => {
-    const Authorization = localStorage.getItem("Authorization");
-    const formattedToken = Authorization?.startsWith("Bearer ")
-      ? Authorization
-      : `Bearer ${Authorization}`;
-    return { Authorization: formattedToken };
-  };
-
   async function addSupplier(values) {
     if (isSubmitted) return;
-    const headers = getHeaders();
     setIsLoading(true);
     setError(null);
     try {
       console.log("Submitting:", values);
-      const { data } = await axios.post(
-        `https://api.mazraaonline.com/api/supplier/addsupplier`,
+      const { data } = await axiosInstance.post(
+        `/supplier/addsupplier`,
         {
           ...values,
           treatmentIds: values.treatmentIds.filter((id) => id !== ""),
           feedIds: values.feedIds.filter((id) => id !== ""),
-        },
-        { headers }
+        }
       );
 
       if (data.status === "success") {

@@ -1,31 +1,16 @@
-import axios from "axios";
+import axiosInstance from "../api/axios";
 import { createContext } from "react";
 
 export let BreedingContext = createContext();
 
-// Helper function to generate headers with the latest token
-const getHeaders = () => {
-    const Authorization = localStorage.getItem('Authorization');
-  
-    // Ensure the token has only one "Bearer" prefix
-    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-  
-    return {
-        Authorization: formattedToken
-    };
-  };
-
 // Function to get all breeding entries with pagination and optional filters
 export function getAllBreeding(page, limit, filters = {}) {
-    const headers = getHeaders(); // Get the latest headers
-
-    return axios.get('https://api.mazraaonline.com/api/breeding/GetAllBreeding', {
+    return axiosInstance.get('/breeding/GetAllBreeding', {
         params: {
             page,
             limit,
             ...filters
-        },
-        headers
+        }
     })
     .then((response) => response.data)
     .catch((err) => {
@@ -36,9 +21,7 @@ export function getAllBreeding(page, limit, filters = {}) {
 
 // Function to delete a breeding entry by ID
 export function deleteBreeding(id) {
-    const headers = getHeaders(); // Get the latest headers
-
-    return axios.delete(`https://api.mazraaonline.com/api/breeding/DeleteBreeding/${id}`, { headers })
+    return axiosInstance.delete(`/breeding/DeleteBreeding/${id}`)
         .then((response) => response.data)
         .catch((err) => {
             console.error("Error deleting breeding entry:", err);

@@ -6,10 +6,11 @@ import { Rings } from 'react-loader-spinner';
 import Swal from 'sweetalert2';
 import { useTranslation } from 'react-i18next';
 import { VaccineanimalContext } from '../../Context/VaccineanimalContext';
-import axios from 'axios';
+import axiosInstance from '../../api/axios';
 import { RiDeleteBinLine } from "react-icons/ri";
 import { FiSearch } from "react-icons/fi";
 import "./VaccineByAnimalTable.css"; // سيتم إنشاء هذا الملف
+import { getToken } from '../../utils/authToken';
 
 function Vaccinebyanimaltable() {
   const { t, i18n } = useTranslation();
@@ -171,27 +172,24 @@ function Vaccinebyanimaltable() {
     }
   };
 
-  const getHeaders = () => {
-    const token = localStorage.getItem('Authorization');
+  const ensureAuthenticated = () => {
+    const token = getToken();
     if (!token) {
       navigate('/login');
-      throw new Error('No authorization token found');
+      return false;
     }
-    return {
-      Authorization: token.startsWith("Bearer ") ? token : `Bearer ${token}`
-    };
+    return true;
   };
 
   const handleDownloadTemplate = async () => {
-    const headers = getHeaders();
+    if (!ensureAuthenticated()) return;
     try {
       setIsLoading(true);
-      const response = await axios.get(
-        'https://api.mazraaonline.com/api/vaccine/downloadTemplate',
+      const response = await axiosInstance.get(
+        '/vaccine/downloadTemplate',
         {
           responseType: 'blob',
           headers: {
-            ...headers,
             'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
           }
         }
@@ -214,15 +212,14 @@ function Vaccinebyanimaltable() {
   };
 
   const handleExportToExcel = async () => {
-    const headers = getHeaders();
+    if (!ensureAuthenticated()) return;
     try {
       setIsLoading(true);
-      const response = await axios.get(
-        'https://api.mazraaonline.com/api/vaccine/export',
+      const response = await axiosInstance.get(
+        '/vaccine/export',
         {
           responseType: 'blob',
           headers: {
-            ...headers,
             'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
           }
         }
@@ -280,19 +277,18 @@ function Vaccinebyanimaltable() {
       return;
     }
 
-    const headers = getHeaders();
+    if (!ensureAuthenticated()) return;
     const formData = new FormData();
     
     try {
       setIsLoading(true);
       formData.append('file', file);
 
-      const response = await axios.post(
-        'https://api.mazraaonline.com/api/vaccine/import',
+      const response = await axiosInstance.post(
+        '/vaccine/import',
         formData,
         {
           headers: {
-            ...headers,
             'Content-Type': 'multipart/form-data'
           }
         }

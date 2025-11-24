@@ -7,7 +7,8 @@ import { BreedingContext } from "../../Context/BreedingContext";
 import { Rings } from "react-loader-spinner";
 import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
-import axios from "axios";
+import axiosInstance from "../../api/axios";
+import { getToken } from "../../utils/authToken";
 import { FiSearch } from "react-icons/fi";
 import "./BreedingTable.css"; // سيتم إنشاء هذا الملف
 
@@ -259,18 +260,21 @@ function BreadingTable() {
     );
   };
 
-  const getHeaders = () => {
-    const token = localStorage.getItem("Authorization");
-    if (!token) navigate("/login");
-    return { Authorization: token.startsWith("Bearer ") ? token : `Bearer ${token}` };
+  const ensureToken = () => {
+    const token = getToken();
+    if (!token) {
+      navigate("/login");
+      return false;
+    }
+    return true;
   };
 
   const handleDownloadTemplate = async () => {
-    const headers = getHeaders();
+    if (!ensureToken()) return;
     try {
-      const response = await axios.get(
-        "https://api.mazraaonline.com/api/breeding/downloadBreedingTemplate",
-        { responseType: "blob", headers }
+      const response = await axiosInstance.get(
+        "/breeding/downloadBreedingTemplate",
+        { responseType: "blob" }
       );
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
@@ -286,11 +290,11 @@ function BreadingTable() {
   };
 
   const handleExportToExcel = async () => {
-    const headers = getHeaders();
+    if (!ensureToken()) return;
     try {
-      const response = await axios.get(
-        "https://api.mazraaonline.com/api/breeding/exportbreedingToExcel",
-        { responseType: "blob", headers }
+      const response = await axiosInstance.get(
+        "/breeding/exportbreedingToExcel",
+        { responseType: "blob" }
       );
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
@@ -308,15 +312,15 @@ function BreadingTable() {
   const handleImportFromExcel = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
-    const headers = getHeaders();
+    if (!ensureToken()) return;
     const formData = new FormData();
     formData.append("file", file);
 
     try {
-      await axios.post(
-        "https://api.mazraaonline.com/api/breeding/import",
+      await axiosInstance.post(
+        "/breeding/import",
         formData,
-        { headers: { ...headers, "Content-Type": "multipart/form-data" } }
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
       Swal.fire(t("success"), t("excel_uploaded_successfully"), "success");
       fetchBreeding();

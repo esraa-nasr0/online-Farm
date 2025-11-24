@@ -2,12 +2,13 @@ import React from "react";
 import gardenImg from "../../Assets/Img/pexels-pixabay-462119.jpg"; 
 import "./imgslide.css";
 import { Link, useNavigate } from "react-router-dom";
+import { getToken } from "../../utils/authToken";
 
 export default function HomeHero() {
   const navigate = useNavigate();
 
   const handleGetStarted = () => {
-    const token = localStorage.getItem("Authorization"); 
+    const token = getToken(); 
     if (token) {
       navigate("/userDashboard");
     } else {

@@ -4,6 +4,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { UserContext } from "../../Context/UserContext";
 import { useTranslation } from 'react-i18next';
 import { jwtDecode } from 'jwt-decode';
+import { clearToken } from "../../utils/authToken";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { GrLanguage } from "react-icons/gr";
 import logo from "../../Assets/Img/WhatsAppLogo.jpeg";
@@ -24,7 +25,7 @@ export default function Navbar({ toggleSidebar, isSidebarOpen }) {
 
     // Logout
     function LogOut() {
-        localStorage.removeItem("Authorization");
+        clearToken();
         setAuthorization(null);
         navigate("/");
     }

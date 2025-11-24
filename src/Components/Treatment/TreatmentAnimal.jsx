@@ -1,4 +1,4 @@
-import axios from "axios";
+import axiosInstance from "../../api/axios";
 import { useFormik } from "formik";
 import  { useContext, useState, useEffect } from "react";
 import Swal from "sweetalert2";
@@ -16,14 +16,6 @@ function TreatmentAnimal() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const { getTreatmentMenue } = useContext(TreatmentContext);
   const navigate = useNavigate();
-
-  const getHeaders = () => {
-    const Authorization = localStorage.getItem("Authorization");
-    const formattedToken = Authorization?.startsWith("Bearer ")
-      ? Authorization
-      : `Bearer ${Authorization}`;
-    return { Authorization: formattedToken };
-  };
 
   const fetchTreatments = async () => {
     try {
@@ -45,14 +37,12 @@ function TreatmentAnimal() {
 
   async function submitTreatment(values) {
     if (isSubmitted) return;
-    const headers = getHeaders();
     setIsLoading(true);
     setError(null);
     try {
-      const { data } = await axios.post(
-        `https://api.mazraaonline.com/api/treatment/addtreatmentbyanimal`,
-        values,
-        { headers }
+      const { data } = await axiosInstance.post(
+        `/treatment/addtreatmentbyanimal`,
+        values
       );
 
       if (data.status === "SUCCESS") {

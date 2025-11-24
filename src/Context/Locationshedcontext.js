@@ -1,22 +1,11 @@
-import axios from "axios";
+import axiosInstance from "../api/axios";
 import { createContext } from "react";
 
 export const LocationContext = createContext();
 
-const getHeaders = () => {
-  const token = localStorage.getItem("Authorization") || "";
-  return {
-    Authorization: token.startsWith("Bearer ") ? token : `Bearer ${token}`,
-    "Content-Type": "application/json",
-  };
-};
-
 function getLocationtMenue() {
-  return axios
-    .get(
-      `https://api.mazraaonline.com/api/location/GetAll-Locationsheds-menue`,
-      { headers: getHeaders() }
-    )
+  return axiosInstance
+    .get(`/location/GetAll-Locationsheds-menue`)
     .then((response) => response)
     .catch((err) => {
       console.error("Error fetching location menu:", err);
@@ -25,11 +14,8 @@ function getLocationtMenue() {
 }
 
 function getVaccineMenue() {
-  return axios
-    .get(
-      `https://api.mazraaonline.com/api/vaccine/GetVaccine-menue`,
-      { headers: getHeaders() }
-    )
+  return axiosInstance
+    .get(`/vaccine/GetVaccine-menue`)
     .then((response) => response)
     .catch((err) => {
       console.error("Error fetching vaccine menu:", err);

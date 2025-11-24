@@ -1,4 +1,4 @@
-import axios from 'axios';  
+import axiosInstance from '../../api/axios';  
 import React, { useState } from "react";  
 import * as XLSX from "xlsx";  
 import DownloadExcel from './DownloadExcel';
@@ -6,18 +6,6 @@ import DownloadExcel from './DownloadExcel';
 function UploadExcel({ addAnimals }) {  
     const [data, setData] = useState([]);  
 
-// Helper function to generate headers with the latest token
-const getHeaders = () => {
-    const Authorization = localStorage.getItem('Authorization');
-
-    // Ensure the token has only one "Bearer" prefix
-    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-
-    return {
-        Authorization: formattedToken
-    };
-};
-    
     const handleFileChange = (e) => {  
         const file = e.target.files[0];  
         if (file) {  
@@ -49,7 +37,6 @@ const getHeaders = () => {
     };  
 
     async function uploadSheet(dataToUpload) {
-        const headers = getHeaders(); // Get the latest headers
         const successfulUploads = [];
     
         for (let item of dataToUpload) {
@@ -64,10 +51,10 @@ const getHeaders = () => {
                     const purchaseDateObj = new Date(item.purchaseDate);
                     item.purchaseDate = !isNaN(purchaseDateObj) ? purchaseDateObj.toISOString() : null;
                 }
-                const response = await axios.post(
-                    'https://api.mazraaonline.com/api/animal/import',
+                const response = await axiosInstance.post(
+                    '/animal/import',
                     item,
-                    { headers: { ...headers, 'Content-Type': 'application/json' } }
+                    { headers: { 'Content-Type': 'application/json' } }
                 );
                 if (response.data.status === 'success') {
                     successfulUploads.push(item);

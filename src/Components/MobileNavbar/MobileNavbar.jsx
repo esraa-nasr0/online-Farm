@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { UserContext } from "../../Context/UserContext";
 import { useTranslation } from 'react-i18next';
 import { jwtDecode } from 'jwt-decode';
+import { clearToken } from "../../utils/authToken";
 import { FaBars, FaTimes, FaShoppingCart } from "react-icons/fa";
 import logo from "../../Assets/Img/WhatsAppLogo.jpeg";
 import { PiNotebook } from "react-icons/pi";
@@ -22,7 +23,7 @@ export default function MobileNavbar({ toggleSidebar }) {
     const showSidebarToggle = Authorization && !['/', '/home', '/register', '/login', '/dashboard','/forgetpassword','/verifyotp','/resetpassword'].includes(location.pathname);
 
     function LogOut() {
-        localStorage.removeItem("Authorization");
+        clearToken();
         setAuthorization(null);
         navigate("/");
     }

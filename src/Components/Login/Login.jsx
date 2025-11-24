@@ -1,10 +1,11 @@
-import axios from "axios";
+import axiosInstance from "../../api/axios";
 import React, { useContext, useState } from "react";
 import { useFormik } from "formik";
 import { Link, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { UserContext } from "../../Context/UserContext";
 import { jwtDecode } from 'jwt-decode';
+import { setToken } from "../../utils/authToken";
 import style from "./Login.module.css";
 import { CgShapeRhombus } from "react-icons/cg";
 
@@ -20,12 +21,12 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      let { data } = await axios.post(`https://api.mazraaonline.com/api/login`, value);
+      let { data } = await axiosInstance.post(`/login`, value);
 
       if (data.status === "success") {
         setIsLoading(false);
         const decodedToken = jwtDecode(data.data.token);
-        localStorage.setItem("Authorization", data.data.token);
+        setToken(data.data.token);
         setAuthorization(data.data.token);
         console.log("Decoded Token:", decodedToken);
         const userRole = decodedToken.role;

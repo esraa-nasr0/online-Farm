@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from '../../api/axios';
 import { useFormik } from 'formik';
 import { useState, useEffect, useContext } from 'react';
 import Swal from 'sweetalert2';
@@ -16,14 +16,6 @@ export default function EditFodder() {
   const { getFodderMenue } = useContext(Feedcontext);
   const { id } = useParams();
 
-  const getHeaders = () => {
-    const Authorization = localStorage.getItem('Authorization');
-    const formattedToken = Authorization.startsWith("Bearer ")
-      ? Authorization
-      : `Bearer ${Authorization}`;
-    return { Authorization: formattedToken };
-  };
-
   useEffect(() => {
     const fetchFeeds = async () => {
       try {
@@ -40,12 +32,10 @@ export default function EditFodder() {
 
   useEffect(() => {
     const fetchFodder = async () => {
-      const headers = getHeaders();
       setError(null);
       try {
-        const { data } = await axios.get(
-          `https://api.mazraaonline.com/api/fodder/getsinglefodder/${id}`,
-          { headers }
+        const { data } = await axiosInstance.get(
+          `/fodder/getsinglefodder/${id}`
         );
         if (data?.data?.fodder) {
           const fodder = data.data.fodder;
@@ -69,14 +59,12 @@ export default function EditFodder() {
   }, [id, t]);
 
   const submitFodder = async (values) => {
-    const headers = getHeaders();
     setIsLoading(true);
     setError(null);
     try {
-      const { data } = await axios.patch(
-        `https://api.mazraaonline.com/api/fodder/updatefodder/${id}`,
-        values,
-        { headers }
+      const { data } = await axiosInstance.patch(
+        `/fodder/updatefodder/${id}`,
+        values
       );
 
       if (data.status === 'success') {

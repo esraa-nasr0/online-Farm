@@ -1,41 +1,23 @@
-import axios from "axios";
+import axiosInstance from "../api/axios";
 import { createContext } from "react";
-
-// Helper function to generate headers with the latest token
-const getHeaders = () => {
-    const Authorization = localStorage.getItem('Authorization');
-  
-    // Ensure the token has only one "Bearer" prefix
-    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-  
-    return {
-        Authorization: formattedToken
-    };
-  };
 
 export let Feedbylocationcontext=createContext()
 
 function getAllfeeds(page, limit, filters = {}) {
-    const headers = getHeaders(); // Get the latest headers
-
-    return axios.get('https://api.mazraaonline.com/api/feed/getAllFeedByShed',{
+    return axiosInstance.get('/feed/getAllFeedByShed',{
         params: {
             page,
             limit,
             ...filters
-        },
-        headers
+        }
     })
     .then((response) => response)
     .catch((err) => err);
 }
 
 async function Deletfeed(id){
-
-    const headers = getHeaders(); // Get the latest headers
-
     try {
-        const response = await axios.delete(`https://api.mazraaonline.com/api/feed/deletefeedByShed/${id}`, { headers });
+        const response = await axiosInstance.delete(`/feed/deletefeedByShed/${id}`);
         return response.data;
     } catch (err) {
         console.error("Error deleting vaccine:", err.response ? err.response.data : err.message);

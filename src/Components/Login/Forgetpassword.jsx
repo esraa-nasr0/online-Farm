@@ -1,4 +1,4 @@
-import axios from "axios";
+import axiosInstance from "../../api/axios";
 import React, { useContext, useState } from "react";
 import { useFormik } from "formik";
 import { Link, useNavigate } from "react-router-dom";
@@ -16,7 +16,7 @@ async function forgetpassword(value) {
     setIsLoading(true);
 
     try {
-    let { data } = await axios.post(`https://api.mazraaonline.com/api/forgetPassword`, value);
+    let { data } = await axiosInstance.post(`/forgetPassword`, value);
 
     if (data.status === "success") {
         navigate("/verifyotp"); 

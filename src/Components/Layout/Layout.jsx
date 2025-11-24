@@ -5,7 +5,8 @@ import { Outlet, useLocation } from "react-router-dom";
 import "./Layout.css";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import axiosInstance from "../../api/axios";
+import { getToken, clearToken } from "../../utils/authToken";
 import ModernSidebar from "../Sidebare/ModernSidebar";
 import MobileNavbar from "../MobileNavbar/MobileNavbar";
 
@@ -34,23 +35,11 @@ export default function Layout() {
     "/resetpassword",
   ];
 
-  const getHeaders = () => {
-    const token = localStorage.getItem("Authorization");
-    return token
-      ? {
-          Authorization: token.startsWith("Bearer ")
-            ? token
-            : `Bearer ${token}`,
-        }
-      : {};
-  };
-
   const { data: notifCheckData } = useQuery({
     queryKey: ["notifications", "check", i18n.language],
     queryFn: async () => {
       const lang = i18n.language || "en";
-      const res = await axios.get(`${BASE_URL}/api/notifications/check`, {
-        headers: getHeaders(),
+      const res = await axiosInstance.get(`${BASE_URL}/api/notifications/check`, {
         params: { lang },
       });
 
@@ -117,7 +106,7 @@ export default function Layout() {
               notificationCount={unreadCount}
               isFattening={isFattening}
               onLogout={() => {
-                localStorage.removeItem("Authorization");
+                clearToken();
                 window.location.href = "/";
               }}
               onChangeLanguage={(lang) => {

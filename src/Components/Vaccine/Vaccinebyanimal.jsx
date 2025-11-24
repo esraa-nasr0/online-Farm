@@ -1,12 +1,13 @@
 import  { useContext, useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import { IoIosSave } from "react-icons/io";
-import axios from 'axios';
+import axiosInstance from '../../api/axios';
 import Swal from 'sweetalert2';
 import { useTranslation } from 'react-i18next';
 import { NewvaccineContext } from '../../Context/NewvaccineContext';
 import Select from 'react-select';
 import "./Vaccinebyanimal.css";
+import { getToken } from '../../utils/authToken';
 
 function Vaccinebyanimal() {
     const { i18n, t } = useTranslation();
@@ -19,12 +20,13 @@ function Vaccinebyanimal() {
     const [isSubmitted, setIsSubmitted] = useState(false);
 
 
-    const getHeaders = () => {
-        const Authorization = localStorage.getItem('Authorization');
-        const formattedToken = Authorization?.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-        return {
-            Authorization: formattedToken
-        };
+    const ensureAuthenticated = () => {
+        const token = getToken();
+        if (!token) {
+            Swal.fire(t("Error"), t("submitError"), "error");
+            return false;
+        }
+        return true;
     };
 
     useEffect(() => {
@@ -105,10 +107,13 @@ function Vaccinebyanimal() {
         },
         
         onSubmit: async (values) => {
-    const headers = getHeaders();
     setIsLoading(true);
 
     try {
+        if (!ensureAuthenticated()) {
+            setIsLoading(false);
+            return;
+        }
         // ✅ تحقق من تاريخ الانتهاء
         if (values.expiryDate) {
             const expiry = new Date(values.expiryDate);
@@ -144,10 +149,9 @@ function Vaccinebyanimal() {
             expiryDate: values.expiryDate
         };
 
-        const response = await axios.post(
-            'https://api.mazraaonline.com/api/vaccine/AddVaccine',
-            dataToSend,
-            { headers }
+        const response = await axiosInstance.post(
+            '/vaccine/AddVaccine',
+            dataToSend
         );
 
         if (response.data.status === "success") {

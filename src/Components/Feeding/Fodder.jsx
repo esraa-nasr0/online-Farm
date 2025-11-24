@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from '../../api/axios';
 import { useFormik } from 'formik';
 import { useState, useEffect, useContext } from 'react';
 import Swal from 'sweetalert2';
@@ -15,12 +15,6 @@ export default function Fodder() {
   const [feeds, setFeeds] = useState([]);
   const { getFodderMenue } = useContext(Feedcontext);
   const [isSubmitted, setIsSubmitted] = useState(false);
-
-  const getHeaders = () => {
-    const Authorization = localStorage.getItem('Authorization');
-    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-    return { Authorization: formattedToken };
-  };
 
   const fetchFeeds = async () => {
     try {
@@ -39,14 +33,12 @@ export default function Fodder() {
 
   async function submitFodder(value) {
     if (isSubmitted) return;
-    const headers = getHeaders();
     setIsLoading(true);
     setError(null);
     try {
-      const { data } = await axios.post(
-        'https://api.mazraaonline.com/api/fodder/addfodder',
-        value,
-        { headers }
+      const { data } = await axiosInstance.post(
+        '/fodder/addfodder',
+        value
       );
 
       if (data.status === 'success') {

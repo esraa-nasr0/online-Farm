@@ -1,11 +1,12 @@
 import { useContext, useState, useEffect } from 'react';
 import { useFormik } from 'formik';
 import { IoIosSave } from "react-icons/io";
-import axios from 'axios';
+import axiosInstance from '../../api/axios';
 import { VaccineanimalContext } from '../../Context/VaccineanimalContext';
 import { useNavigate } from 'react-router-dom'; 
 import Swal from 'sweetalert2';
 import { useTranslation } from 'react-i18next';
+import { getToken } from '../../utils/authToken';
 
 function VaccinebytagId() {
     const { t, i18n } = useTranslation();
@@ -39,15 +40,13 @@ function VaccinebytagId() {
         fetchVaccine();
     }, [getVaccineMenue]);
 
-    const getHeaders = () => {
-        const token = localStorage.getItem('Authorization');
+    const ensureAuthenticated = () => {
+        const token = getToken();
         if (!token) {
             navigate('/login');
-            throw new Error('No authorization token found');
+            return false;
         }
-        return {
-            Authorization: token.startsWith("Bearer ") ? token : `Bearer ${token}`
-        };
+        return true;
     };
 
     const formik = useFormik({
@@ -60,7 +59,10 @@ function VaccinebytagId() {
         onSubmit: async (values) => {
             setIsLoading(true);
             try {
-                const headers = getHeaders();
+                if (!ensureAuthenticated()) {
+                    setIsLoading(false);
+                    return;
+                }
                 const dataToSend = {
                     vaccineId: values.vaccineId,
                     date: values.date,
@@ -68,10 +70,9 @@ function VaccinebytagId() {
                     entryType: values.entryType,
                 };
         
-                const {data} = await axios.post(
-                    'https://api.mazraaonline.com/api/vaccine/AddVaccineForAnimal',
-                    dataToSend,
-                    { headers }
+                const {data} = await axiosInstance.post(
+                    '/vaccine/AddVaccineForAnimal',
+                    dataToSend
                 );
         
                 if (data.status === "SUCCESS") {

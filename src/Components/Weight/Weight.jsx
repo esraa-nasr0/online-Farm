@@ -1,7 +1,7 @@
 import { useFormik } from 'formik';
 import  { useState } from 'react';
 import { IoIosSave } from "react-icons/io";
-import axios from 'axios';
+import axiosInstance from '../../api/axios';
 import Swal from 'sweetalert2';
 import { useTranslation } from 'react-i18next';
 import './Weight.css';
@@ -12,22 +12,15 @@ function Weight() {
     const [isLoading, setIsLoading] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
 
-    const getHeaders = () => {
-        const Authorization = localStorage.getItem('Authorization');
-        return Authorization ? { Authorization: Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}` } : {};
-    };
-
     async function submitWeight(value) {
         if (isSubmitted) return;
 
-        const headers = getHeaders();
         setIsLoading(true);
         setError(null);
         try {
-            let { data } = await axios.post(
-                `https://api.mazraaonline.com/api/weight/AddWeight`,
-                value,
-                { headers }
+            let { data } = await axiosInstance.post(
+                `/weight/AddWeight`,
+                value
             );
             if (data.status === "success") {
                 setIsLoading(false);

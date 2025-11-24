@@ -1,5 +1,5 @@
 // Editfeed.js - الإصدار المحسن
-import axios from 'axios';
+import axiosInstance from '../../api/axios';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useEffect, useState } from 'react';
@@ -19,21 +19,14 @@ export default function Editfeed() {
   const [suppliers, setSuppliers] = useState([]);
   const [loading, setLoading] = useState({ suppliers: false, feed: false });
 
-  const getHeaders = () => {
-    const Authorization = localStorage.getItem('Authorization');
-    const formattedToken = Authorization?.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-    return { Authorization: formattedToken };
-  };
-
   // جلب بيانات الموردين
   useEffect(() => {
     async function fetchSuppliers() {
       setLoading(prev => ({ ...prev, suppliers: true }));
       setError("");
       try {
-        const { data } = await axios.get(
-          "https://api.mazraaonline.com/api/supplier/getallsuppliers",
-          { headers: getHeaders() }
+        const { data } = await axiosInstance.get(
+          "/supplier/getallsuppliers"
         );
         if (data?.status === "success") {
           setSuppliers(data.data.suppliers || []);
@@ -54,11 +47,9 @@ export default function Editfeed() {
   useEffect(() => {
     async function fetchFeed() {
       setLoading(prev => ({ ...prev, feed: true }));
-      const headers = getHeaders();
       try {
-        const { data } = await axios.get(
-          `https://api.mazraaonline.com/api/feed/getsinglefeed/${id}`,
-          { headers }
+        const { data } = await axiosInstance.get(
+          `/feed/getsinglefeed/${id}`
         );
         if (data.data.feed) {
           const feed = data.data.feed;
@@ -101,7 +92,6 @@ export default function Editfeed() {
     },
     validationSchema,
     onSubmit: async (values) => {
-      const headers = getHeaders();
       try {
         setIsLoading(true);
         const dataToSubmit = {
@@ -113,10 +103,9 @@ export default function Editfeed() {
           supplierId: values.supplierId,
         };
 
-        const response = await axios.patch(
-          `https://api.mazraaonline.com/api/feed/updatefeed/${id}`,
-          dataToSubmit,
-          { headers }
+        const response = await axiosInstance.patch(
+          `/feed/updatefeed/${id}`,
+          dataToSubmit
         );
         
         if (response.data.status === "success") {

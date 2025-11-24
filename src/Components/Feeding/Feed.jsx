@@ -1,7 +1,7 @@
 import  { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import axios from "axios";
+import axiosInstance from "../../api/axios";
 import { IoIosSave } from "react-icons/io";
 import Swal from 'sweetalert2';
 import './Feeding.css';
@@ -21,21 +21,14 @@ export default function Feed() {
   const [loading, setLoading] = useState({ suppliers: false, submit: false });
 
 
-    const getHeaders = () => {
-        const Authorization = localStorage.getItem('Authorization');
-        const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-        return { Authorization: formattedToken };
-    };
-
       // 1) احضري الموردين
   useEffect(() => {
   async function fetchSuppliers() {
     setLoading(prev => ({ ...prev, suppliers: true }));
     setError("");
     try {
-      const { data } = await axios.get(
-        "https://api.mazraaonline.com/api/supplier/getallsuppliers",
-        { headers: getHeaders() }
+      const { data } = await axiosInstance.get(
+        "/supplier/getallsuppliers"
       );
       if (data?.status === "success") {
         setSuppliers(data.data.suppliers || []);
@@ -55,7 +48,6 @@ export default function Feed() {
 
 
     async function handleSubmit(values) {
-  const headers = getHeaders();
   try {
     setIsLoading(true);
 
@@ -68,10 +60,9 @@ export default function Feed() {
   supplierId: values.supplierId || supplierId, // رجعها supplierId للتجربة
 };
 
-    const { data } = await axios.post(
-      "https://api.mazraaonline.com/api/feed/addfeed",
-      dataToSubmit,
-      { headers }
+    const { data } = await axiosInstance.post(
+      "/feed/addfeed",
+      dataToSubmit
     );
 
     if (data.status === "success") {

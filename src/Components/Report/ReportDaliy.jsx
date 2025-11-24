@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../api/axios';
 import { useTranslation } from 'react-i18next';
 
 function ReportDaily() {
@@ -9,20 +9,12 @@ function ReportDaily() {
     const [reportData, setReportData] = useState(null);
     const { t } = useTranslation();
 
-    const getHeaders = () => {
-        const Authorization = localStorage.getItem('Authorization');
-        const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-        return { Authorization: formattedToken };
-    };
-
     async function getReport(animalType) {
-        const headers = getHeaders();
         setIsLoading(true);
         setError(null);
         try {
-            const { data } = await axios.get(`https://api.mazraaonline.com/api/report/daily`, {
-                params: { animalType },
-                headers
+            const { data } = await axiosInstance.get(`/report/daily`, {
+                params: { animalType }
             });
             
             if (data.status === "success") {

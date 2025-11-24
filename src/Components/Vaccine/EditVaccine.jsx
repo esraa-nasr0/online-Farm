@@ -1,12 +1,13 @@
 import { useEffect, useState, useContext, useMemo } from 'react';
 import { useFormik } from 'formik';
 import { IoIosSave } from "react-icons/io";
-import axios from 'axios';
+import axiosInstance from '../../api/axios';
 import Swal from 'sweetalert2';
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import Select from 'react-select';
 import { NewvaccineContext } from '../../Context/NewvaccineContext';
+import { getToken } from '../../utils/authToken';
 
 function EditVaccine() {
   const { i18n, t } = useTranslation();
@@ -20,13 +21,13 @@ function EditVaccine() {
   const [isBootstrapping, setIsBootstrapping] = useState(true);
   const [error, setError] = useState(null);
 
-  const getHeaders = () => {
-    const Authorization = localStorage.getItem('Authorization');
-    const token = Authorization?.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-    return {
-      Authorization: token,
-      'Content-Type': 'application/json',
-    };
+  const ensureAuthenticated = () => {
+    const token = getToken();
+    if (!token) {
+      navigate('/login');
+      return false;
+    }
+    return true;
   };
 
   // ===== Formik =====
@@ -66,10 +67,13 @@ function EditVaccine() {
           expiryDate: values.expiryDate || undefined,
         };
 
-        const response = await axios.patch(
-          `https://api.mazraaonline.com/api/vaccine/UpdateVaccine/${id}`,
-          payload,
-          { headers: getHeaders() }
+        if (!ensureAuthenticated()) {
+          setIsLoading(false);
+          return;
+        }
+        const response = await axiosInstance.patch(
+          `/vaccine/UpdateVaccine/${id}`,
+          payload
         );
 
         if (response.data.status === "success") {
@@ -107,9 +111,12 @@ function EditVaccine() {
         setFilteredVaccines(vaccines);
 
         // 2) حمل بيانات اللقاح الحالي واملأ الفورم
-        const details = await axios.get(
-          `https://api.mazraaonline.com/api/vaccine/GetSingleVaccine/${id}`,
-          { headers: getHeaders() }
+        if (!ensureAuthenticated()) {
+          setIsBootstrapping(false);
+          return;
+        }
+        const details = await axiosInstance.get(
+          `/vaccine/GetSingleVaccine/${id}`
         );
         const vaccine = details.data?.data?.vaccine || {};
 

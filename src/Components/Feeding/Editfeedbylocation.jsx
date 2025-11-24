@@ -1,4 +1,4 @@
-import axios from "axios";
+import axiosInstance from "../../api/axios";
 import { useFormik } from "formik";
 import  { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
@@ -19,14 +19,6 @@ export default function EditFeedbyLocation() {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const { t } = useTranslation();
-
-  const getHeaders = () => {
-    const Authorization = localStorage.getItem("Authorization");
-    const formattedToken = Authorization.startsWith("Bearer ")
-      ? Authorization
-      : `Bearer ${Authorization}`;
-    return { Authorization: formattedToken };
-  };
 
   const fetchLocationSheds = async () => {
     try {
@@ -69,7 +61,6 @@ export default function EditFeedbyLocation() {
       date: "",
     },
     onSubmit: async (values) => {
-      const headers = getHeaders();
       try {
         setIsLoading(true);
         const requestData = {
@@ -80,10 +71,9 @@ export default function EditFeedbyLocation() {
             quantity: Number(feed.quantity),
           })),
         };
-        const response = await axios.patch(
-          `https://api.mazraaonline.com/api/feed/updatefeedByShed/${id}`,
-          requestData,
-          { headers }
+        const response = await axiosInstance.patch(
+          `/feed/updatefeedByShed/${id}`,
+          requestData
         );
 
         if (response.data.status === "SUCCESS") {
@@ -106,11 +96,9 @@ export default function EditFeedbyLocation() {
 
   useEffect(() => {
     async function fetchFeedData() {
-      const headers = getHeaders();
       try {
-        const { data } = await axios.get(
-          `https://api.mazraaonline.com/api/feed/getsingleFeedByShed/${id}`,
-          { headers }
+        const { data } = await axiosInstance.get(
+          `/feed/getsingleFeedByShed/${id}`
         );
 
         if (data.data.feedShed) {

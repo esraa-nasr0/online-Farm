@@ -337,15 +337,16 @@
 
 .nav-item { margin-block: 4px; }
 
-/* ===== عناصر القائمة (الأيقونة + النص + السهم) باستخدام Flex ===== */
+/* ===== عناصر القائمة (الأيقونة + النص + السهم) باستخدام GRID زى الكود الأول ===== */
 .item-btn {
   all: unset;
   width: 100%;
   cursor: pointer;
-  display: flex;              /* بدل grid */
-  align-items: center;        /* الأيقونة في نفس مستوى النص */
-  gap: 10px;                  /* نفس المسافة بين الأيقونة والنص في كل اللغات */
-  padding: 10px 12px;
+  display: grid;
+  grid-template-columns: 32px 1fr max-content; /* نفس المسافات بين الأيقونة والنص والسهم */
+  align-items: center;
+  gap: 10px;
+  padding: 10px 10px;          /* نفس البادينج بتاع الكود الأول */
   border-radius: 12px;
   color: var(--msb-text);
   border: 1px solid transparent;
@@ -357,18 +358,14 @@
 /* الأيقونة */
 .item-btn .ico {
   font-size: 18px;
-  display: flex;
-  align-items: center;        /* محاذاة عمودية ممتازة */
-  justify-content: center;
-  flex-shrink: 0;             /* ما تصغرش */
-  height: 20px;
+  display: grid;
+  place-items: center;
 }
 
 /* النص */
 .item-btn .txt {
   font-size: 14px;
   font-weight: 500;
-  flex: 1 1 auto;             /* ياخد المساحة بين الأيقونة والسهم */
   line-height: 1.5;
   letter-spacing: 0;
   word-spacing: 0;
@@ -378,12 +375,10 @@
 
 /* السهم */
 .item-btn .chev {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
   opacity: .75;
   font-size: 12px;
-  flex-shrink: 0;
 }
 
 .item-btn:hover {
@@ -412,7 +407,8 @@
 
 .submenu li { margin: 2px 0; }
 .sub-link {
-  display: block;
+  display: flex;
+  align-items: center;
   color: var(--msb-text);
   font-size: 13.5px;
   padding: 8px 10px;
@@ -423,8 +419,6 @@
   letter-spacing: 0;
   word-spacing: 0;
   line-height: 1.5;
-  display: flex;
-  align-items: center;
   min-height: 20px;
 }
 .sub-link:hover {
@@ -588,15 +582,6 @@ html, body, #root {
 
 .msb.rtl .section-title {
   letter-spacing: 0; /* إزالة التباعد للعربية والأوردو */
-}
-
-/* تحسينات إضافية لمحاذاة الأيقونات مع النص */
-.panel-left {
-  align-items: center;
-}
-
-.brand {
-  align-items: center;
 }
 
 /* تحسين محاذاة الأيقونات في القوائم الفرعية */

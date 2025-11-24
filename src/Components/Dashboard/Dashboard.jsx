@@ -1,4 +1,5 @@
-import axios from "axios";
+import axiosInstance from "../../api/axios";
+import { getToken } from "../../utils/authToken";
 import React, { useContext, useEffect, useState } from "react";
 import { DashboardContext } from "../../Context/DashboardContext";
 import Swal from "sweetalert2";
@@ -51,15 +52,15 @@ function Dashboard() {
     }
 
     // هيدر الإدمن: ضيفي Bearer لو مش موجود
-   const rawAdmin = localStorage.getItem("Authorization") || "";
-const adminAuth = rawAdmin.startsWith("Bearer ") ? rawAdmin : `Bearer ${rawAdmin}`;
+    const rawAdmin = getToken() || "";
+    const adminAuth = rawAdmin.startsWith("Bearer ") ? rawAdmin : `Bearer ${rawAdmin}`;
 
 
     const frontOrigin = window.location.origin; // مثال: http://localhost:3000
 
     try {
       // 1) ابدأ الانتحال -> URL فيه ?token=...
-      const start = await axios.post(
+      const start = await axiosInstance.post(
         `${API_BASE}/admin/users/${userId}/impersonate`,
         {},
         { headers: { Authorization: adminAuth } }
@@ -73,7 +74,7 @@ const adminAuth = rawAdmin.startsWith("Bearer ") ? rawAdmin : `Bearer ${rawAdmin
       if (!impToken) throw new Error("Missing token from URL");
 
       // 3) redeem -> خدي توكن اليوزر العادي
-      const redeem = await axios.get(
+      const redeem = await axiosInstance.get(
         `${API_BASE}/auth/impersonate?token=${encodeURIComponent(impToken)}`
       );
       const userToken = redeem?.data?.data?.token;

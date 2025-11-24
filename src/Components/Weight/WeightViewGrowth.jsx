@@ -1,7 +1,7 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import axiosInstance from '../../api/axios';
 import Swal from 'sweetalert2';
 import { useTranslation } from 'react-i18next';
 
@@ -10,14 +10,8 @@ function WeightViewGrowth() {
   const { id } = useParams(); // نفترض أنك بتمرر ID من الـ URL
 
   const fetchAnimalGrowth = async () => {
-    const token = localStorage.getItem('Authorization');
-    const headers = {
-      Authorization: token?.startsWith("Bearer ") ? token : `Bearer ${token}`
-    };
-
-    const response = await axios.get(
-      `https://api.mazraaonline.com/api/weight/getAnimalWithGrowthData/${id}`,
-      { headers }
+    const response = await axiosInstance.get(
+      `/weight/getAnimalWithGrowthData/${id}`
     );
 
     if (response.data.status !== 'success') {

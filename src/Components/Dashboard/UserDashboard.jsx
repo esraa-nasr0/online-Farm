@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from "../../api/axios";
 import { useTranslation } from "react-i18next";
 import {
   Chart as ChartJS,
@@ -31,23 +31,13 @@ ChartJS.register(
   ArcElement
 );
 
-const getHeaders = () => {
-  const Authorization = localStorage.getItem("Authorization");
-  const formattedToken = Authorization?.startsWith("Bearer ")
-    ? Authorization
-    : `Bearer ${Authorization}`;
-  return { Authorization: formattedToken };
-};
-
 export default function UserDashboard() {
   const [data, setData] = useState(null);
   const { t } = useTranslation();
 
   useEffect(() => {
-    axios
-      .get("https://api.mazraaonline.com/api/dashboard/stats-v2", {
-        headers: getHeaders(),
-      })
+    axiosInstance
+      .get("/dashboard/stats-v2")
       .then((res) => setData(res.data.data))
       .catch((err) => console.error(err));
   }, []);

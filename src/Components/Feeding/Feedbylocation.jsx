@@ -1,4 +1,4 @@
-import axios from "axios";
+import axiosInstance from "../../api/axios";
 import { useFormik } from "formik";
 import { useContext, useState, useEffect } from 'react';
 import { IoIosSave } from 'react-icons/io';
@@ -20,12 +20,6 @@ export default function Feedbylocation() {
   const [locationSheds, setLocationSheds] = useState([]);
   const { t } = useTranslation();
   const [isSubmitted, setIsSubmitted] = useState(false);
-
-  const getHeaders = () => {
-    const Authorization = localStorage.getItem('Authorization');
-    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-    return { Authorization: formattedToken };
-  };
 
   const fetchLocation = async () => {
     try {
@@ -61,14 +55,12 @@ export default function Feedbylocation() {
   }, [getFodderMenue]);
 
   async function post(values) {
-    const headers = getHeaders();
     try {
       setIsLoading(true);
       setError(null);
-      const response = await axios.post(
-        "https://api.mazraaonline.com/api/feed/addfeedbylocationshed",
-        values,
-        { headers }
+      const response = await axiosInstance.post(
+        "/feed/addfeedbylocationshed",
+        values
       );
       if (response.data.status === "SUCCESS") {
         setIsSubmitted(true);

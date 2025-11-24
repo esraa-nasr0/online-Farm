@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from '../../api/axios';
 import { useFormik } from 'formik';
 import  { useContext, useEffect, useState } from 'react';
 import { IoIosSave } from "react-icons/io";
@@ -21,18 +21,10 @@ function MatingLocation() {
     const { LocationMenue } = useContext(LocationContext);
     let navigate = useNavigate();
 
-    const getHeaders = () => {
-        const Authorization = localStorage.getItem('Authorization');
-        const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-        return { Authorization: formattedToken };
-    };
-
      // Fetch male tag IDs using useQuery
     const fetchMaleTags = async () => {
-        const headers = getHeaders();
-        const res = await axios.get(
-            'https://api.mazraaonline.com/api/animal/males',
-            { headers }
+        const res = await axiosInstance.get(
+            '/animal/males'
         );
         return res.data.data;
     };
@@ -64,15 +56,13 @@ function MatingLocation() {
         if (isSubmitted) {
             return;
         }
-        const headers = getHeaders();
         setisLoading(true); 
         value.checkDays = parseInt(value.checkDays, 10);
 
         try {
-            let { data } = await axios.post(
-                `https://api.mazraaonline.com/api/mating/AddMatingByLocation`,
-                value,
-                { headers }
+            let { data } = await axiosInstance.post(
+                `/mating/AddMatingByLocation`,
+                value
             );
 
             if (data.status === "success") {

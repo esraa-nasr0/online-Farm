@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from '../../api/axios';
 import { useFormik } from 'formik';
 import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
@@ -14,16 +14,7 @@ function EditTreatment() {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const getHeaders = () => {
-    const Authorization = localStorage.getItem('Authorization');
-    const formattedToken = Authorization.startsWith("Bearer ")
-      ? Authorization
-      : `Bearer ${Authorization}`;
-    return { Authorization: formattedToken };
-  };
-
   async function submitTreatment(values) {
-  const headers = getHeaders();
   setIsLoading(true);
   setError(null);
 
@@ -38,10 +29,9 @@ function EditTreatment() {
   };
 
   try {
-    const { data } = await axios.patch(
-      `https://api.mazraaonline.com/api/treatment/updatetreatment/${id}`,
-      payload,
-      { headers }
+    const { data } = await axiosInstance.patch(
+      `/treatment/updatetreatment/${id}`,
+      payload
     );
 
     if (data.status === "success") {
@@ -57,12 +47,10 @@ function EditTreatment() {
 }
   useEffect(() => {
     async function fetchTreatment() {
-      const headers = getHeaders();
       setError(null);
       try {
-        const { data } = await axios.get(
-          `https://api.mazraaonline.com/api/treatment/getsingletreatment/${id}`,
-          { headers }
+        const { data } = await axiosInstance.get(
+          `/treatment/getsingletreatment/${id}`
         );
         if (data?.data?.treatment) {
           const treatment = data.data.treatment;

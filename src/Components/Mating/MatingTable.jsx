@@ -6,7 +6,8 @@ import { MatingContext } from "../../Context/MatingContext";
 import { Rings } from "react-loader-spinner";
 import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
-import axios from "axios";
+import axiosInstance from "../../api/axios";
+import { getToken } from "../../utils/authToken";
 import { FiSearch } from "react-icons/fi";
 import "./MatingTable.css"; // سيتم إنشاء هذا الملف
 
@@ -194,27 +195,24 @@ function MatingTable() {
     );
   };
 
-  const getHeaders = () => {
-    const token = localStorage.getItem("Authorization");
+  const ensureToken = () => {
+    const token = getToken();
     if (!token) {
       navigate("/login");
-      throw new Error("No authorization token found");
+      return false;
     }
-    return {
-      Authorization: token.startsWith("Bearer ") ? token : `Bearer ${token}`,
-    };
+    return true;
   };
 
   const handleDownloadTemplate = async () => {
-    const headers = getHeaders();
+    if (!ensureToken()) return;
     try {
       setIsLoading(true);
-      const response = await axios.get(
-        "https://api.mazraaonline.com/api/mating/downloadTemplate",
+      const response = await axiosInstance.get(
+        "/mating/downloadTemplate",
         {
           responseType: "blob",
           headers: {
-            ...headers,
             Accept:
               "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
           },
@@ -237,15 +235,14 @@ function MatingTable() {
   };
 
   const handleExportToExcel = async () => {
-    const headers = getHeaders();
+    if (!ensureToken()) return;
     try {
       setIsLoading(true);
-      const response = await axios.get(
-        "https://api.mazraaonline.com/api/mating/export",
+      const response = await axiosInstance.get(
+        "/mating/export",
         {
           responseType: "blob",
           headers: {
-            ...headers,
             Accept:
               "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
           },
@@ -270,7 +267,7 @@ function MatingTable() {
   const handleImportFromExcel = async (event) => {
     await importExcel(
       event,
-      "https://api.mazraaonline.com/api/mating/import",
+      "/mating/import",
       t("matings_imported_successfully"),
       t("failed_to_import_from_excel")
     );
@@ -279,7 +276,7 @@ function MatingTable() {
   const handleUpdateFromExcel = async (event) => {
     await importExcel(
       event,
-      "https://api.mazraaonline.com/api/mating/import?mode=update",
+      "/mating/import?mode=update",
       t("matings_updated_successfully"),
       t("failed_to_update_from_excel")
     );
@@ -304,13 +301,13 @@ function MatingTable() {
       });
       return;
     }
-    const headers = getHeaders();
+    if (!ensureToken()) return;
     const formData = new FormData();
     try {
       setIsLoading(true);
       formData.append("file", file);
-      const response = await axios.post(url, formData, {
-        headers: { ...headers, "Content-Type": "multipart/form-data" },
+      const response = await axiosInstance.post(url, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
       if (response.data && response.data.status === "success") {
         Swal.fire({ title: t("success"), text: successMsg, icon: "success" });

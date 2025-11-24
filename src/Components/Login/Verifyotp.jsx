@@ -1,9 +1,10 @@
-import axios from "axios";
+import axiosInstance from "../../api/axios";
 import React, { useContext, useState } from "react";
 import { useFormik } from "formik";
 import { Link, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { UserContext } from "../../Context/UserContext";
+import { setToken } from "../../utils/authToken";
 import style from "./Login.module.css";
 import { CgShapeRhombus } from "react-icons/cg";
 
@@ -18,10 +19,10 @@ async function Verifyotp(value) {
     setIsLoading(true);
 
     try {
-    let { data } = await axios.post(`https://api.mazraaonline.com/api/verifyCode`, value);
+    let { data } = await axiosInstance.post(`/verifyCode`, value);
 
     if (data.status === "success") {
-        localStorage.setItem("Authorization", data.token);
+        setToken(data.token);
         setAuthorization(data.token);
         navigate("/resetpassword"); 
         console.log(data);

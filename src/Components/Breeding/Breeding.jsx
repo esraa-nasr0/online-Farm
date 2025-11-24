@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import axios from "axios";
+import axiosInstance from "../../api/axios";
 import { IoIosSave } from "react-icons/io";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
@@ -24,17 +24,6 @@ export default function Breeding() {
   // ✅ يمسك نتيجة الحفظ لعرض plannedWeights
   const [savedBreeding, setSavedBreeding] = useState(null);
 
-  const getHeaders = () => {
-    const Authorization = localStorage.getItem("Authorization");
-    return Authorization
-      ? {
-          Authorization: Authorization.startsWith("Bearer ")
-            ? Authorization
-            : `Bearer ${Authorization}`,
-          "Content-Type": "application/json",
-        }
-      : { "Content-Type": "application/json" };
-  };
 
   // === helpers ===
   const fmt = (iso) => {
@@ -127,7 +116,6 @@ export default function Breeding() {
   };
 
   async function handleSubmit(values) {
-    const headers = getHeaders();
     setIsLoading(true);
     setError(null);
 
@@ -153,10 +141,9 @@ export default function Breeding() {
         })),
       };
 
-      const { data } = await axios.post(
-        `https://api.mazraaonline.com/api/breeding/AddBreeding`,
-        dataToSubmit,
-        { headers }
+      const { data } = await axiosInstance.post(
+        `/breeding/AddBreeding`,
+        dataToSubmit
       );
 
       if (data.status === "success") {
