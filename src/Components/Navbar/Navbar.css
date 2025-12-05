@@ -46,3 +46,16 @@
 .language-menu button:hover {
   background: #f5f5f5;
 }
+.language-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.language-current-label {
+  font-size: 14px;
+  font-weight: 500;
+}

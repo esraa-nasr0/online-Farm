@@ -16,12 +16,22 @@ export default function Navbar({ toggleSidebar, isSidebarOpen }) {
   const location = useLocation();
   const { i18n } = useTranslation();
 
-  const [language, setLanguage] = useState(i18n.language);
+  // لو حابة تبدأ باللغة المحفوظة في localStorage:
+  const savedLang = localStorage.getItem("lang") || i18n.language;
+  const [language, setLanguage] = useState(savedLang);
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showLangMenu, setShowLangMenu] = useState(false);
 
   const userRole = Authorization ? jwtDecode(Authorization).role : null;
   const isAdmin = localStorage.getItem("isAdmin") === "true";
+
+  // map لأسماء اللغات اللى هتظهر جنب الأيقونة
+  const languageLabels = {
+    en: "English",
+    ar: "العربية",
+    ur: "اردو",
+  };
 
   // Logout
   function LogOut() {
@@ -46,7 +56,6 @@ export default function Navbar({ toggleSidebar, isSidebarOpen }) {
         {/* Logo */}
         <div className="navbar-logo">
           <img src={logo} alt="Logo" className="navbar-logo-img" />
-          {/* اخترت اسم البراند MAZRAA ONLINE مع لون أخضر */}
           <span className="navbar-title" style={{ color: "#21763e" }}>
             MAZRAA ONLINE
           </span>
@@ -85,6 +94,10 @@ export default function Navbar({ toggleSidebar, isSidebarOpen }) {
               onClick={() => setShowLangMenu(!showLangMenu)}
             >
               <GrLanguage size={22} />
+              {/* 👇 هنا اسم اللغة المختارة */}
+              <span className="language-current-label">
+                {languageLabels[language] || language.toUpperCase()}
+              </span>
             </button>
 
             {showLangMenu && (
@@ -183,6 +196,10 @@ export default function Navbar({ toggleSidebar, isSidebarOpen }) {
               onClick={() => setShowLangMenu(!showLangMenu)}
             >
               <GrLanguage size={22} />
+              {/* 👇 برضه في الموبايل نكتب اسم اللغة */}
+              <span className="language-current-label">
+                {languageLabels[language] || language.toUpperCase()}
+              </span>
             </button>
 
             {showLangMenu && (

@@ -1,170 +1,178 @@
 .loginPageBg {
   min-height: 100vh;
-  
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 24px 12px;
+  background: #f3f4f6; /* نفس الخلفية الرمادي بتاعة register */
 }
 
+/* Card */
 .loginCard {
   background: #fff;
   border-radius: 18px;
-  box-shadow: 0 4px 24px rgba(44, 62, 80, 0.08);
-  padding: 48px 36px 32px 36px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+  padding: 32px 28px 26px;
   width: 100%;
-  max-width: 400px;
+  max-width: 420px;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
 }
 
+/* Logo + عنوان */
 .logo {
-
-  font-size: 2.5rem;
-  margin-bottom: 18px;
+  font-size: 2.4rem;
+  margin-bottom: 10px;
+  color: #21763e; /* نفس الأخضر */
+  display: flex;
+  justify-content: center;
 }
 
 .title {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #222;
-  margin-bottom: 6px;
+  color: #111827;
+  margin-bottom: 4px;
   text-align: center;
 }
 
 .subtitle {
-  color: #888;
-  font-size: 1rem;
-  margin-bottom: 24px;
+  color: #6b7280;
+  font-size: 0.95rem;
+  margin-bottom: 20px;
   text-align: center;
 }
 
+/* Label */
 .label {
-  font-size: 1rem;
-  color: #222;
+  font-size: 0.9rem;
+  color: #374151;
   margin-bottom: 6px;
-  margin-top: 12px;
+  margin-top: 10px;
   font-weight: 500;
 }
 
+/* Input */
 .input {
   width: 100%;
-  padding: 10px 12px;
-  border-radius: 7px;
-  border: 1px solid #e0e0e0;
-  background: #fafbfc;
-  margin-bottom: 20px;
-  font-size: 1rem;
-  transition: border 0.2s;
+  padding: 9px 11px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  font-size: 0.95rem;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
 }
 
 .input:focus {
-  border-color: #388f6f;
+  border-color: #21763e;
+  background: #ffffff;
   outline: none;
+  box-shadow: 0 0 0 1px rgba(33, 118, 62, 0.15);
 }
 
+/* Error text تحت كل input */
+.errorText {
+  margin: 3px 0 0 0;
+  font-size: 0.8rem;
+  line-height: 1.3;
+}
+
+/* Remember + Forgot row */
 .optionsRow {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  margin: 10px 0 18px 0;
+  margin: 10px 0 16px;
 }
 
 .checkboxLabel {
-  font-size: 0.95rem;
-  color: #555;
+  font-size: 0.88rem;
+  color: #4b5563;
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
 .forgotLink {
-  color: #4b6cb7;
-  font-size: 0.95rem;
+  color: #21763e;
+  font-size: 0.88rem;
   text-decoration: none;
-  transition: text-decoration 0.2s;
+  font-weight: 500;
 }
 
 .forgotLink:hover {
   text-decoration: underline;
 }
 
+/* زرار تسجيل الدخول */
 .signInBtn {
   width: 100%;
-  padding: 12px 0;
-  background: #222;
+  padding: 11px 0;
+  background: #111827;
   color: #fff;
   border: none;
-  border-radius: 7px;
-  font-size: 1rem;
+  border-radius: 8px;
+  font-size: 0.98rem;
   font-weight: 600;
-  margin-bottom: 10px;
+  margin-top: 4px;
+  margin-bottom: 8px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.18s ease, transform 0.08s ease, box-shadow 0.12s ease;
 }
 
 .signInBtn:hover {
-  background: #444;
+  background: #1f2937;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.2);
+  transform: translateY(-1px);
 }
 
-.googleBtn {
-  width: 100%;
-  padding: 12px 0;
-  background: #fff;
-  color: #222;
-  border: 1px solid #e0e0e0;
-  border-radius: 7px;
-  font-size: 1rem;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 18px;
-  cursor: pointer;
-  transition: background 0.2s, border 0.2s;
+/* ممكن لو عايزة disable في المستقبل:
+.signInBtn:disabled {
+  background: #d1d5db;
+  cursor: not-allowed;
+  box-shadow: none;
 }
+*/
 
-.googleBtn:hover {
-  background: #f5f6fa;
-  border-color: #bdbdbd;
-}
-
-.googleIcon {
-  font-size: 1.2rem;
-}
-
+/* نص تحت الزر */
 .signupPrompt {
   text-align: center;
-  font-size: 0.97rem;
-  color: #888;
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-top: 6px;
 }
 
 .signupPrompt a {
-  color: #4b6cb7;
+  color: #21763e;
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .signupPrompt a:hover {
   text-decoration: underline;
 }
 
+/* رسائل الخطأ العامة (لو حطيتي error فوق الفورم) */
+.loginCard :global(.text-danger) {
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+
 /* ✅ Responsive tweaks */
 @media (max-width: 480px) {
   .loginCard {
-    padding: 20px;
+    padding: 24px 18px 20px;
+    border-radius: 16px;
   }
 
   .title {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
   }
 
   .input,
-  .signInBtn,
-  .googleBtn {
-    font-size: 0.95rem;
+  .signInBtn {
+    font-size: 0.93rem;
   }
 }
-  

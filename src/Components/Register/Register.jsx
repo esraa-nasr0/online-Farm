@@ -15,10 +15,7 @@ export default function Register() {
   async function submitRegister(value) {
     setisLoading(true);
     try {
-      const { data } = await axiosInstance.post(
-        "/register",
-        value
-      );
+      const { data } = await axiosInstance.post("/register", value);
       if (data.status === "success") {
         setisLoading(false);
         formik.resetForm();
@@ -95,7 +92,6 @@ export default function Register() {
         <p className="text-danger">{error}</p>
         <form onSubmit={formik.handleSubmit}>
           <div className={style.formGrid}>
-            
             <div className={style.inputGroup}>
               <label className={style.label} htmlFor="email">
                 Email
@@ -111,7 +107,9 @@ export default function Register() {
                 value={formik.values.email}
               />
               {formik.errors.email && formik.touched.email ? (
-                <p className="text-danger">{formik.errors.email}</p>
+                <p className={`text-danger ${style.errorText}`}>
+                  {formik.errors.email}
+                </p>
               ) : null}
             </div>
 
@@ -130,7 +128,9 @@ export default function Register() {
                 value={formik.values.name}
               />
               {formik.errors.name && formik.touched.name ? (
-                <p className="text-danger">{formik.errors.name}</p>
+                <p className={`text-danger ${style.errorText}`}>
+                  {formik.errors.name}
+                </p>
               ) : null}
             </div>
 
@@ -149,7 +149,9 @@ export default function Register() {
                 value={formik.values.phone}
               />
               {formik.errors.phone && formik.touched.phone ? (
-                <p className="text-danger">{formik.errors.phone}</p>
+                <p className={`text-danger ${style.errorText}`}>
+                  {formik.errors.phone}
+                </p>
               ) : null}
             </div>
 
@@ -168,7 +170,9 @@ export default function Register() {
                 value={formik.values.country}
               />
               {formik.errors.country && formik.touched.country ? (
-                <p className="text-danger">{formik.errors.country}</p>
+                <p className={`text-danger ${style.errorText}`}>
+                  {formik.errors.country}
+                </p>
               ) : null}
             </div>
 
@@ -187,7 +191,9 @@ export default function Register() {
                 value={formik.values.password}
               />
               {formik.errors.password && formik.touched.password ? (
-                <p className="text-danger">{formik.errors.password}</p>
+                <p className={`text-danger ${style.errorText}`}>
+                  {formik.errors.password}
+                </p>
               ) : null}
             </div>
 
@@ -207,9 +213,12 @@ export default function Register() {
               />
               {formik.errors.confirmpassword &&
               formik.touched.confirmpassword ? (
-                <p className="text-danger">{formik.errors.confirmpassword}</p>
+                <p className={`text-danger ${style.errorText}`}>
+                  {formik.errors.confirmpassword}
+                </p>
               ) : null}
             </div>
+
             <div className={style.inputGroup}>
               <label className={style.label} htmlFor="registerationType">
                 Farm Type
@@ -228,7 +237,9 @@ export default function Register() {
               </select>
               {formik.errors.registerationType &&
               formik.touched.registerationType ? (
-                <p className="text-danger">{formik.errors.registerationType}</p>
+                <p className={`text-danger ${style.errorText}`}>
+                  {formik.errors.registerationType}
+                </p>
               ) : null}
             </div>
           </div>

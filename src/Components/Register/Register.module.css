@@ -2,135 +2,153 @@
   min-height: 100vh;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
+  padding: 40px 12px;
+  background: #f3f4f6; /* خلفية ناعمة */
 }
 
+/* Card */
 .loginCard {
   background: #fff;
-  border-radius: 18px;
-  box-shadow: 0 4px 24px rgba(44, 62, 80, 0.08);
-  padding: 48px 36px 32px 36px;
+  border-radius: 20px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+  padding: 40px 36px 36px;
   width: 100%;
-  max-width: 700px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 2.5rem;
+  max-width: 760px;    /* أصغر من الأول – علشان الشكل مظبوط */
+  margin-top: 30px;
+  text-align: center;  /* علشان العنوان يتظبط */
 }
 
+/* Logo */
 .logo {
-  font-size: 2.5rem;
-  margin-bottom: 18px;
+  font-size: 2.3rem;
+  margin-bottom: 8px;
+  color: #21763e;
+  display: flex;
+  justify-content: center;
 }
 
+/* Title */
 .title {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   font-weight: 700;
-  color: #222;
-  margin-bottom: 6px;
-  text-align: center;
+  color: #111827;
+  margin-bottom: 4px;
 }
 
+/* Subtitle */
 .subtitle {
-  color: #888;
+  color: #6b7280;
   font-size: 1rem;
-  margin-bottom: 24px;
-  text-align: center;
+  margin-bottom: 28px;
 }
 
+/* Form Grid */
 .formGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  gap: 22px 28px;
   width: 100%;
+  margin-bottom: 18px;
 }
 
+/* Group Container */
 .inputGroup {
-  display: flex;
-  flex-direction: column;
+  text-align: left;
 }
 
+/* Label */
 .label {
-  font-size: 1rem;
-  color: #222;
+  font-size: 0.95rem;
+  color: #374151;
   margin-bottom: 6px;
-  margin-top: 12px;
-  font-weight: 500;
+  display: block;
+  font-weight: 600;
 }
 
+/* All inputs */
 .input {
   width: 100%;
-  padding: 10px 12px;
-  border-radius: 7px;
-  border: 1px solid #e0e0e0;
-  background: #fafbfc;
-  margin-bottom: 6px;
-  font-size: 1rem;
-  transition: border 0.2s;
+  padding: 11px 12px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  font-size: 0.95rem;
+  transition: all 0.18s ease;
 }
 
+/* Input on focus */
 .input:focus {
-  border-color: #4bb78f;
+  border-color: #21763e;
+  background: #ffffff;
   outline: none;
+  box-shadow: 0 0 0 2px rgba(33, 118, 62, 0.15);
 }
 
+/* Fix Chrome Autofill ugly color */
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #f9fafb inset !important;
+}
+
+/* Error text */
+.errorText {
+  margin-top: 4px;
+  margin-bottom: -4px;
+  font-size: 0.82rem;
+  line-height: 1.3;
+}
+
+/* Button */
 .signInBtn {
   width: 100%;
   padding: 12px 0;
-  background: #222;
+  background: #111827;
   color: #fff;
   border: none;
-  border-radius: 7px;
+  border-radius: 10px;
   font-size: 1rem;
   font-weight: 600;
-  margin: 18px 0 10px 0;
+  margin: 12px 0 8px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.18s ease;
 }
 
-.signInBtn:hover {
-  background: #444;
+.signInBtn:hover:not(:disabled) {
+  background: #1f2937;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.18);
+  transform: translateY(-1px);
 }
 
 .signInBtn:disabled {
-  background: #ccc;
+  background: #cccccc;
   cursor: not-allowed;
 }
 
+/* Bottom text */
 .signupPrompt {
   text-align: center;
-  font-size: 0.97rem;
-  color: #888;
-  margin-top: 10px;
+  font-size: 0.9rem;
+  color: #6b7280;
 }
 
 .signupPrompt a {
-  color: #4b6cb7;
+  color: #21763e;
+  font-weight: 600;
   text-decoration: none;
-  font-weight: 500;
 }
 
-.signupPrompt a:hover {
-  text-decoration: underline;
-}
-
-/* Responsive tweaks */
+/* Responsive */
 @media (max-width: 768px) {
   .formGrid {
     grid-template-columns: 1fr;
+    gap: 16px;
   }
-  
+
   .loginCard {
-    padding: 20px;
+    padding: 28px 20px;
   }
 
   .title {
     font-size: 1.5rem;
   }
-
-  .input,
-  .signInBtn {
-    font-size: 0.95rem;
-  }
 }
-  

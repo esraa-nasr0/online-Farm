@@ -4,11 +4,10 @@ import { useFormik } from "formik";
 import { Link, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { UserContext } from "../../Context/UserContext";
-import { jwtDecode } from 'jwt-decode';
+import { jwtDecode } from "jwt-decode";
 import { setToken } from "../../utils/authToken";
 import style from "./Login.module.css";
 import { CgShapeRhombus } from "react-icons/cg";
-
 
 export default function Login() {
   let { setAuthorization } = useContext(UserContext);
@@ -39,34 +38,35 @@ export default function Login() {
       }
     } catch (err) {
       setIsLoading(false);
-      setError(err.response?.data?.message || "Login failed. Please try again.");
+      setError(
+        err.response?.data?.message || "Login failed. Please try again."
+      );
     }
   }
 
   let formik = useFormik({
-  initialValues: {
-    email: "",
-    password: "",
-  },
+    initialValues: {
+      email: "",
+      password: "",
+    },
 
-  validationSchema: Yup.object({
-    email: Yup.string()
-      .email("Please enter a valid email address")
-      .required("Email is required"),
+    validationSchema: Yup.object({
+      email: Yup.string()
+        .email("Please enter a valid email address")
+        .required("Email is required"),
 
-    password: Yup.string()
-      .min(6, "Password must be at least 6 characters")
-      .required("Password is required"),
-  }),
+      password: Yup.string()
+        .min(6, "Password must be at least 6 characters")
+        .required("Password is required"),
+    }),
 
-  onSubmit: submitLogin,
-});
-
+    onSubmit: submitLogin,
+  });
 
   React.useEffect(() => {
     formik.setValues({
-      email: '',
-      password: ''
+      email: "",
+      password: "",
     });
     formik.setTouched({});
     formik.setErrors({});
@@ -75,18 +75,24 @@ export default function Login() {
   React.useEffect(() => {
     formik.resetForm();
     // Clear any potential stored values from localStorage/sessionStorage
-    localStorage.removeItem('formData');
-    sessionStorage.removeItem('formData');
+    localStorage.removeItem("formData");
+    sessionStorage.removeItem("formData");
   }, []);
 
   return (
     <div className={style.loginPageBg}>
       <div className={style.loginCard}>
-        <div className={style.logo}><CgShapeRhombus /></div>
+        <div className={style.logo}>
+          <CgShapeRhombus />
+        </div>
         <h2 className={style.title}>Log in to your account</h2>
-        <p className={style.subtitle}>Welcome back! Please enter your details.</p>
+        <p className={style.subtitle}>
+          Welcome back! Please enter your details.
+        </p>
         <form onSubmit={formik.handleSubmit}>
-          <label className={style.label} htmlFor="email">Email</label>
+          <label className={style.label} htmlFor="email">
+            Email
+          </label>
           <input
             className={style.input}
             id="email"
@@ -98,9 +104,14 @@ export default function Login() {
             value={formik.values.email}
           />
           {formik.errors.email && formik.touched.email ? (
-            <p className="text-danger">{formik.errors.email}</p>
+            <p className={`text-danger ${style.errorText}`}>
+              {formik.errors.email}
+            </p>
           ) : null}
-          <label className={style.label} htmlFor="password">Password</label>
+
+          <label className={style.label} htmlFor="password">
+            Password
+          </label>
           <input
             className={style.input}
             id="password"
@@ -112,19 +123,25 @@ export default function Login() {
             value={formik.values.password}
           />
           {formik.errors.password && formik.touched.password ? (
-            <p className="text-danger">{formik.errors.password}</p>
+            <p className={`text-danger ${style.errorText}`}>
+              {formik.errors.password}
+            </p>
           ) : null}
+
           <div className={style.optionsRow}>
             <label className={style.checkboxLabel}>
               <input type="checkbox" name="remember" />
               Remember me
             </label>
-            <Link className={style.forgotLink} to="/forgetpassword">Forgot password</Link>
+            <Link className={style.forgotLink} to="/forgetpassword">
+              Forgot password
+            </Link>
           </div>
-          <button className={style.signInBtn} type="submit">Sign in</button>
-          {/* <button className={style.googleBtn} type="button">
-            <span className={style.googleIcon}>G</span> Sign in with Google
-          </button> */}
+
+          <button className={style.signInBtn} type="submit">
+            {isLoading ? <i className="fas fa-spinner fa-spin"></i> : "Sign in"}
+          </button>
+
           <div className={style.signupPrompt}>
             Don’t have an account? <Link to="/register">Sign up</Link>
           </div>
