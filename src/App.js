@@ -174,10 +174,10 @@ let routers = createBrowserRouter([
       { path: "fodder", element: <ProtectedRoute><Fodder/></ProtectedRoute> },
       { path: "fodderTable", element: <ProtectedRoute><FodderTable/></ProtectedRoute> },
       { path: "editFodder/:id", element: <ProtectedRoute><EditFodder/></ProtectedRoute> },
-      { path: "dashboard", element: <ProtectedRoute  ><Dashboard/></ProtectedRoute> },
+      { path: "dashboard", element: <ProtectedRoute allowedRoles={['admin']} ><Dashboard/></ProtectedRoute> },
       { path: "AdminDashboard", element: <ProtectedRoute allowedRoles={['admin']}><AdminDashboard/></ProtectedRoute> },
-      { path: "addVaccineType", element: <ProtectedRoute  ><AddVaccineType/></ProtectedRoute> },
-      { path: "vaccineTypetable", element: <ProtectedRoute  ><VaccineTypetable/></ProtectedRoute> },
+      { path: "addVaccineType", element: <ProtectedRoute allowedRoles={['admin']} ><AddVaccineType/></ProtectedRoute> },
+      { path: "vaccineTypetable", element: <ProtectedRoute allowedRoles={['admin']} ><VaccineTypetable/></ProtectedRoute> },
       
       { path: "editVaccineanimals/:id", element: <ProtectedRoute><EditVaccineanimals/></ProtectedRoute> },
       { path: "vaccinebytagid", element: <ProtectedRoute><Vaccinebytagid/></ProtectedRoute> },

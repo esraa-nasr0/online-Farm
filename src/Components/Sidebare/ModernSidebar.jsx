@@ -1,5 +1,5 @@
 // src/components/Sidebare/ModernSidebar.jsx
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useContext } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   FaChevronDown, FaChevronUp, FaBell, FaChartBar, FaHeart, FaPaw, FaSyringe,
@@ -13,7 +13,9 @@ import { GiGoat } from "react-icons/gi";
 import { CiLogout } from "react-icons/ci";
 import { RiLuggageCartFill } from "react-icons/ri";
 import { useTranslation } from "react-i18next";
-import { RiDashboardHorizontalLine } from "react-icons/ri"; 
+import { RiDashboardHorizontalLine } from "react-icons/ri";
+import { UserContext } from "../../Context/UserContext";
+import { jwtDecode } from "jwt-decode";
 
 import "./modern-sidebar.css";
 
@@ -31,169 +33,212 @@ export default function ModernSidebar({
   const [langOpen, setLangOpen] = useState(false);
   const { t } = useTranslation();
 
-  const baseMenu = useMemo(() => ([
-    {
-      title: t("MAIN MENU"),
-      items: [
-        { name: t("Home"), icon: <IoHome />, path: "/" },
-        { name: t("Notifications"), icon: <FaBell />, path: "/notificationPage", badge: notificationCount },
-      ],
-    },
-    {
-  title: t("User"),
-  items: [
-    {
-      name: t("Dashboard"),
-      icon: <RiDashboardHorizontalLine />,
-      path: "/userDashboard",
-    },
-  ],
-},
-    {
-      title: t("Supplier"),
-      items: [
+  const { Authorization } = useContext(UserContext);
+  const userRole = Authorization ? jwtDecode(Authorization).role : null;
+  const isAdmin = userRole === "admin";
+
+  const baseMenu = useMemo(() => {
+
+    if (isAdmin) {
+      return [
         {
-          name: t("Supplier"),
-          icon: <RiLuggageCartFill />,
-          subItems: [
-            { name: t("Suppliers Data"), path: "/supplierTable" },
-            { name: t("Add Suppliers"), path: "/supplier" },
-          ],
-        },
-      ],
-    },
-    {
-      title: t("Basic information"),
-      items: [
-        {
-          name: t("Location Shed"),
-          icon: <FaLocationDot />,
-          subItems: [
-            { name: t("Location Data"), path: "/locationTable" },
-            { name: t("Add Location"), path: "/locationPost" },
+          title: t("MAIN MENU"),
+          items: [
+            { name: t("Home"), icon: <IoHome />, path: "/" },
           ],
         },
         {
-          name: t("Breed"),
-          icon: <GiGoat />,
-          subItems: [
-            { name: t("Breed Data"), path: "/breedTable" },
-            { name: t("Add Breed"), path: "/breedPost" },
+          title: t("Admin"),
+          items: [
+            {
+              name: t("Dashboard"),
+              icon: <RiDashboardHorizontalLine />,
+              path: "/dashboard",
+            },
+            {
+              name: t("Admin Dashboard"),
+              icon: <RiDashboardHorizontalLine />,
+              path: "/AdminDashboard",
+            },
+            {
+              name: t("Add Vaccine Type"),
+              icon: <FaSyringe />,
+              path: "/addVaccineType",
+            },
+            {
+              name: t("Vaccine Type Table"),
+              icon: <FaSyringe />,
+              path: "/vaccineTypetable",
+            },
           ],
         },
-      ],
-    },
-    {
-      title: t("Animal Management"),
-      items: [
-        {
-          name: t("animal"),
-          icon: <FaPaw />,
-          subItems: [
-            { name: t("animals Data"), path: "/animals" },
-            { name: t("add Animal"), path: "/AnimalsDetails" },
-            { name: t("animal Cost"), path: "/animalCost" },
-          ],
-        },
-      ],
-    },
-    {
-      title: t("Health and Breeding"),
-      items: [
-        {
-          name: t("mating"),
-          icon: <FaHeart />,
-          subItems: [
-            { name: t("mating Data"), path: "/matingTable" },
-            { name: t("add Mating"), path: "/mating" },
-            { name: t("add By LocationShed"), path: "/matingLocation" },
-          ],
-        },
-        {
-          name: t("vaccine"),
-          icon: <FaSyringe />,
-          subItems: [
-            { name: t("vaccine Data"), path: "/vaccineTable" },
-            { name: t("vaccine Animal Data"), path: "/Vaccinebyanimalsstable" },
-            { name: t("Add Vaccine"), path: "/addVaccine" },
-            { name: t("Add By Animal"), path: "/vaccinebytagid" },
-            { name: t("Add By Location"), path: "/vaccinebylocationshed" },
-          ],
-        },
-        {
-          name: t("Pharmacy"),
-          icon: <MdOutlineLocalPharmacy />,
-          subItems: [
-            { name: t("Pharmacy Data"), path: "/treatmentTable" },
-            { name: t("add Pharmacy"), path: "/treatment" },
-          ],
-        },
-        {
-          name: t("treatment"),
-          icon: <FaPills />,
-          subItems: [
-            { name: t("show By Animal"), path: "/treatAnimalTable" },
-            { name: t("add By Animal"), path: "/treatmentAnimal" },
-            { name: t("add By Location"), path: "/treatmentLocation" },
-          ],
-        },
-        {
-          name: t("weight"),
-          icon: <FaWeight />,
-          subItems: [
-            { name: t("weight Data"), path: "/weightTable" },
-            { name: t("add Weight"), path: "/weight" },
-            { name: t("Animal Growth"), path: "/withGrowthData" },
-          ],
-        },
-        {
-          name: t("breeding"),
-          icon: <FaSeedling />,
-          subItems: [
-            { name: t("breeding Data"), path: "/breadingTable" },
-            { name: t("add Breeding"), path: "/breeding" },
-          ],
-        },
-      ],
-    },
-    {
-      title: t("Feeding and Reports"),
-      items: [
-        {
-          name: t("feeding"),
-          icon: <FaUtensils />,
-          subItems: [
-            { name: t("feeding Data"), path: "/feedingTable" },
-            { name: t("add Feeding"), path: "/feed" },
-            { name: t("data By Location"), path: "/feedlocationtable" },
-            { name: t("add  Location"), path: "/feedbylocation" },
-          ],
-        },
-        {
-          name: t("fodder"),
-          icon: <FaBreadSlice />,
-          subItems: [
-            { name: t("fodder Data"), path: "/fodderTable" },
-            { name: t("add Fodder"), path: "/fodder" },
-          ],
-        },
-        { name: t("reports"), icon: <FaChartBar />, path: "/report" },
-      ],
-    },
-    {
-      title: t("System"),
-      items: [
-        {
-          name: t("excluded"),
-          icon: <FaExclamationTriangle />,
-          subItems: [
-            { name: t("excluded Data"), path: "/excludedtable" },
-            { name: t("add Excluded"), path: "/excluded" },
-          ],
-        },
-      ],
-    },
-  ]), [notificationCount, t]);
+      ];
+    }
+
+    return [
+      {
+        title: t("MAIN MENU"),
+        items: [
+          { name: t("Home"), icon: <IoHome />, path: "/" },
+          { name: t("Notifications"), icon: <FaBell />, path: "/notificationPage", badge: notificationCount },
+        ],
+      },
+      {
+        title: t("User"),
+        items: [
+          {
+            name: t("Dashboard"),
+            icon: <RiDashboardHorizontalLine />,
+            path: "/userDashboard",
+          },
+        ],
+      },
+      {
+        title: t("Supplier"),
+        items: [
+          {
+            name: t("Supplier"),
+            icon: <RiLuggageCartFill />,
+            subItems: [
+              { name: t("Suppliers Data"), path: "/supplierTable" },
+              { name: t("Add Suppliers"), path: "/supplier" },
+            ],
+          },
+        ],
+      },
+      {
+        title: t("Basic information"),
+        items: [
+          {
+            name: t("Location Shed"),
+            icon: <FaLocationDot />,
+            subItems: [
+              { name: t("Location Data"), path: "/locationTable" },
+              { name: t("Add Location"), path: "/locationPost" },
+            ],
+          },
+          {
+            name: t("Breed"),
+            icon: <GiGoat />,
+            subItems: [
+              { name: t("Breed Data"), path: "/breedTable" },
+              { name: t("Add Breed"), path: "/breedPost" },
+            ],
+          },
+        ],
+      },
+      {
+        title: t("Animal Management"),
+        items: [
+          {
+            name: t("animal"),
+            icon: <FaPaw />,
+            subItems: [
+              { name: t("animals Data"), path: "/animals" },
+              { name: t("add Animal"), path: "/AnimalsDetails" },
+              { name: t("animal Cost"), path: "/animalCost" },
+            ],
+          },
+        ],
+      },
+      {
+        title: t("Health and Breeding"),
+        items: [
+          {
+            name: t("mating"),
+            icon: <FaHeart />,
+            subItems: [
+              { name: t("mating Data"), path: "/matingTable" },
+              { name: t("add Mating"), path: "/mating" },
+              { name: t("add By LocationShed"), path: "/matingLocation" },
+            ],
+          },
+          {
+            name: t("vaccine"),
+            icon: <FaSyringe />,
+            subItems: [
+              { name: t("vaccine Data"), path: "/vaccineTable" },
+              { name: t("vaccine Animal Data"), path: "/Vaccinebyanimalsstable" },
+              { name: t("Add Vaccine"), path: "/addVaccine" },
+              { name: t("Add By Animal"), path: "/vaccinebytagid" },
+              { name: t("Add By Location"), path: "/vaccinebylocationshed" },
+            ],
+          },
+          {
+            name: t("Pharmacy"),
+            icon: <MdOutlineLocalPharmacy />,
+            subItems: [
+              { name: t("Pharmacy Data"), path: "/treatmentTable" },
+              { name: t("add Pharmacy"), path: "/treatment" },
+            ],
+          },
+          {
+            name: t("treatment"),
+            icon: <FaPills />,
+            subItems: [
+              { name: t("show By Animal"), path: "/treatAnimalTable" },
+              { name: t("add By Animal"), path: "/treatmentAnimal" },
+              { name: t("add By Location"), path: "/treatmentLocation" },
+            ],
+          },
+          {
+            name: t("weight"),
+            icon: <FaWeight />,
+            subItems: [
+              { name: t("weight Data"), path: "/weightTable" },
+              { name: t("add Weight"), path: "/weight" },
+              { name: t("Animal Growth"), path: "/withGrowthData" },
+            ],
+          },
+          {
+            name: t("breeding"),
+            icon: <FaSeedling />,
+            subItems: [
+              { name: t("breeding Data"), path: "/breadingTable" },
+              { name: t("add Breeding"), path: "/breeding" },
+            ],
+          },
+        ],
+      },
+      {
+        title: t("Feeding and Reports"),
+        items: [
+          {
+            name: t("feeding"),
+            icon: <FaUtensils />,
+            subItems: [
+              { name: t("feeding Data"), path: "/feedingTable" },
+              { name: t("add Feeding"), path: "/feed" },
+              { name: t("data By Location"), path: "/feedlocationtable" },
+              { name: t("add  Location"), path: "/feedbylocation" },
+            ],
+          },
+          {
+            name: t("fodder"),
+            icon: <FaBreadSlice />,
+            subItems: [
+              { name: t("fodder Data"), path: "/fodderTable" },
+              { name: t("add Fodder"), path: "/fodder" },
+            ],
+          },
+          { name: t("reports"), icon: <FaChartBar />, path: "/report" },
+        ],
+      },
+      {
+        title: t("System"),
+        items: [
+          {
+            name: t("excluded"),
+            icon: <FaExclamationTriangle />,
+            subItems: [
+              { name: t("excluded Data"), path: "/excludedtable" },
+              { name: t("add Excluded"), path: "/excluded" },
+            ],
+          },
+        ],
+      },
+    ];
+  }, [isAdmin, notificationCount, t]);
 
   const toggleDropdown = (key) =>
     setActiveDropdown((cur) => (cur === key ? null : key));
@@ -225,15 +270,22 @@ export default function ModernSidebar({
             <Link to="/" className="rail-btn" title={t("Home")} data-tooltip={t("Home")} onClick={onToggle}>
               <IoHome />
             </Link>
-            <Link to="/userDashboard" className="rail-btn" title={t("Dashboard")} data-tooltip={t("Dashboard")} onClick={onToggle}>
-              <RiDashboardHorizontalLine />
-            </Link>
+
+            {!isAdmin && (
+              <Link to="/userDashboard" className="rail-btn" title={t("Dashboard")} data-tooltip={t("Dashboard")} onClick={onToggle}>
+                <RiDashboardHorizontalLine />
+              </Link>
+            )}
+
             <button className="rail-btn" onClick={() => setLangOpen((v) => !v)} title={t("Language")} data-tooltip={t("Language")}>
               <MdOutlineLanguage />
             </button>
-            <Link to="/notificationPage" className="rail-btn badge-parent" title={t("Notifications")} data-tooltip={t("Notifications")} onClick={onToggle}>
-              <FaBell />{notificationCount > 0 && <span className="badge">{notificationCount}</span>}
-            </Link>
+
+            {!isAdmin && (
+              <Link to="/notificationPage" className="rail-btn badge-parent" title={t("Notifications")} data-tooltip={t("Notifications")} onClick={onToggle}>
+                <FaBell />{notificationCount > 0 && <span className="badge">{notificationCount}</span>}
+              </Link>
+            )}
           </div>
 
           <button className="rail-btn logout" onClick={onLogout} title={t("Logout")} data-tooltip={t("Logout")}>
@@ -279,6 +331,7 @@ export default function ModernSidebar({
                   const hasChildren = !!item.subItems;
                   const active = pathname === item.path;
                   const k = `${section.title}-${item.name}`;
+
                   return (
                     <li className={`nav-item ${active ? "active" : ""}`} key={iIdx}>
                       {hasChildren ? (
@@ -288,6 +341,7 @@ export default function ModernSidebar({
                             <span className="txt">{item.name}</span>
                             <span className="chev">{activeDropdown === k ? <FaChevronUp /> : <FaChevronDown />}</span>
                           </button>
+
                           {activeDropdown === k && (
                             <ul className="submenu">
                               {item.subItems.map((sub, subIdx) => (
@@ -295,7 +349,7 @@ export default function ModernSidebar({
                                   <Link
                                     to={sub.path}
                                     className={`sub-link ${pathname === sub.path ? "current" : ""}`}
-                                    onClick={onToggle}   // ⬅️ يقفل بعد الضغط
+                                    onClick={onToggle}
                                   >
                                     {sub.name}
                                   </Link>
@@ -309,11 +363,11 @@ export default function ModernSidebar({
                           to={item.path}
                           className="item-btn"
                           title={getTitle(item)}
-                          onClick={onToggle}   
+                          onClick={onToggle}
                         >
                           <span className="ico">{item.icon}</span>
                           <span className="txt">{item.name}</span>
-                          {item.badge ? <span className="pill">{item.badge}</span> : null}
+                          {item.badge && <span className="pill">{item.badge}</span>}
                         </Link>
                       )}
                     </li>
@@ -324,7 +378,9 @@ export default function ModernSidebar({
           ))}
         </nav>
 
-        <button className="logout-wide" onClick={onLogout}><CiLogout /><span>{t("Logout")}</span></button>
+        <button className="logout-wide" onClick={onLogout}>
+          <CiLogout /><span>{t("Logout")}</span>
+        </button>
       </div>
     </aside>
   );
