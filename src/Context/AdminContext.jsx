@@ -1,6 +1,6 @@
 import axios from "axios";
 import { createContext } from "react";
-
+import axiosInstance from "../api/axios";
 export const AdminContext = createContext();
 
 const getHeaders = () => {
@@ -17,8 +17,8 @@ const getHeaders = () => {
 
 async function getAdminDashboard() {
   try {
-    const res = await axios.get(
-      "https://farm-project-bbzj.onrender.com/api/stats/admin",
+    const res = await axiosInstance.get(
+      "/stats/admin",
       { headers: getHeaders() }
     );
     return res.data;
