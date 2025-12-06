@@ -231,6 +231,17 @@
   margin-bottom: 20px;
 }
 
+/* Action Buttons Section */
+.action-buttons-container {
+  background: var(--white);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+
+  display: flex;              /* خلي الكونتينر flex */
+  justify-content: flex-start; /* يخلي المحتوى يبدأ من الشمال */
+}
 .animal-card {
   background: var(--white);
   border-radius: 12px;
