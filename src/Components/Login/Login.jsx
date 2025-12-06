@@ -8,7 +8,6 @@ import { jwtDecode } from "jwt-decode";
 import { setToken } from "../../utils/authToken";
 import style from "./Login.module.css";
 import { CgShapeRhombus } from "react-icons/cg";
-import SEO from "../SEO/SEO";
 
 export default function Login() {
   let { setAuthorization } = useContext(UserContext);
@@ -81,14 +80,8 @@ export default function Login() {
   }, []);
 
   return (
-    <>
-      <SEO
-        title="Login"
-        description="Log in to your farm management account to access your dashboard, track animals, manage breeding, and monitor your livestock health."
-        keywords="farm login, farm management login, livestock management login"
-      />
-      <div className={style.loginPageBg}>
-        <div className={style.loginCard}>
+    <div className={style.loginPageBg}>
+      <div className={style.loginCard}>
         <div className={style.logo}>
           <CgShapeRhombus />
         </div>
@@ -155,6 +148,5 @@ export default function Login() {
         </form>
       </div>
     </div>
-    </>
   );
 }
