@@ -1,12 +1,13 @@
-import  { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import { IoIosSave } from "react-icons/io";
-import axios from 'axios';
+import axiosInstance from '../../api/axios';
 import Swal from 'sweetalert2';
 import { useTranslation } from 'react-i18next';
 import { NewvaccineContext } from '../../Context/NewvaccineContext';
 import Select from 'react-select';
 import "./Vaccinebyanimal.css";
+import { getToken } from '../../utils/authToken';
 
 function Vaccinebyanimal() {
     const { i18n, t } = useTranslation();
@@ -18,75 +19,88 @@ function Vaccinebyanimal() {
     const [isLoading, setIsLoading] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
 
-
-    const getHeaders = () => {
-        const Authorization = localStorage.getItem('Authorization');
-        const formattedToken = Authorization?.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-        return {
-            Authorization: formattedToken
-        };
+    const ensureAuthenticated = () => {
+        const token = getToken();
+        if (!token) {
+            Swal.fire(t("Error"), t("submitError"), "error");
+            return false;
+        }
+        return true;
     };
 
     useEffect(() => {
         fetchVaccinename();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     async function fetchVaccinename() {
-    try {
-        const res = await getVaccinename();
-        const vaccines = res?.data?.data;
+        try {
+            const res = await getVaccinename();
+            const vaccines = res?.data?.data;
 
-        if (Array.isArray(vaccines)) {
-            setvaccinename(vaccines);
-            
-            // Extract disease types array first
-            const diseaseTypesArray = vaccines.map(v => 
-                i18n.language === "ar" ? v.arabicDiseaseType : v.englishDiseaseType
-            );
-            
-            // Then get unique values
-            const uniqueDiseaseTypes = [...new Set(diseaseTypesArray)];
-            
-            setDiseaseTypes(uniqueDiseaseTypes);
-            setFilteredVaccines(vaccines); // Initially show all vaccines
-        } else {
+            if (Array.isArray(vaccines)) {
+                setvaccinename(vaccines);
+
+                // Extract disease types array first
+                const diseaseTypesArray = vaccines.map(v =>
+                    i18n.language === "ar" ? v.arabicDiseaseType : v.englishDiseaseType
+                );
+
+                // Then get unique values (filter out null/undefined)
+                const uniqueDiseaseTypes = [...new Set(diseaseTypesArray.filter(Boolean))];
+
+                setDiseaseTypes(uniqueDiseaseTypes);
+                setFilteredVaccines(vaccines); // Initially show all vaccines
+            } else {
+                setvaccinename([]);
+                setDiseaseTypes([]);
+                setFilteredVaccines([]);
+                console.warn("Unexpected data format:", res?.data);
+            }
+        } catch (error) {
+            console.error("Error fetching vaccine names:", error);
+            setError(t("Failed to load vaccine names"));
             setvaccinename([]);
             setDiseaseTypes([]);
             setFilteredVaccines([]);
-            console.warn("Unexpected data format:", res.data);
         }
-    } catch (error) {
-        console.error("Error fetching vaccine names:", error);
-        setError(t("Failed to load vaccine names"));
-        setvaccinename([]);
-        setDiseaseTypes([]);
-        setFilteredVaccines([]);
     }
-}
 
     const handleDiseaseTypeChange = (selectedDisease) => {
         if (!selectedDisease) {
             setFilteredVaccines(vaccinename);
             return;
         }
-        
-        const filtered = vaccinename.filter(v => 
-            i18n.language === "ar" 
+
+        const filtered = vaccinename.filter(v =>
+            i18n.language === "ar"
                 ? v.arabicDiseaseType === selectedDisease
                 : v.englishDiseaseType === selectedDisease
         );
-        
+
         setFilteredVaccines(filtered);
         formik.setFieldValue('vaccineTypeId', ''); // Reset vaccine selection when disease type changes
     };
 
-    const vaccineOptions = filteredVaccines.map((item) => ({
-        value: item._id,
-        label: i18n.language === "ar" ? item.arabicName : item.englishName,
-        image: `https://farm-project-bbzj.onrender.com/${item.image.replace(/\\/g, "/")}`,
-    }));
+    // ✅ أمان على image: نتأكد إنها موجودة قبل replace
+    const vaccineOptions = (filteredVaccines || []).map((item) => {
+        const rawImage = item?.image || ""; // ممكن تكون null أو undefined
+        const normalizedImage = rawImage
+            ? String(rawImage).replace(/\\/g, "/")
+            : "";
 
-    const diseaseTypeOptions = diseaseTypes.map(disease => ({
+        const imageUrl = normalizedImage
+            ? `https://api.mazraaonline.com/${normalizedImage}`
+            : null;
+
+        return {
+            value: item._id,
+            label: i18n.language === "ar" ? item.arabicName : item.englishName,
+            image: imageUrl,
+        };
+    });
+
+    const diseaseTypeOptions = (diseaseTypes || []).map(disease => ({
         value: disease,
         label: disease
     }));
@@ -103,74 +117,75 @@ function Vaccinebyanimal() {
             bottlePrice: '',
             expiryDate: '',
         },
-        
+
         onSubmit: async (values) => {
-    const headers = getHeaders();
-    setIsLoading(true);
+            setIsLoading(true);
 
-    try {
-        // ✅ تحقق من تاريخ الانتهاء
-        if (values.expiryDate) {
-            const expiry = new Date(values.expiryDate);
-            const today = new Date();
-            const sixMonthsLater = new Date();
-            sixMonthsLater.setMonth(today.getMonth() + 6);
-
-            if (expiry <= sixMonthsLater) {
-                const result = await Swal.fire({
-                    title: t("Expiry Warning"),
-                    text: t("The expiry date is lessthan 6 months. Do you want to continue?"),
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonText: t("Yes"),
-                    cancelButtonText: t("No"),
-                });
-
-                if (!result.isConfirmed) {
+            try {
+                if (!ensureAuthenticated()) {
                     setIsLoading(false);
-                    return; // ❌ وقف الإرسال
+                    return;
                 }
+                // ✅ تحقق من تاريخ الانتهاء
+                if (values.expiryDate) {
+                    const expiry = new Date(values.expiryDate);
+                    const today = new Date();
+                    const sixMonthsLater = new Date();
+                    sixMonthsLater.setMonth(today.getMonth() + 6);
+
+                    if (expiry <= sixMonthsLater) {
+                        const result = await Swal.fire({
+                            title: t("Expiry Warning"),
+                            text: t("The expiry date is lessthan 6 months. Do you want to continue?"),
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonText: t("Yes"),
+                            cancelButtonText: t("No"),
+                        });
+
+                        if (!result.isConfirmed) {
+                            setIsLoading(false);
+                            return; // ❌ وقف الإرسال
+                        }
+                    }
+                }
+
+                const dataToSend = {
+                    vaccineTypeId: values.vaccineTypeId,
+                    otherVaccineName: values.otherVaccineName,
+                    BoosterDose: Number(values.BoosterDose),
+                    AnnualDose: Number(values.AnnualDose),
+                    bottles: Number(values.bottles),
+                    dosesPerBottle: Number(values.dosesPerBottle),
+                    bottlePrice: Number(values.bottlePrice),
+                    expiryDate: values.expiryDate
+                };
+
+                const response = await axiosInstance.post(
+                    '/vaccine/AddVaccine',
+                    dataToSend
+                );
+
+                if (response.data.status === "success") {
+                    setIsSubmitted(true);
+                    Swal.fire({
+                        title: t("Success"),
+                        text: t("Data has been submitted successfully!"),
+                        icon: "success",
+                        confirmButtonText: t("OK"),
+                    });
+                }
+            } catch (err) {
+                Swal.fire({
+                    title: t("Error"),
+                    text: err.response?.data?.message || t("An error occurred while submitting data."),
+                    icon: "error",
+                    confirmButtonText: t("OK"),
+                });
+            } finally {
+                setIsLoading(false);
             }
-        }
-
-        const dataToSend = {
-            vaccineTypeId: values.vaccineTypeId,
-            otherVaccineName: values.otherVaccineName,
-            BoosterDose: Number(values.BoosterDose),
-            AnnualDose: Number(values.AnnualDose),
-            bottles: Number(values.bottles),
-            dosesPerBottle: Number(values.dosesPerBottle),
-            bottlePrice: Number(values.bottlePrice),
-            expiryDate: values.expiryDate
-        };
-
-        const response = await axios.post(
-            'https://farm-project-bbzj.onrender.com/api/vaccine/AddVaccine',
-            dataToSend,
-            { headers }
-        );
-
-        if (response.data.status === "success") {
-            setIsSubmitted(true);
-            Swal.fire({
-                title: t("Success"),
-                text: t("Data has been submitted successfully!"),
-                icon: "success",
-                confirmButtonText: t("OK"),
-            });
-        }
-    } catch (err) {
-        Swal.fire({
-            title: t("Error"),
-            text: err.response?.data?.message || t("An error occurred while submitting data."),
-            icon: "error",
-            confirmButtonText: t("OK"),
-        });
-    } finally {
-        setIsLoading(false);
-    }
-},
-
+        },
     });
 
     return (
@@ -185,7 +200,7 @@ function Vaccinebyanimal() {
                 <div className="form-grid">
                     <div className="form-section">
                         <h2>{t("Vaccine Information")}</h2>
-                        
+
                         {/* Disease Type Select Input */}
                         <div className="input-group">
                             <label htmlFor="diseaseType">{t("Disease Type")}</label>
@@ -204,7 +219,7 @@ function Vaccinebyanimal() {
                                 className="react-select-container"
                             />
                         </div>
-                        
+
                         {/* Vaccine Name Select Input */}
                         <div className="input-group">
                             <label htmlFor="vaccineTypeId">{t("Vaccine Name")}</label>
@@ -217,25 +232,34 @@ function Vaccinebyanimal() {
                                 }
                                 onBlur={() => formik.setFieldTouched('vaccineTypeId', true)}
                                 getOptionLabel={(e) => (
-                                    <div style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        gap: "10px",
-                                        direction: i18n.language === "ar" ? "rtl" : "ltr"
-                                    }}>
-                                        <img
-                                            src={e.image}
-                                            alt={e.label}
-                                            width="30"
-                                            height="30"
-                                            style={{ borderRadius: "5px", objectFit: "cover" }}
-                                        />
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: "10px",
+                                            direction: i18n.language === "ar" ? "rtl" : "ltr"
+                                        }}
+                                    >
+                                        {/* ✅ ما نعرضش صورة لو مفيش URL */}
+                                        {e.image && (
+                                            <img
+                                                src={e.image}
+                                                alt={e.label}
+                                                width="30"
+                                                height="30"
+                                                style={{ borderRadius: "5px", objectFit: "cover" }}
+                                            />
+                                        )}
                                         <span>{e.label}</span>
                                     </div>
                                 )}
                                 classNamePrefix="react-select"
                                 className="react-select-container"
-                                placeholder={filteredVaccines.length === 0 ? t("No vaccines available for selected disease type") : t("Select Vaccine")}
+                                placeholder={
+                                    filteredVaccines.length === 0
+                                        ? t("No vaccines available for selected disease type")
+                                        : t("Select Vaccine")
+                                }
                                 isDisabled={filteredVaccines.length === 0}
                             />
                             {formik.errors.vaccineTypeId && formik.touched.vaccineTypeId && (
@@ -243,7 +267,6 @@ function Vaccinebyanimal() {
                             )}
                         </div>
 
-                        {/* Rest of your form fields remain the same */}
                         <div className="input-group">
                             <label htmlFor="otherVaccineName">{t("Other Vaccine Name")}</label>
                             <input
@@ -295,7 +318,7 @@ function Vaccinebyanimal() {
 
                     <div className="form-section">
                         <h2>{t("Inventory Details")}</h2>
-                        
+
                         <div className="input-group">
                             <label htmlFor="bottles">{t("Bottles")}</label>
                             <input
@@ -347,7 +370,7 @@ function Vaccinebyanimal() {
 
                     <div className="form-section">
                         <h2>{t("Expiry Information")}</h2>
-                        
+
                         <div className="input-group">
                             <label htmlFor="expiryDate">{t("Expiry Date")}</label>
                             <input
@@ -379,19 +402,19 @@ function Vaccinebyanimal() {
                             </>
                         )}
                     </button>
-                    {isSubmitted && (
-    <button
-        type="button"
-        className="save-button"
-        onClick={() => {
-            formik.resetForm();
-            setIsSubmitted(false);
-        }}
-    >
-        {t("Add New Vaccine")}
-    </button>
-)}
 
+                    {isSubmitted && (
+                        <button
+                            type="button"
+                            className="save-button"
+                            onClick={() => {
+                                formik.resetForm();
+                                setIsSubmitted(false);
+                            }}
+                        >
+                            {t("Add New Vaccine")}
+                        </button>
+                    )}
                 </div>
             </form>
         </div>

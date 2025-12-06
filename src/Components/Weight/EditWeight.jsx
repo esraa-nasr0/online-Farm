@@ -2,7 +2,7 @@ import { useFormik } from 'formik';
 import  { useEffect, useState } from 'react';
 import * as Yup from 'yup';
 import { IoIosSave } from 'react-icons/io';
-import axios from 'axios';
+import axiosInstance from '../../api/axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Swal from 'sweetalert2';
@@ -15,13 +15,7 @@ function EditWeight() {
     const { id } = useParams();
     let navigate = useNavigate();
 
-    const getHeaders = () => {
-        const Authorization = localStorage.getItem('Authorization');
-        return Authorization ? { Authorization: Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}` } : {};
-    };
-
     async function editWeight(values) {
-        const headers = getHeaders();
         setIsLoading(true);
         try {
             const convertToISO = (dateString) => {
@@ -34,10 +28,9 @@ function EditWeight() {
                 ...values,
                 Date: convertToISO(values.Date),
             };
-            let { data } = await axios.patch(
-                `https://farm-project-bbzj.onrender.com/api/weight/updateweight/${id}`,
-                updatedValues,
-                { headers }
+            let { data } = await axiosInstance.patch(
+                `/weight/updateweight/${id}`,
+                updatedValues
             );
             console.log('Submitting form with values:', updatedValues);
 
@@ -62,11 +55,9 @@ function EditWeight() {
 
     useEffect(() => {
         async function fetchAnimal() {
-            const headers = getHeaders();
             try {
-                let { data } = await axios.get(
-                    `https://farm-project-bbzj.onrender.com/api/weight/GetSingleWeight/${id}`,
-                    { headers }
+                let { data } = await axiosInstance.get(
+                    `/weight/GetSingleWeight/${id}`
                 );
                 console.log("API response:", data);
                 if (data && data.data && data.data.weight) {

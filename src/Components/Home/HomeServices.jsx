@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import { getToken } from "../../utils/authToken";
 
 import Img1 from "../../Assets/Img/Goat-Kids-Care-and-Management-2.jpg";
 import Img2 from "../../Assets/Img/goat3.jpeg";
@@ -24,7 +25,7 @@ function HomeServices() {
   const [isFattening, setIsFattening] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("Authorization");
+    const token = getToken();
     if (token) {
       try {
         const decoded = jwtDecode(token);

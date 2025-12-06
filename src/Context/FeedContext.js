@@ -1,30 +1,15 @@
-import axios from "axios";
+import axiosInstance from "../api/axios";
 import { createContext } from "react";
 export const Feedcontext = createContext();
 
-// Helper function to generate headers with the latest token
-const getHeaders = () => {
-    const Authorization = localStorage.getItem('Authorization');
-  
-    // Ensure the token has only one "Bearer" prefix
-    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-  
-    return {
-        Authorization: formattedToken
-    };
-  };
-
 function getAllFeed(page, limit, filters = {}) {
-    const headers = getHeaders(); // Get the latest headers
-
-    return axios
-        .get('https://farm-project-bbzj.onrender.com/api/feed/getallfeeds', {
+    return axiosInstance
+        .get('/feed/getallfeeds', {
             params: {
                 page,
                 limit,
                 ...filters
-            },
-            headers
+            }
         })
         .then((response) => response.data)
         .catch((err) => {
@@ -34,11 +19,8 @@ function getAllFeed(page, limit, filters = {}) {
 }
 
  async function Deletfeed(id){
-
-    const headers = getHeaders(); // Get the latest headers
-
     try {
-        const response = await axios.delete(`https://farm-project-bbzj.onrender.com/api/feed/DeleteFeed/${id}`, { headers });
+        const response = await axiosInstance.delete(`/feed/DeleteFeed/${id}`);
         return response.data;
     } catch (err) {
         console.error("Error deleting vaccine:", err.response ? err.response.data : err.message);
@@ -48,35 +30,29 @@ function getAllFeed(page, limit, filters = {}) {
 }
 
 function getFodder(page, limit, filters = {}) {
-    const headers = getHeaders(); // Get the latest headers
-
-    return axios
-        .get(`https://farm-project-bbzj.onrender.com/api/fodder/getallfodder`, {
+    return axiosInstance
+        .get(`/fodder/getallfodder`, {
             params: {
                 page,
                 limit,
                 ...filters // Pass additional filters like tagId, breed, etc.
-            },
-            headers })
+            }
+        })
         .then((response) => response)
         .catch((err) => err);
 }
 
 
 function deleteFodder(id) {
-    const headers = getHeaders(); // Get the latest headers
-
-    return axios
-        .delete(`hhttps://farm-project-bbzj.onrender.com/api/fodder/deletefodder/${id}`, { headers })
+    return axiosInstance
+        .delete(`/fodder/deletefodder/${id}`)
         .then((response) => response)
         .catch((err) => err);
 }
 
 function getFodderMenue() {
-    const headers = getHeaders(); // Get the latest headers
-
-    return axios
-        .get(`https://farm-project-bbzj.onrender.com/api/feed/getfeeds`, { headers })
+    return axiosInstance
+        .get(`/feed/getfeeds`)
         .then((response) => response)
         .catch((err) => err);
 }

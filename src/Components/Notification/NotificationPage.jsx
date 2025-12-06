@@ -1,27 +1,14 @@
 
 import React, { useMemo, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
+import axiosInstance from '../../api/axios';
 import { toast } from 'react-toastify';
-import { FaCheck, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { FaCheck } from 'react-icons/fa';
 import { MdNotifications } from 'react-icons/md';
 import { RiDeleteBin6Line } from "react-icons/ri";
 import Swal from 'sweetalert2';
 import './NotificationPage.css';
 import { useTranslation } from "react-i18next";
-
-const BASE_URL = 'https://farm-project-bbzj.onrender.com';
-
-// -------- Helpers --------
-const getHeaders = () => {
-  const token = localStorage.getItem("Authorization");
-  return token
-    ? {
-        Authorization: token.startsWith("Bearer ") ? token : `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    : {};
-};
 
 const pickMessageByLang = (n, lang) => {
   if (lang?.startsWith('ar')) return n.messageAr || n.message || n.messageEn || '';
@@ -68,7 +55,7 @@ export default function NotificationPage() {
     severity: filterSeverity || undefined,
     unreadOnly: filterUnreadOnly || undefined,
     lang: i18n.language || 'en',
-  }), [page, limit, filterType, filterStage, filterSeverity, filterUnreadOnly,  i18n.language]);
+  }), [page, limit, filterType, filterStage, filterSeverity, filterUnreadOnly, i18n.language]);
 
   // ------ Main fetch ------
   const {
@@ -80,15 +67,16 @@ export default function NotificationPage() {
     queryKey: ['notifications', params],
     queryFn: async () => {
       const lang = i18n.language || "en";
-      await axios.get(`${BASE_URL}/api/notifications/check`, {
-        headers: getHeaders(),
+
+      // ✅ check endpoint بدون BASE_URL
+      await axiosInstance.get('/notifications/check', {
         params: { lang },
       });
-      
-      const res = await axios.get(`${BASE_URL}/api/notifications`, {
-        headers: getHeaders(),
+
+      const res = await axiosInstance.get('/notifications', {
         params,
       });
+
       return res.data?.data || { notifications: [], pagination: null, unreadCount: 0 };
     },
     keepPreviousData: true,
@@ -132,10 +120,10 @@ export default function NotificationPage() {
   const markAsReadMutation = useMutation({
     mutationFn: async (id) => {
       const lang = i18n.language || "en";
-      return axios.patch(
-        `${BASE_URL}/api/notifications/${id}/read`,
+      return axiosInstance.patch(
+        `/notifications/${id}/read`,
         {},
-        { headers: getHeaders(), params: { lang }, validateStatus: s => s < 500 }
+        { params: { lang }, validateStatus: s => s < 500 }
       );
     },
     onMutate: async (id) => {
@@ -161,10 +149,10 @@ export default function NotificationPage() {
   const markAllAsReadMutation = useMutation({
     mutationFn: async () => {
       const lang = i18n.language || "en";
-      return axios.patch(
-        `${BASE_URL}/api/notifications/read-all`,
+      return axiosInstance.patch(
+        '/notifications/read-all',
         {},
-        { headers: getHeaders(), params: { lang }, validateStatus: s => s < 500 }
+        { params: { lang }, validateStatus: s => s < 500 }
       );
     },
     onMutate: async () => {
@@ -190,9 +178,9 @@ export default function NotificationPage() {
   const deleteNotificationMutation = useMutation({
     mutationFn: async (id) => {
       const lang = i18n.language || "en";
-      const res = await axios.delete(
-        `${BASE_URL}/api/notifications/${id}`,
-        { headers: getHeaders(), params: { lang }, validateStatus: s => s < 500 }
+      const res = await axiosInstance.delete(
+        `/notifications/${id}`,
+        { params: { lang }, validateStatus: s => s < 500 }
       );
       if (res.status === 400) throw new Error(res.data?.message || t("delete_error"));
       return res.data;
@@ -240,7 +228,7 @@ export default function NotificationPage() {
     
     try {
       await Promise.all(ids.map(id =>
-        axios.patch(`${BASE_URL}/api/notifications/${id}/read`, {}, { headers: getHeaders(), params: { lang: i18n.language || 'en' } })
+        axiosInstance.patch(`/notifications/${id}/read`, {}, { params: { lang: i18n.language || 'en' } })
       ));
       toast.success(t("mark_success"));
       resetSelection();
@@ -278,7 +266,7 @@ export default function NotificationPage() {
 
     try {
       await Promise.all(ids.map(id =>
-        axios.delete(`${BASE_URL}/api/notifications/${id}`, { headers: getHeaders(), params: { lang: i18n.language || 'en' } })
+        axiosInstance.delete(`/notifications/${id}`, { params: { lang: i18n.language || 'en' } })
       ));
       Swal.fire(t("deleted_title"), t("deleted_msg"), 'success');
       resetSelection();
@@ -290,7 +278,7 @@ export default function NotificationPage() {
     }
   };
 
-  // ------ Pagination Logic (مثل Animals) ------
+  // ------ Pagination Logic ------
   const renderModernPagination = () => {
     const total = pagination.totalPages || 1;
     const pageButtons = [];
@@ -412,8 +400,6 @@ export default function NotificationPage() {
       <main className="main-content">
         {/* Filters */}
         <section className="filters">
-          
-
           <select
             className="select"
             value={filterType}
@@ -477,7 +463,6 @@ export default function NotificationPage() {
           >
             <FaCheck /> {t("mark_selected")}
           </button>
-
         </section>
 
         <div className="divider"></div>
@@ -496,7 +481,7 @@ export default function NotificationPage() {
               const dueText = n.dueDate
                 ? new Date(n.dueDate).toLocaleDateString(i18n.language, {
                     year: 'numeric', month: 'short', day: 'numeric',
-                  })
+                  }) 
                 : null;
 
               return (
@@ -513,13 +498,13 @@ export default function NotificationPage() {
                     <p className="notification-message">{msg}</p>
 
                     <div className="badges">
-                      <span className="chip-type chip" >
+                      <span className="chip-type chip">
                         {n.type}
                       </span>
-                      <span className="chip-severity chip" >
+                      <span className="chip-severity chip">
                         {n.severity}
                       </span>
-                      <span className="chip-stage chip" >
+                      <span className="chip-stage chip">
                         {n.stage}
                       </span>
                       {dueText && (
@@ -561,7 +546,7 @@ export default function NotificationPage() {
           )}
         </ul>
 
-        {/* Pagination - Updated to match Animals style */}
+        {/* Pagination */}
         <div className="pagination-container">
           {renderModernPagination()}
         </div>

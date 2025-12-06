@@ -1,26 +1,16 @@
-import axios from 'axios';
+import axiosInstance from '../../api/axios';
 import React from 'react';
+import { getToken } from '../../utils/authToken';
 
 function DownloadMatExcel() {
     
-// Helper function to generate headers with the latest token
-const getHeaders = () => {
-    const Authorization = localStorage.getItem('Authorization');
-  
-    // Ensure the token has only one "Bearer" prefix
-    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-  
-    return {
-        Authorization: formattedToken
-    };
-  };
-
     const handleDownload = async () => {
-        const headers = getHeaders(); // Get the latest headers
+        const token = getToken();
+        if (!token) return;
         try {
-            const response = await axios.get(
-                'https://farm-project-bbzj.onrender.com/api/mating/exportMatingToExcel', 
-                { headers, responseType: 'blob' }
+            const response = await axiosInstance.get(
+                '/mating/exportMatingToExcel', 
+                { responseType: 'blob' }
             );
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');

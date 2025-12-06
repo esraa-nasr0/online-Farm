@@ -1,7 +1,7 @@
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { IoIosSave } from "react-icons/io";
-import axios from "axios";
+import axiosInstance from "../../api/axios";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "./Mating.css";
@@ -16,19 +16,9 @@ function EditMating() {
   const [matingData, setMatingData] = useState(null);
   const { id } = useParams();
 
-  const getHeaders = () => {
-    const Authorization = localStorage.getItem("Authorization");
-    const formattedToken = Authorization.startsWith("Bearer ")
-      ? Authorization
-      : `Bearer ${Authorization}`;
-    return { Authorization: formattedToken };
-  };
-
   const fetchMaleTags = async () => {
-    const headers = getHeaders();
-    const res = await axios.get(
-      "https://farm-project-bbzj.onrender.com/api/animal/males",
-      { headers }
+    const res = await axiosInstance.get(
+      "/animal/males"
     );
     return res.data.data;
   };
@@ -43,7 +33,6 @@ function EditMating() {
   });
 
   async function editMating(values) {
-    const headers = getHeaders();
     setisLoading(true);
     try {
       const convertToISO = (dateString) => {
@@ -62,10 +51,9 @@ function EditMating() {
         Object.entries(updatedValues).filter(([_, v]) => v !== undefined)
       );
       console.log("Submitting form with values:", payload);
-      let { data } = await axios.patch(
-        `https://farm-project-bbzj.onrender.com/api/mating/UpdateMating/${id}`,
-        payload,
-        { headers }
+      let { data } = await axiosInstance.patch(
+        `/mating/UpdateMating/${id}`,
+        payload
       );
 
       if (data.status === "success") {
@@ -91,11 +79,9 @@ function EditMating() {
 
   useEffect(() => {
     async function fetchAnimal() {
-      const headers = getHeaders();
       try {
-        let { data } = await axios.get(
-          `https://farm-project-bbzj.onrender.com/api/mating/GetSingleMating/${id}`,
-          { headers }
+        let { data } = await axiosInstance.get(
+          `/mating/GetSingleMating/${id}`
         );
         console.log("API response:", data);
 

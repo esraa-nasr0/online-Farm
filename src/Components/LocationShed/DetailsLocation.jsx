@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import axios from "axios";
+import axiosInstance from "../../api/axios";
 import { FaUsers, FaMars, FaVenus } from "react-icons/fa";
 import { GiGoat, GiSheep } from "react-icons/gi";
 import { useTranslation } from "react-i18next";
@@ -25,22 +25,11 @@ export default function DetailsLocation() {
   const isRTL = i18n.language === "ar";
   const { id } = useParams();
 
-  const getHeaders = () => {
-    const Authorization = localStorage.getItem("Authorization");
-    const formattedToken = Authorization?.startsWith("Bearer ")
-      ? Authorization
-      : `Bearer ${Authorization}`;
-    return {
-      Authorization: formattedToken,
-      "Content-Type": "application/json",
-    };
-  };
-
   const fetchSheds = useCallback(async () => {
     try {
-      const res = await axios.get(
+      const res = await axiosInstance.get(
         `${BASE_URL}/api/location/GetAll-Locationsheds`,
-        { params: { limit: 1000, page: 1 }, headers: getHeaders() }
+        { params: { limit: 1000, page: 1 } }
       );
       setSheds(res?.data?.data?.locationSheds || []);
     } catch (e) {
@@ -53,9 +42,9 @@ export default function DetailsLocation() {
     try {
       setLoading(true);
       setSelected(new Set());
-      const res = await axios.get(
+      const res = await axiosInstance.get(
         `${BASE_URL}/api/location/getanimalsinshed`,
-        { params: { locationShedId: id, includeStats: true }, headers: getHeaders() }
+        { params: { locationShedId: id, includeStats: true } }
       );
       setAnimals(res.data?.data?.animals || []);
       setStats(res.data?.data?.stats || null);
@@ -102,10 +91,9 @@ export default function DetailsLocation() {
 
     try {
       setMoving(true);
-      const res = await axios.post(
+      const res = await axiosInstance.post(
         `${BASE_URL}/api/animal/moveanimals`,
-        body,
-        { headers: getHeaders() }
+        body
       );
       const moved = res?.data?.moved ?? 0;
       const toName = res?.data?.to?.name || "";

@@ -7,10 +7,11 @@ import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import AnimalStatistics from "./AnimalStatistics";
-import axios from "axios";
+import axiosInstance from "../../api/axios";
 import { IoEyeOutline } from "react-icons/io5";
 import { FiSearch } from "react-icons/fi";
 import { BreedContext } from "../../Context/BreedContext";
+import { getToken } from "../../utils/authToken";
 import "./Animals.css"; // سيتم إنشاء هذا الملف
 
 export default function Animals() {
@@ -35,12 +36,13 @@ export default function Animals() {
   const [breeds, setBreeds] = useState([]);
   const [error, setError] = useState(null);
 
-  const getHeaders = () => {
-    const Authorization = localStorage.getItem("Authorization");
-    const formattedToken = Authorization.startsWith("Bearer ")
-      ? Authorization
-      : `Bearer ${Authorization}`;
-    return { Authorization: formattedToken };
+  const ensureToken = () => {
+    const token = getToken();
+    if (!token) {
+      navigate("/login");
+      return false;
+    }
+    return true;
   };
 
   useEffect(() => {
@@ -58,15 +60,14 @@ export default function Animals() {
   }, [BreedMenue]);
 
   const handleDownloadTemplate = async () => {
-    const headers = getHeaders();
+    if (!ensureToken()) return;
     try {
       setIsLoading(true);
-      const response = await axios.get(
-        "https://farm-project-bbzj.onrender.com/api/animal/downloadAnimalTemplate",
+      const response = await axiosInstance.get(
+        "/animal/downloadAnimalTemplate",
         {
           responseType: "blob",
           headers: {
-            ...headers,
             Accept:
               "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
           },
@@ -97,14 +98,11 @@ export default function Animals() {
   };
 
   const handleExportToExcel = async () => {
-    const headers = getHeaders();
+    if (!ensureToken()) return;
     try {
-      const response = await axios.get(
-        "https://farm-project-bbzj.onrender.com/api/animal/exportAnimalsToExcel",
-        {
-          responseType: "blob",
-          headers,
-        }
+      const response = await axiosInstance.get(
+        "/animal/exportAnimalsToExcel",
+        { responseType: "blob" }
       );
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
@@ -156,19 +154,18 @@ export default function Animals() {
       return;
     }
 
-    const headers = getHeaders();
+    if (!ensureToken()) return;
     const formData = new FormData();
 
     try {
       setIsLoading(true);
       formData.append("file", file);
 
-      const response = await axios.post(
-        "https://farm-project-bbzj.onrender.com/api/animal/import",
+      const response = await axiosInstance.post(
+        "/animal/import",
         formData,
         {
           headers: {
-            ...headers,
             "Content-Type": "multipart/form-data",
           },
         }

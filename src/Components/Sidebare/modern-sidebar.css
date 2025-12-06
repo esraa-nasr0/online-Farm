@@ -2,17 +2,23 @@
 
 /* ===== Theme (قابلة للتعديل) ===== */
 :root {
-  --msb-bg:white ;             /* الخلفية الأساسية */
-  --msb-bg-2: #717b8c52;           /* خلفية ثانوية غامقة قليلاً */
-  --msb-accent: #717b8c;         /* لون مميز */
+  --msb-bg: white;             /* الخلفية الأساسية */
+  --msb-bg-2: #717b8c52;       /* خلفية ثانوية غامقة قليلاً */
+  --msb-accent: #717b8c;        /* لون مميز */
   --msb-text: black;           /* النصوص + الأيقونات */
   --msb-muted: black;          /* نص خافت */
   --msb-border: rgba(225, 231, 245, 0.2); /* حدود فاتحة شفافة */
-  --msb-pill: #ff4757;           
+  --msb-pill: #ff4757;
   --msb-shadow: 0 12px 30px rgba(0, 0, 0, .3);
-  --msb-rail-w: 72px;               
-  --msb-panel-w: 280px;             
+  --msb-rail-w: 72px;
+  --msb-panel-w: 270px;
   --msb-radius: 14px;
+}
+
+/* إعدادات الخط للأوردو والعربي */
+.msb.rtl {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
 }
 
 /* البادج الأحمر لعدد الإشعارات */
@@ -49,8 +55,14 @@
   grid-template-columns: var(--msb-rail-w) var(--msb-panel-w);
 }
 
-.msb.rtl { direction: rtl; }
-.msb.ltr { direction: ltr; }
+.msb.rtl {
+  direction: rtl;
+  text-align: right;
+}
+.msb.ltr {
+  direction: ltr;
+  text-align: left;
+}
 
 /* ===== RAIL ===== */
 .msb-rail {
@@ -115,6 +127,7 @@
   color: var(--msb-text);
   background: transparent;
   transition: background .15s ease, transform .15s ease, border-color .15s ease;
+  position: relative;
 }
 .rail-btn:hover {
   background: var(--msb-bg-2);
@@ -135,11 +148,12 @@
   padding: 3px 6px;
   border-radius: 999px;
   border: 2px solid var(--msb-bg);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* زر الخروج أسفل الرايل */
 .rail-btn.logout {
-    color: #ff6b6b;  
+  color: #ff6b6b;
   margin-block-start: 6px;
   margin-block-end: 2px;
 }
@@ -162,6 +176,8 @@
   pointer-events: none;
   transition: opacity .15s ease;
   box-shadow: 0 6px 18px rgba(0,0,0,.28);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  z-index: 1000;
 }
 .msb.rtl .rail-btn[data-tooltip]::after {
   inset-inline-start: auto;
@@ -196,6 +212,12 @@
   border-block-end: 1px solid var(--msb-border);
 }
 
+.panel-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .brand {
   display: flex;
   align-items: center;
@@ -203,6 +225,7 @@
   font-weight: 700;
   letter-spacing: .4px;
   color: var(--msb-text);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 .brand .mark { display: none; }
 
@@ -219,6 +242,8 @@
   cursor: pointer;
   color: var(--msb-text);
   font-weight: 600;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  direction: ltr; /* إبقاء اتجاه زر اللغة من اليسار لليمين */
 }
 .chip.active { background: var(--msb-bg-2); }
 .lang-menu {
@@ -241,123 +266,10 @@
   cursor: pointer;
   color: #e1e7f5;
   font-size: 14px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-align: start;
 }
 .lang-menu button:hover { background: rgba(255,255,255,.08); }
-
-/* ===== الناف ===== */
-.panel-nav {
-  padding: 10px 10px 14px;
-  overflow-y: auto;
-  flex: 1 1 auto;
-}
-
-.nav-section + .nav-section {
-  margin-block-start: 8px;
-  padding-block-start: 8px;
-  border-block-start: 1px dashed var(--msb-border);
-}
-.section-title {
-  color: var(--msb-muted);
-  font-size: 12px;
-  letter-spacing: .6px;
-  padding: 6px 8px 8px;
-  text-transform: uppercase;
-}
-
-.section-list { list-style: none; margin: 0; padding: 0 4px; }
-
-.nav-item { margin-block: 4px; }
-
-.item-btn {
-  all: unset;
-  width: 100%;
-  cursor: pointer;
-  display: grid;
-  grid-template-columns: 32px 1fr max-content;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 10px;
-  border-radius: 12px;
-  color: var(--msb-text);
-  border: 1px solid transparent;
-  transition: background .15s ease, border-color .15s ease;
-}
-.item-btn .ico { font-size: 18px; display: grid; place-items: center; }
-.item-btn .txt { font-size: 14px; }
-.item-btn .chev { display: grid; place-items: center; opacity: .75; }
-
-.item-btn:hover {
-  background: var(--msb-bg-2);
-  border-color: var(--msb-border);
-}
-.nav-item.active > .item-btn,
-.sub-link.current {
-  background: var(--msb-accent);
-  border-color: transparent;
-  color: var(--msb-text);
-}
-
-/* Submenu */
-.submenu {
-  list-style: none;
-  margin: 6px 0 10px 42px;
-  padding: 0;
-  border-inline-start: 2px solid rgba(225,231,245,0.2);
-}
-.msb.rtl .submenu { margin: 6px 42px 10px 0; border-inline-start: none; border-inline-end: 2px solid rgba(225,231,245,0.2); }
-
-.submenu li { margin: 2px 0; }
-.sub-link {
-  display: block;
-  color: var(--msb-text);
-  font-size: 13.5px;
-  padding: 8px 10px;
-  border-radius: 10px;
-  transition: background .12s ease, transform .12s ease;
-}
-.sub-link:hover { background: rgba(225,231,245,0.08); transform: translateX(2px); }
-
-/* زر تسجيل الخروج أسفل البانل */
-.logout-wide {
-  all: unset;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 10px;
-  padding: 10px 12px;
-  border-radius: 12px;
-  border: 1px solid var(--msb-border);
-  color: #ff6b6b;
-  background: transparent;
-}
-.logout-wide:hover { background: rgba(255,107,107,0.1); }
-
-/* ===== حالات على الموبايل ===== */
-@media (max-width: 768px) {
-  .msb { box-shadow: none; }
-  .msb.open { position: fixed; inset: 0 auto 0 0; }
-}
-
-/* ===== طبقة التعتيم ===== */
-.sidebar-scrim {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.45);
-  backdrop-filter: blur(1.5px);
-  z-index: 1195;
-}
-
-/* ===== حالات الغلق ===== */
-.msb.closed .msb-panel {
-  opacity: 0;
-  transform: translateX(-8px);
-  pointer-events: none;
-}
-
-.msb.open.no-rail { grid-template-columns: var(--msb-panel-w); }
-
-.panel-left { display: flex; align-items: center; gap: 10px; }
 
 /* زر الطي/الفتح داخل الهيدر */
 .collapse-btn {
@@ -378,6 +290,225 @@
   background: var(--msb-bg-2);
   transform: translateY(-1px);
   border-color: var(--msb-border);
+}
+
+/* ===== الناف ===== */
+.panel-nav {
+  padding: 10px 10px 14px;
+  overflow-y: auto;
+  flex: 1 1 auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--msb-border) transparent;
+}
+
+.panel-nav::-webkit-scrollbar {
+  width: 6px;
+}
+
+.panel-nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.panel-nav::-webkit-scrollbar-thumb {
+  background-color: var(--msb-border);
+  border-radius: 3px;
+}
+
+.nav-section + .nav-section {
+  margin-block-start: 8px;
+  padding-block-start: 8px;
+  border-block-start: 1px dashed var(--msb-border);
+}
+.section-title {
+  color: var(--msb-muted);
+  font-size: 12px;
+  letter-spacing: .6px;
+  padding: 6px 8px 8px;
+  text-transform: uppercase;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: 600;
+}
+
+.section-list {
+  list-style: none;
+  margin: 0;
+  padding: 0 4px;
+}
+
+.nav-item { margin-block: 4px; }
+
+/* ===== عناصر القائمة (الأيقونة + النص + السهم) باستخدام GRID زى الكود الأول ===== */
+.item-btn {
+  all: unset;
+  width: 100%;
+  cursor: pointer;
+  display: grid;
+  grid-template-columns: 32px 1fr max-content; /* نفس المسافات بين الأيقونة والنص والسهم */
+  align-items: center;
+  gap: 10px;
+  padding: 10px 10px;          /* نفس البادينج بتاع الكود الأول */
+  border-radius: 12px;
+  color: var(--msb-text);
+  border: 1px solid transparent;
+  transition: background .15s ease, border-color .15s ease;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 44px;
+}
+
+/* الأيقونة */
+.item-btn .ico {
+  font-size: 18px;
+  display: grid;
+  place-items: center;
+}
+
+/* النص */
+.item-btn .txt {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0;
+  word-spacing: 0;
+  padding: 0;
+  margin: 0;
+}
+
+/* السهم */
+.item-btn .chev {
+  display: grid;
+  place-items: center;
+  opacity: .75;
+  font-size: 12px;
+}
+
+.item-btn:hover {
+  background: var(--msb-bg-2);
+  border-color: var(--msb-border);
+}
+.nav-item.active > .item-btn,
+.sub-link.current {
+  background: var(--msb-accent);
+  border-color: transparent;
+  color: white;
+}
+
+/* Submenu */
+.submenu {
+  list-style: none;
+  margin: 6px 0 10px 42px;
+  padding: 0;
+  border-inline-start: 2px solid rgba(225,231,245,0.2);
+}
+.msb.rtl .submenu {
+  margin: 6px 42px 10px 0;
+  border-inline-start: none;
+  border-inline-end: 2px solid rgba(225,231,245,0.2);
+}
+
+.submenu li { margin: 2px 0; }
+.sub-link {
+  display: flex;
+  align-items: center;
+  color: var(--msb-text);
+  font-size: 13.5px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  transition: background .12s ease, transform .12s ease;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-decoration: none;
+  letter-spacing: 0;
+  word-spacing: 0;
+  line-height: 1.5;
+  min-height: 20px;
+}
+.sub-link:hover {
+  background: rgba(225,231,245,0.08);
+  transform: translateX(2px);
+}
+.msb.rtl .sub-link:hover {
+  transform: translateX(-2px);
+}
+
+.sub-link.current {
+  background: var(--msb-accent);
+  color: white;
+}
+
+/* زر تسجيل الخروج أسفل البانل */
+.logout-wide {
+  all: unset;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--msb-border);
+  color: #ff6b6b;
+  background: transparent;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: 500;
+  transition: background .15s ease;
+  letter-spacing: 0;
+  word-spacing: 0;
+}
+.logout-wide:hover {
+  background: rgba(255,107,107,0.1);
+}
+
+/* ===== حالات على الموبايل ===== */
+@media (max-width: 768px) {
+  .msb {
+    box-shadow: none;
+  }
+  .msb.open {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .msb-panel {
+    width: 100%;
+  }
+
+  /* تحسينات للأوردو على الموبايل */
+  .msb.rtl.open {
+    inset: 0 0 0 auto;
+  }
+
+  .section-title {
+    font-size: 11px;
+  }
+
+  .item-btn .txt {
+    font-size: 13px;
+  }
+}
+
+/* ===== طبقة التعتيم ===== */
+.sidebar-scrim {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  backdrop-filter: blur(1.5px);
+  z-index: 1195;
+}
+
+/* ===== حالات الغلق ===== */
+.msb.closed .msb-panel {
+  opacity: 0;
+  transform: translateX(-8px);
+  pointer-events: none;
+}
+
+.msb.rtl.closed .msb-panel {
+  transform: translateX(8px);
+}
+
+.msb.open.no-rail {
+  grid-template-columns: var(--msb-panel-w);
 }
 
 /* شيل أي Scroll أفقي على مستوى الصفحة */
@@ -406,12 +537,97 @@ html, body, #root {
   overflow-y: auto;
 }
 
+/* تحسينات إضافية للأوردو والعربي */
+.msb.rtl .item-btn {
+  text-align: right;
+  direction: rtl;
+}
+
+.msb.rtl .section-title {
+  text-align: right;
+}
+
+.msb.rtl .brand {
+  text-align: right;
+}
+
+/* تحسينات للخطوط في الأوردو والعربي */
+.msb.rtl .item-btn .txt,
+.msb.rtl .section-title,
+.msb.rtl .sub-link,
+.msb.rtl .brand span,
+.msb.rtl .logout-wide {
+  font-family: 'Segoe UI', 'Tahoma', 'Geneva', 'Verdana', sans-serif;
+  letter-spacing: 0;
+  word-spacing: 0;
+  line-height: 1.5;
+}
+
+/* تحسينات إضافية للمسافات في النصوص العربية والأوردو */
+.msb.rtl .section-title,
+.msb.rtl .item-btn .txt,
+.msb.rtl .sub-link {
+  padding: 0;
+  margin: 0;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* تحسينات للعناوين والأقسام */
+.section-title {
+  word-spacing: 0;
+  letter-spacing: 0.6px; /* الحفاظ على التباعد للإنجليزية فقط */
+}
+
+.msb.rtl .section-title {
+  letter-spacing: 0; /* إزالة التباعد للعربية والأوردو */
+}
+
+/* تحسين محاذاة الأيقونات في القوائم الفرعية */
+.sub-link::before {
+  content: "";
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--msb-text);
+  margin-inline-end: 8px;
+  opacity: 0.6;
+}
+
+.msb.rtl .sub-link::before {
+  margin-inline-end: 0;
+  margin-inline-start: 8px;
+}
 
 @media (max-width: 768px) {
   .msb {
-    display: none; /* من غير !important */
+    display: none;
   }
   .msb.open {
-    display: grid; /* ترجع تظهر لو واخدة كلاس open */
+    display: grid;
+  }
+
+  /* تحسينات إضافية للموبايل في الأوردو */
+  .msb.rtl.open .msb-panel {
+    transform: translateX(0);
+  }
+
+  /* تحسينات النصوص على الموبايل */
+  .msb.rtl .item-btn .txt,
+  .msb.rtl .sub-link {
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  /* تحسين محاذاة الأيقونات على الموبايل */
+  .item-btn {
+    min-height: 42px;
+    padding: 8px 10px;
+  }
+
+  .item-btn .ico {
+    height: 18px;
   }
 }

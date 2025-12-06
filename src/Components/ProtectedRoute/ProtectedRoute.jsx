@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import { getToken } from "../../utils/authToken";
 
 function ProtectedRoute({ children, allowedRoles }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -8,7 +9,7 @@ function ProtectedRoute({ children, allowedRoles }) {
   const location = useLocation();
 
   useEffect(() => {
-    const token = localStorage.getItem("Authorization");
+    const token = getToken();
 
     if (token) {
       try {

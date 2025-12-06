@@ -1,29 +1,21 @@
-import React, { useMemo, useState } from "react";
+// src/components/Sidebare/ModernSidebar.jsx
+import React, { useMemo, useState, useContext } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
-  FaChevronDown,
-  FaChevronUp,
-  FaBell,
-  FaChartBar,
-  FaHeart,
-  FaPaw,
-  FaSyringe,
-  FaPills,
-  FaWeight,
-  FaSeedling,
-  FaUtensils,
-  FaBreadSlice,
-  FaExclamationTriangle,
-  FaChevronLeft,
-  FaChevronRight,
+  FaChevronDown, FaChevronUp, FaBell, FaChartBar, FaHeart, FaPaw, FaSyringe,
+  FaPills, FaWeight, FaSeedling, FaUtensils, FaBreadSlice, FaExclamationTriangle,
+  FaChevronLeft, FaChevronRight
 } from "react-icons/fa";
 import { IoHome } from "react-icons/io5";
 import { MdOutlineLanguage, MdOutlineLocalPharmacy } from "react-icons/md";
 import { FaLocationDot } from "react-icons/fa6";
 import { GiGoat } from "react-icons/gi";
 import { CiLogout } from "react-icons/ci";
-import { RiLuggageCartFill, RiDashboardHorizontalLine } from "react-icons/ri";
+import { RiLuggageCartFill } from "react-icons/ri";
 import { useTranslation } from "react-i18next";
+import { RiDashboardHorizontalLine } from "react-icons/ri";
+import { UserContext } from "../../Context/UserContext";
+import { jwtDecode } from "jwt-decode";
 
 import "./modern-sidebar.css";
 
@@ -41,39 +33,66 @@ export default function ModernSidebar({
   const [langOpen, setLangOpen] = useState(false);
   const { t } = useTranslation();
 
-  // 🌟 جلب الدور من localStorage
-  const userRole = localStorage.getItem("role"); // "admin" أو "user"
+  const { Authorization } = useContext(UserContext);
+  const userRole = Authorization ? jwtDecode(Authorization).role : null;
+  const isAdmin = userRole === "admin";
 
-  const baseMenu = useMemo(
-    () => [
+  const baseMenu = useMemo(() => {
+
+    if (isAdmin) {
+      return [
+        {
+          title: t("MAIN MENU"),
+          items: [
+            { name: t("Home"), icon: <IoHome />, path: "/" },
+          ],
+        },
+        {
+          title: t("Admin"),
+          items: [
+            {
+              name: t("Dashboard"),
+              icon: <RiDashboardHorizontalLine />,
+              path: "/dashboard",
+            },
+            {
+              name: t("Admin Dashboard"),
+              icon: <RiDashboardHorizontalLine />,
+              path: "/AdminDashboard",
+            },
+            {
+              name: t("Add Vaccine Type"),
+              icon: <FaSyringe />,
+              path: "/addVaccineType",
+            },
+            {
+              name: t("Vaccine Type Table"),
+              icon: <FaSyringe />,
+              path: "/vaccineTypetable",
+            },
+          ],
+        },
+      ];
+    }
+
+    return [
       {
         title: t("MAIN MENU"),
         items: [
           { name: t("Home"), icon: <IoHome />, path: "/" },
+          { name: t("Notifications"), icon: <FaBell />, path: "/notificationPage", badge: notificationCount },
+        ],
+      },
+      {
+        title: t("User"),
+        items: [
           {
-            name: t("Notifications"),
-            icon: <FaBell />,
-            path: "/notificationPage",
-            badge: notificationCount,
+            name: t("Dashboard"),
+            icon: <RiDashboardHorizontalLine />,
+            path: "/userDashboard",
           },
         ],
       },
-  {
-  title: t("User"),
-  items: [
-    { name: t("Dashboard"), icon: <RiDashboardHorizontalLine />, path: "/userDashboard" },
-    ...(userRole === "admin"
-      ? [
-          {
-            name: t("Admin Dashboard"),
-            icon: <RiDashboardHorizontalLine />,
-            path: "/AdminDashboard",
-          },
-        ]
-      : []),
-  ],
-},
-
       {
         title: t("Supplier"),
         items: [
@@ -134,30 +153,16 @@ export default function ModernSidebar({
               { name: t("add By LocationShed"), path: "/matingLocation" },
             ],
           },
-      
-              ...(userRole === "admin"
-            ? [
-                {
-                  name: t("Vaccine_Type"),
-                  icon: <FaSyringe />,
-                  subItems: [
-                    { name: t("vaccine_Type_table"), path: "/vaccineTypetable" },
-                    { name: t("add_Vaccine_Type"), path: "/addVaccineType" },
-                
-                  ],
-                },
-              ]
-            : []),
-             {
-                name: t("vaccine"),
-              icon: <FaSyringe />,
-             subItems: [
-           { name: t("vaccine Data"), path: "/vaccineTable" },
-           { name: t("vaccine Animal Data"), path: "/Vaccinebyanimalsstable" },
-           { name: t("Add Vaccine"), path: "/addVaccine" },
-           { name: t("Add By Animal"), path: "/vaccinebytagid" },
-           { name: t("Add By Location"), path: "/vaccinebylocationshed" },
-         ],
+          {
+            name: t("vaccine"),
+            icon: <FaSyringe />,
+            subItems: [
+              { name: t("vaccine Data"), path: "/vaccineTable" },
+              { name: t("vaccine Animal Data"), path: "/Vaccinebyanimalsstable" },
+              { name: t("Add Vaccine"), path: "/addVaccine" },
+              { name: t("Add By Animal"), path: "/vaccinebytagid" },
+              { name: t("Add By Location"), path: "/vaccinebylocationshed" },
+            ],
           },
           {
             name: t("Pharmacy"),
@@ -232,15 +237,15 @@ export default function ModernSidebar({
           },
         ],
       },
-    ],
-    [notificationCount, t, userRole]
-  );
+    ];
+  }, [isAdmin, notificationCount, t]);
 
   const toggleDropdown = (key) =>
     setActiveDropdown((cur) => (cur === key ? null : key));
 
   const dir = isRTL ? "rtl" : "ltr";
-  const getTitle = (item) => (typeof item === "string" ? item : item?.name || "");
+  const getTitle = (item) =>
+    (typeof item === "string" ? item : item?.name || "");
 
   return (
     <aside
@@ -258,60 +263,32 @@ export default function ModernSidebar({
             title="HALAL LAB"
             style={{ cursor: "pointer" }}
           >
-            <div className="bars">
-              <span />
-              <span />
-              <span />
-            </div>
+            <div className="bars"><span/><span/><span/></div>
           </div>
 
           <div className="msb-rail-items">
-            <Link
-              to="/"
-              className="rail-btn"
-              title={t("Home")}
-              data-tooltip={t("Home")}
-              onClick={onToggle}
-            >
+            <Link to="/" className="rail-btn" title={t("Home")} data-tooltip={t("Home")} onClick={onToggle}>
               <IoHome />
             </Link>
-            <Link
-              to="/userDashboard"
-              className="rail-btn"
-              title={t("Dashboard")}
-              data-tooltip={t("Dashboard")}
-              onClick={onToggle}
-            >
-              <RiDashboardHorizontalLine />
-            </Link>
-            <button
-              className={`rail-btn ${langOpen ? "active" : ""}`}
-              onClick={() => setLangOpen((v) => !v)}
-              title={t("Language")}
-              data-tooltip={t("Language")}
-            >
+
+            {!isAdmin && (
+              <Link to="/userDashboard" className="rail-btn" title={t("Dashboard")} data-tooltip={t("Dashboard")} onClick={onToggle}>
+                <RiDashboardHorizontalLine />
+              </Link>
+            )}
+
+            <button className="rail-btn" onClick={() => setLangOpen((v) => !v)} title={t("Language")} data-tooltip={t("Language")}>
               <MdOutlineLanguage />
             </button>
-            <Link
-              to="/notificationPage"
-              className="rail-btn badge-parent"
-              title={t("Notifications")}
-              data-tooltip={t("Notifications")}
-              onClick={onToggle}
-            >
-              <FaBell />
-              {notificationCount > 0 && (
-                <span className="badge">{notificationCount}</span>
-              )}
-            </Link>
+
+            {!isAdmin && (
+              <Link to="/notificationPage" className="rail-btn badge-parent" title={t("Notifications")} data-tooltip={t("Notifications")} onClick={onToggle}>
+                <FaBell />{notificationCount > 0 && <span className="badge">{notificationCount}</span>}
+              </Link>
+            )}
           </div>
 
-          <button
-            className="rail-btn logout"
-            onClick={onLogout}
-            title={t("Logout")}
-            data-tooltip={t("Logout")}
-          >
+          <button className="rail-btn logout" onClick={onLogout} title={t("Logout")} data-tooltip={t("Logout")}>
             <CiLogout />
           </button>
         </div>
@@ -321,33 +298,25 @@ export default function ModernSidebar({
       <div className="msb-panel">
         <div className="panel-header">
           <div className="panel-left">
-            <button
-              className="collapse-btn"
-              onClick={onToggle}
-              aria-label="Toggle sidebar"
-            >
+            <button className="collapse-btn" onClick={onToggle} aria-label="Toggle sidebar">
               {isRTL ? <FaChevronRight /> : <FaChevronLeft />}
             </button>
 
             <div className="brand">
               <div className="mark" />
-              <span>ONLINE FARM</span>
+              <span>MAZRAA ONLINE</span>
             </div>
           </div>
 
           <div className="lang-switch">
-            <button
-              className={`chip ${langOpen ? "active" : ""}`}
-              onClick={() => setLangOpen((v) => !v)}
-            >
-              <MdOutlineLanguage />
-              <span>{t("Language")}</span>
-              {langOpen ? <FaChevronUp /> : <FaChevronDown />}
+            <button className={`chip ${langOpen ? "active" : ""}`} onClick={() => setLangOpen((v) => !v)}>
+              <MdOutlineLanguage /><span>{t("Language")}</span>{langOpen ? <FaChevronUp /> : <FaChevronDown />}
             </button>
             {langOpen && (
               <div className="lang-menu">
                 <button onClick={() => onChangeLanguage?.("en")}>{t("English")}</button>
                 <button onClick={() => onChangeLanguage?.("ar")}>{t("العربية")}</button>
+                <button onClick={() => onChangeLanguage?.("ur")}>{t("اردو")}</button>
               </div>
             )}
           </div>
@@ -362,22 +331,17 @@ export default function ModernSidebar({
                   const hasChildren = !!item.subItems;
                   const active = pathname === item.path;
                   const k = `${section.title}-${item.name}`;
+
                   return (
                     <li className={`nav-item ${active ? "active" : ""}`} key={iIdx}>
                       {hasChildren ? (
                         <>
-                          <button
-                            className="item-btn"
-                            onClick={() => toggleDropdown(k)}
-                            aria-expanded={activeDropdown === k}
-                            title={getTitle(item)}
-                          >
+                          <button className="item-btn" onClick={() => toggleDropdown(k)} aria-expanded={activeDropdown === k} title={getTitle(item)}>
                             <span className="ico">{item.icon}</span>
                             <span className="txt">{item.name}</span>
-                            <span className="chev">
-                              {activeDropdown === k ? <FaChevronUp /> : <FaChevronDown />}
-                            </span>
+                            <span className="chev">{activeDropdown === k ? <FaChevronUp /> : <FaChevronDown />}</span>
                           </button>
+
                           {activeDropdown === k && (
                             <ul className="submenu">
                               {item.subItems.map((sub, subIdx) => (
@@ -403,7 +367,7 @@ export default function ModernSidebar({
                         >
                           <span className="ico">{item.icon}</span>
                           <span className="txt">{item.name}</span>
-                          {item.badge ? <span className="pill">{item.badge}</span> : null}
+                          {item.badge && <span className="pill">{item.badge}</span>}
                         </Link>
                       )}
                     </li>
@@ -415,8 +379,7 @@ export default function ModernSidebar({
         </nav>
 
         <button className="logout-wide" onClick={onLogout}>
-          <CiLogout />
-          <span>{t("Logout")}</span>
+          <CiLogout /><span>{t("Logout")}</span>
         </button>
       </div>
     </aside>

@@ -1,28 +1,10 @@
-import axios from "axios";
+import axiosInstance from "../api/axios";
 import { createContext } from "react";
 export let GetAnimalContext = createContext();
 
-
-// Helper function to generate headers with the latest token
-const getHeaders = () => {
-  const Authorization = localStorage.getItem('Authorization');
-
-  // Ensure the token has only one "Bearer" prefix
-  const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-
-  return {
-      Authorization: formattedToken
-  };
-};
-
     function getAnimalVaccine(animalid) {
-      const headers = getHeaders(); // Get the latest headers
-
-        return axios
-          .get(
-            `https://farm-project-bbzj.onrender.com/api/vaccine/GetVaccineForAnimal/${animalid}`,
-            { headers }
-          )
+        return axiosInstance
+          .get(`/vaccine/GetVaccineForAnimal/${animalid}`)
           .then((response) => {
             console.log("Response Data:", response.data);
             return response.data; 
@@ -34,15 +16,13 @@ const getHeaders = () => {
     }
 
     function getAnimalMating(animalid) {
-      const headers = getHeaders(); // Get the latest headers
-        return axios.get(`https://farm-project-bbzj.onrender.com/api/mating/GetSingleAnimalMating/${animalid}` , {headers})
+        return axiosInstance.get(`/mating/GetSingleAnimalMating/${animalid}`)
         .then((response)=>response)
         .catch((err)=>err)
     }
 
     function getAnimalBreeding(animalid) {
-      const headers = getHeaders(); // Get the latest headers
-      return axios.get(`https://farm-project-bbzj.onrender.com/api/breeding/GetSingleAnimalBreeding/${animalid}` , {headers})
+      return axiosInstance.get(`/breeding/GetSingleAnimalBreeding/${animalid}`)
       .then((response)=>response)
       .catch((err)=>err)
   }
@@ -50,16 +30,14 @@ const getHeaders = () => {
 
     
   function getAnimalWeight(animalid) {
-    const headers = getHeaders(); // Get the latest headers
-      return axios.get(`https://farm-project-bbzj.onrender.com/api/weight/GetSingleAnimalWeight/${animalid}` , {headers})
+      return axiosInstance.get(`/weight/GetSingleAnimalWeight/${animalid}`)
       .then((response)=>response)
       .catch((err)=>err)
   }
  
 
   function getAnimalTreatment(animalid) {
-    const headers = getHeaders(); // Get the latest headers
-    return axios.get(`https://farm-project-bbzj.onrender.com/api/treatment/gettreatmentsForAnimal/${animalid}` , {headers})
+    return axiosInstance.get(`/treatment/gettreatmentsForAnimal/${animalid}`)
     .then((response)=>response)
     .catch((err)=>err)
 }

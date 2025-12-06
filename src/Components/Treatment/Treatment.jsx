@@ -1,18 +1,11 @@
 // src/pages/Treatment.jsx
-import axios from "axios";
+import axiosInstance from "../../api/axios";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import * as Yup from "yup";
 import { useTranslation } from "react-i18next";
 import "./Treatment.css";
-
-// ترويسة ثابتة لقراءة التوكن
-const buildAuthHeaders = () => {
-  const token = localStorage.getItem("Authorization") || "";
-  if (!token) return {};
-  return { Authorization: token.startsWith("Bearer ") ? token : `Bearer ${token}` };
-};
 
 const API = "https://farm-project-bbzj.onrender.com";
 
@@ -57,9 +50,8 @@ export default function Treatment() {
         setLoading((p) => ({ ...p, suppliers: true }));
         setError(null);
 
-        const { data } = await axios.get(
-          `${API}/api/supplier/getallsuppliers?limit=1000&page=1`,
-          { headers: buildAuthHeaders() }
+        const { data } = await axiosInstance.get(
+          `${API}/api/supplier/getallsuppliers?limit=1000&page=1`
         );
 
         if (!cancelled) {
@@ -139,10 +131,9 @@ export default function Treatment() {
       if (payload.bottlePrice === "") delete payload.bottlePrice;
       if (!payload.expireDate) delete payload.expireDate;
 
-      const { data } = await axios.post(
+      const { data } = await axiosInstance.post(
         `${API}/api/treatment/addtreatment`,
-        payload, // ✅ جسم الطلب
-        { headers: buildAuthHeaders() } // ✅ الهيدر
+        payload // ✅ جسم الطلب
       );
 
       if (data?.status === "success") {

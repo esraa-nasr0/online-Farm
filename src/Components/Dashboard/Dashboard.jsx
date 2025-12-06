@@ -1,40 +1,37 @@
-import axios from "axios";
+import axiosInstance from "../../api/axios";
+import { getToken } from "../../utils/authToken";
 import React, { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { IoPersonCircleOutline } from "react-icons/io5";
-import { Rings } from "react-loader-spinner";
-import Swal from "sweetalert2";
 import { DashboardContext } from "../../Context/DashboardContext";
+import Swal from "sweetalert2";
+import { Rings } from "react-loader-spinner";
+import { IoPersonCircleOutline } from "react-icons/io5";
 import { useTranslation } from "react-i18next";
-import { FiSearch } from "react-icons/fi";
-import "./Dashboard.css"; // استخدام نفس استايل Supplier
+
 
 function Dashboard() {
-  const navigate = useNavigate();
   const { getUsers } = useContext(DashboardContext);
-  const { t, i18n } = useTranslation();
-  const isRTL = i18n.language === "ar";
-
   const [isLoading, setIsLoading] = useState(false);
   const [users, setUsers] = useState([]);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [DashPerPage] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
-  const [searchCriteria, setSearchCriteria] = useState({ name: "", email: "" });
+    const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === "ar";
 
-  const API_BASE = process.env.REACT_APP_API_BASE || "https://farm-project-bbzj.onrender.com";
 
+
+  // تحميل بيانات المستخدمين
   const fetchData = async () => {
     setIsLoading(true);
     setError(null);
     try {
-      const { data } = await getUsers(currentPage, DashPerPage, searchCriteria);
+      const { data } = await getUsers(currentPage, DashPerPage);
       setUsers(data?.data?.users || []);
       setTotalPages(data?.pagination?.totalPages || 1);
     } catch (err) {
-      setError(t("fetch_error") || "Failed to fetch data");
-      Swal.fire(t("error") || "Error", t("fetch_error") || "Failed to fetch data", "error");
+      setError("Failed to fetch data");
+      Swal.fire("Error", "Failed to fetch data", "error");
     } finally {
       setIsLoading(false);
     }
@@ -46,6 +43,7 @@ function Dashboard() {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  // ====== Login as User (impersonation) ======
   const handleImpersonate = async (userId) => {
     const newTab = window.open("", "_blank");
     if (!newTab) {
@@ -53,16 +51,18 @@ function Dashboard() {
       return;
     }
 
-    const rawAdmin = localStorage.getItem("Authorization") || "";
+    const rawAdmin = getToken() || "";
     const adminAuth = rawAdmin.startsWith("Bearer ") ? rawAdmin : `Bearer ${rawAdmin}`;
     const frontOrigin = window.location.origin;
 
     try {
-      const start = await axios.post(
-        `${API_BASE}/admin/users/${userId}/impersonate`,
+      // 1) ابدأ الانتحال
+      const start = await axiosInstance.post(
+        `/admin/users/${userId}/impersonate`,
         {},
         { headers: { Authorization: adminAuth } }
       );
+
       const url = start?.data?.data?.url;
       if (!url) throw new Error("No impersonation URL returned");
 
@@ -70,40 +70,40 @@ function Dashboard() {
       const impToken = u.searchParams.get("token");
       if (!impToken) throw new Error("Missing token from URL");
 
-      const redeem = await axios.get(
-        `${API_BASE}/auth/impersonate?token=${encodeURIComponent(impToken)}`
+      // 2) redeem → خدي توكن اليوزر النهائي
+      const redeem = await axiosInstance.get(
+        `/auth/impersonate?token=${encodeURIComponent(impToken)}`
       );
+
       const userToken = redeem?.data?.data?.token;
       if (!userToken) throw new Error("No user token returned");
 
+      // 3) حقني التوكن في sessionStorage للتاب الجديدة فقط
       const html = `
-<!doctype html>
-<html>
-<head><meta charset="utf-8"><title>Switching...</title></head>
-<body style="font-family:system-ui;padding:20px">Switching user...</body>
-<script>
-try {
-  sessionStorage.setItem("impersonation","1");
-  sessionStorage.setItem("token","${userToken}");
-} catch (e) {}
-location.replace("${frontOrigin}/");
-</script>
-</html>`;
+      <!doctype html>
+      <html>
+      <head><meta charset="utf-8"><title>Switching...</title></head>
+      <body style="font-family:system-ui;padding:20px">Switching user...</body>
+      <script>
+        try {
+          sessionStorage.setItem("impersonation","1");
+          sessionStorage.setItem("token","${userToken}");
+        } catch (e) {}
+        location.replace("${frontOrigin}/");
+      </script>
+      </html>`;
+
       newTab.document.open();
       newTab.document.write(html);
       newTab.document.close();
     } catch (e) {
-      try { newTab.close(); } catch (_) {}
+      newTab.close();
       const msg = e?.response?.data?.message || e?.message || "Failed to impersonate user";
       Swal.fire("Error", msg, "error");
     }
   };
 
-  const handleSearch = () => {
-    setCurrentPage(1);
-    fetchData();
-  };
-
+  // Pagination UI (بدون تعديل لأنه شغال)
   const renderPagination = () => {
     const total = totalPages;
     const pageButtons = [];

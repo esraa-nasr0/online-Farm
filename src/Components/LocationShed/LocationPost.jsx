@@ -2,7 +2,7 @@ import { useFormik } from "formik";
 import  { useState } from "react";
 import * as Yup from "yup";
 import { IoIosSave } from "react-icons/io";
-import axios from "axios";
+import axiosInstance from "../../api/axios";
 import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -15,25 +15,14 @@ function LocationPost() {
   const navigate = useNavigate();
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  // Helper function to generate headers with the latest token
-  const getHeaders = () => {
-    const Authorization = localStorage.getItem("Authorization");
-    const formattedToken = Authorization.startsWith("Bearer ")
-      ? Authorization
-      : `Bearer ${Authorization}`;
-    return { Authorization: formattedToken };
-  };
-
   async function submitLocation(values, { resetForm }) {
-    const headers = getHeaders();
     setIsLoading(true);
     setError(null);
 
     try {
-      let { data } = await axios.post(
-        `https://farm-project-bbzj.onrender.com/api/location/addlocationshed`,
-        values,
-        { headers }
+      let { data } = await axiosInstance.post(
+        `/location/addlocationshed`,
+        values
       );
 
       if (data.status === "success") {

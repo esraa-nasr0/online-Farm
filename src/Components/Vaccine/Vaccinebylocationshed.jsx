@@ -1,12 +1,13 @@
 import  { useContext, useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { IoIosSave } from "react-icons/io";
-import axios from "axios";
+import axiosInstance from "../../api/axios";
 import { VaccineanimalContext } from "../../Context/VaccineanimalContext";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { LocationContext } from "../../Context/Locationshedcontext";
 import { useTranslation } from "react-i18next";
+import { getToken } from "../../utils/authToken";
 
 function Vaccinebylocationshed() {
   const { getallVaccineanimal, getVaccineMenue } = useContext(VaccineanimalContext);
@@ -60,15 +61,13 @@ function Vaccinebylocationshed() {
     fetchVaccine();
   }, [getVaccineMenue]);
 
-  const getHeaders = () => {
-    const token = localStorage.getItem("Authorization");
+  const ensureAuthenticated = () => {
+    const token = getToken();
     if (!token) {
       navigate("/login");
-      throw new Error("No authorization token found");
+      return false;
     }
-    return {
-      Authorization: token.startsWith("Bearer ") ? token : `Bearer ${token}`,
-    };
+    return true;
   };
 
   const formik = useFormik({
@@ -81,7 +80,10 @@ function Vaccinebylocationshed() {
     onSubmit: async (values) => {
       setIsLoading(true);
       try {
-        const headers = getHeaders();
+        if (!ensureAuthenticated()) {
+          setIsLoading(false);
+          return;
+        }
         const dataToSend = {
           vaccineId: values.vaccineId,
           date: values.date,
@@ -89,10 +91,9 @@ function Vaccinebylocationshed() {
           entryType: values.entryType,
         };
 
-        const { data } = await axios.post(
-          "https://farm-project-bbzj.onrender.com/api/vaccine/AddVaccineForAnimals",
-          dataToSend,
-          { headers }
+        const { data } = await axiosInstance.post(
+          "/vaccine/AddVaccineForAnimals",
+          dataToSend
         );
 
         if (data.status === "SUCCESS") {

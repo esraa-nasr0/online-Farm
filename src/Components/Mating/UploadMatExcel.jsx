@@ -1,23 +1,17 @@
-import axios from 'axios';  
+import axiosInstance from '../../api/axios';  
 import React, { useState } from "react";  
 import * as XLSX from "xlsx";  
 import DownloadMatExcel from './DownloadMatExcel';
+import { getToken } from '../../utils/authToken';
 
 function UploadMatExcel({ addMatingData }) {  
     const [data, setData] = useState([]);  
 
     
-// Helper function to generate headers with the latest token
-const getHeaders = () => {
-    const Authorization = localStorage.getItem('Authorization');
-  
-    // Ensure the token has only one "Bearer" prefix
-    const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-  
-    return {
-        Authorization: formattedToken
-    };
-  };
+const hasToken = () => {
+    const token = getToken();
+    return Boolean(token);
+};
     
     const handleFileChange = (e) => {  
         const file = e.target.files[0];  
@@ -46,7 +40,9 @@ const getHeaders = () => {
     };  
 
     async function uploadSheet(dataToUpload) {
-        const headers = getHeaders(); // Get the latest headers
+        if (!hasToken()) {
+            return;
+        }
         const successfulUploads = [];
     
         for (let item of dataToUpload) {
@@ -66,10 +62,10 @@ const getHeaders = () => {
                     const expectedDeliveryDateObj = new Date(item.expectedDeliveryDate);
                     item.sonarDate = !isNaN(expectedDeliveryDateObj) ? expectedDeliveryDateObj.toISOString() : null;
                 }
-                const response = await axios.post(
-                    'https://farm-project-bbzj.onrender.com/api/mating/import',
+                const response = await axiosInstance.post(
+                    '/mating/import',
                     item,
-                    { headers: { ...headers, 'Content-Type': 'application/json' } }
+                    { headers: { 'Content-Type': 'application/json' } }
                 );
                 if (response.data.status === 'success') {
                     successfulUploads.push(item);

@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
-import axios from "axios";
+import axiosInstance from "../../api/axios";
+import { getToken } from "../../utils/authToken";
 import style from "./Report.module.css";
 import {
   Chart as ChartJS,
@@ -15,11 +16,20 @@ import { Bar, Doughnut } from "react-chartjs-2";
 import { useTranslation } from "react-i18next";
 import { jwtDecode } from "jwt-decode";
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Tooltip, Legend, Title);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  ArcElement,
+  Tooltip,
+  Legend,
+  Title
+);
 
 function Report() {
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language?.startsWith("ar");
+
   const [animalType, setAnimalType] = useState("");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
@@ -29,8 +39,9 @@ function Report() {
   const [isDownloading, setIsDownloading] = useState(false);
   const [isFattening, setIsFattening] = useState(false);
 
+  // ==== Detect registerationType from token (fattening or not)
   useEffect(() => {
-    const token = localStorage.getItem("Authorization");
+    const token = getToken();
     if (token) {
       try {
         const decoded = jwtDecode(token);
@@ -41,29 +52,27 @@ function Report() {
     }
   }, []);
 
-  const getHeaders = () => {
-    const Authorization = localStorage.getItem("Authorization");
-    if (!Authorization) throw new Error("No authorization token found");
-    const formatted = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-    return { Authorization: formatted };
-  };
-
+  // ==== Fetch report
   async function getReport() {
     setIsLoading(true);
     setError(null);
+
     try {
-      const headers = getHeaders();
-      const resp = await axios.get("https://farm-project-bbzj.onrender.com/api/filter/report", {
+      const resp = await axiosInstance.get("/filter/report", {
         params: { animalType, dateFrom, dateTo },
-        headers,
       });
+
       if (resp.data?.status === "success") {
         setReportData(resp.data.data);
       } else {
         setError(resp.data?.message || t("error.unexpectedResponse"));
       }
     } catch (err) {
-      setError(err.response?.data?.message || err.message || t("fetch_report_error"));
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          t("fetch_report_error")
+      );
     } finally {
       setIsLoading(false);
     }
@@ -78,22 +87,22 @@ function Report() {
     getReport();
   };
 
+  // ==== Download PDF
   const handleDownloadPDF = async () => {
     if (!animalType || !dateFrom || !dateTo) {
       setError(t("required_fields_error") || "Please fill all fields");
       return;
     }
+
     setIsDownloading(true);
     setError(null);
+
     try {
-      const headers = getHeaders();
-      const resp = await axios.get("https://farm-project-bbzj.onrender.com/api/report/download", {
+      const resp = await axiosInstance.get("/report/download", {
         params: { animalType, dateFrom, dateTo, lang: i18n.language },
-        headers,
         responseType: "blob",
       });
 
-      // ensure it's PDF
       const type = resp.headers["content-type"] || "";
       if (!type.includes("application/pdf")) {
         try {
@@ -122,8 +131,10 @@ function Report() {
   };
 
   // ===== Helpers
-  const fmt = (v, d = 2) => (v == null || Number.isNaN(v) ? "—" : Number(v).toFixed(d));
-  const yesNo = (b) => (isRTL ? (b ? "نعم" : "لا") : b ? "Yes" : "No");
+  const fmt = (v, d = 2) =>
+    v == null || Number.isNaN(v) ? "—" : Number(v).toFixed(d);
+  const yesNo = (b) =>
+    isRTL ? (b ? "نعم" : "لا") : b ? "Yes" : "No";
 
   // ===== Deconstruct API data
   const animalReport = reportData?.animalReport || [];
@@ -140,18 +151,31 @@ function Report() {
   const coverage = reportData?.coverageDays || {};
   const extra = reportData?.extraKpis || {};
 
-  const totalAnimals = animalReport.reduce((s, r) => s + (r.count || 0), 0);
-  const maleCount = animalReport.filter((a) => a.gender === "male").reduce((s, r) => s + r.count, 0);
-  const femaleCount = animalReport.filter((a) => a.gender === "female").reduce((s, r) => s + r.count, 0);
+  const totalAnimals = animalReport.reduce(
+    (s, r) => s + (r.count || 0),
+    0
+  );
+  const maleCount = animalReport
+    .filter((a) => a.gender === "male")
+    .reduce((s, r) => s + r.count, 0);
+  const femaleCount = animalReport
+    .filter((a) => a.gender === "female")
+    .reduce((s, r) => s + r.count, 0);
   const breederCount = reportData?.pregnantAnimal || 0;
 
   const totalBirthEntries = birthEntries.totalBirthEntries || 0;
   const totalBirthMales = birthEntries.totalMales || 0;
   const totalBirthFemales = birthEntries.totalFemales || 0;
 
-  const excludedSweep = excludedReport.filter((x) => x.excludedType === "sweep").reduce((s, r) => s + r.count, 0);
-  const excludedDeath = excludedReport.filter((x) => x.excludedType === "death").reduce((s, r) => s + r.count, 0);
-  const excludedSale = excludedReport.filter((x) => x.excludedType === "sale").reduce((s, r) => s + r.count, 0);
+  const excludedSweep = excludedReport
+    .filter((x) => x.excludedType === "sweep")
+    .reduce((s, r) => s + r.count, 0);
+  const excludedDeath = excludedReport
+    .filter((x) => x.excludedType === "death")
+    .reduce((s, r) => s + r.count, 0);
+  const excludedSale = excludedReport
+    .filter((x) => x.excludedType === "sale")
+    .reduce((s, r) => s + r.count, 0);
   const totalExcluded = excludedSweep + excludedDeath + excludedSale;
 
   // ===== Charts
@@ -161,7 +185,12 @@ function Report() {
       t("female") || "Female",
       ...(isFattening ? [] : [t("pregnant") || "Pregnant"]),
       t("total_excluded") || "Excluded",
-      ...(isFattening ? [] : [t("total_birth_males") || "Birth ♂", t("total_birth_females") || "Birth ♀"]),
+      ...(isFattening
+        ? []
+        : [
+            t("total_birth_males") || "Birth ♂",
+            t("total_birth_females") || "Birth ♀",
+          ]),
     ];
     const data = [
       maleCount,
@@ -175,19 +204,38 @@ function Report() {
       datasets: [
         {
           data,
-          backgroundColor: ["#2563EB", "#10B981", ...(isFattening ? [] : ["#F59E0B"]), "#EF4444", ...(isFattening ? [] : ["#6366F1", "#A78BFA"])],
+          backgroundColor: [
+            "#2563EB",
+            "#10B981",
+            ...(isFattening ? [] : ["#F59E0B"]),
+            "#EF4444",
+            ...(isFattening ? [] : ["#6366F1", "#A78BFA"]),
+          ],
           borderWidth: 0,
         },
       ],
     };
-  }, [isFattening, maleCount, femaleCount, breederCount, totalExcluded, totalBirthMales, totalBirthFemales, t]);
+  }, [
+    isFattening,
+    maleCount,
+    femaleCount,
+    breederCount,
+    totalExcluded,
+    totalBirthMales,
+    totalBirthFemales,
+    t,
+  ]);
 
   const donutOptions = useMemo(
     () => ({
       responsive: true,
       plugins: {
         legend: { position: "bottom", labels: { boxWidth: 12 } },
-        tooltip: { callbacks: { label: (ctx) => `${ctx.label}: ${ctx.raw}` } },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => `${ctx.label}: ${ctx.raw}`,
+          },
+        },
       },
       cutout: "60%",
     }),
@@ -215,7 +263,10 @@ function Report() {
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: { legend: { display: false }, title: { display: false } },
+        plugins: {
+          legend: { display: false },
+          title: { display: false },
+        },
         scales: {
           x: { grid: { display: false } },
           y: { grid: { color: "#E5E7EB" } },
@@ -260,23 +311,48 @@ function Report() {
   const coverageTreatment = coverage?.treatment || [];
   const coverageVaccine = coverage?.vaccine || [];
 
-  const sortedFeed = [...coverageFeed].sort((a, b) => (b.warn - a.warn) || ((a.daysCover ?? 0) - (b.daysCover ?? 0)));
-  const sortedTreat = [...coverageTreatment].sort((a, b) => (b.warn - a.warn) || ((a.daysCover ?? 0) - (b.daysCover ?? 0)));
-  const sortedVac = [...coverageVaccine].sort((a, b) => (b.warn - a.warn) || ((a.daysCover ?? 0) - (b.daysCover ?? 0)));
+  const sortedFeed = [...coverageFeed].sort(
+    (a, b) =>
+      b.warn - a.warn ||
+      (a.daysCover ?? 0) - (b.daysCover ?? 0)
+  );
+  const sortedTreat = [...coverageTreatment].sort(
+    (a, b) =>
+      b.warn - a.warn ||
+      (a.daysCover ?? 0) - (b.daysCover ?? 0)
+  );
+  const sortedVac = [...coverageVaccine].sort(
+    (a, b) =>
+      b.warn - a.warn ||
+      (a.daysCover ?? 0) - (b.daysCover ?? 0)
+  );
 
   return (
     <div className={`${style.page} ${isRTL ? style.rtl : ""}`}>
       <div className={style.header}>
         <h1 className={style.title}>{t("report") || "Report"}</h1>
         <div className={style.actions}>
-          <button onClick={handleSubmit} className={style.btn} disabled={isLoading}>
-            {isLoading ? (t("loading") || "Loading…") : (t("get_report") || "Get Report")}
+          <button
+            onClick={handleSubmit}
+            className={style.btn}
+            disabled={isLoading}
+          >
+            {isLoading
+              ? t("loading") || "Loading…"
+              : t("get_report") || "Get Report"}
           </button>
-          {/* {reportData && (
-            <button onClick={handleDownloadPDF} className={`${style.btn} ${style.btnPrimary}`} disabled={isDownloading}>
-              {isDownloading ? (t("downloading") || "Downloading…") : (t("download_pdf") || "Download PDF")}
+
+          {reportData && (
+            <button
+              onClick={handleDownloadPDF}
+              className={`${style.btn} ${style.btnPrimary}`}
+              disabled={isDownloading}
+            >
+              {isDownloading
+                ? t("downloading") || "Downloading…"
+                : t("download_pdf") || "Download PDF"}
             </button>
-          )} */}
+          )}
         </div>
       </div>
 
@@ -284,75 +360,129 @@ function Report() {
       <form onSubmit={handleSubmit} className={style.filters}>
         <div className={style.field}>
           <label>{t("animal_type") || "Animal Type"}</label>
-          <select value={animalType} onChange={(e) => setAnimalType(e.target.value)}>
-            <option value="">{t("select_animal_type") || "Select"}</option>
+          <select
+            value={animalType}
+            onChange={(e) => setAnimalType(e.target.value)}
+          >
+            <option value="">
+              {t("select_animal_type") || "Select"}
+            </option>
             <option value="goat">{t("goat") || "Goat"}</option>
             <option value="sheep">{t("sheep") || "Sheep"}</option>
           </select>
         </div>
         <div className={style.field}>
           <label>{t("date_from") || "From"}</label>
-          <input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} />
+          <input
+            type="date"
+            value={dateFrom}
+            onChange={(e) => setDateFrom(e.target.value)}
+          />
         </div>
         <div className={style.field}>
           <label>{t("date_to") || "To"}</label>
-          <input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} />
+          <input
+            type="date"
+            value={dateTo}
+            onChange={(e) => setDateTo(e.target.value)}
+          />
         </div>
-        <button className={style.btnGhost} type="submit">{t("apply") || "Apply"}</button>
+        <button className={style.btnGhost} type="submit">
+          {t("apply") || "Apply"}
+        </button>
       </form>
 
       {error && <div className={style.error}>{error}</div>}
-      {isLoading && <div className={style.loading}>{t("loading_report") || "Loading report…"}</div>}
+      {isLoading && (
+        <div className={style.loading}>
+          {t("loading_report") || "Loading report…"}
+        </div>
+      )}
 
       {reportData && (
         <>
           {/* KPIs */}
           <section className={style.statGrid}>
             <div className={style.statCard}>
-              <div className={style.statLabel}>{t("total_animals") || "Total Animals"}</div>
+              <div className={style.statLabel}>
+                {t("total_animals") || "Total Animals"}
+              </div>
               <div className={style.statValue}>{totalAnimals}</div>
             </div>
             <div className={style.statCard}>
-              <div className={style.statLabel}>{t("male") || "Males"}</div>
+              <div className={style.statLabel}>
+                {t("male") || "Males"}
+              </div>
               <div className={style.statValue}>{maleCount}</div>
             </div>
             <div className={style.statCard}>
-              <div className={style.statLabel}>{t("female") || "Females"}</div>
+              <div className={style.statLabel}>
+                {t("female") || "Females"}
+              </div>
               <div className={style.statValue}>{femaleCount}</div>
             </div>
             {!isFattening && (
               <div className={style.statCard}>
-                <div className={style.statLabel}>{t("pregnant") || "Pregnant"}</div>
+                <div className={style.statLabel}>
+                  {t("pregnant") || "Pregnant"}
+                </div>
                 <div className={style.statValue}>{breederCount}</div>
               </div>
             )}
 
             <div className={style.statCard}>
-              <div className={style.statLabel}>{t("avg_cost_animal") || "Avg Cost/Animal"}</div>
-              <div className={style.statValue}>{fmt(extra.avgCostPerAnimal)}</div>
+              <div className={style.statLabel}>
+                {t("avg_cost_animal") || "Avg Cost/Animal"}
+              </div>
+              <div className={style.statValue}>
+                {fmt(extra.avgCostPerAnimal)}
+              </div>
             </div>
             <div className={style.statCard}>
-              <div className={style.statLabel}>{t("mortality_rate") || "Mortality Rate"}</div>
-              <div className={style.statValue}>{fmt(extra.mortalityRate, 2)}%</div>
+              <div className={style.statLabel}>
+                {t("mortality_rate") || "Mortality Rate"}
+              </div>
+              <div className={style.statValue}>
+                {fmt(extra.mortalityRate, 2)}%
+              </div>
             </div>
             <div className={style.statCard}>
-              <div className={style.statLabel}>{t("treatment_incidence") || "Treatment Incidence"}</div>
-              <div className={style.statValue}>{fmt(extra.treatmentIncidence, 2)}%</div>
+              <div className={style.statLabel}>
+                {t("treatment_incidence") || "Treatment Incidence"}
+              </div>
+              <div className={style.statValue}>
+                {fmt(extra.treatmentIncidence, 2)}%
+              </div>
             </div>
             <div className={style.statCard}>
-              <div className={style.statLabel}>{t("vaccination_coverage") || "Vaccination Coverage"}</div>
-              <div className={style.statValue}>{fmt(extra.vaccinationCoverage, 1)}%</div>
+              <div className={style.statLabel}>
+                {t("vaccination_coverage") ||
+                  "Vaccination Coverage"}
+              </div>
+              <div className={style.statValue}>
+                {fmt(extra.vaccinationCoverage, 1)}%
+              </div>
             </div>
             <div className={style.statCard}>
-              <div className={style.statLabel}>{t("fcr_overall") || "FCR Overall"}</div>
-              <div className={style.statValue}>{extra.fcrOverall == null ? "—" : fmt(extra.fcrOverall, 2)}</div>
+              <div className={style.statLabel}>
+                {t("fcr_overall") || "FCR Overall"}
+              </div>
+              <div className={style.statValue}>
+                {extra.fcrOverall == null
+                  ? "—"
+                  : fmt(extra.fcrOverall, 2)}
+              </div>
             </div>
             <div className={style.statCard}>
-              <div className={style.statLabel}>{t("revenue") || "Revenue"}</div>
+              <div className={style.statLabel}>
+                {t("revenue") || "Revenue"}
+              </div>
               <div className={style.statValue}>{fmt(extra.revenue)}</div>
             </div>
             <div className={style.statCard}>
-              <div className={style.statLabel}>{t("profit") || "Profit"}</div>
+              <div className={style.statLabel}>
+                {t("profit") || "Profit"}
+              </div>
               <div className={style.statValue}>{fmt(extra.profit)}</div>
             </div>
           </section>
@@ -361,7 +491,9 @@ function Report() {
           <section className={style.grid2}>
             <div className={style.card}>
               <div className={style.cardHead}>
-                <h3 className={style.sectionTitle}>{t("current_status") || "Current Status"}</h3>
+                <h3 className={style.sectionTitle}>
+                  {t("current_status") || "Current Status"}
+                </h3>
               </div>
               <div className={style.chartWrapLg}>
                 <Doughnut data={donutData} options={donutOptions} />
@@ -370,7 +502,9 @@ function Report() {
 
             <div className={style.card}>
               <div className={style.cardHead}>
-                <h3 className={style.sectionTitle}>{t("shed_costs") || "Per-Shed Feed Cost"}</h3>
+                <h3 className={style.sectionTitle}>
+                  {t("shed_costs") || "Per-Shed Feed Cost"}
+                </h3>
               </div>
               <div className={style.chartWrapLg}>
                 <Bar data={shedBar.data} options={shedBar.options} />
@@ -388,12 +522,20 @@ function Report() {
                     {(perShed.feed || []).map((s, i) => (
                       <tr key={i}>
                         <td>{s.shedName || "—"}</td>
-                        <td className={style.num}>{fmt(s.totalConsumed, 2)}</td>
-                        <td className={style.num}>{fmt(s.totalCost, 2)}</td>
+                        <td className={style.num}>
+                          {fmt(s.totalConsumed, 2)}
+                        </td>
+                        <td className={style.num}>
+                          {fmt(s.totalCost, 2)}
+                        </td>
                       </tr>
                     ))}
                     {(perShed.feed || []).length === 0 && (
-                      <tr><td colSpan={3} className={style.muted}>{t("no_data") || "No data"}</td></tr>
+                      <tr>
+                        <td colSpan={3} className={style.muted}>
+                          {t("no_data") || "No data"}
+                        </td>
+                      </tr>
                     )}
                   </tbody>
                 </table>
@@ -405,7 +547,9 @@ function Report() {
           <section className={style.grid1}>
             <div className={style.card}>
               <div className={style.cardHead}>
-                <h3 className={style.sectionTitle}>{t("shed_excluded") || "Per-Shed Excluded"}</h3>
+                <h3 className={style.sectionTitle}>
+                  {t("shed_excluded") || "Per-Shed Excluded"}
+                </h3>
               </div>
               <table className={style.table}>
                 <thead>
@@ -424,7 +568,11 @@ function Report() {
                     </tr>
                   ))}
                   {(perShed.excluded || []).length === 0 && (
-                    <tr><td colSpan={3} className={style.muted}>{t("no_data") || "No data"}</td></tr>
+                    <tr>
+                      <td colSpan={3} className={style.muted}>
+                        {t("no_data") || "No data"}
+                      </td>
+                    </tr>
                   )}
                 </tbody>
               </table>
@@ -435,7 +583,9 @@ function Report() {
           <section className={style.grid2}>
             <div className={style.card}>
               <div className={style.cardHead}>
-                <h3 className={style.sectionTitle}>{t("per_breed_animals") || "Animals per Breed"}</h3>
+                <h3 className={style.sectionTitle}>
+                  {t("per_breed_animals") || "Animals per Breed"}
+                </h3>
               </div>
               <table className={style.table}>
                 <thead>
@@ -452,7 +602,11 @@ function Report() {
                     </tr>
                   ))}
                   {(perBreed.animals || []).length === 0 && (
-                    <tr><td colSpan={2} className={style.muted}>{t("no_data") || "No data"}</td></tr>
+                    <tr>
+                      <td colSpan={2} className={style.muted}>
+                        {t("no_data") || "No data"}
+                      </td>
+                    </tr>
                   )}
                 </tbody>
               </table>
@@ -460,7 +614,9 @@ function Report() {
 
             <div className={style.card}>
               <div className={style.cardHead}>
-                <h3 className={style.sectionTitle}>{t("adg") }</h3>
+                <h3 className={style.sectionTitle}>
+                  {t("adg") || "ADG"}
+                </h3>
               </div>
               <div className={style.chartWrapMd}>
                 <Bar data={adgChart.data} options={adgChart.options} />
@@ -479,13 +635,21 @@ function Report() {
                     {(perBreed.adg || []).map((b, i) => (
                       <tr key={i}>
                         <td>{b.breedName || "—"}</td>
-                        <td className={style.num}>{fmt(b.avgADG, 2)}</td>
-                        <td className={style.num}>{fmt(b.totalGain, 2)}</td>
+                        <td className={style.num}>
+                          {fmt(b.avgADG, 2)}
+                        </td>
+                        <td className={style.num}>
+                          {fmt(b.totalGain, 2)}
+                        </td>
                         <td className={style.num}>{b.animals || 0}</td>
                       </tr>
                     ))}
                     {(perBreed.adg || []).length === 0 && (
-                      <tr><td colSpan={4} className={style.muted}>{t("no_data") || "No data"}</td></tr>
+                      <tr>
+                        <td colSpan={4} className={style.muted}>
+                          {t("no_data") || "No data"}
+                        </td>
+                      </tr>
                     )}
                   </tbody>
                 </table>
@@ -496,7 +660,11 @@ function Report() {
           {/* Coverage Days */}
           <section className={style.grid1}>
             <div className={style.card}>
-              <div className={style.cardHead}><h3 className={style.sectionTitle}>{t("feed") || "Feed"}</h3></div>
+              <div className={style.cardHead}>
+                <h3 className={style.sectionTitle}>
+                  {t("feed") || "Feed"}
+                </h3>
+              </div>
               <table className={style.table}>
                 <thead>
                   <tr>
@@ -510,24 +678,53 @@ function Report() {
                 <tbody>
                   {sortedFeed.map((r, i) => {
                     const cover = r.daysCover ?? 0;
-                    const pct = Math.max(0, Math.min(100, (cover / 10) * 100)); // 10 أيام حدّ أدنى
+                    const pct = Math.max(
+                      0,
+                      Math.min(100, (cover / 10) * 100)
+                    ); // 10 أيام حدّ أدنى
                     return (
-                      <tr key={i} className={r.warn ? style.rowWarn : undefined}>
+                      <tr
+                        key={i}
+                        className={
+                          r.warn ? style.rowWarn : undefined
+                        }
+                      >
                         <td>{r.feedName ?? "—"}</td>
-                        <td className={style.num}>{r.quantity ?? "—"}</td>
-                        <td className={style.num}>{fmt(r.dailyUse)}</td>
+                        <td className={style.num}>
+                          {r.quantity ?? "—"}
+                        </td>
+                        <td className={style.num}>
+                          {fmt(r.dailyUse)}
+                        </td>
                         <td className={style.num}>
                           {fmt(cover, 1)}
                           <div className={style.progressWrap}>
-                            <div className={style.progressBar} style={{ width: `${pct}%` }} />
+                            <div
+                              className={style.progressBar}
+                              style={{ width: `${pct}%` }}
+                            />
                           </div>
                         </td>
-                        <td><span className={r.warn ? style.badgeDanger : style.badgeOk}>{yesNo(r.warn)}</span></td>
+                        <td>
+                          <span
+                            className={
+                              r.warn
+                                ? style.badgeDanger
+                                : style.badgeOk
+                            }
+                          >
+                            {yesNo(r.warn)}
+                          </span>
+                        </td>
                       </tr>
                     );
                   })}
                   {sortedFeed.length === 0 && (
-                    <tr><td colSpan={5} className={style.muted}>{t("no_data") || "No data"}</td></tr>
+                    <tr>
+                      <td colSpan={5} className={style.muted}>
+                        {t("no_data") || "No data"}
+                      </td>
+                    </tr>
                   )}
                 </tbody>
               </table>
@@ -536,82 +733,161 @@ function Report() {
 
           <section className={style.grid2}>
             <div className={style.card}>
-              <div className={style.cardHead}><h3 className={style.sectionTitle}>{t("treatment") || "Treatment"}</h3></div>
+              <div className={style.cardHead}>
+                <h3 className={style.sectionTitle}>
+                  {t("treatment") || "Treatment"}
+                </h3>
+              </div>
               <table className={style.table}>
                 <thead>
                   <tr>
-                    <th>{t("treatment_name") || "Treatment"}</th>
+                    <th>
+                      {t("treatment_name") || "Treatment"}
+                    </th>
                     <th>{t("stock") || "Stock"}</th>
                     <th>{t("daily_use") || "Daily Use"}</th>
-                    <th>{t("days_cover") || "Days Cover"}</th>
+                    <th>
+                      {t("days_cover") || "Days Cover"}
+                    </th>
                     <th>{t("warn") || "Warn"}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {sortedTreat.map((r, i) => {
                     const cover = r.daysCover ?? 0;
-                    const pct = Math.max(0, Math.min(100, (cover / 10) * 100));
+                    const pct = Math.max(
+                      0,
+                      Math.min(100, (cover / 10) * 100)
+                    );
                     return (
-                      <tr key={i} className={r.warn ? style.rowWarn : undefined}>
+                      <tr
+                        key={i}
+                        className={
+                          r.warn ? style.rowWarn : undefined
+                        }
+                      >
                         <td>{r.treatmentName ?? "—"}</td>
-                        <td className={style.num}>{r.quantity ?? "—"}</td>
-                        <td className={style.num}>{fmt(r.dailyUse)}</td>
+                        <td className={style.num}>
+                          {r.quantity ?? "—"}
+                        </td>
+                        <td className={style.num}>
+                          {fmt(r.dailyUse)}
+                        </td>
                         <td className={style.num}>
                           {fmt(cover, 1)}
-                          <div className={style.progressWrap}><div className={style.progressBar} style={{ width: `${pct}%` }} /></div>
+                          <div className={style.progressWrap}>
+                            <div
+                              className={style.progressBar}
+                              style={{ width: `${pct}%` }}
+                            />
+                          </div>
                         </td>
-                        <td><span className={r.warn ? style.badgeDanger : style.badgeOk}>{yesNo(r.warn)}</span></td>
+                        <td>
+                          <span
+                            className={
+                              r.warn
+                                ? style.badgeDanger
+                                : style.badgeOk
+                            }
+                          >
+                            {yesNo(r.warn)}
+                          </span>
+                        </td>
                       </tr>
                     );
                   })}
                   {sortedTreat.length === 0 && (
-                    <tr><td colSpan={5} className={style.muted}>{t("no_data") || "No data"}</td></tr>
+                    <tr>
+                      <td colSpan={5} className={style.muted}>
+                        {t("no_data") || "No data"}
+                      </td>
+                    </tr>
                   )}
                 </tbody>
               </table>
             </div>
 
             <div className={style.card}>
-              <div className={style.cardHead}><h3 className={style.sectionTitle}>{t("vaccine") || "Vaccine"}</h3></div>
+              <div className={style.cardHead}>
+                <h3 className={style.sectionTitle}>
+                  {t("vaccine") || "Vaccine"}
+                </h3>
+              </div>
               <table className={style.table}>
                 <thead>
                   <tr>
-                    <th>{t("vaccine_name") || "Vaccine"}</th>
-                    <th>{t("Remaining Doses") || "Remaining Doses"}</th>
+                    <th>
+                      {t("vaccine_name") || "Vaccine"}
+                    </th>
+                    <th>
+                      {t("Remaining Doses") ||
+                        "Remaining Doses"}
+                    </th>
                     <th>{t("daily_use") || "Daily Use"}</th>
-                    <th>{t("days_cover") || "Days Cover"}</th>
+                    <th>
+                      {t("days_cover") || "Days Cover"}
+                    </th>
                     <th>{t("warn") || "Warn"}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {sortedVac.map((r, i) => {
                     const cover = r.daysCover ?? 0;
-                    const pct = Math.max(0, Math.min(100, (cover / 10) * 100));
+                    const pct = Math.max(
+                      0,
+                      Math.min(100, (cover / 10) * 100)
+                    );
                     return (
-                      <tr key={i} className={r.warn ? style.rowWarn : undefined}>
+                      <tr
+                        key={i}
+                        className={
+                          r.warn ? style.rowWarn : undefined
+                        }
+                      >
                         <td>{r.vaccineName ?? "—"}</td>
-                        <td className={style.num}>{r.totalDoses ?? "—"}</td>
-                        <td className={style.num}>{fmt(r.dailyUse)}</td>
+                        <td className={style.num}>
+                          {r.totalDoses ?? "—"}
+                        </td>
+                        <td className={style.num}>
+                          {fmt(r.dailyUse)}
+                        </td>
                         <td className={style.num}>
                           {fmt(cover, 1)}
-                          <div className={style.progressWrap}><div className={style.progressBar} style={{ width: `${pct}%` }} /></div>
+                          <div className={style.progressWrap}>
+                            <div
+                              className={style.progressBar}
+                              style={{ width: `${pct}%` }}
+                            />
+                          </div>
                         </td>
-                        <td><span className={r.warn ? style.badgeDanger : style.badgeOk}>{yesNo(r.warn)}</span></td>
+                        <td>
+                          <span
+                            className={
+                              r.warn
+                                ? style.badgeDanger
+                                : style.badgeOk
+                            }
+                          >
+                            {yesNo(r.warn)}
+                          </span>
+                        </td>
                       </tr>
                     );
                   })}
                   {sortedVac.length === 0 && (
-                    <tr><td colSpan={5} className={style.muted}>{t("no_data") || "No data"}</td></tr>
+                    <tr>
+                      <td colSpan={5} className={style.muted}>
+                        {t("no_data") || "No data"}
+                      </td>
+                    </tr>
                   )}
                 </tbody>
               </table>
             </div>
           </section>
 
-          {/* Raw stocks (optional) */}
-          <section className={style.grid2}>
-            
-          </section>
+          {/* مساحة لسكاشن إضافية لو حبيتي */}
+          <section className={style.grid2}></section>
         </>
       )}
     </div>

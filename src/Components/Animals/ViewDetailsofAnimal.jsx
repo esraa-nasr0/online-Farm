@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from '../../api/axios';
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FaEdit, FaTrashAlt, FaPlusCircle } from 'react-icons/fa';
@@ -21,20 +21,12 @@ export default function ViewDetailsofAnimal() {
     const navigate = useNavigate();
     const { removeAnimals } = useContext(AnimalContext);
 
-    const getHeaders = () => {
-        const Authorization = localStorage.getItem('Authorization');
-        const formattedToken = Authorization.startsWith("Bearer ") ? Authorization : `Bearer ${Authorization}`;
-        return { Authorization: formattedToken };
-    };
-
     async function submitAnimals() {
-        const headers = getHeaders();
         setIsLoading(true);
         setError(null);
         try {
-            let { data } = await axios.get(
-                `https://farm-project-bbzj.onrender.com/api/animal/getsinglanimals/${id}`,
-                { headers }
+            let { data } = await axiosInstance.get(
+                `/animal/getsinglanimals/${id}`
             );
             if (data.status === 'success') {
                 setIsLoading(false);
