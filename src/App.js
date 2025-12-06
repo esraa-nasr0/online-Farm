@@ -1,4 +1,3 @@
-import React from "react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Layout from "./Components/Layout/Layout";
 import Home from "./Components/Home/Home";
@@ -9,7 +8,7 @@ import AnimalsDetails from "./Components/Animals/AnimalsDetails";
 import Mating from "./Components/Mating/Mating";
 import Weight from "./Components/Weight/Weight";
 import { UserContext } from "./Context/UserContext";
-import { useContext } from "react";
+import { Suspense, useContext } from "react";
 import { useEffect } from "react";
 import { getToken } from "./utils/authToken";
 import ProtectedRoute from "./Components/ProtectedRoute/ProtectedRoute";
@@ -113,12 +112,15 @@ import AddVaccineType from "./Components/VaccineType/AddVaccineType.jsx";
 import VaccineTypeContextProvider from "./Context/VaccineTypeContext.js";
 import VaccineTypetable from "./Components/VaccineType/VaccineTypetable.jsx";
 import UserDashboard from "./Components/Dashboard/UserDashboard.jsx";
+import WeeklyNotifications from "./Components/WeeklyNotifications/WeeklyNotifications.jsx";
 
 let routers = createBrowserRouter([
   {
     path: "", 
     element: <Layout />, 
     children: [
+
+
       { index: true, element: <Home/> },
 
       { path: "homeServices", element: <ProtectedRoute ><HomeServices/></ProtectedRoute> },
@@ -212,6 +214,8 @@ let routers = createBrowserRouter([
       { path: "SupplierServices", element: <ProtectedRoute><SupplierServices/></ProtectedRoute> },
       { path:"detailsLocation/:id", element: <ProtectedRoute><DetailsLocation /></ProtectedRoute> },
       { path:"userDashboard", element: <ProtectedRoute><UserDashboard /></ProtectedRoute> },
+       { path:"weeklyNotifications", element: <ProtectedRoute><WeeklyNotifications /></ProtectedRoute> },
+      
 
     ],
   },
@@ -240,7 +244,8 @@ export default function App() {
   },[]);
 
   return <>
-  <VaccineTypeContextProvider>
+      <Suspense fallback={<div>جارٍ التحميل...</div>}>
+      <VaccineTypeContextProvider>
   <AdminContextProvider>
      <SidebarProvider>
         <SupplierContextProvider>
@@ -283,10 +288,10 @@ export default function App() {
 </SupplierContextProvider>
   </SidebarProvider>
   </AdminContextProvider>
-  </VaccineTypeContextProvider>
+  </VaccineTypeContextProvider></Suspense>
+  
 
  
 
   </>
 }
-

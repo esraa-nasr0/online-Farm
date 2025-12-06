@@ -5,6 +5,8 @@ import { DashboardContext } from "../../Context/DashboardContext";
 import Swal from "sweetalert2";
 import { Rings } from "react-loader-spinner";
 import { IoPersonCircleOutline } from "react-icons/io5";
+import { useTranslation } from "react-i18next";
+
 
 function Dashboard() {
   const { getUsers } = useContext(DashboardContext);
@@ -14,6 +16,10 @@ function Dashboard() {
   const [currentPage, setCurrentPage] = useState(1);
   const [DashPerPage] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
+    const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === "ar";
+
+
 
   // تحميل بيانات المستخدمين
   const fetchData = async () => {
@@ -98,7 +104,7 @@ function Dashboard() {
   };
 
   // Pagination UI (بدون تعديل لأنه شغال)
-  const renderModernPagination = () => {
+  const renderPagination = () => {
     const total = totalPages;
     const pageButtons = [];
     const maxButtons = 5;
@@ -117,42 +123,27 @@ function Dashboard() {
       for (let i = 1; i <= total; i++) addPage(i);
     } else {
       addPage(1);
-      if (currentPage > 3)
-        pageButtons.push(<li key="start-ellipsis" className="pagination-ellipsis">...</li>);
-
+      if (currentPage > 3) pageButtons.push(<li key="start-ellipsis" className="pagination-ellipsis">...</li>);
       let start = Math.max(2, currentPage - 1);
       let end = Math.min(total - 1, currentPage + 1);
-
       if (currentPage <= 3) end = 4;
       if (currentPage >= total - 2) start = total - 3;
-
       for (let i = start; i <= end; i++) if (i > 1 && i < total) addPage(i);
-
-      if (currentPage < total - 2)
-        pageButtons.push(<li key="end-ellipsis" className="pagination-ellipsis">...</li>);
-
+      if (currentPage < total - 2) pageButtons.push(<li key="end-ellipsis" className="pagination-ellipsis">...</li>);
       addPage(total);
     }
 
     return (
       <ul className="pagination">
         <li className={`page-item${currentPage === 1 ? " disabled" : ""}`}>
-          <button
-            className="page-link pagination-arrow"
-            onClick={() => paginate(currentPage - 1)}
-            disabled={currentPage === 1}
-          >
-            &lt; Back
+          <button className="page-link pagination-arrow" onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
+            &lt; {t("back")}
           </button>
         </li>
         {pageButtons}
         <li className={`page-item${currentPage === total ? " disabled" : ""}`}>
-          <button
-            className="page-link pagination-arrow"
-            onClick={() => paginate(currentPage + 1)}
-            disabled={currentPage === total}
-          >
-            Next &gt;
+          <button className="page-link pagination-arrow" onClick={() => paginate(currentPage + 1)} disabled={currentPage === total}>
+            {t("next")} &gt;
           </button>
         </li>
       </ul>
@@ -162,57 +153,64 @@ function Dashboard() {
   return (
     <>
       {isLoading ? (
-        <div className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
-          <Rings visible={true} height="100" width="100" color="#21763e" ariaLabel="rings-loading" />
+        <div className="loading-wrap">
+          <Rings visible={true} height="100" width="100" color="#21763e" />
         </div>
       ) : (
-        <div className="container">
-          <h1 className="title2">Admin Dashboard</h1>
-          {error && <p className="text-danger mt-3">{error}</p>}
+        <div className={`supplier-container ${isRTL ? "rtl" : ""}`}>
+          <div className="toolbar">
+            <div className="supplier-info">
+              <h2 className="supplier-title">{t("Dashboard")}</h2>
+              <p className="supplier-subtitle">{t("manage_users")}</p>
+            </div>
+          </div>
 
-          <table className="table table-hover mt-4">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>User Type</th>
-                <th>Country</th>
-                <th>Login as User</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.length > 0 ? (
-                users.map((item, index) => (
-                  <tr key={item._id || index}>
-                    <th>{(currentPage - 1) * DashPerPage + index + 1}</th>
-                    <td>{item.name}</td>
-                    <td>{item.email}</td>
-                    <td>{item.phone}</td>
-                    <td>{item.usertype}</td>
-                    <td>{item.country}</td>
-                    <td>
-                      <button
-                        className="btn btn-outline-primary btn-sm d-flex align-items-center gap-1"
-                        onClick={() => handleImpersonate(item._id)}
-                      >
-                        <IoPersonCircleOutline size={18} /> Login as User
-                      </button>
+        
+
+          {/* Desktop Table View */}
+          <div className="table-wrapper">
+            <table className="modern-table">
+              <thead>
+                <tr>
+                  <th className="text-center">#</th>
+                  <th className="text-center">{t("name")}</th>
+                  <th className="text-center">{t("email")}</th>
+                  <th className="text-center">{t("phone")}</th>
+                  <th className="text-center">{t("country")}</th>
+                  <th className="text-center">{t("user_type")}</th>
+                  <th className="text-center">{t("login_as_user")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.length > 0 ? (
+                  users.map((item, index) => (
+                    <tr key={item._id || index}>
+                      <td className="text-center">{(currentPage - 1) * DashPerPage + index + 1}</td>
+                      <td className="text-center">{item.name}</td>
+                      <td className="text-center">{item.email}</td>
+                      <td className="text-center">{item.phone}</td>
+                      <td className="text-center">{item.country}</td>
+                      <td className="text-center">{item.usertype}</td>
+                      <td className="text-center">
+                        <button className="btn-edit" onClick={() => handleImpersonate(item._id)}>
+                          <IoPersonCircleOutline /> {t("login")}
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="7" className="text-center no-data">
+                      {t("no_users_found")}
                     </td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="7" className="text-center">No Users found.</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-
-          <div className="d-flex justify-content-center mt-4">
-            <nav>{renderModernPagination()}</nav>
+                )}
+              </tbody>
+            </table>
           </div>
+
+          {/* Pagination */}
+          <div className="pagination-container">{renderPagination()}</div>
         </div>
       )}
     </>

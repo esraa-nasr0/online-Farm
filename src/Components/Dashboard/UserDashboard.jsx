@@ -5,7 +5,7 @@ import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  BarElement,
+  BarElement, 
   Title,
   Tooltip,
   Legend,
