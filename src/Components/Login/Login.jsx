@@ -23,6 +23,9 @@ export default function Login() {
         `https://farm-project-bbzj.onrender.com/api/login`,
         value
       );
+      console.log(data);
+      
+      
 
       if (data.status === "success") {
         setIsLoading(false);

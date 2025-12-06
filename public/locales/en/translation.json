@@ -1199,9 +1199,44 @@
   "delete_selected": "Delete selected",
 
   "Next": "Next",
-  "related_tooltip": "Related notifications"
-
-
+  "related_tooltip": "Related notifications",
+    "header": "Weekly Notifications",
+  "digestTitle": "Weekly Notifications Digest",
+  "week": "Week",
+  "year": "Year",
+  "totalNotifications": "Total Notifications",
+  "highPriority": "High Priority",
+  "critical": "Critical",
+  "digestDay": "Digest Day",
+  "digestTime": "Digest Time",
+  "selectPage": "Select Page",
+  "markSelected": "Mark Selected",
+  "noNotifications": "No notifications for this week.",
+    "subtitle": "Welcome to Online Farm, the all-in-one solution for efficient goat and sheep farm management, designed to simplify tracking of animal health, breeding, and productivity!",
+    "getStarted": "Get Started",
+    "learnMore": "Learn More",
+    "Vaccine_Type": "Vaccine Type",
+    "manage_Vaccine_Type": "Manage Vaccine Type",
+    "filter_Vaccine_Type": "Filter Vaccine Type",
+  "arabic_name": "Arabic Name",
+  "disease_ar": "Disease Type (AR)",
+  "disease_en": "Disease Type (EN)",
+  "image": "Image",
+    "Dashboard": "Dashboard",
+  "manage_users": "Manage Users",
+  "filter_users": "Filter Users",
+  "country": "Country",
+  "user_type": "User Type",
+  "login_as_user": "Login as User",
+  "login": "Login",
+   "vaccine_Type_table": "Vaccine Type Table",
+  "add_Vaccine_Type": "Add Vaccine Type",
+    "adminDashboard": "Admin Dashboard",
+  "goToManageUsers": "Go to Dashboard Manage Users",
+  "totalUsers": "Total Users",
+  "topOwners": "Top Owners",
+  "active": "Active",
+  "animalsPerMonth": "Animals per Month"
 
 
   

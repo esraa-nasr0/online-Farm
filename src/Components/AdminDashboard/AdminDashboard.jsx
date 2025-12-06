@@ -1,6 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
 import "./AdminDashboard.css";
 import { AdminContext } from "../../Context/AdminContext";
+import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+
 import {
   XAxis,
   YAxis,
@@ -12,18 +15,26 @@ import {
   Cell,
 } from "recharts";
 
+import { GiSheep } from "react-icons/gi";
+import { FaCheckCircle, FaUsers } from "react-icons/fa";
+
 export default function AdminDashboard() {
+  const { t, i18n } = useTranslation();
   const { getAdminDashboard } = useContext(AdminContext);
   const [stats, setStats] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchdata() {
       let res = await getAdminDashboard();
-      console.log(res);
       setStats(res?.data);
     }
     fetchdata();
   }, [getAdminDashboard]);
+
+  const toggleLanguage = () => {
+    i18n.changeLanguage(i18n.language === "en" ? "ar" : "en");
+  };
 
   if (!stats) return <p className="loading">Loading...</p>;
 
@@ -37,22 +48,60 @@ export default function AdminDashboard() {
 
   return (
     <div className="admin-dashboard" style={{ marginTop: "40px" }}>
-      <h2 className="admin-dashboard-title fw-bold">Admin Dashboard</h2>
-
-      {/* البطاقات */}
-      <div className="admin-cards">
-        <Card title="Animals" value={system.animals} />
-        <Card title="Users" value={system.users} />
+      <div className="dashboard-header">
+        <h2 className="admin-dashboard-title fw-bold">{t("adminDashboard")}</h2>
+    
       </div>
 
-      {/* القادة */}
-      <div className="admin-leaders">
-        <h3 className="fw-bold">Top Owners</h3>
-        <ul className="admin-leaders-list">
+      <div className="dashboard-button-wrapper">
+        <button
+          className="dashboard-button"
+          onClick={() => navigate("/dashboard")}
+        >
+          {t("goToManageUsers")}
+        </button>
+      </div>
+
+      <div className="cards-row">
+        <div className="stat-card card-blue">
+          <div className="card-header">
+            <h3>{t("totalAnimals")}</h3>
+            <GiSheep className="card-icon" />
+          </div>
+          <div className="stat-number">{system.animals ?? "-"}</div>
+        </div>
+
+        <div className="stat-card card-green">
+          <div className="card-header">
+            <h3>{t("totalUsers")}</h3>
+            <FaCheckCircle className="card-icon" />
+          </div>
+          <div className="stat-number">{system.users ?? "-"}</div>
+        </div>
+
+        <div className="stat-card card-orange">
+          <div className="card-header">
+            <h3>{t("topOwners")}</h3>
+            <FaUsers className="card-icon" />
+          </div>
+          <div className="stat-number">{leaders.length}</div>
+          <div className="stat-details">
+            <span>{t("active")}: {leaders[0]?.activeAnimals ?? 0}</span>
+            <span>{t("total")}: {leaders[0]?.totalAnimals ?? 0}</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="stat-card admin-leaders-card">
+        <div className="card-header">
+          <h3>{t("topOwners")}</h3>
+          <FaUsers className="card-icon" />
+        </div>
+        <div className="admin-leaders-list">
           {leaders
             .filter((l) => l.ownerName && l.ownerName.trim() !== "—")
             .map((l) => (
-              <li key={l._id} className="admin-leader-item">
+              <div key={l._id} className="admin-leader-item">
                 <div className="admin-leader-info">
                   <div className="admin-avatar">{getInitials(l.ownerName)}</div>
                   <div>
@@ -61,22 +110,18 @@ export default function AdminDashboard() {
                   </div>
                 </div>
                 <div className="admin-leader-stats">
-                  <span>Active: {l.activeAnimals}</span>
-                  <span>Total: {l.totalAnimals}</span>
+                  <span>{t("active")}: {l.activeAnimals}</span>
+                  <span>{t("total")}: {l.totalAnimals}</span>
                 </div>
-              </li>
+              </div>
             ))}
-        </ul>
+        </div>
       </div>
 
-      {/* الترند */}
       <div className="admin-trends">
-        <h3 className="fw-bold">Animals per Month</h3>
+        <h3 className="fw-bold">{t("animalsPerMonth")}</h3>
         <ResponsiveContainer width="100%" height={300}>
-          <BarChart
-            data={trends}
-            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-          >
+          <BarChart data={trends} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="month" />
             <YAxis />
@@ -86,7 +131,7 @@ export default function AdminDashboard() {
                 <Cell
                   key={`cell-${index}`}
                   fill={
-                    ["#8884d8", "#82ca9d", "#000000", "#00CFFF", "#6495ED", "#32CD32"][
+                    ["#A8A8F0", "#C3F7C3", "#F8D7DA", "#FFD580", "#A0BCD6", "#2c3e50"][
                       index % 6
                     ]
                   }
@@ -96,15 +141,6 @@ export default function AdminDashboard() {
           </BarChart>
         </ResponsiveContainer>
       </div>
-    </div>
-  );
-}
-
-function Card({ title, value }) {
-  return (
-    <div className="admin-card">
-      <div className="admin-card-title">{title}</div>
-      <div className="admin-card-value">{value ?? "-"}</div>
     </div>
   );
 }

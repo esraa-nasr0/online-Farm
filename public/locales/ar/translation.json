@@ -1285,9 +1285,44 @@
   "delete_selected": "حذف المختار",
 
 
-  "related_tooltip": "إشعارات مرتبطة"
-
-
+  "related_tooltip": "إشعارات مرتبطة",
+     "header": "الإشعارات الأسبوعية",
+  "digestTitle": "ملخص الإشعارات الأسبوعي",
+  "week": "الأسبوع",
+  "year": "السنة",
+  "totalNotifications": "إجمالي الإشعارات",
+  "highPriority": "أولوية عالية",
+  "critical": "حرجة",
+  "digestDay": "يوم الملخص",
+  "digestTime": "وقت الملخص",
+  "selectPage": "تحديد الصفحة",
+  "markSelected": "تحديد المحدد",
+  "noNotifications": "لا توجد إشعارات لهذا الأسبوع.",
+    "subtitle": "مرحبًا بك في المزرعة أونلاين، الحل الشامل لإدارة مزارع الماعز والأغنام بكفاءة، مصمم لتسهيل متابعة صحة الحيوانات، والتكاثر، والإنتاجية!",
+    "getStarted": "ابدأ الآن",
+    "learnMore": "تعرف أكثر",
+    "Vaccine_Type": "نوع اللقاح",
+    "manage_Vaccine_Type": "إدارة نوع اللقاح",
+    "filter_Vaccine_Type": "تصفية نوع اللقاح",
+  "arabic_name": "الاسم العربي",
+  "disease_ar": "نوع المرض (عربي)",
+  "disease_en": "نوع المرض (إنجليزي)",
+  "image": "الصورة",
+  "manage_users": "إدارة المستخدمين",
+  "filter_users": "تصفية المستخدمين",
+  "country": "الدولة",
+  "user_type": "نوع المستخدم",
+  "login_as_user": "تسجيل الدخول كمستخدم",
+  "login": "تسجيل الدخول",
+  "no_users_found": "لا يوجد مستخدمين",
+   "vaccine_Type_table": "جدول نوع اللقاح",
+  "add_Vaccine_Type": "إضافة نوع لقاح",
+   "adminDashboard": "لوحة التحكم",
+  "goToManageUsers": "اذهب إلى إدارة المستخدمين",
+  "totalUsers": "إجمالي المستخدمين",
+  "topOwners": "أهم الملاك",
+  "active": "نشط",
+  "animalsPerMonth": "الحيوانات لكل شهر"
 }
 
 

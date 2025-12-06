@@ -1,11 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaRegEdit } from "react-icons/fa";
-import { RiDeleteBinLine } from "react-icons/ri";
 import { Rings } from "react-loader-spinner";
 import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
-import { FiSearch } from "react-icons/fi";
 import "./VaccineTypetable.css";
 import { VaccineTypeContext } from "../../Context/VaccineTypeContext";
 
@@ -17,13 +14,8 @@ function VaccineTypetable() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [suppliers, setSuppliers] = useState([]);
   const itemsPerPage = 5;
   const [vaccines, setVaccines] = useState([]);
-  const [searchCriteria, setSearchCriteria] = useState({
-    email: "",
-    company: "",
-  });
 
   const [pagination, setPagination] = useState({
     total: 0,
@@ -36,10 +28,8 @@ function VaccineTypetable() {
     setIsLoading(true);
     try {
       const data = await getVaccineTypes();
-      console.log("Vaccines Data:", data.data);
       setVaccines(data.data || []);
 
-      // تحديث معلومات اللاچينيشن
       setPagination({
         total: data.data?.length || 0,
         page: currentPage,
@@ -57,13 +47,9 @@ function VaccineTypetable() {
     fetchVaccines();
   }, []);
 
-  const handleSearch = () => {
-    setCurrentPage(1);
-    fetchVaccines();
-  };
-
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  // Pagination UI
   const renderModernPagination = () => {
     const totalPages = pagination.totalPages || 1;
     const pageButtons = [];
@@ -86,27 +72,29 @@ function VaccineTypetable() {
       for (let i = 1; i <= totalPages; i++) addPage(i);
     } else {
       addPage(1);
+
       if (currentPage > 3) {
         pageButtons.push(
-          <li key="start-ellipsis" className="pagination-ellipsis">
-            ...
-          </li>
+          <li key="start-ellipsis" className="pagination-ellipsis">...</li>
         );
       }
+
       let start = Math.max(2, currentPage - 1);
       let end = Math.min(totalPages - 1, currentPage + 1);
+
       if (currentPage <= 3) end = 4;
       if (currentPage >= totalPages - 2) start = totalPages - 3;
+
       for (let i = start; i <= end; i++) {
         if (i > 1 && i < totalPages) addPage(i);
       }
+
       if (currentPage < totalPages - 2) {
         pageButtons.push(
-          <li key="end-ellipsis" className="pagination-ellipsis">
-            ...
-          </li>
+          <li key="end-ellipsis" className="pagination-ellipsis">...</li>
         );
       }
+
       addPage(totalPages);
     }
 
@@ -121,11 +109,11 @@ function VaccineTypetable() {
             &lt; {t("back")}
           </button>
         </li>
+
         {pageButtons}
+
         <li
-          className={`page-item${
-            currentPage === totalPages ? " disabled" : ""
-          }`}
+          className={`page-item${currentPage === totalPages ? " disabled" : ""}`}
         >
           <button
             className="page-link pagination-arrow"
@@ -139,7 +127,7 @@ function VaccineTypetable() {
     );
   };
 
-  // حساب الداتا المعروضة للصفحة الحالية
+  // حساب الداتا للصفحة الحالية
   const indexOfLast = currentPage * itemsPerPage;
   const indexOfFirst = indexOfLast - itemsPerPage;
   const currentVaccines = vaccines.slice(indexOfFirst, indexOfLast);
@@ -154,117 +142,25 @@ function VaccineTypetable() {
         <div className={`supplier-container ${isRTL ? "rtl" : ""}`}>
           <div className="toolbar">
             <div className="supplier-info">
-              <h2 className="supplier-title">{t("Suppliers")}</h2>
-              <p className="supplier-subtitle">{t("manage_suppliers")}</p>
+              <h2 className="supplier-title">{t("Vaccine_Type")}</h2>
+              <p className="supplier-subtitle">{t("manage_Vaccine_Type")}</p>
             </div>
           </div>
 
-      
-          <div className="search-section">
-            <h6 className="search-title">{t("filter_suppliers")}</h6>
-
-            <div className="search-fields">
-              <div className="search-field">
-                <label htmlFor="emailInput" className="search-label">
-                  {t("email")}
-                </label>
-                <input
-                  type="text"
-                  id="emailInput"
-                  className="search-input"
-                  placeholder={t("search_by_email")}
-                  value={searchCriteria.email}
-                  onChange={(e) =>
-                    setSearchCriteria({
-                      ...searchCriteria,
-                      email: e.target.value,
-                    })
-                  }
-                />
-              </div>
-              <div className="search-field">
-                <label htmlFor="companyInput" className="search-label">
-                  {t("company")}
-                </label>
-                <input
-                  type="text"
-                  id="companyInput"
-                  className="search-input"
-                  placeholder={t("search_by_company")}
-                  value={searchCriteria.company}
-                  onChange={(e) =>
-                    setSearchCriteria({
-                      ...searchCriteria,
-                      company: e.target.value,
-                    })
-                  }
-                />
-              </div>
-              <div className="search-button">
-                <button className="btn-search" onClick={handleSearch}>
-                  <FiSearch /> {t("search")}
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Mobile Cards View */}
-          <div className="mobile-cards">
-            {suppliers.length > 0 ? (
-              suppliers.map((supplier, index) => (
-                <div key={supplier._id} className="supplier-card">
-                  <div className="card-content">
-                    <div className="card-row">
-                      <span className="card-label">#</span>
-                      <span className="card-value">
-                        {(currentPage - 1) * itemsPerPage + index + 1}
-                      </span>
-                    </div>
-                    <div className="card-row">
-                      <span className="card-label">{t("name")}</span>
-                      <span className="card-value">{supplier.name}</span>
-                    </div>
-                    <div className="card-row">
-                      <span className="card-label">{t("email")}</span>
-                      <span className="card-value">{supplier.email}</span>
-                    </div>
-                    <div className="card-row">
-                      <span className="card-label">{t("phone")}</span>
-                      <span className="card-value">{supplier.phone}</span>
-                    </div>
-                    <div className="card-row">
-                      <span className="card-label">{t("company")}</span>
-                      <span className="card-value">{supplier.company}</span>
-                    </div>
-                    <div className="card-row">
-                      <span className="card-label">{t("notes")}</span>
-                      <span className="card-value">
-                        {supplier.notes || "-"}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="card-actions"></div>
-                </div>
-              ))
-            ) : (
-              <div className="no-data-mobile">{t("no_suppliers_found")}</div>
-            )}
-          </div>
-
-          {/* Desktop Table View */}
+          {/* Desktop Table */}
           <div className="table-wrapper">
             <table className="modern-table">
               <thead>
                 <tr>
                   <th className="text-center">#</th>
                   <th className="text-center">{t("name")}</th>
-                  <th className="text-center">{t("email")}</th>
-                  <th className="text-center">{t("phone")}</th>
-                  <th className="text-center">{t("company")}</th>
-                  <th className="text-center">{t("notes")}</th>
-                  <th className="text-center">{t("actions")}</th>
+                  <th className="text-center">{t("arabic_name")}</th>
+                  <th className="text-center">{t("disease_ar")}</th>
+                  <th className="text-center">{t("disease_en")}</th>
+                  <th className="text-center">{t("image")}</th>
                 </tr>
               </thead>
+
               <tbody>
                 {currentVaccines.length > 0 ? (
                   currentVaccines.map((vaccine, index) => (
@@ -274,12 +170,8 @@ function VaccineTypetable() {
                       </td>
                       <td className="text-center">{vaccine.englishName}</td>
                       <td className="text-center">{vaccine.arabicName}</td>
-                      <td className="text-center">
-                        {vaccine.arabicDiseaseType}
-                      </td>
-                      <td className="text-center">
-                        {vaccine.englishDiseaseType}
-                      </td>
+                      <td className="text-center">{vaccine.arabicDiseaseType}</td>
+                      <td className="text-center">{vaccine.englishDiseaseType}</td>
                       <td className="text-center">
                         {vaccine.image ? (
                           <img
@@ -303,12 +195,11 @@ function VaccineTypetable() {
                           "-"
                         )}
                       </td>
-                      <td className="text-center action-buttons"></td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="7" className="text-center no-data">
+                    <td colSpan="6" className="text-center no-data">
                       {t("no_suppliers_found")}
                     </td>
                   </tr>
